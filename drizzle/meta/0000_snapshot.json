@@ -1,0 +1,708 @@
+{
+  "id": "587da1fa-35c9-4cd1-8df3-feeea1a38f5f",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.engine_telemetry": {
+      "name": "engine_telemetry",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "timestamp": {
+          "name": "timestamp",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "game_id": {
+          "name": "game_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "target_team": {
+          "name": "target_team",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "market_spread": {
+          "name": "market_spread",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "bernoulli_edge": {
+          "name": "bernoulli_edge",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "injury_score": {
+          "name": "injury_score",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "smi_score": {
+          "name": "smi_score",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rlm_active": {
+          "name": "rlm_active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "regression_delta": {
+          "name": "regression_delta",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "scheme_friction": {
+          "name": "scheme_friction",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "system_lock_play": {
+          "name": "system_lock_play",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.ev_signals": {
+      "name": "ev_signals",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "prediction_id": {
+          "name": "prediction_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "home_team": {
+          "name": "home_team",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "away_team": {
+          "name": "away_team",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sport": {
+          "name": "sport",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bet_side": {
+          "name": "bet_side",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "signal": {
+          "name": "signal",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ev_edge_pct": {
+          "name": "ev_edge_pct",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "maker_price": {
+          "name": "maker_price",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kelly_fraction": {
+          "name": "kelly_fraction",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "ev_signals_prediction_id_predictions_id_fk": {
+          "name": "ev_signals_prediction_id_predictions_id_fk",
+          "tableFrom": "ev_signals",
+          "tableTo": "predictions",
+          "columnsFrom": [
+            "prediction_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.line_movements": {
+      "name": "line_movements",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "bookmaker": {
+          "name": "bookmaker",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "line_type": {
+          "name": "line_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "opening_line": {
+          "name": "opening_line",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "current_line": {
+          "name": "current_line",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sharp_action": {
+          "name": "sharp_action",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'NONE'"
+        },
+        "steam_move": {
+          "name": "steam_move",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "reverse_line_movement": {
+          "name": "reverse_line_movement",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "public_betting_pct": {
+          "name": "public_betting_pct",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "money_pct": {
+          "name": "money_pct",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "recorded_at": {
+          "name": "recorded_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.matchups": {
+      "name": "matchups",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "home_team": {
+          "name": "home_team",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "away_team": {
+          "name": "away_team",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sport": {
+          "name": "sport",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "matchup_edge": {
+          "name": "matchup_edge",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "home_offense_rating": {
+          "name": "home_offense_rating",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "away_offense_rating": {
+          "name": "away_offense_rating",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "home_defense_rating": {
+          "name": "home_defense_rating",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "away_defense_rating": {
+          "name": "away_defense_rating",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "home_pace": {
+          "name": "home_pace",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "away_pace": {
+          "name": "away_pace",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "home_turnovers_per_game": {
+          "name": "home_turnovers_per_game",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "away_turnovers_per_game": {
+          "name": "away_turnovers_per_game",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "home_shot_quality": {
+          "name": "home_shot_quality",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "away_shot_quality": {
+          "name": "away_shot_quality",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "home_rebounding_rating": {
+          "name": "home_rebounding_rating",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "away_rebounding_rating": {
+          "name": "away_rebounding_rating",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "matchup_notes": {
+          "name": "matchup_notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.predictions": {
+      "name": "predictions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "matchup": {
+          "name": "matchup",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sport": {
+          "name": "sport",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pending'"
+        },
+        "away_team": {
+          "name": "away_team",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "home_team": {
+          "name": "home_team",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "predicted_winner": {
+          "name": "predicted_winner",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ev_edge": {
+          "name": "ev_edge",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kelly_stake": {
+          "name": "kelly_stake",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tilt_tensor": {
+          "name": "tilt_tensor",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "circadian_friction_home": {
+          "name": "circadian_friction_home",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "circadian_friction_away": {
+          "name": "circadian_friction_away",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "signal": {
+          "name": "signal",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "game_date": {
+          "name": "game_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.team_performance": {
+      "name": "team_performance",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "team_id": {
+          "name": "team_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sport": {
+          "name": "sport",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "conference": {
+          "name": "conference",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "division": {
+          "name": "division",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "wins": {
+          "name": "wins",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "losses": {
+          "name": "losses",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "draws": {
+          "name": "draws",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "ats_record": {
+          "name": "ats_record",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "over_under_record": {
+          "name": "over_under_record",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "offensive_rating": {
+          "name": "offensive_rating",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "defensive_rating": {
+          "name": "defensive_rating",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pace": {
+          "name": "pace",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "streak_type": {
+          "name": "streak_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "streak_count": {
+          "name": "streak_count",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.trades": {
+      "name": "trades",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "timestamp": {
+          "name": "timestamp",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "matchup": {
+          "name": "matchup",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "math_ev": {
+          "name": "math_ev",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dissonance_score": {
+          "name": "dissonance_score",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "prospect_theory_read": {
+          "name": "prospect_theory_read",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "selection": {
+          "name": "selection",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "alpha_edge": {
+          "name": "alpha_edge",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kelly_sizing": {
+          "name": "kelly_sizing",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "actual_outcome": {
+          "name": "actual_outcome",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

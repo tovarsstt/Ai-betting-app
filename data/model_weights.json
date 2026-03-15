@@ -1,0 +1,6 @@
+{
+    "math_weight": 0.7,
+    "sentiment_weight": 0.3,
+    "dissonance_threshold": 8.0,
+    "last_updated": "2026-W09"
+}

@@ -1,0 +1,302 @@
+[
+    {
+        "group_name": "Will Italy qualify for the 2026 FIFA World Cup?",
+        "market_name": "Will Italy qualify for the 2026 FIFA World Cup?",
+        "condition_id": "0xd8c3fff562711af557abca5e7367dbb892b1d79419b039b6f185e49f21ec6f71",
+        "clob_token_ids": [
+            "21296624965887450804742516563526632324551397901259017139941826024484477821625",
+            "18548531003403642447433063414362700271595227164711314812182704727637563149074"
+        ],
+        "description": "This is a market on which teams will qualify for the 2026 FIFA World Cup.\n\nIf at any point it becomes impossible for this team to qualify for the FIFA World Cup based on the rules of FIFA (e.g. they cannot reach the required number of points to advance from its group or qualify for playoffs), this market will resolve immediately to \u201cNo\u201d.\n\nIf the 2026 FIFA World Cup is permanently canceled or the qualifying stage has not been completed by September 30, 2026, 11:59 PM this market will resolve to \u201cNo\u201d.\n\nThe resolution source for this market will be FIFA.  (https://www.fifa.com/en/tournaments/mens/worldcup).",
+        "outcome_prices": [
+            0.6,
+            0.4
+        ],
+        "end_date_iso": "2026-04-12"
+    },
+    {
+        "group_name": "Will Sweden qualify for the 2026 FIFA World Cup?",
+        "market_name": "Will Sweden qualify for the 2026 FIFA World Cup?",
+        "condition_id": "0x61eb9153c67924f13fd102a324be284f335672ea1fdb07d48af27a8cd03536be",
+        "clob_token_ids": [
+            "110029858924336699886026160037881747408385035792394181068515946764057130818147",
+            "99703503368997111194608314266540465795915641214072272571967517894792021713802"
+        ],
+        "description": "This is a market on which teams will qualify for the 2026 FIFA World Cup.\n\nIf at any point it becomes impossible for this team to qualify for the FIFA World Cup based on the rules of FIFA (e.g. they cannot reach the required number of points to advance from its group or qualify for playoffs), this market will resolve immediately to \u201cNo\u201d.\n\nIf the 2026 FIFA World Cup is permanently canceled or the qualifying stage has not been completed by September 30, 2026, 11:59 PM this market will resolve to \u201cNo\u201d.\n\nThe resolution source for this market will be FIFA.  (https://www.fifa.com/en/tournaments/mens/worldcup).",
+        "outcome_prices": [
+            0.275,
+            0.725
+        ],
+        "end_date_iso": "2026-04-12"
+    },
+    {
+        "group_name": "Will Poland qualify for the 2026 FIFA World Cup?",
+        "market_name": "Will Poland qualify for the 2026 FIFA World Cup?",
+        "condition_id": "0xbd9068da0f92022747bdad7a7d522c2f8bec81f0eb61c233eb94b301b3b4c62b",
+        "clob_token_ids": [
+            "107726477169398763643300346937218981578070170096670253959564188912978677384086",
+            "80511008047143651192857715625240574605223081773209557920997784819412822146093"
+        ],
+        "description": "This is a market on which teams will qualify for the 2026 FIFA World Cup.\n\nIf at any point it becomes impossible for this team to qualify for the FIFA World Cup based on the rules of FIFA (e.g. they cannot reach the required number of points to advance from its group or qualify for playoffs), this market will resolve immediately to \u201cNo\u201d.\n\nIf the 2026 FIFA World Cup is permanently canceled or the qualifying stage has not been completed by September 30, 2026, 11:59 PM this market will resolve to \u201cNo\u201d.\n\nThe resolution source for this market will be FIFA.  (https://www.fifa.com/en/tournaments/mens/worldcup).",
+        "outcome_prices": [
+            0.37,
+            0.63
+        ],
+        "end_date_iso": "2026-04-12"
+    },
+    {
+        "group_name": "Will Ukraine qualify for the 2026 FIFA World Cup?",
+        "market_name": "Will Ukraine qualify for the 2026 FIFA World Cup?",
+        "condition_id": "0xfef0954af0d43ea46c1ac246ac009dbcd0f76d36fd93b78d3586b23b386028ef",
+        "clob_token_ids": [
+            "90954386001801116059251303598368900188182195794057114134644084985964418752977",
+            "94516923452105222578438916262485145756699194265211313859088449971552829623384"
+        ],
+        "description": "This is a market on which teams will qualify for the 2026 FIFA World Cup.\n\nIf at any point it becomes impossible for this team to qualify for the FIFA World Cup based on the rules of FIFA (e.g. they cannot reach the required number of points to advance from its group or qualify for playoffs), this market will resolve immediately to \u201cNo\u201d.\n\nIf the 2026 FIFA World Cup is permanently canceled or the qualifying stage has not been completed by September 30, 2026, 11:59 PM this market will resolve to \u201cNo\u201d.\n\nThe resolution source for this market will be FIFA.  (https://www.fifa.com/en/tournaments/mens/worldcup).",
+        "outcome_prices": [
+            0.37,
+            0.63
+        ],
+        "end_date_iso": "2026-04-12"
+    },
+    {
+        "group_name": "Will the Carolina Hurricanes win the 2026 NHL Stanley Cup?",
+        "market_name": "Will the Carolina Hurricanes win the 2026 NHL Stanley Cup?",
+        "condition_id": "0xf7b5491e70b477d451afe7d9c1fde4bf1a927e69ff289d294b96df164f6c10f0",
+        "clob_token_ids": [
+            "79397003434468715775480922117285203652110865791390656395657957066470661722480",
+            "40473977441010332007887229299980126707900816205713676157646215720073415416624"
+        ],
+        "description": "This market will resolve to \u201cYes\u201d if the Carolina Hurricanes win the 2026 NHL Stanley Cup. Otherwise, this market will resolve to \u201cNo\u201d.\n\nThis market will resolve to \u201cNo\u201d if it becomes impossible for this team to win the 2026 NHL Stanley Cup based off the rules of the NHL.\n\nThe resolution source for this market will be information from the NHL.\n",
+        "outcome_prices": [
+            0.095,
+            0.905
+        ],
+        "end_date_iso": "2026-06-30"
+    },
+    {
+        "group_name": "Will the Florida Panthers win the 2026 NHL Stanley Cup?",
+        "market_name": "Will the Florida Panthers win the 2026 NHL Stanley Cup?",
+        "condition_id": "0xd01354f96db7fc2184cc34ac463a80cc65e7ff5de64c8a2f3e07e8433317d75f",
+        "clob_token_ids": [
+            "80061984358752599784693370376997592727558961379567449932508186368496986212029",
+            "42433583546409205693938411606863251812283085544286252379883028411752918173253"
+        ],
+        "description": "This market will resolve to \u201cYes\u201d if the Florida Panthers win the 2026 NHL Stanley Cup. Otherwise, this market will resolve to \u201cNo\u201d.\n\nThis market will resolve to \u201cNo\u201d if it becomes impossible for this team to win the 2026 NHL Stanley Cup based off the rules of the NHL.\n\nThe resolution source for this market will be information from the NHL.\n",
+        "outcome_prices": [
+            0.0285,
+            0.9715
+        ],
+        "end_date_iso": "2026-06-30"
+    },
+    {
+        "group_name": "Will the Edmonton Oilers win the 2026 NHL Stanley Cup?",
+        "market_name": "Will the Edmonton Oilers win the 2026 NHL Stanley Cup?",
+        "condition_id": "0x4a67e1270a2ed86be8fc524b6114640e41b0c56303ecaa9584deacd62402650a",
+        "clob_token_ids": [
+            "26994926807159308505531352241892510362185630293975165092400997815774500370214",
+            "93243135936056253080731148169253301176422868656587067154045597758216732275467"
+        ],
+        "description": "This market will resolve to \u201cYes\u201d if the Edmonton Oilers win the 2026 NHL Stanley Cup. Otherwise, this market will resolve to \u201cNo\u201d.\n\nThis market will resolve to \u201cNo\u201d if it becomes impossible for this team to win the 2026 NHL Stanley Cup based off the rules of the NHL.\n\nThe resolution source for this market will be information from the NHL.\n",
+        "outcome_prices": [
+            0.09,
+            0.91
+        ],
+        "end_date_iso": "2026-06-30"
+    },
+    {
+        "group_name": "Will the Dallas Stars win the 2026 NHL Stanley Cup?",
+        "market_name": "Will the Dallas Stars win the 2026 NHL Stanley Cup?",
+        "condition_id": "0x44887f53abbfe7531b1384420b185a5f10ee42a4e6c9441d5883abd4f3c1e5ef",
+        "clob_token_ids": [
+            "17581551835670188629115760053820570516688258623733228909199148495084738589631",
+            "48350886075645487969183664927181889134443172406220772590108122172302333217567"
+        ],
+        "description": "This market will resolve to \u201cYes\u201d if the Dallas Stars win the 2026 NHL Stanley Cup. Otherwise, this market will resolve to \u201cNo\u201d.\n\nThis market will resolve to \u201cNo\u201d if it becomes impossible for this team to win the 2026 NHL Stanley Cup based off the rules of the NHL.\n\nThe resolution source for this market will be information from the NHL.\n",
+        "outcome_prices": [
+            0.053,
+            0.947
+        ],
+        "end_date_iso": "2026-06-30"
+    },
+    {
+        "group_name": "Will the Colorado Avalanche win the 2026 NHL Stanley Cup?",
+        "market_name": "Will the Colorado Avalanche win the 2026 NHL Stanley Cup?",
+        "condition_id": "0xf8f63bb47b2a7c2e0c1be3cedf4075079b11c07476d76a9469065b0c4791961a",
+        "clob_token_ids": [
+            "101738487887518832481587379955535423775326921556438741919099866785354159699479",
+            "87978082071653935678874296685430503892266481242311708420787197372467948088235"
+        ],
+        "description": "This market will resolve to \u201cYes\u201d if the Colorado Avalanche win the 2026 NHL Stanley Cup. Otherwise, this market will resolve to \u201cNo\u201d.\n\nThis market will resolve to \u201cNo\u201d if it becomes impossible for this team to win the 2026 NHL Stanley Cup based off the rules of the NHL.\n\nThe resolution source for this market will be information from the NHL.\n",
+        "outcome_prices": [
+            0.209,
+            0.791
+        ],
+        "end_date_iso": "2026-06-30"
+    },
+    {
+        "group_name": "Will the Vegas Golden Knights win the 2026 NHL Stanley Cup?",
+        "market_name": "Will the Vegas Golden Knights win the 2026 NHL Stanley Cup?",
+        "condition_id": "0x89389a6b1439856a8d366234c795d72865c927a1aa3cf9d4cc04a3a400defde1",
+        "clob_token_ids": [
+            "68803485030073596962715540294172682212192134248970512695855620898253368033218",
+            "58534831224432332845742394199681128700782343287162911891204466367752298448751"
+        ],
+        "description": "This market will resolve to \u201cYes\u201d if the Vegas Golden Knights win the 2026 NHL Stanley Cup. Otherwise, this market will resolve to \u201cNo\u201d.\n\nThis market will resolve to \u201cNo\u201d if it becomes impossible for this team to win the 2026 NHL Stanley Cup based off the rules of the NHL.\n\nThe resolution source for this market will be information from the NHL.\n",
+        "outcome_prices": [
+            0.061,
+            0.939
+        ],
+        "end_date_iso": "2026-06-30"
+    },
+    {
+        "group_name": "Will the Tampa Bay Lightning win the 2026 NHL Stanley Cup?",
+        "market_name": "Will the Tampa Bay Lightning win the 2026 NHL Stanley Cup?",
+        "condition_id": "0xbdd688664b4f3cf7ec4ec011607934fe8ae720c08353fc14a6e9dfbf6bbcf11a",
+        "clob_token_ids": [
+            "35573117698117780238142713946749692621043319879346349609080985768472429209643",
+            "76626937605855383085159195963889428951048025160807952406004049979161449392204"
+        ],
+        "description": "This market will resolve to \u201cYes\u201d if the Tampa Bay Lightning win the 2026 NHL Stanley Cup. Otherwise, this market will resolve to \u201cNo\u201d.\n\nThis market will resolve to \u201cNo\u201d if it becomes impossible for this team to win the 2026 NHL Stanley Cup based off the rules of the NHL.\n\nThe resolution source for this market will be information from the NHL.\n",
+        "outcome_prices": [
+            0.15,
+            0.85
+        ],
+        "end_date_iso": "2026-06-30"
+    },
+    {
+        "group_name": "Will the Los Angeles Kings win the 2026 NHL Stanley Cup?",
+        "market_name": "Will the Los Angeles Kings win the 2026 NHL Stanley Cup?",
+        "condition_id": "0x3b6cdd4f72cef7f29ff7e054444095564dc582266b7230be3c2b5f194d89f37d",
+        "clob_token_ids": [
+            "75497690502531380056390405612014900797768656980504946546336044296003833597355",
+            "2729425106258568059271359452117793887389510413905823490566998620570283391162"
+        ],
+        "description": "This market will resolve to \u201cYes\u201d if the Los Angeles Kings win the 2026 NHL Stanley Cup. Otherwise, this market will resolve to \u201cNo\u201d.\n\nThis market will resolve to \u201cNo\u201d if it becomes impossible for this team to win the 2026 NHL Stanley Cup based off the rules of the NHL.\n\nThe resolution source for this market will be information from the NHL.\n",
+        "outcome_prices": [
+            0.015,
+            0.985
+        ],
+        "end_date_iso": "2026-06-30"
+    },
+    {
+        "group_name": "Will the New Jersey Devils win the 2026 NHL Stanley Cup?",
+        "market_name": "Will the New Jersey Devils win the 2026 NHL Stanley Cup?",
+        "condition_id": "0x1e03cd6255e4dec87c7c85d2267b7b4104beba48abf50e2fc15acabbf233b308",
+        "clob_token_ids": [
+            "83053136095375464518484635535538303979818736083252284786624282549893531568449",
+            "28342067911960552115358272066240777232595262486860946251344574810276141891103"
+        ],
+        "description": "This market will resolve to \u201cYes\u201d if the New Jersey Devils win the 2026 NHL Stanley Cup. Otherwise, this market will resolve to \u201cNo\u201d.\n\nThis market will resolve to \u201cNo\u201d if it becomes impossible for this team to win the 2026 NHL Stanley Cup based off the rules of the NHL.\n\nThe resolution source for this market will be information from the NHL.\n",
+        "outcome_prices": [
+            0.0015,
+            0.9985
+        ],
+        "end_date_iso": "2026-06-30"
+    },
+    {
+        "group_name": "Will the Winnipeg Jets win the 2026 NHL Stanley Cup?",
+        "market_name": "Will the Winnipeg Jets win the 2026 NHL Stanley Cup?",
+        "condition_id": "0xa8b42e207814d2844997523ba83e708b5bfe19cf5d2203325e4eb3ed459a9ded",
+        "clob_token_ids": [
+            "99302435322944813052105841164428761175935099146724842887228853211763294863784",
+            "114873494229479412417798215532571359940253151535176943495434840259150573052987"
+        ],
+        "description": "This market will resolve to \u201cYes\u201d if the Winnipeg Jets win the 2026 NHL Stanley Cup. Otherwise, this market will resolve to \u201cNo\u201d.\n\nThis market will resolve to \u201cNo\u201d if it becomes impossible for this team to win the 2026 NHL Stanley Cup based off the rules of the NHL.\n\nThe resolution source for this market will be information from the NHL.\n",
+        "outcome_prices": [
+            0.0035,
+            0.9965
+        ],
+        "end_date_iso": "2026-06-30"
+    },
+    {
+        "group_name": "Will the Toronto Maple Leafs win the 2026 NHL Stanley Cup?",
+        "market_name": "Will the Toronto Maple Leafs win the 2026 NHL Stanley Cup?",
+        "condition_id": "0xc61a442adb770e35e193973c4fc1e16b219490028b792257aa5cb46619d5d977",
+        "clob_token_ids": [
+            "32761305560497515266298907010603238583784271883422104419001315861857080693737",
+            "30580289066077385758914266674062143052968657613582607009092130555241353168752"
+        ],
+        "description": "This market will resolve to \u201cYes\u201d if the Toronto Maple Leafs win the 2026 NHL Stanley Cup. Otherwise, this market will resolve to \u201cNo\u201d.\n\nThis market will resolve to \u201cNo\u201d if it becomes impossible for this team to win the 2026 NHL Stanley Cup based off the rules of the NHL.\n\nThe resolution source for this market will be information from the NHL.\n",
+        "outcome_prices": [
+            0.0055,
+            0.9945
+        ],
+        "end_date_iso": "2026-06-30"
+    },
+    {
+        "group_name": "Will the Washington Capitals win the 2026 NHL Stanley Cup?",
+        "market_name": "Will the Washington Capitals win the 2026 NHL Stanley Cup?",
+        "condition_id": "0x08fa7d350c801391e7ec81d0da90f1fb05ec365f98d16d27e6d64a18d7118973",
+        "clob_token_ids": [
+            "89607539467374084618016881443767018676837500055609025995679802231807669451541",
+            "94050134900986983016097201951730545344521023881338999145214939216138319853878"
+        ],
+        "description": "This market will resolve to \u201cYes\u201d if the Washington Capitals win the 2026 NHL Stanley Cup. Otherwise, this market will resolve to \u201cNo\u201d.\n\nThis market will resolve to \u201cNo\u201d if it becomes impossible for this team to win the 2026 NHL Stanley Cup based off the rules of the NHL.\n\nThe resolution source for this market will be information from the NHL.\n",
+        "outcome_prices": [
+            0.015,
+            0.985
+        ],
+        "end_date_iso": "2026-06-30"
+    },
+    {
+        "group_name": "Will the New York Rangers win the 2026 NHL Stanley Cup?",
+        "market_name": "Will the New York Rangers win the 2026 NHL Stanley Cup?",
+        "condition_id": "0xa0c492acb221e77adbe84953fec4fc917e45e8b67121c1852d20e2fb9a29064f",
+        "clob_token_ids": [
+            "8632114599242481428657290920457928145465118150352562816049752984278653204354",
+            "38164917785960547058897753715153399631236008787392479420647504474970728279061"
+        ],
+        "description": "This market will resolve to \u201cYes\u201d if the New York Rangers win the 2026 NHL Stanley Cup. Otherwise, this market will resolve to \u201cNo\u201d.\n\nThis market will resolve to \u201cNo\u201d if it becomes impossible for this team to win the 2026 NHL Stanley Cup based off the rules of the NHL.\n\nThe resolution source for this market will be information from the NHL.\n",
+        "outcome_prices": [
+            0.0015,
+            0.9985
+        ],
+        "end_date_iso": "2026-06-30"
+    },
+    {
+        "group_name": "Will the Ottawa Senators win the 2026 NHL Stanley Cup?",
+        "market_name": "Will the Ottawa Senators win the 2026 NHL Stanley Cup?",
+        "condition_id": "0x139b893a7ae21eaec72e887ba88910831944b4662512428c122c4ad0a5c125ac",
+        "clob_token_ids": [
+            "52122163926965666340769912737036425235018536048643947600257470162508745804215",
+            "8670072980013890450224478921744074220453109802844788568180411173557818867412"
+        ],
+        "description": "This market will resolve to \u201cYes\u201d if the Ottawa Senators win the 2026 NHL Stanley Cup. Otherwise, this market will resolve to \u201cNo\u201d.\n\nThis market will resolve to \u201cNo\u201d if it becomes impossible for this team to win the 2026 NHL Stanley Cup based off the rules of the NHL.\n\nThe resolution source for this market will be information from the NHL.\n",
+        "outcome_prices": [
+            0.011,
+            0.989
+        ],
+        "end_date_iso": "2026-06-30"
+    },
+    {
+        "group_name": "Will the Minnesota Wild win the 2026 NHL Stanley Cup?",
+        "market_name": "Will the Minnesota Wild win the 2026 NHL Stanley Cup?",
+        "condition_id": "0x0d082a85f48a5226b1205acdb6e95ead2fe373acabcf6c471f5895f86f42a276",
+        "clob_token_ids": [
+            "52393600221905688380980180540161090876971894580569515967716227210336633318551",
+            "21431572216384228534336063536634350950418274877940611814171622998125116043513"
+        ],
+        "description": "This market will resolve to \u201cYes\u201d if the Minnesota Wild win the 2026 NHL Stanley Cup. Otherwise, this market will resolve to \u201cNo\u201d.\n\nThis market will resolve to \u201cNo\u201d if it becomes impossible for this team to win the 2026 NHL Stanley Cup based off the rules of the NHL.\n\nThe resolution source for this market will be information from the NHL.\n",
+        "outcome_prices": [
+            0.0605,
+            0.9395
+        ],
+        "end_date_iso": "2026-06-30"
+    },
+    {
+        "group_name": "Will the Utah Mammoth win the 2026 NHL Stanley Cup?",
+        "market_name": "Will the Utah Mammoth win the 2026 NHL Stanley Cup?",
+        "condition_id": "0xfdc1041ba84bfd8f741eee0bdafce8b1887626c83afd017d18ee9b1f77008b9f",
+        "clob_token_ids": [
+            "77381084121703585434442737895792916741546405992903866299069398776973629407962",
+            "113689564696134010397605001832750509195155730029258888570920506901252575318870"
+        ],
+        "description": "This market will resolve to \u201cYes\u201d if the Utah Mammoth win the 2026 NHL Stanley Cup. Otherwise, this market will resolve to \u201cNo\u201d.\n\nThis market will resolve to \u201cNo\u201d if it becomes impossible for this team to win the 2026 NHL Stanley Cup based off the rules of the NHL.\n\nThe resolution source for this market will be information from the NHL.\n",
+        "outcome_prices": [
+            0.0195,
+            0.9805
+        ],
+        "end_date_iso": "2026-06-30"
+    }
+]
