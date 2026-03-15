@@ -1,9 +1,8 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { db } from '../db/index.ts';
-import { predictions, evSignals } from '../db/schema.ts';
-import { eq, desc } from 'drizzle-orm';
-import { EVMarketFilter } from '../services/evMarketFilter.ts';
+import { db } from '../db/index.js';
+import { predictions, evSignals } from '../db/schema.js';
+import { desc } from 'drizzle-orm';
 
 export const apiRouter = Router();
 
@@ -45,8 +44,8 @@ apiRouter.get('/predictions', async (req, res) => {
     });
     
     res.json({ success: true, data: results });
-  } catch (error) {
-    res.status(400).json({ success: false, error: error.message });
+  } catch (err: any) {
+    res.status(400).json({ success: false, error: err.message });
   }
 });
 
@@ -64,8 +63,8 @@ apiRouter.get('/ev-signals', async (req, res) => {
     });
     
     res.json({ success: true, data: results });
-  } catch (error) {
-    res.status(400).json({ success: false, error: error.message });
+  } catch (err: any) {
+    res.status(400).json({ success: false, error: err.message });
   }
 });
 

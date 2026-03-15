@@ -5,8 +5,8 @@ import { spawn, execSync } from 'child_process';
 import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
 import cron from 'node-cron';
 import Redis from 'ioredis';
-import { db } from './src/db/index.ts';
-import { trades, engineTelemetry } from './src/db/schema.ts';
+import { db } from './src/db/index.js';
+import { trades, engineTelemetry } from './src/db/schema.js';
 import { v4 as uuidv4 } from 'uuid';
 import { eq, desc } from 'drizzle-orm';
 dotenv.config();
@@ -1022,7 +1022,7 @@ async function getLiveTennisProps(playerNameStr, leaguePath) {
     }
 }
 
-import { apiRouter } from './src/routes/api.ts'; // tsx will resolve this
+import { apiRouter } from './src/routes/api.js'; // Use .js extension for ESM TS compatibility
 
 const app = express();
 const port = process.env.PORT || 3001;

@@ -1,6 +1,6 @@
 import { drizzle } from "drizzle-orm/pglite";
 import { PGlite } from "@electric-sql/pglite";
-import * as schema from "./schema.ts"; 
+import * as schema from "./schema.js"; 
 import dotenv from "dotenv";
 dotenv.config();
 

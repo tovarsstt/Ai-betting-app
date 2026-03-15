@@ -64,8 +64,13 @@ export default function Matchups() {
   };
 
   const renderSimResultCard = (title: string, data: any) => {
-    if (!data || !data.cognitiveData) return null;
-    const cog = data.cognitiveData;
+    if (!data) return null;
+    
+    // Support both the wrapped structure and the flat structure from recent V13 refactors
+    const cog = data.cognitiveData || data;
+    
+    // Check if we actually have data (if we have suggested_side it's likely valid)
+    if (!cog.suggested_side) return null;
     
     return (
       <Card className="border-primary/30 bg-card overflow-hidden mt-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -105,7 +110,7 @@ export default function Matchups() {
              </div>
              <div>
                 <span className="block text-xs uppercase text-muted-foreground mb-1">Confidence</span>
-                <span className="font-mono font-bold text-primary">{(cog.confidence_score * 100).toFixed(1)}%</span>
+                <span className="font-mono font-bold text-primary">{cog.confidence_score ? (cog.confidence_score * 100).toFixed(1) + "%" : "N/A"}</span>
              </div>
              <div>
                 <span className="block text-xs uppercase text-muted-foreground mb-1">Dominance</span>
