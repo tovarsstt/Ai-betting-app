@@ -77,18 +77,47 @@ apiRouter.post('/ingest', async (req, res) => {
   try {
     const payload = IngestPayloadSchema.parse(req.body);
     
-    // Run the newly ported EV Market Filter
-    const analysis = EVMarketFilter.analyze(payload.trueProbability, payload.marketDecimalOdds);
-    
-    // In a real app, we'd save this to `evSignals` table here.
-    // For now, we just return the analytical result to the caller.
+    // Extract true/soft odds
+    const p = Math.max(0.01, Math.min(0.99, payload.trueProbability));
+    const sharpOdds = 1 / p;
+    const softOdds = payload.marketDecimalOdds;
+
+    const baseBody = {
+       sport: payload.sport,
+       sharpOdds: sharpOdds.toString(),
+       softOdds: softOdds.toString(),
+       context: ""
+    };
+
+    const port = process.env.PORT || 3001;
+
+    // Call the internal /api/analyze route 3 times for Standard, SGP, and Slate Parlay
+    const [standardRes, sgpRes, slateRes] = await Promise.all([
+      fetch(`http://127.0.0.1:${port}/api/analyze`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...baseBody, matchup: payload.matchup })
+      }).then(r => r.json()),
+      fetch(`http://127.0.0.1:${port}/api/analyze`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...baseBody, matchup: `${payload.matchup} [SGP_MODE]` })
+      }).then(r => r.json()),
+      fetch(`http://127.0.0.1:${port}/api/analyze`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...baseBody, matchup: `${payload.matchup} [SLATE_PARLAY_MODE]` })
+      }).then(r => r.json())
+    ]);
     
     res.json({ 
       success: true, 
-      message: "Data ingested and parsed via ASA v5.0 EV Filter", 
-      analysis 
+      message: "Omni-Vector generation complete", 
+      standard: standardRes,
+      sgp: sgpRes,
+      slate: slateRes
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(400).json({ success: false, error: error.message });
   }
 });
