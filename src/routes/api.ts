@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { db } from '../db/index.js';
-import { predictions, evSignals } from '../db/schema.js';
+import { db } from '../db/index.ts';
+import { predictions, evSignals } from '../db/schema.ts';
 import { eq, desc } from 'drizzle-orm';
-import { EVMarketFilter } from '../services/evMarketFilter.js';
+import { EVMarketFilter } from '../services/evMarketFilter.ts';
 
 export const apiRouter = Router();
 

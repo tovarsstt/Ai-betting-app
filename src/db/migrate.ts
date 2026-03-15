@@ -1,4 +1,4 @@
-import { db } from './index.js';
+import { db } from './index.ts';
 import { migrate } from 'drizzle-orm/pglite/migrator';
 
 async function runMigrate() {

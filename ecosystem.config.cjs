@@ -27,6 +27,7 @@ module.exports = {
         {
             name: "god-engine-bridge",
             script: "server.js",
+            interpreter: "tsx",
             env: {
                 NODE_ENV: "production",
                 PORT: 3001

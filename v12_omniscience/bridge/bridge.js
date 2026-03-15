@@ -2,8 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { db } from '../../src/db/index.js';
-import { predictions, results, betLedger } from '../../src/db/schema.js';
+import { db } from '../../src/db/index.ts';
+import { predictions, results, betLedger } from '../../src/db/schema.ts';
 import { desc, eq } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 

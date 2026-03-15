@@ -1,57 +1,70 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 
 const API_BASE = '/api/v12';
 
 export function useListPredictions() {
-    return useQuery({
+    return useQuery<any[]>({
         queryKey: ['predictions'],
         queryFn: async () => {
             const res = await fetch(`${API_BASE}/predictions`);
             if (!res.ok) throw new Error('Failed to fetch predictions');
-            const data = await res.json();
-            return { data: data.data || [] }; // Adjust based on our route response
+            const result = await res.json();
+            return result.data || []; 
         }
     });
 }
 
 export function useListEvSignals() {
-    return useQuery({
+    return useQuery<any[]>({
         queryKey: ['ev-signals'],
         queryFn: async () => {
             const res = await fetch(`${API_BASE}/ev-signals`);
             if (!res.ok) throw new Error('Failed to fetch EV signals');
-            const data = await res.json();
-            return { data: data.data || [] };
+            const result = await res.json();
+            return result.data || [];
         }
     });
 }
 
-// Stubs for other endpoints that were mocked
 export function useListLineMovements() {
-    return useQuery({
+    return useQuery<any[]>({
         queryKey: ['line-movements'],
-        queryFn: async () => ({ data: [] })
+        queryFn: async () => []
     });
 }
 
 export function useListTeams() {
-    return useQuery({
+    return useQuery<any[]>({
         queryKey: ['teams'],
-        queryFn: async () => ({ data: [] })
+        queryFn: async () => []
     });
 }
 
 export function useGetTeamPerformance(teamId: string) {
-    return useQuery({
+    return useQuery<any>({
         queryKey: ['team-performance', teamId],
-        queryFn: async () => ({ data: null }),
+        queryFn: async () => null,
         enabled: !!teamId
     });
 }
 
 export function useListMatchups() {
-    return useQuery({
+    return useQuery<any[]>({
         queryKey: ['matchups'],
-        queryFn: async () => ({ data: [] })
+        queryFn: async () => []
+    });
+}
+
+export function useIngestMatchup() {
+    return useMutation({
+        mutationFn: async (payload: { sport: string; matchup: string; trueProbability: number; marketDecimalOdds: number }) => {
+            const res = await fetch(`${API_BASE}/ingest`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (!res.ok) throw new Error('Failed to ingest matchup');
+            return res.json();
+        }
     });
 }
