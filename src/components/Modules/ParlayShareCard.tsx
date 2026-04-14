@@ -70,8 +70,8 @@ export const ParlayShareCard: React.FC<ParlayShareCardProps> = ({ data, onClose 
                     ref={cardRef}
                     className="w-full aspect-[4/5] bg-black relative overflow-hidden flex flex-col items-center justify-center p-8 shadow-2xl"
                 >
-                    {/* BACKGROUND: BLURRED ACTION PHOTO */}
-                    <div className="absolute inset-0 bg-[url('/Users/josetovar/.gemini/antigravity/brain/283e60ae-56c4-4d85-9d18-f6855a60d589/blurred_action_sports_bg_1772652483822.png')] bg-cover bg-center brightness-[0.4] contrast-[1.2]"></div>
+                    {/* BACKGROUND: Gradient fallback (no local path dependency) */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-slate-800 to-black brightness-90 contrast-110" style={{ backgroundImage: 'radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.15) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(139,92,246,0.1) 0%, transparent 50%)' }}></div>
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/60"></div>
 
                     {/* Edit Hint */}

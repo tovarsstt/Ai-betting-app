@@ -10,6 +10,8 @@ import Matchups from "./pages/matchups";
 import Teams from "./pages/teams";
 import Players from "./pages/players";
 import Games from "./pages/games";
+import Stake from "./pages/stake";
+import Social from "./pages/social";
 import NotFound from "./pages/not-found";
 
 const queryClient = new QueryClient({
@@ -27,6 +29,8 @@ function Router() {
         <Route path="/teams" component={Teams} />
         <Route path="/players" component={Players} />
         <Route path="/games" component={Games} />
+        <Route path="/stake" component={Stake} />
+        <Route path="/social" component={Social} />
         <Route component={NotFound} />
       </Switch>
     </AppLayout>

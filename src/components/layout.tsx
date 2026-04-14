@@ -1,16 +1,18 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Link, useLocation } from "wouter";
 import { SidebarProvider, Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarTrigger, SidebarHeader } from "@/components/ui/sidebar";
-import { Activity, BarChart2, Crosshair, Swords, Users, Shield, Zap } from "lucide-react";
+import { Activity, BarChart2, Crosshair, Swords, Users, Shield, Zap, DollarSign, Share2 } from "lucide-react";
 
 const navigation = [
-  { name: "Dashboard",   href: "/",           icon: Activity  },
-  { name: "Predictions", href: "/predictions", icon: Zap       },
-  { name: "Sharp Money", href: "/sharp",       icon: Crosshair },
-  { name: "Matchups",    href: "/matchups",    icon: Swords    },
-  { name: "Teams",       href: "/teams",       icon: Shield    },
-  { name: "Players",     href: "/players",     icon: Users     },
-  { name: "Games",       href: "/games",       icon: BarChart2 },
+  { name: "Dashboard",   href: "/",           icon: Activity    },
+  { name: "Predictions", href: "/predictions", icon: Zap         },
+  { name: "Sharp Money", href: "/sharp",       icon: Crosshair   },
+  { name: "Matchups",    href: "/matchups",    icon: Swords      },
+  { name: "Teams",       href: "/teams",       icon: Shield      },
+  { name: "Players",     href: "/players",     icon: Users       },
+  { name: "Games",       href: "/games",       icon: BarChart2   },
+  { name: "Stake",       href: "/stake",       icon: DollarSign  },
+  { name: "Social Hub",  href: "/social",      icon: Share2      },
 ];
 
 export function AppLayout({ children }: { children: ReactNode }) {

@@ -5,7 +5,8 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Swords, Info, Cpu, Zap, Target } from "lucide-react";
+import { Swords, Info, Cpu, Zap, Target, Share2 } from "lucide-react";
+import { useLocation } from "wouter";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -36,6 +37,7 @@ export default function Matchups() {
   const [matchupText, setMatchupText] = useState("");
   const [sport, setSport] = useState("NBA");
   const [simResults, setSimResults] = useState<any>(null);
+  const [, navigate] = useLocation();
 
   const handleSimulate = () => {
     if (!matchupText) {
@@ -56,6 +58,8 @@ export default function Matchups() {
         toast.success(`Simulation Complete! Omni-Vectors Deployed.`, { id: "sim" });
         setSimResults(data);
         setMatchupText("");
+        // Persist for Social Hub
+        try { localStorage.setItem('lastSimResults', JSON.stringify(data)); } catch { /* quota */ }
       },
       onError: (err: any) => {
         toast.error(err.message || "Engine failure during simulation.", { id: "sim" });
@@ -177,9 +181,19 @@ export default function Matchups() {
       {/* SIMULATION RESULTS */}
       {simResults && (
         <div className="space-y-8">
-           <div className="flex items-center gap-4 py-4 border-b border-border">
-              <Zap className="w-6 h-6 text-yellow-500" />
-              <h3 className="text-2xl font-display font-bold">V12 Omni-Vector Payload</h3>
+           <div className="flex items-center justify-between py-4 border-b border-border">
+              <div className="flex items-center gap-4">
+                <Zap className="w-6 h-6 text-yellow-500" />
+                <h3 className="text-2xl font-display font-bold">V12 Omni-Vector Payload</h3>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-primary/40 text-primary hover:bg-primary/10"
+                onClick={() => navigate('/social')}
+              >
+                <Share2 className="w-4 h-4 mr-2" /> Post to Social
+              </Button>
            </div>
            
            {renderSimResultCard("Standard Lock Execution", simResults.standard)}
