@@ -41,11 +41,13 @@ export function AppLayout({ children }: { children: ReactNode }) {
                     const isActive = location === item.href || (item.href !== "/" && location.startsWith(item.href));
                     return (
                       <SidebarMenuItem key={item.name}>
-                        <SidebarMenuButton asChild isActive={isActive} className="hover-elevate active-elevate-2 py-5 transition-all">
-                          <Link href={item.href} className="flex items-center gap-3 w-full">
-                            <item.icon className={`w-5 h-5 ${isActive ? 'text-primary drop-shadow-[0_0_8px_rgba(0,255,255,0.5)]' : 'text-muted-foreground'}`} />
-                            <span className={`font-medium ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}>{item.name}</span>
-                          </Link>
+                        <SidebarMenuButton
+                          render={<Link href={item.href} />}
+                          isActive={isActive}
+                          className="hover-elevate active-elevate-2 py-5 transition-all"
+                        >
+                          <item.icon className={`w-5 h-5 ${isActive ? 'text-primary drop-shadow-[0_0_8px_rgba(0,255,255,0.5)]' : 'text-muted-foreground'}`} />
+                          <span className={`font-medium ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}>{item.name}</span>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
                     );
