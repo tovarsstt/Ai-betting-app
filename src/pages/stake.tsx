@@ -4,10 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { DollarSign, Clock, CheckCircle2, XCircle, Copy, Plus, BarChart2 } from "lucide-react";
+import { DollarSign, Clock, CheckCircle2, XCircle, Copy, Plus, BarChart2, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { CardStudio } from "@/components/Modules/PickCard";
 
 const OUTCOME_STYLES: Record<string, string> = {
   WIN: "bg-success/20 text-success border-success/40",
@@ -83,6 +84,7 @@ export default function Stake() {
   });
   const [filter, setFilter] = useState<"ALL" | "PENDING" | "WIN" | "LOSS">("ALL");
   const [showForm, setShowForm] = useState(false);
+  const [winCardPlay, setWinCardPlay] = useState<any>(null);
 
   const filteredPlays = plays.filter(p =>
     filter === "ALL" || p.actualOutcome === filter
@@ -234,6 +236,21 @@ export default function Stake() {
         ))}
       </div>
 
+      {/* Win Card Studio — pops up when you settle a WIN or tap the share icon */}
+      {winCardPlay && (
+        <CardStudio
+          type="win"
+          winData={{
+            picks: [{ text: winCardPlay.selection, odds: winCardPlay.alphaEdge }],
+            stake: winCardPlay.kellySizing ? `$${winCardPlay.kellySizing}` : '$25.00',
+            payout: winCardPlay.kellySizing ? `$${(parseFloat(winCardPlay.kellySizing) * 4.5).toFixed(2)}` : '$100.00',
+            sport: 'STAKE',
+            matchup: winCardPlay.matchup,
+          }}
+          onClose={() => setWinCardPlay(null)}
+        />
+      )}
+
       {/* Plays List */}
       {isLoading ? (
         <div className="space-y-3">
@@ -287,7 +304,7 @@ export default function Stake() {
                         <div className="flex gap-1">
                           <Button
                             size="sm"
-                            onClick={() => handleSettle(play.id, "WIN")}
+                            onClick={() => { handleSettle(play.id, "WIN"); setWinCardPlay(play); }}
                             className="h-7 px-2 text-xs bg-success/20 text-success hover:bg-success/30 border-success/30"
                             variant="outline"
                           >
@@ -310,6 +327,17 @@ export default function Stake() {
                             V
                           </Button>
                         </div>
+                      )}
+                      {play.actualOutcome === 'WIN' && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => setWinCardPlay(play)}
+                          className="h-7 px-2 text-success hover:text-success/80"
+                          title="Create win card"
+                        >
+                          <Share2 className="w-3.5 h-3.5" />
+                        </Button>
                       )}
                     </div>
                   </div>
