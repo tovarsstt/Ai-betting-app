@@ -70,9 +70,11 @@ export const ParlayShareCard: React.FC<ParlayShareCardProps> = ({ data, onClose 
                     ref={cardRef}
                     className="w-full aspect-[4/5] bg-black relative overflow-hidden flex flex-col items-center justify-center p-8 shadow-2xl"
                 >
-                    {/* BACKGROUND: BLURRED ACTION PHOTO */}
-                    <div className="absolute inset-0 bg-[url('/Users/josetovar/.gemini/antigravity/brain/283e60ae-56c4-4d85-9d18-f6855a60d589/blurred_action_sports_bg_1772652483822.png')] bg-cover bg-center brightness-[0.4] contrast-[1.2]"></div>
+                    {/* BACKGROUND: Dynamic gradient with dot grid */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#0A0D14] via-[#111827] to-[#0A0D14]"></div>
+                    <div className="absolute inset-0 opacity-[0.12]" style={{ backgroundImage: 'radial-gradient(#3B82F6 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/60"></div>
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-yellow-400 via-orange-500 to-yellow-400"></div>
 
                     {/* Edit Hint */}
                     <div data-html2canvas-ignore="true" className="absolute top-4 left-1/2 -translate-x-1/2 z-50 bg-white/20 text-white/80 text-[10px] px-3 py-1 rounded-full backdrop-blur-sm pointer-events-none">
@@ -83,23 +85,21 @@ export const ParlayShareCard: React.FC<ParlayShareCardProps> = ({ data, onClose 
                     <div className="z-10 w-full bg-white rounded-[32px] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col gap-6">
                         {/* Profile Header */}
                         <div className="flex items-center gap-4">
-                            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center border-4 border-white shadow-md overflow-hidden">
-                                <span className="text-2xl font-black text-white">DG</span>
+                            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center border-4 border-white shadow-md overflow-hidden">
+                                <span className="text-lg font-black text-white leading-none">WIN</span>
                             </div>
                             <div className="flex flex-col">
                                 <div className="flex items-center gap-1.5">
-                                    <span className="font-extrabold text-black text-xl tracking-tight">DanGamble.AI</span>
-                                    <svg viewBox="0 0 24 24" className="w-6 h-6 text-[#1D9BF0] fill-current" aria-hidden="true">
-                                        <path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.97-.81-3.99s-2.6-1.27-3.99-.81c-.67-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.98-.2-4 .81s-1.27 2.6-.81 3.99c-1.31.67-2.19 1.91-2.19 3.34s.88 2.67 2.19 3.34c-.46 1.39-.2 2.97.81 3.99s2.6 1.27 3.99.81c.67 1.31 1.91 2.19 3.34 2.19s2.67-.88 3.33-2.19c1.4.46 2.98.2 4-.81s1.27-2.6.81-3.99c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z"></path>
-                                    </svg>
+                                    <span className="font-extrabold text-black text-xl tracking-tight">WinWithTovy</span>
+                                    <span className="text-[10px] font-mono tracking-widest text-purple-600 bg-purple-100 px-2 py-0.5 rounded-full uppercase">V12</span>
                                 </div>
-                                <span className="text-gray-500 font-medium text-base">@DanGambleAI · Now</span>
+                                <span className="text-gray-500 font-medium text-sm">God-Engine · @winwithtovy</span>
                             </div>
                         </div>
 
                         {/* Tweet Text Content */}
                         <div className="text-gray-900 text-2xl font-black leading-tight tracking-tight outline-none hover:bg-gray-100 transition-colors px-2 py-1 -mx-2 rounded" contentEditable suppressContentEditableWarning>
-                            {data.matchup.includes('VS') ? `Locking in today's elite slate. The data is screaming on these edges. 🧠🔥` : `Mandatory generation active. The God-Engine is seeing absolute value here. 💹`}
+                            {data.matchup.includes('VS') ? `V12 God-Engine locked on today's slate. Signal strength: maximum.` : `Omniscience generation active. The algorithm found absolute value.`}
                         </div>
 
                         {/* Parlay Picks List */}
@@ -112,7 +112,7 @@ export const ParlayShareCard: React.FC<ParlayShareCardProps> = ({ data, onClose 
                                             <span className="font-black text-black text-2xl tracking-tighter uppercase leading-tight outline-none hover:bg-gray-100 transition-colors px-2 rounded -ml-2" contentEditable suppressContentEditableWarning>
                                                 {pick.display_label || (pick.lock_text.includes(']') ? pick.lock_text.split(']')[1].trim() : pick.lock_text)}
                                             </span>
-                                            <span className="text-[#1D9BF0] font-black text-xs uppercase tracking-[0.2em] mt-0.5">
+                                            <span className="text-purple-600 font-black text-xs uppercase tracking-[0.2em] mt-0.5">
                                                 {pick.lock_type} · {pick.tier}
                                             </span>
                                         </div>
@@ -133,8 +133,8 @@ export const ParlayShareCard: React.FC<ParlayShareCardProps> = ({ data, onClose 
                                     <span className="font-black text-black">EV: {data.vigAdjustedEv || '+8.2%'}</span>
                                 </div>
                             </div>
-                            <div className="px-5 py-2 rounded-full bg-black text-white font-black text-sm uppercase tracking-widest">
-                                TAIL THE GOAT 🐐
+                            <div className="px-5 py-2 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-black text-sm uppercase tracking-widest">
+                                @WINWITHTOVY
                             </div>
                         </div>
                     </div>

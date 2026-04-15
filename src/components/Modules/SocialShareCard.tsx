@@ -189,8 +189,8 @@ export const SocialShareCard: React.FC<SocialShareCardProps> = ({ data, specific
                             />
                         </>
                     ) : (
-                        <div className="w-24 h-24 rounded-full flex items-center justify-center shadow-[0_0_40px_rgba(59,130,246,0.5)]" style={{ background: `linear-gradient(to bottom right, ${accentColor}, #000)` }}>
-                            <span className="text-white text-3xl font-black">AI</span>
+                        <div className="w-24 h-24 rounded-2xl flex items-center justify-center shadow-[0_0_40px_rgba(59,130,246,0.5)]" style={{ background: `linear-gradient(to bottom right, ${accentColor}, #8B5CF6)` }}>
+                            <span className="text-white text-2xl font-black leading-none text-center">WIN</span>
                         </div>
                     )}
                 </div>
@@ -220,22 +220,24 @@ export const SocialShareCard: React.FC<SocialShareCardProps> = ({ data, specific
                 </div>
             </div>
 
-            {/* Discord CTA Footer */}
-            <div className="h-20 w-full relative z-10 flex items-center justify-between px-8" style={{ backgroundColor: '#5865F2', boxShadow: `0 -10px 30px rgba(88,101,242,0.3)` }}>
+            {/* BetAI Branded Footer */}
+            <div className="h-20 w-full relative z-10 flex items-center justify-between px-8" style={{ background: `linear-gradient(to right, #3B82F6, #8B5CF6)`, boxShadow: `0 -10px 30px rgba(59,130,246,0.3)` }}>
                 <div className="flex items-center gap-4">
-                    <svg className="w-8 h-8 text-white flex-shrink-0" viewBox="0 0 127.14 96.36" fill="currentColor"><path d="M107.7 8.07A105.15 105.15 0 0081.47 0a72.06 72.06 0 00-3.36 6.83 97.68 97.68 0 00-29.08 0 72.37 72.37 0 00-3.36-6.83 105.15 105.15 0 00-26.23 8.07C2.6 32.26-3.12 55.8 1.6 79.1a105.73 105.73 0 0032.2 16.27 77.7 77.7 0 006.89-11.3 68.42 68.42 0 01-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0064.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 01-10.87 5.19 77 77 0 006.89 11.29 105.73 105.73 0 0032.2-16.27c5.21-26.68-.64-50.62-17.6-71.03zm-64.84 57.7c-6.19 0-11.28-5.69-11.28-12.72 0-7 4.96-12.72 11.28-12.72 6.37 0 11.39 5.79 11.28 12.72 0 7-4.96 12.72-11.28 12.72zm41.42 0c-6.19 0-11.28-5.69-11.28-12.72 0-7 4.96-12.72 11.28-12.72 6.37 0 11.39 5.79 11.28 12.72 0 7-4.96 12.72-11.28 12.72z" /></svg>
+                    <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+                        <span className="text-white font-black text-sm">AI</span>
+                    </div>
                     <span
                         className="text-white font-black uppercase tracking-widest text-xl outline-none min-w-[100px]"
                         contentEditable suppressContentEditableWarning
                     >
-                        95%+ LOCKS
+                        WINWITHTOVY
                     </span>
                 </div>
                 <div
                     className="text-white font-mono text-xs tracking-widest uppercase bg-black/20 px-3 py-1.5 rounded text-white/90 outline-none whitespace-nowrap"
                     contentEditable suppressContentEditableWarning
                 >
-                    LINK IN BIO
+                    V12 GOD-ENGINE
                 </div>
             </div>
         </div>
