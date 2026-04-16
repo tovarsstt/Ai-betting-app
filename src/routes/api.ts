@@ -76,7 +76,7 @@ apiRouter.get('/trades', async (req, res) => {
   try {
     const results = await db.query.trades.findMany({
       orderBy: [desc(trades.timestamp)],
-      limit: 50,
+      limit: 200,
     });
     res.json({ success: true, data: results });
   } catch (err: any) {
