@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { db } from '../db/index.js';
-import { predictions, evSignals } from '../db/schema.js';
+import { predictions, evSignals, trades } from '../db/schema.js';
 import { desc } from 'drizzle-orm';
 
 export const apiRouter = Router();
@@ -62,6 +62,22 @@ apiRouter.get('/ev-signals', async (req, res) => {
       limit: query.limit,
     });
     
+    res.json({ success: true, data: results });
+  } catch (err: any) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * GET /api/trades
+ * Fetch betting history / trade log.
+ */
+apiRouter.get('/trades', async (req, res) => {
+  try {
+    const results = await db.query.trades.findMany({
+      orderBy: [desc(trades.timestamp)],
+      limit: 50,
+    });
     res.json({ success: true, data: results });
   } catch (err: any) {
     res.status(400).json({ success: false, error: err.message });

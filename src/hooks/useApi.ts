@@ -26,6 +26,18 @@ export function useListEvSignals() {
     });
 }
 
+export function useListTrades() {
+    return useQuery<any[]>({
+        queryKey: ['trades'],
+        queryFn: async () => {
+            const res = await fetch(`${API_BASE}/trades`);
+            if (!res.ok) throw new Error('Failed to fetch trades');
+            const result = await res.json();
+            return result.data || [];
+        }
+    });
+}
+
 export function useListLineMovements() {
     return useQuery<any[]>({
         queryKey: ['line-movements'],

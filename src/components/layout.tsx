@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Link, useLocation } from "wouter";
 import { SidebarProvider, Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarTrigger, SidebarHeader } from "@/components/ui/sidebar";
-import { Activity, BarChart2, Crosshair, Swords, Users, Shield, Zap } from "lucide-react";
+import { Activity, BarChart2, Crosshair, Swords, Users, Shield, Zap, History } from "lucide-react";
 
 const navigation = [
   { name: "Dashboard",   href: "/",           icon: Activity  },
@@ -11,6 +11,7 @@ const navigation = [
   { name: "Teams",       href: "/teams",       icon: Shield    },
   { name: "Players",     href: "/players",     icon: Users     },
   { name: "Games",       href: "/games",       icon: BarChart2 },
+  { name: "History",     href: "/history",     icon: History   },
 ];
 
 export function AppLayout({ children }: { children: ReactNode }) {
