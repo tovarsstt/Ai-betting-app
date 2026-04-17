@@ -1,240 +1,275 @@
 import { useState } from "react";
-import { useListMatchups, useIngestMatchup } from "../hooks/useApi";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
+import { useIngestMatchup } from "../hooks/useApi";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Swords, Info, Cpu, Zap, Target } from "lucide-react";
+import { Zap, Target, Share2, Download, TrendingUp, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
+import { SocialShareCard } from "@/components/Modules/SocialShareCard";
+import { ParlayShareCard } from "@/components/Modules/ParlayShareCard";
 
-function StatBar({ label, val1, val2, max, reverse = false }: { label: string; val1: number; val2: number; max: number; reverse?: boolean }) {
-  const p1 = (val1 / max) * 100;
-  const p2 = (val2 / max) * 100;
-  const winner1 = reverse ? val1 < val2 : val1 > val2;
-  const winner2 = reverse ? val2 < val1 : val2 > val1;
+const SPORTS = ["NBA", "MLB", "NFL", "NHL", "NCAAB", "Soccer", "Tennis", "UFC"];
+
+type ShareState =
+  | { type: "social"; data: any; pick?: any }
+  | { type: "parlay"; data: any }
+  | null;
+
+function PickCard({
+  title,
+  badge,
+  data,
+  onShareSocial,
+  onShareParlay,
+}: {
+  title: string;
+  badge: string;
+  data: any;
+  onShareSocial: () => void;
+  onShareParlay: () => void;
+}) {
+  const cog = data?.cognitiveData || data;
+  if (!cog?.suggested_side) return null;
+
+  const confidence = cog.confidence_score
+    ? Math.round(cog.confidence_score * 100)
+    : null;
+
   return (
-    <div className="space-y-1.5 mt-4">
-      <div className="flex justify-between text-xs font-medium text-muted-foreground">
-        <span className={cn(winner1 && "text-foreground font-bold")}>{val1.toFixed(1)}</span>
-        <span className="uppercase tracking-wider">{label}</span>
-        <span className={cn(winner2 && "text-foreground font-bold")}>{val2.toFixed(1)}</span>
-      </div>
-      <div className="flex items-center gap-2">
-        <Progress value={p1} className={cn("h-2 rotate-180", winner1 ? "[&>div]:bg-primary" : "[&>div]:bg-muted")} />
-        <Progress value={p2} className={cn("h-2", winner2 ? "[&>div]:bg-primary" : "[&>div]:bg-muted")} />
-      </div>
-    </div>
+    <Card className="border-primary/30 bg-card overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <CardHeader className="bg-primary/10 border-b border-primary/20 pb-4">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <Target className="w-4 h-4 text-primary" />
+            <CardTitle className="text-sm font-bold uppercase tracking-widest text-primary">{title}</CardTitle>
+          </div>
+          <Badge className="bg-primary/20 text-primary border border-primary/30 text-xs">{badge}</Badge>
+        </div>
+        <p className="text-xs text-muted-foreground mt-1">{cog.matchup}</p>
+      </CardHeader>
+
+      <CardContent className="pt-5 space-y-4">
+        {/* Main Pick */}
+        <div className="p-4 rounded-xl bg-background/70 border border-border">
+          <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">Recommended Play</p>
+          <p className="font-display text-lg font-bold leading-tight">{cog.suggested_side}</p>
+          {cog.targetOdds && (
+            <span className="inline-block mt-2 px-2 py-0.5 rounded bg-primary/10 text-primary text-sm font-mono font-bold border border-primary/20">
+              {cog.targetOdds}
+            </span>
+          )}
+        </div>
+
+        {/* Stats row */}
+        <div className="grid grid-cols-3 gap-3">
+          {confidence !== null && (
+            <div className="text-center p-2 rounded-lg bg-muted/30 border border-border">
+              <p className="text-[10px] uppercase text-muted-foreground">Confidence</p>
+              <p className="font-mono font-bold text-primary text-sm">{confidence}%</p>
+            </div>
+          )}
+          {cog.alphaEdge && (
+            <div className="text-center p-2 rounded-lg bg-muted/30 border border-border">
+              <p className="text-[10px] uppercase text-muted-foreground">EV Edge</p>
+              <p className="font-mono font-bold text-green-400 text-sm">{cog.alphaEdge}</p>
+            </div>
+          )}
+          {cog.ultronDominanceScore && (
+            <div className="text-center p-2 rounded-lg bg-muted/30 border border-border">
+              <p className="text-[10px] uppercase text-muted-foreground">Score</p>
+              <p className="font-mono font-bold text-primary text-sm">{cog.ultronDominanceScore}/100</p>
+            </div>
+          )}
+        </div>
+
+        {/* Rationale */}
+        {cog.rationale && (
+          <div className="p-3 rounded-lg bg-muted/20 border border-border text-xs text-muted-foreground leading-relaxed">
+            {cog.rationale}
+          </div>
+        )}
+
+        {/* Share buttons */}
+        <div className="flex gap-2 pt-1">
+          <Button
+            size="sm"
+            variant="outline"
+            className="flex-1 text-xs border-primary/30 text-primary hover:bg-primary/10"
+            onClick={onShareSocial}
+          >
+            <Download className="w-3 h-3 mr-1.5" /> Social Card
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="flex-1 text-xs border-muted-foreground/30 hover:bg-muted/20"
+            onClick={onShareParlay}
+          >
+            <Share2 className="w-3 h-3 mr-1.5" /> Share Parlay
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
 export default function Matchups() {
-  const { data: matchups, isLoading } = useListMatchups();
   const ingestMutation = useIngestMatchup();
-  
   const [matchupText, setMatchupText] = useState("");
   const [sport, setSport] = useState("NBA");
-  const [simResults, setSimResults] = useState<any>(null);
+  const [results, setResults] = useState<any>(null);
+  const [shareCard, setShareCard] = useState<ShareState>(null);
 
-  const handleSimulate = () => {
-    if (!matchupText) {
-      toast.error("Please enter a matchup (e.g. Warriors vs Lakers)");
+  const handleAnalyze = () => {
+    if (!matchupText.trim()) {
+      toast.error("Enter a matchup first (e.g. Warriors vs Lakers)");
       return;
     }
-    
-    setSimResults(null);
-    toast.loading("Initializing V12 Engine Simulation...", { id: "sim" });
 
-    ingestMutation.mutate({
-      sport,
-      matchup: matchupText,
-      trueProbability: 0.55, 
-      marketDecimalOdds: 1.90
-    }, {
-      onSuccess: (data) => {
-        toast.success(`Simulation Complete! Omni-Vectors Deployed.`, { id: "sim" });
-        setSimResults(data);
-        setMatchupText("");
-      },
-      onError: (err: any) => {
-        toast.error(err.message || "Engine failure during simulation.", { id: "sim" });
+    setResults(null);
+    toast.loading("Analyzing matchup...", { id: "analyze" });
+
+    ingestMutation.mutate(
+      { sport, matchup: matchupText, trueProbability: 0.55, marketDecimalOdds: 1.9 },
+      {
+        onSuccess: (data) => {
+          toast.success("Analysis complete!", { id: "analyze" });
+          setResults(data);
+          setMatchupText("");
+        },
+        onError: (err: any) => {
+          toast.error(err.message || "Analysis failed", { id: "analyze" });
+        },
       }
-    });
-  };
-
-  const renderSimResultCard = (title: string, data: any) => {
-    if (!data) return null;
-    
-    // Support both the wrapped structure and the flat structure from recent V13 refactors
-    const cog = data.cognitiveData || data;
-    
-    // Check if we actually have data (if we have suggested_side it's likely valid)
-    if (!cog.suggested_side) return null;
-    
-    return (
-      <Card className="border-primary/30 bg-card overflow-hidden mt-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <CardHeader className="bg-primary/10 border-b border-primary/20 pb-4">
-          <div className="flex justify-between items-start">
-            <div>
-              <CardTitle className="font-display flex items-center gap-2 text-primary">
-                <Target className="w-5 h-5" /> {title}
-              </CardTitle>
-              <CardDescription className="text-foreground/80 mt-1 font-medium">{cog.matchup}</CardDescription>
-            </div>
-            {cog.targetOdds && <Badge className="bg-primary/20 text-primary border-primary/30 text-lg py-1">{cog.targetOdds}</Badge>}
-          </div>
-        </CardHeader>
-        <CardContent className="pt-6 space-y-6">
-          
-          <div className="space-y-4">
-             <div className="flex items-start gap-4">
-                <div className="bg-primary/10 p-3 rounded-xl border border-primary/20">
-                  <Swords className="w-6 h-6 text-primary" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-sm uppercase tracking-wider text-muted-foreground mb-1">Suggested Play</h4>
-                  <p className="font-display text-xl whitespace-pre-wrap">{cog.suggested_side}</p>
-                </div>
-             </div>
-          </div>
-          
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 p-4 rounded-xl border border-border bg-background/50">
-             <div>
-                <span className="block text-xs uppercase text-muted-foreground mb-1">EV Edge</span>
-                <span className="font-mono font-bold text-green-400">{cog.alphaEdge}</span>
-             </div>
-             <div>
-                <span className="block text-xs uppercase text-muted-foreground mb-1">Vig Adj. EV</span>
-                <span className="font-mono font-bold text-green-400">{cog.vigAdjustedEv}</span>
-             </div>
-             <div>
-                <span className="block text-xs uppercase text-muted-foreground mb-1">Confidence</span>
-                <span className="font-mono font-bold text-primary">{cog.confidence_score ? (cog.confidence_score * 100).toFixed(1) + "%" : "N/A"}</span>
-             </div>
-             <div>
-                <span className="block text-xs uppercase text-muted-foreground mb-1">Dominance</span>
-                <span className="font-mono font-bold text-primary">{cog.ultronDominanceScore}/100</span>
-             </div>
-          </div>
-          
-          <div className="p-4 rounded-lg bg-muted/30 border border-border text-sm">
-             <h4 className="font-bold mb-2">Engine Rationale:</h4>
-             <p className="text-muted-foreground leading-relaxed">{cog.rationale}</p>
-          </div>
-
-        </CardContent>
-      </Card>
     );
   };
 
+  const getCog = (key: "standard" | "sgp" | "slate") =>
+    results?.[key]?.cognitiveData || results?.[key] || null;
+
   return (
     <div className="space-y-8 animate-in fade-in duration-500 pb-24">
+      {/* Header */}
       <div>
-        <h2 className="text-3xl font-display font-bold flex items-center gap-3"><Cpu className="w-8 h-8 text-primary" /> Custom Engine Target</h2>
-        <p className="text-muted-foreground mt-1">Deploy the V12 God-Engine sequentially for Standard Picks, SGP, and Slate Parlays.</p>
+        <h2 className="text-3xl font-display font-bold flex items-center gap-3">
+          <TrendingUp className="w-8 h-8 text-primary" /> Analyze Matchup
+        </h2>
+        <p className="text-muted-foreground mt-1 text-sm">
+          Enter a sport and matchup — the engine delivers your picks instantly.
+        </p>
       </div>
 
-      <Card className="border-primary/50 bg-primary/5 shadow-lg shadow-primary/10 relative overflow-hidden">
+      {/* Input Card */}
+      <Card className="border-primary/40 bg-primary/5 shadow-lg shadow-primary/10">
         {ingestMutation.isPending && (
-          <div className="absolute inset-0 bg-background/50 backdrop-blur-sm z-10 flex flex-col items-center justify-center">
-            <Cpu className="w-12 h-12 text-primary animate-pulse mb-4" />
-            <h3 className="font-display font-bold text-xl tracking-widest text-primary">GENERATING OMNI-VECTORS...</h3>
+          <div className="absolute inset-0 bg-background/60 backdrop-blur-sm z-10 flex flex-col items-center justify-center rounded-xl">
+            <Zap className="w-10 h-10 text-primary animate-pulse mb-3" />
+            <p className="font-display font-bold tracking-widest text-primary text-lg">ANALYZING...</p>
           </div>
         )}
-        <CardContent className="pt-6">
-          <div className="flex flex-col sm:flex-row gap-4 items-end">
-            <div className="w-full sm:w-1/4 space-y-2">
-              <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Sport / League</label>
-              <Input 
-                value={sport}
-                onChange={(e) => setSport(e.target.value)}
-                placeholder="NBA, TENNIS, SOCCER..."
-                className="font-bold border-border/50"
-              />
+        <CardContent className="pt-6 space-y-5 relative">
+          {/* Sport selector */}
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">Select Sport</p>
+            <div className="flex flex-wrap gap-2">
+              {SPORTS.map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setSport(s)}
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border transition-all ${
+                    sport === s
+                      ? "bg-primary text-primary-foreground border-primary shadow-[0_0_10px_rgba(0,255,255,0.3)]"
+                      : "bg-transparent text-muted-foreground border-border hover:border-primary/50 hover:text-foreground"
+                  }`}
+                >
+                  {s}
+                </button>
+              ))}
             </div>
-            <div className="w-full sm:w-1/2 space-y-2">
-              <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Target Matchup</label>
-              <Input 
-                value={matchupText}
-                onChange={(e) => setMatchupText(e.target.value)}
-                placeholder="e.g. Warriors vs Lakers, Sabalenka vs Osaka..."
-                className="border-border/50"
-                onKeyDown={(e) => e.key === 'Enter' && handleSimulate()}
-              />
-            </div>
-            <Button 
-              onClick={handleSimulate} 
+          </div>
+
+          {/* Matchup input + button */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Input
+              value={matchupText}
+              onChange={(e) => setMatchupText(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleAnalyze()}
+              placeholder={`${sport} matchup — e.g. Warriors vs Lakers`}
+              className="flex-1 border-border/60 bg-background/50"
+            />
+            <Button
+              onClick={handleAnalyze}
               disabled={ingestMutation.isPending}
-              className="w-full sm:w-1/4 font-bold tracking-widest bg-primary hover:bg-primary/90 text-primary-foreground h-10"
+              className="font-bold tracking-widest bg-primary hover:bg-primary/90 text-primary-foreground sm:w-36 h-10"
             >
-              <Zap className="w-4 h-4 mr-2" /> ENGAGE
+              <Zap className="w-4 h-4 mr-2" /> ANALYZE
             </Button>
           </div>
         </CardContent>
       </Card>
 
-      {/* SIMULATION RESULTS */}
-      {simResults && (
-        <div className="space-y-8">
-           <div className="flex items-center gap-4 py-4 border-b border-border">
-              <Zap className="w-6 h-6 text-yellow-500" />
-              <h3 className="text-2xl font-display font-bold">V12 Omni-Vector Payload</h3>
-           </div>
-           
-           {renderSimResultCard("Standard Lock Execution", simResults.standard)}
-           {renderSimResultCard("Correlated SGP Generation", simResults.sgp)}
-           {renderSimResultCard("Slate Parlay Accumulation", simResults.slate)}
+      {/* Results */}
+      {results && (
+        <div className="space-y-6">
+          <div className="flex items-center gap-3 pb-2 border-b border-border">
+            <CheckCircle2 className="w-5 h-5 text-green-500" />
+            <h3 className="text-lg font-display font-bold">Picks Ready</h3>
+            <Badge variant="outline" className="text-xs">{sport}</Badge>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            <PickCard
+              title="Standard Pick"
+              badge="Best Bet"
+              data={getCog("standard")}
+              onShareSocial={() =>
+                setShareCard({ type: "social", data: getCog("standard") })
+              }
+              onShareParlay={() =>
+                setShareCard({ type: "parlay", data: getCog("standard") })
+              }
+            />
+            <PickCard
+              title="Same-Game Parlay"
+              badge="SGP"
+              data={getCog("sgp")}
+              onShareSocial={() =>
+                setShareCard({ type: "social", data: getCog("sgp") })
+              }
+              onShareParlay={() =>
+                setShareCard({ type: "parlay", data: getCog("sgp") })
+              }
+            />
+            <PickCard
+              title="Slate Parlay"
+              badge="Multi-Game"
+              data={getCog("slate")}
+              onShareSocial={() =>
+                setShareCard({ type: "social", data: getCog("slate") })
+              }
+              onShareParlay={() =>
+                setShareCard({ type: "parlay", data: getCog("slate") })
+              }
+            />
+          </div>
         </div>
       )}
 
-      {/* HISTORICAL MATCHUPS LIST */}
-      <div className="pt-12">
-        <h2 className="text-2xl font-display font-bold flex items-center gap-3 mb-6"><Swords className="w-6 h-6 text-muted-foreground" /> Tracked Head-to-Head Ratings</h2>
-        {isLoading ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">{[1,2].map(i => <div key={i} className="h-96 rounded-xl bg-card/50 animate-pulse" />)}</div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {matchups?.map((match: any) => (
-              <Card key={match.id} className="bg-card/50 backdrop-blur border-border/50 hover:border-primary/30 transition-colors overflow-hidden">
-                <CardHeader className="bg-black/20 border-b border-border/50 pb-4">
-                  <div className="flex justify-between items-center mb-2">
-                    <Badge variant="outline" className="border-border text-muted-foreground">{match.sport}</Badge>
-                    {match.matchupEdge && <Badge className="bg-primary text-primary-foreground font-bold tracking-widest">EDGE: {match.matchupEdge}</Badge>}
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <CardTitle className="text-2xl font-display w-[40%] text-right truncate pr-4">{match.awayTeam}</CardTitle>
-                    <span className="text-muted-foreground text-sm font-bold bg-background/50 px-2 py-1 rounded">VS</span>
-                    <CardTitle className="text-2xl font-display w-[40%] pl-4 truncate">{match.homeTeam}</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent className="pt-6">
-                  <StatBar label="Offensive Rtg"  val1={match.awayOffenseRating||0}   val2={match.homeOffenseRating||0}   max={130} />
-                  <StatBar label="Defensive Rtg"  val1={match.awayDefenseRating||0}   val2={match.homeDefenseRating||0}   max={130} reverse />
-                  <StatBar label="Pace"           val1={match.awayPace||0}            val2={match.homePace||0}            max={110} />
-                  <StatBar label="Turnovers"      val1={match.awayTurnoversPerGame||0} val2={match.homeTurnoversPerGame||0} max={20} reverse />
-                  <StatBar label="Shot Quality"   val1={match.awayShotQuality||0}     val2={match.homeShotQuality||0}     max={1.5} />
-                  <StatBar label="Rebounding"     val1={match.awayReboundingRating||0} val2={match.homeReboundingRating||0} max={60} />
-                  
-                  {match.matchupNotes && (
-                    <div className="mt-6 p-4 rounded-lg bg-primary/5 border border-primary/20 flex gap-3 text-sm">
-                      <Info className="w-5 h-5 text-primary shrink-0" />
-                      <p className="text-muted-foreground leading-relaxed">{match.matchupNotes}</p>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            ))}
-            {(!matchups || matchups.length === 0) && (
-               <div className="col-span-full py-12 text-center border border-dashed border-border rounded-xl">
-                 <Swords className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-50" />
-                 <h3 className="text-lg font-bold">No Historical Matchups Tracked</h3>
-                 <p className="text-muted-foreground">Data will populate here automatically during cron cycles.</p>
-               </div>
-            )}
-          </div>
-        )}
-      </div>
+      {/* Social card modals */}
+      {shareCard?.type === "social" && (
+        <SocialShareCard
+          data={shareCard.data}
+          specificPick={shareCard.pick}
+          onClose={() => setShareCard(null)}
+        />
+      )}
+      {shareCard?.type === "parlay" && (
+        <ParlayShareCard
+          data={shareCard.data}
+          onClose={() => setShareCard(null)}
+        />
+      )}
     </div>
   );
 }

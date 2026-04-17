@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { db } from '../db/index.js';
-import { predictions, evSignals } from '../db/schema.js';
+import { predictions, evSignals, trades } from '../db/schema.js';
 import { desc } from 'drizzle-orm';
 
 export const apiRouter = Router();
@@ -109,14 +109,30 @@ apiRouter.post('/ingest', async (req, res) => {
       }).then(r => r.json())
     ]);
     
-    res.json({ 
-      success: true, 
-      message: "Omni-Vector generation complete", 
+    res.json({
+      success: true,
+      message: "Omni-Vector generation complete",
       standard: standardRes,
       sgp: sgpRes,
       slate: slateRes
     });
   } catch (error: any) {
     res.status(400).json({ success: false, error: error.message });
+  }
+});
+
+/**
+ * GET /api/v12/trades
+ * Fetch betting history trades.
+ */
+apiRouter.get('/trades', async (_req, res) => {
+  try {
+    const results = await db.query.trades.findMany({
+      orderBy: [desc(trades.timestamp)],
+      limit: 200,
+    });
+    res.json({ success: true, data: results });
+  } catch (err: any) {
+    res.status(400).json({ success: false, error: err.message });
   }
 });

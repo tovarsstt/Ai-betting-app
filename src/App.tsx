@@ -7,9 +7,7 @@ import Dashboard from "./pages/dashboard";
 import Predictions from "./pages/predictions";
 import SharpMoney from "./pages/sharp-money";
 import Matchups from "./pages/matchups";
-import Teams from "./pages/teams";
-import Players from "./pages/players";
-import Games from "./pages/games";
+import History from "./pages/history";
 import NotFound from "./pages/not-found";
 
 const queryClient = new QueryClient({
@@ -24,9 +22,7 @@ function Router() {
         <Route path="/predictions" component={Predictions} />
         <Route path="/sharp" component={SharpMoney} />
         <Route path="/matchups" component={Matchups} />
-        <Route path="/teams" component={Teams} />
-        <Route path="/players" component={Players} />
-        <Route path="/games" component={Games} />
+        <Route path="/history" component={History} />
         <Route component={NotFound} />
       </Switch>
     </AppLayout>
