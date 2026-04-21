@@ -1,4 +1,4 @@
-# Logs
+# Logs & Transient
 logs
 *.log
 npm-debug.log*
@@ -6,7 +6,12 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+server.log
+bridge.log
+math.log
+*.txt
 
+# Build & Dependencies
 node_modules
 dist
 dist-ssr
@@ -29,7 +34,7 @@ dist-ssr
 .env.production
 .env.development
 
-# Python
+# Python & Legacy Artifacts
 __pycache__/
 *.py[cod]
 *$py.class
@@ -37,6 +42,10 @@ __pycache__/
 env/
 venv/
 ENV/
+.agents/
+!server.ts
+v11_quant_engine.py
+v13_omni_engine.py
 
 # Databases & Local Data
 .data/

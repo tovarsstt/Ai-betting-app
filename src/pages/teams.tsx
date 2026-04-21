@@ -5,12 +5,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Shield, TrendingUp, TrendingDown, Minus, Filter } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { TeamData, TeamPerformance } from "../types/swarm";
 
 // Inclusive list of standard and emerging sports monitored by the v12 God-Engine
 const SPORTS = ["ALL", "NBA", "NFL", "MLB", "NHL", "SOCCER", "NCAAB", "CFB", "WNBA", "UFC", "TENNIS", "F1"];
 
-function TeamRow({ team }: { team: any }) {
-  const { data: perf, isLoading } = useGetTeamPerformance(team.id);
+function TeamRow({ team }: { team: TeamData }) {
+  const { data: perf, isLoading } = useGetTeamPerformance(team.id) as { data: TeamPerformance | undefined, isLoading: boolean };
 
   if (isLoading) {
     return (
@@ -67,7 +68,7 @@ export default function Teams() {
   const { data: teams, isLoading } = useListTeams();
   const [filter, setFilter] = useState("ALL");
 
-  const filteredTeams = teams?.filter((t: any) => filter === "ALL" || t.sport === filter) || [];
+  const filteredTeams = (teams as TeamData[] | undefined)?.filter((t: TeamData) => filter === "ALL" || t.sport === filter) || [];
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
@@ -131,7 +132,7 @@ export default function Teams() {
                   </TableCell>
                 </TableRow>
               ) : (
-                filteredTeams.map((team: any) => (
+                filteredTeams.map((team: TeamData) => (
                   <TeamRow key={team.id} team={team} />
                 ))
               )}

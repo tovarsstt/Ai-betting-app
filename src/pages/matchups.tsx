@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useListMatchups, useIngestMatchup } from "../hooks/useApi";
+import { useListMatchups } from "../hooks/useApi";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Swords, Info, Cpu, Zap, Target } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { useAnalyzeUnified } from "../hooks/useApi";
+import type { SwarmFinalPayload, SwarmAgentData } from "../types/swarm";
 
 function StatBar({ label, val1, val2, max, reverse = false }: { label: string; val1: number; val2: number; max: number; reverse?: boolean }) {
   const p1 = (val1 / max) * 100;
@@ -31,11 +33,11 @@ function StatBar({ label, val1, val2, max, reverse = false }: { label: string; v
 
 export default function Matchups() {
   const { data: matchups, isLoading } = useListMatchups();
-  const ingestMutation = useIngestMatchup();
+  const analyzeMutation = useAnalyzeUnified();
   
   const [matchupText, setMatchupText] = useState("");
   const [sport, setSport] = useState("NBA");
-  const [simResults, setSimResults] = useState<any>(null);
+  const [simResults, setSimResults] = useState<SwarmFinalPayload | null>(null);
 
   const handleSimulate = () => {
     if (!matchupText) {
@@ -44,83 +46,62 @@ export default function Matchups() {
     }
     
     setSimResults(null);
-    toast.loading("Initializing V12 Engine Simulation...", { id: "sim" });
+    toast.loading("Initiating V15.0 Swarm Intelligence Analyze...", { id: "sim" });
 
-    ingestMutation.mutate({
+    analyzeMutation.mutate({
       sport,
       matchup: matchupText,
-      trueProbability: 0.55, 
-      marketDecimalOdds: 1.90
     }, {
       onSuccess: (data) => {
-        toast.success(`Simulation Complete! Omni-Vectors Deployed.`, { id: "sim" });
+        toast.success(`Analysis Complete! Karpathy-Skills Consensus secure.`, { id: "sim" });
         setSimResults(data);
         setMatchupText("");
       },
-      onError: (err: any) => {
-        toast.error(err.message || "Engine failure during simulation.", { id: "sim" });
+      onError: (err: unknown) => {
+        const message = err instanceof Error ? err.message : String(err);
+        toast.error(message || "Engine failure during consensus.", { id: "sim" });
       }
     });
   };
 
-  const renderSimResultCard = (title: string, data: any) => {
-    if (!data) return null;
-    
-    // Support both the wrapped structure and the flat structure from recent V13 refactors
-    const cog = data.cognitiveData || data;
-    
-    // Check if we actually have data (if we have suggested_side it's likely valid)
-    if (!cog.suggested_side) return null;
+  const renderSwarmComponent = (title: string, agentData: SwarmAgentData) => {
+    if (!agentData) return null;
     
     return (
-      <Card className="border-primary/30 bg-card overflow-hidden mt-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <CardHeader className="bg-primary/10 border-b border-primary/20 pb-4">
+      <Card className="border-purple-500/30 bg-card overflow-hidden mt-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <CardHeader className="bg-purple-500/10 border-b border-purple-500/20 pb-4">
           <div className="flex justify-between items-start">
             <div>
-              <CardTitle className="font-display flex items-center gap-2 text-primary">
-                <Target className="w-5 h-5" /> {title}
+              <CardTitle className="font-display flex items-center gap-2 text-purple-400">
+                <Cpu className="w-5 h-5" /> {title}
               </CardTitle>
-              <CardDescription className="text-foreground/80 mt-1 font-medium">{cog.matchup}</CardDescription>
+              <CardDescription className="text-foreground/80 mt-1 font-medium">{agentData.primary_single || "SWARM_AGENT_IDENTITY"}</CardDescription>
             </div>
-            {cog.targetOdds && <Badge className="bg-primary/20 text-primary border-primary/30 text-lg py-1">{cog.targetOdds}</Badge>}
+            {agentData.confidence_score && <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30 text-lg py-1">Σ: {agentData.confidence_score}</Badge>}
           </div>
         </CardHeader>
         <CardContent className="pt-6 space-y-6">
           
           <div className="space-y-4">
-             <div className="flex items-start gap-4">
-                <div className="bg-primary/10 p-3 rounded-xl border border-primary/20">
-                  <Swords className="w-6 h-6 text-primary" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-sm uppercase tracking-wider text-muted-foreground mb-1">Suggested Play</h4>
-                  <p className="font-display text-xl whitespace-pre-wrap">{cog.suggested_side}</p>
-                </div>
-             </div>
-          </div>
-          
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 p-4 rounded-xl border border-border bg-background/50">
-             <div>
-                <span className="block text-xs uppercase text-muted-foreground mb-1">EV Edge</span>
-                <span className="font-mono font-bold text-green-400">{cog.alphaEdge}</span>
-             </div>
-             <div>
-                <span className="block text-xs uppercase text-muted-foreground mb-1">Vig Adj. EV</span>
-                <span className="font-mono font-bold text-green-400">{cog.vigAdjustedEv}</span>
-             </div>
-             <div>
-                <span className="block text-xs uppercase text-muted-foreground mb-1">Confidence</span>
-                <span className="font-mono font-bold text-primary">{cog.confidence_score ? (cog.confidence_score * 100).toFixed(1) + "%" : "N/A"}</span>
-             </div>
-             <div>
-                <span className="block text-xs uppercase text-muted-foreground mb-1">Dominance</span>
-                <span className="font-mono font-bold text-primary">{cog.ultronDominanceScore}/100</span>
-             </div>
+             {agentData.sgp_blueprint && Array.isArray(agentData.sgp_blueprint) && (
+               agentData.sgp_blueprint.map((vector: any, idx: number) => (
+                 <div key={idx} className="flex items-start gap-4 p-4 rounded-lg bg-primary/5 border border-primary/10">
+                    <div className="bg-primary/10 p-2 rounded-lg border border-primary/20">
+                      <Target className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-[10px] uppercase tracking-widest text-muted-foreground mb-0.5">{vector.label}</h4>
+                      <p className="font-display text-lg font-bold text-foreground">{vector.value}</p>
+                      <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{vector.rationale}</p>
+                    </div>
+                 </div>
+               ))
+             )}
           </div>
           
           <div className="p-4 rounded-lg bg-muted/30 border border-border text-sm">
-             <h4 className="font-bold mb-2">Engine Rationale:</h4>
-             <p className="text-muted-foreground leading-relaxed">{cog.rationale}</p>
+             <h4 className="font-bold mb-2">Omni-Report:</h4>
+             <p className="text-muted-foreground leading-relaxed italic">"{agentData.omni_report || "Consensus pending..."}"</p>
           </div>
 
         </CardContent>
@@ -136,7 +117,7 @@ export default function Matchups() {
       </div>
 
       <Card className="border-primary/50 bg-primary/5 shadow-lg shadow-primary/10 relative overflow-hidden">
-        {ingestMutation.isPending && (
+        {analyzeMutation.isPending && (
           <div className="absolute inset-0 bg-background/50 backdrop-blur-sm z-10 flex flex-col items-center justify-center">
             <Cpu className="w-12 h-12 text-primary animate-pulse mb-4" />
             <h3 className="font-display font-bold text-xl tracking-widest text-primary">GENERATING OMNI-VECTORS...</h3>
@@ -165,7 +146,7 @@ export default function Matchups() {
             </div>
             <Button 
               onClick={handleSimulate} 
-              disabled={ingestMutation.isPending}
+              disabled={analyzeMutation.isPending}
               className="w-full sm:w-1/4 font-bold tracking-widest bg-primary hover:bg-primary/90 text-primary-foreground h-10"
             >
               <Zap className="w-4 h-4 mr-2" /> ENGAGE
@@ -174,17 +155,24 @@ export default function Matchups() {
         </CardContent>
       </Card>
 
-      {/* SIMULATION RESULTS */}
+      {/* SWARM INTELLIGENCE PAYLOAD */}
       {simResults && (
         <div className="space-y-8">
            <div className="flex items-center gap-4 py-4 border-b border-border">
-              <Zap className="w-6 h-6 text-yellow-500" />
-              <h3 className="text-2xl font-display font-bold">V12 Omni-Vector Payload</h3>
+              <Zap className="w-6 h-6 text-purple-500" />
+              <h3 className="text-2xl font-display font-bold text-purple-400 tracking-tighter uppercase italic">V15.0 Swarm Payload [HASH: {simResults.hash?.slice(0, 8)}]</h3>
            </div>
            
-           {renderSimResultCard("Standard Lock Execution", simResults.standard)}
-           {renderSimResultCard("Correlated SGP Generation", simResults.sgp)}
-           {renderSimResultCard("Slate Parlay Accumulation", simResults.slate)}
+           {renderSwarmComponent("Quant Optimization Layer", simResults.swarm_report.quant)}
+           {renderSwarmComponent("Monte Carlo Simulation Layer", simResults.swarm_report.simulation)}
+           
+           <Card className="border-emerald-500/30 bg-emerald-500/5 mt-6 px-6 py-8 rounded-3xl backdrop-blur-xl">
+              <div className="flex items-center gap-4 mb-4">
+                 <Target className="w-8 h-8 text-emerald-400" />
+                 <h2 className="text-3xl font-black text-emerald-400 uppercase tracking-widest">Portfolio Manager Verdict</h2>
+              </div>
+              <p className="text-white text-lg font-mono leading-relaxed italic">"{simResults.swarm_report.audit_verdict}"</p>
+           </Card>
         </div>
       )}
 

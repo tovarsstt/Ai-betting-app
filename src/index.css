@@ -111,12 +111,7 @@
     @apply font-sans;
   }
 }
-.bg-carbon-overlay {
-  position: absolute; inset: 0;
-  background-image: url('/images/carbon-fibre.png');
-  background-repeat: repeat; background-size: 200px;
-  opacity: 0.15; pointer-events: none; z-index: 0;
-}
+/* bg-carbon-overlay removed — image asset deleted */
 .glow-sharp { box-shadow: 0 0 15px -3px hsl(var(--success)/0.4); border-color: hsl(var(--success)/0.5); }
 .glow-fade  { box-shadow: 0 0 15px -3px hsl(var(--destructive)/0.4); border-color: hsl(var(--destructive)/0.5); }
 @layer utilities {
