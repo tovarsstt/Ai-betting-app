@@ -1,14 +1,9 @@
 import express from 'express';
-// @ts-expect-error - Supressing missing types/cors without breaking module map
+// @ts-expect-error - no types
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { GoogleGenerativeAI, GenerativeModel } from '@google/generative-ai';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-import fs from 'fs/promises';
 import path from 'path';
-
-const execAsync = promisify(exec);
 
 dotenv.config();
 
@@ -16,26 +11,39 @@ const app = express();
 const port = Number(process.env.PORT) || 3001;
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '1mb' }));
 
-// --- STRICT TYPE INTERFACES ---
-interface SGPBlueprint {
+// ── Simple in-memory rate limit ───────────────────────────────────────────────
+const rateCounts = new Map<string, { count: number; reset: number }>();
+function rateLimit(ip: string, max: number, windowMs: number): boolean {
+  const now = Date.now();
+  const entry = rateCounts.get(ip);
+  if (!entry || now > entry.reset) {
+    rateCounts.set(ip, { count: 1, reset: now + windowMs });
+    return false; // not limited
+  }
+  entry.count++;
+  return entry.count > max;
+}
+
+// ── Types ─────────────────────────────────────────────────────────────────────
+export interface SGPLeg {
   label: string;
   value: string;
   rationale: string;
   espn_id: string;
 }
 
-interface SwarmAgentData {
+export interface SwarmAgentData {
   primary_single: string;
   value_gap: string;
-  sgp_blueprint: SGPBlueprint[];
-  multi_parlay_anchor?: string;
+  sgp_blueprint: SGPLeg[];
+  multi_parlay_anchor: string;
   omni_report: string;
   confidence_score: number;
 }
 
-interface SwarmFinalPayload extends SwarmAgentData {
+export interface SwarmFinalPayload extends SwarmAgentData {
   swarm_report: {
     quant: SwarmAgentData;
     simulation: SwarmAgentData;
@@ -45,7 +53,7 @@ interface SwarmFinalPayload extends SwarmAgentData {
   timestamp: string;
 }
 
-interface AlphaSheetItem {
+export interface AlphaSheetItem {
   rank: number;
   team_logo: string;
   player_name: string;
@@ -57,382 +65,331 @@ interface AlphaSheetItem {
   espn_id: string;
 }
 
-interface AlphaSheetContainer {
+export interface AlphaSheetContainer {
   title: string;
   subtitle: string;
   data: AlphaSheetItem[];
   timestamp: string;
 }
 
-interface QuantumToolResult {
-  tool: string;
-  output: string;
-  success: boolean;
-  timestamp: string;
-}
-
-interface QuantumSession {
-  goal: string;
-  logs: QuantumToolResult[];
-  final_verdict: string;
-  hash: string;
-}
-
-// --- UTILITIES ---
-const SafeSwarmParser = (input: string): unknown => {
-  try {
-    // Attempt direct parse after cleaning potential markdown noise
-    const clean = input.replace(/```json|```/g, "").trim();
-    return JSON.parse(clean);
-  } catch {
-    // Attempt to extract JSON from markdown blocks or messy text
-    const jsonMatch = input.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
-      try {
-        return JSON.parse(jsonMatch[0]);
-      } catch {
-        throw new Error("SWARM_PARSER_FATAL: Corrupted Payload");
-      }
-    }
-    throw new Error("SWARM_PARSER_FATAL: No payload detected");
-  }
+// ── Parser ────────────────────────────────────────────────────────────────────
+const parseJSON = (raw: string): unknown => {
+  const clean = raw.replace(/```json|```/g, "").trim();
+  try { return JSON.parse(clean); } catch { /* fall through */ }
+  const match = clean.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
+  if (match) { try { return JSON.parse(match[0]); } catch { /* fall through */ } }
+  throw new Error("JSON_PARSE_FAILED");
 };
 
-// --- QUANTUM TOOLBOX (V16.0) ---
-class AgentToolbox {
-  async executeCommand(command: string): Promise<string> {
-    // Restrict sensitive commands to maintain Institutional Security
-    const forbidden = ['rm -rf /', 'sudo', 'chmod', 'chown'];
-    if (forbidden.some(f => command.includes(f))) {
-      return "SECURITY_VIOLATION: Command restricted.";
-    }
-    try {
-      const { stdout, stderr } = await execAsync(command, { timeout: 30000 });
-      return stdout || stderr || "SUCCESS: No output.";
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : String(err);
-      return `EXECUTION_ERROR: ${message}`;
-    }
-  }
+// ── Gemini helper ─────────────────────────────────────────────────────────────
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
-  async readFile(filePath: string): Promise<string> {
-    try {
-      const absolutePath = path.resolve(process.cwd(), filePath);
-      const content = await fs.readFile(absolutePath, 'utf-8');
-      return content;
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : String(err);
-      return `READ_ERROR: ${message}`;
-    }
-  }
-
-  async writeFile(filePath: string, content: string): Promise<string> {
-    try {
-      const absolutePath = path.resolve(process.cwd(), filePath);
-      await fs.mkdir(path.dirname(absolutePath), { recursive: true });
-      await fs.writeFile(absolutePath, content);
-      return "WRITE_SUCCESS: File updated.";
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : String(err);
-      return `WRITE_ERROR: ${message}`;
-    }
-  }
+async function ask(prompt: string, model = "gemini-2.5-flash"): Promise<string> {
+  const m: GenerativeModel = genAI.getGenerativeModel({ model });
+  const result = await m.generateContent(prompt);
+  return result.response.text().replace(/```json|```/g, "").trim();
 }
 
-// AGENT SWARM // KARPATHY-SKILLS EDITION (V14.0)
-class AgentSwarm {
-  private genAI: GoogleGenerativeAI;
-  private model: GenerativeModel;
+// ── Date helper ───────────────────────────────────────────────────────────────
+function todayStr() {
+  return new Date().toLocaleDateString('en-US', {
+    weekday: 'long', month: 'long', day: 'numeric', year: 'numeric',
+    timeZone: 'America/New_York'
+  });
+}
 
-  constructor() {
-    this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
-    this.model = this.genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+// ─────────────────────────────────────────────────────────────────────────────
+// PROPHET — single best pick of the day
+// ─────────────────────────────────────────────────────────────────────────────
+app.get('/api/prophet', async (req: express.Request, res: express.Response) => {
+  const ip = req.ip || 'unknown';
+  if (rateLimit(ip, 10, 60_000)) return res.status(429).json({ error: "RATE_LIMIT" });
+
+  try {
+    const today = todayStr();
+    const prompt = `
+You are a sharp professional sports bettor with 15 years of experience beating closing lines.
+Today is ${today} (Eastern Time).
+
+Your job: identify TODAY's single highest-conviction bet from real games scheduled tonight or this evening.
+
+Reasoning process (think step by step, don't include these steps in output):
+1. Identify 2-3 real games scheduled tonight (NBA playoffs, MLB, tennis, soccer, UFC — whatever is actually on)
+2. For each, identify the sharpest betting angle: player prop with proven line inefficiency, team spread backed by recent ATS trend, or total with pace/weather/bullpen edge
+3. Score each angle by: closing line value potential, sample size of supporting trend, public fade opportunity
+4. Output the top one as JSON
+
+Output ONLY a raw JSON object — no markdown, no commentary:
+{
+  "selection": "e.g. Anthony Edwards Over 28.5 Points or Celtics -4.5",
+  "odds": "American odds string e.g. -115 or +130",
+  "game_name": "Team A vs Team B — League — Tonight TIME ET",
+  "value_gap": "+X.X% EV",
+  "recommended_unit": "1 UNIT or 2 UNITS",
+  "logic_bullets": [
+    "Specific stat or trend #1 with numbers",
+    "Specific matchup or situational edge #2 with numbers",
+    "Sharp money / line movement or injury context #3"
+  ],
+  "correlated_insight": "If bet wins, correlated SGP leg or same-game parlay suggestion"
+}
+
+Be specific. Use real player names, real team names, real stats. No filler phrases.
+`.trim();
+
+    const raw = await ask(prompt);
+    const parsed = parseJSON(raw) as Record<string, unknown>;
+    res.json({ ...parsed, hash: "Σ_" + Math.random().toString(36).substring(7).toUpperCase() });
+
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error("PROPHET_FAILURE:", msg);
+    res.status(500).json({ error: "PROPHET_FAILURE", message: msg });
   }
+});
 
-  private async runAgent(role: string, prompt: string, context: string = ""): Promise<string> {
-    const fullPrompt = `ROLE: ${role}\nSKILLS: Andrej Karpathy Expert Personas // First Principles // Zero Filler.\n\nCONTEXT:\n${context}\n\nTASK:\n${prompt}\n\nGIVE OUTPUT IN RAW JSON FORMAT.`;
-    const result = await this.model.generateContent(fullPrompt);
-    return result.response.text().replace(/```json|```/g, "");
-  }
+// ─────────────────────────────────────────────────────────────────────────────
+// ANALYZE-UNIFIED — full swarm analysis for a specific matchup
+// ─────────────────────────────────────────────────────────────────────────────
+app.post('/api/analyze-unified', async (req: express.Request, res: express.Response) => {
+  const ip = req.ip || 'unknown';
+  if (rateLimit(ip, 5, 60_000)) return res.status(429).json({ error: "RATE_LIMIT" });
 
-  async analyzeUnified(matchup: string, sport: string) {
-    // PHASE 1: PARALLEL EXECUTION (QUANT & RESEARCHER)
-    // Behavioral: Parallelizing for speed while maintaining strict isolation.
-    const [quantResult, simulationResult] = await Promise.all([
-      this.runAgent(
-        "GOD-ENGINE // KARPATHY_QUANT",
-        `As a world-class Quantitative Researcher, analyze ${matchup} in ${sport}. 
-         OMQX_PROTOCOL: 
-         1. OBSERVATION: Map global liquidity vs Stake.com pricing. 
-         2. HYPOTHESIS: Identify sigma-deviations in player props. 
-         3. VERIFICATION: Verify technical edge against historical variance.`,
-        `SYSTEM_STATE: First-Principles-Active.`
-      ),
-      this.runAgent(
-        "GOD-ENGINE // KARPATHY_RESEARCHER",
-        `As a Senior Predictive Analyst, simulate the social and game-flow outcome for ${matchup}. 
-         OMQX_PROTOCOL: 
-         1. OBSERVATION: Filter retail noise and injury trends. 
-         2. HYPOTHESIS: Determine narrative confluence (e.g. Motivation, Fatigue). 
-         3. VERIFICATION: Compare against likely coach-rotations.`,
-        `SYSTEM_STATE: Scenario-Scout-Active.`
-      )
-    ]);
+  try {
+    const { matchup, sport } = req.body;
+    if (!matchup) return res.status(400).json({ error: "MATCHUP_REQUIRED" });
 
-    const parsedQuant = SafeSwarmParser(quantResult) as SwarmAgentData;
-    const parsedSim = SafeSwarmParser(simulationResult) as SwarmAgentData;
+    const today = todayStr();
+    const league = (sport || 'NBA').toUpperCase();
 
-    // PHASE 2: OMO CONVERGENCE LOOP
-    // Detecting variance between mathematical edge and narrative confluence.
-    let finalAuditSource = "";
-    let reconcilerResult = null;
+    // AGENT 1 — Quant model
+    const quantPrompt = `
+You are a quantitative sports betting analyst. Today is ${today}.
+Analyze: ${matchup} (${league})
 
-    const varianceDetected = Math.abs(parsedQuant.confidence_score - parsedSim.confidence_score) > 0.3;
+Focus exclusively on:
+- Line value: Where is the market mispriced vs true probability?
+- Recent form: Last 5-10 games ATS, totals, pace, efficiency splits
+- Situational: Back-to-back, travel fatigue, revenge spot, trap game, playoff seeding irrelevance
+- Injury impact: Any key player out or limited? How does that move the line?
 
-    if (varianceDetected) {
-      // TRIGGER RECONCILER: Adjudicate the dispute between Quant and Researcher.
-      reconcilerResult = await this.runAgent(
-        "GOD-ENGINE // RECONCILER",
-        `There is a high variance between Data (${parsedQuant.confidence_score}) and Narrative (${parsedSim.confidence_score}) for ${matchup}. 
-         TASK: Perform a high-conviction audit. Resolve the contradiction. Identify the 'Locked Alpha'.`,
-        `QUANT: ${quantResult}\nSIM: ${simulationResult}`
-      );
-      finalAuditSource = reconcilerResult;
-    } else {
-      finalAuditSource = `QUANT: ${quantResult}\nSIM: ${simulationResult}`;
-    }
+Output ONLY this raw JSON:
+{
+  "primary_single": "Best single bet e.g. 'Lakers +3.5' or 'Curry Over 29.5 Points -110'",
+  "value_gap": "e.g. '+6.2% EV' or '+8.1% EDGE'",
+  "confidence_score": 0.78,
+  "sgp_blueprint": [
+    { "label": "Leg 1 Label", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "3975" },
+    { "label": "Leg 2 Label", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "3202" },
+    { "label": "Leg 3 Label", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "6450" }
+  ],
+  "multi_parlay_anchor": "Best parlay anchor team/player for multi-game slate",
+  "omni_report": "2-3 sentence quant summary of the edge. Cite specific numbers."
+}
+`.trim();
 
-    // PHASE 2.5: AUTONOMOUS VERIFICATION (INSTITUTIONAL GROUND TRUTH)
-    const toolbox = new AgentToolbox();
-    const system_diagnostic = await toolbox.executeCommand("date && ls -F integrations/claude-bridge");
-    const ground_truth = `SYSTEM_DIAGNOSTIC: ${system_diagnostic}\nENVIRONMENT: PRODUCTION_CONVERGENCE_ACTIVE`;
+    // AGENT 2 — Situational/narrative model
+    const simPrompt = `
+You are a sharp sports analyst specializing in game-flow and situational betting. Today is ${today}.
+Analyze: ${matchup} (${league})
 
-    // PHASE 3: THE MARKET AUDITOR (V17.0)
-    const auditResult = await this.runAgent(
-      "GOD-ENGINE // KARPATHY_EXECUTIVE",
-      `You are a Portfolio Manager at a Tier-1 Hedge Fund. Perform the final Audit.
-       
-       CONSTRAINTS:
-       - Every command MUST start with: 'EXECUTIVE_SUMMARY: Analysis complete. Conviction Locked.'
-       - Every command MUST end with: 'EXECUTION_HASH: [SIGMA_NOTATION].'
-       - OMQX_PROTOCOL: Synthesize all data into a binary execution command.
-       
-       TASK: Synthesize the final ${matchup} data. Provide binary execution commands (SGP legs). Use the provided GROUND_TRUTH to verify environment readiness.`,
-      `${finalAuditSource}\nGROUND_TRUTH: ${ground_truth}`
-    );
+Focus exclusively on:
+- Narrative edge: Motivation, emotional spots, divisional rivalry
+- Coaching tendencies: Pace, lineup rotations, timeout usage, foul trouble management
+- Game-flow prediction: Likely game script (blowout vs close game, high vs low scoring)
+- Public fade: Is the public hammering one side? Where is sharp action?
 
-    const parsedAudit = SafeSwarmParser(auditResult) as SwarmAgentData;
-    
+Output ONLY this raw JSON:
+{
+  "primary_single": "Best single bet from situational angle e.g. 'Game Total Under 221.5 -110'",
+  "value_gap": "e.g. '+5.3% EV' or '+9.0% EDGE'",
+  "confidence_score": 0.72,
+  "sgp_blueprint": [
+    { "label": "Leg 1 Label", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "3975" },
+    { "label": "Leg 2 Label", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "3202" },
+    { "label": "Leg 3 Label", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "6450" }
+  ],
+  "multi_parlay_anchor": "Best parlay anchor from game-flow perspective",
+  "omni_report": "2-3 sentence situational summary. Mention specific coaching or narrative factors."
+}
+`.trim();
+
+    const [quantRaw, simRaw] = await Promise.all([ask(quantPrompt), ask(simPrompt)]);
+    const quant = parseJSON(quantRaw) as SwarmAgentData;
+    const simulation = parseJSON(simRaw) as SwarmAgentData;
+
+    // AGENT 3 — Executive synthesis
+    const execPrompt = `
+You are the final arbiter — a senior portfolio manager at a sports betting hedge fund.
+Today is ${today}. Matchup: ${matchup} (${league}).
+
+You've received two independent analyses:
+
+QUANT AGENT:
+- Pick: ${quant.primary_single}
+- Edge: ${quant.value_gap}
+- Confidence: ${quant.confidence_score}
+- Report: ${quant.omni_report}
+
+SITUATIONAL AGENT:
+- Pick: ${simulation.primary_single}
+- Edge: ${simulation.value_gap}
+- Confidence: ${simulation.confidence_score}
+- Report: ${simulation.omni_report}
+
+Your job:
+1. If both agents agree on direction → confirm with high confidence
+2. If they disagree → identify which has the stronger edge and explain why
+3. Produce the final executable bet
+
+Output ONLY this raw JSON:
+{
+  "primary_single": "Final best bet (be specific with line and odds)",
+  "value_gap": "Final EV estimate",
+  "confidence_score": 0.80,
+  "sgp_blueprint": [
+    { "label": "SGP Leg 1", "value": "Pick + odds", "rationale": "Why this leg", "espn_id": "3975" },
+    { "label": "SGP Leg 2", "value": "Pick + odds", "rationale": "Why this leg", "espn_id": "6450" },
+    { "label": "SGP Leg 3", "value": "Pick + odds", "rationale": "Why this leg", "espn_id": "3202" }
+  ],
+  "multi_parlay_anchor": "Best anchor for a slate parlay",
+  "omni_report": "Final 2-3 sentence verdict. State your conviction level and the single biggest risk to this pick."
+}
+`.trim();
+
+    const execRaw = await ask(execPrompt);
+    const exec = parseJSON(execRaw) as SwarmAgentData;
+
     const payload: SwarmFinalPayload = {
-      ...parsedAudit,
+      ...exec,
       swarm_report: {
-        quant: parsedQuant,
-        simulation: parsedSim,
-        audit_verdict: reconcilerResult ? "RECONCILER_ACTIVE" : "CONVERGENCE_LOCKED"
+        quant,
+        simulation,
+        audit_verdict: exec.omni_report || "CONVERGENCE_LOCKED"
       },
       hash: "Σ_" + Math.random().toString(36).substring(7).toUpperCase(),
       timestamp: new Date().toLocaleTimeString()
     };
 
-    return payload;
+    res.json(payload);
+
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error("ANALYZE_FAILURE:", msg);
+    res.status(500).json({ error: "ANALYZE_FAILURE", message: msg });
   }
+});
 
-  async quantumMission(goal: string): Promise<QuantumSession> {
-    const toolbox = new AgentToolbox();
-    const logs: QuantumToolResult[] = [];
-    let currentStep = 0;
-    const maxSteps = 5; // Institutional safety limit
-
-    const missionContext = `You are a CLAUDE_CODE Savant. You have tool access.
-    GOAL: ${goal}
-    TOOLS: executeCommand(cmd), readFile(path), writeFile(path, content).
-    FORMAT: You must output a JSON command: { "tool": "toolName", "args": ["arg1", "arg2"] } or { "done": true, "summary": "result" }.`;
-
-    while (currentStep < maxSteps) {
-      const context = logs.length > 0 ? JSON.stringify(logs) : "MISSION_START";
-      const resp = await this.runAgent("QUANTUM_COORDINATOR", `Plan next step. Status: ${context}`, missionContext);
-      const parsed = SafeSwarmParser(resp) as { done?: boolean; summary?: string; tool?: string; args?: string[] };
-
-      if (parsed.done) {
-        return {
-          goal,
-          logs,
-          final_verdict: parsed.summary || "SUCCESS",
-          hash: "Σ_Q_" + Math.random().toString(36).substring(7).toUpperCase()
-        };
-      }
-
-      let output = "";
-      if (parsed.tool === 'executeCommand' && parsed.args) output = await toolbox.executeCommand(parsed.args[0]);
-      if (parsed.tool === 'readFile' && parsed.args) output = await toolbox.readFile(parsed.args[0]);
-      if (parsed.tool === 'writeFile' && parsed.args) output = await toolbox.writeFile(parsed.args[0], parsed.args[1]);
-
-      logs.push({
-        tool: parsed.tool || "UNKNOWN_TOOL",
-        output: output.length > 500 ? output.substring(0, 500) + "..." : output,
-        success: !output.includes("_ERROR"),
-        timestamp: new Date().toISOString()
-      });
-
-      currentStep++;
-    }
-
-    return {
-      goal,
-      logs,
-      final_verdict: "MAX_STEPS_REACHED: Mission paused for safety.",
-      hash: "Σ_Q_TIMEOUT"
-    };
-  }
-}
-
-const swarm = new AgentSwarm();
-
+// ─────────────────────────────────────────────────────────────────────────────
+// ALPHA SHEETS — today's top props cheat sheet
+// ─────────────────────────────────────────────────────────────────────────────
 export async function generateAlphaSheet(sport: string): Promise<AlphaSheetContainer> {
-  try {
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+  const today = todayStr();
+  const s = sport.toUpperCase();
 
-    const prompt = `
-      ROLE: V13 God-Engine // Market Aggressor Sheet Generator.
-      TASK: Generate a high-alpha "Cheat Sheet" for the current ${sport} slate.
-      
-      REQUIRED FORMAT: JSON Array of 10 objects.
-      Each object must contain:
-      - 'rank': number (1-10)
-      - 'team_logo': string (A valid MLB/NBA team logo URL fallback or code)
-      - 'player_name': string
-      - 'metric_label': string (e.g. "SLUG%" for MLB, "PR AVG" for NBA)
-      - 'metric_value': string (e.g. ".652" or "32.4")
-      - 'season_stat': string (e.g. "24 HR" or "14.2 PTS")
-      - 'ai_score': number (A 0.0-10.0 confidence score representing the edge)
-      - 'status_color': string (Hex for neon green #22c55e or yellow #eab308)
-      - 'espn_id': string (Realistic ESPN ID for headshots)
+  const prompt = `
+You are a sharp sports betting analyst building a prop betting cheat sheet.
+Today is ${today}.
 
-      LOGIC: Focus on high-variance player props with the largest pricing inefficiencies.
-    `;
+Generate a cheat sheet of the 10 highest-value player prop bets for ${s} games scheduled TODAY.
 
-    const result = await model.generateContent(prompt);
-    const textResp = result.response.text().replace(/```json|```/g, "");
-    const aiResponse = SafeSwarmParser(textResp) as AlphaSheetItem[];
+For each player:
+- Pick a real player with a game tonight
+- Identify the most mispriced prop line (points, rebounds, assists, strikeouts, hits, etc.)
+- ai_score = your confidence this is +EV (0-10 scale, be realistic — 6-8 range is good, 9+ is rare)
+- status_color: #22c55e (strong edge), #eab308 (moderate edge), #f97316 (speculative)
+- espn_id: use a realistic ESPN player ID number (e.g. NBA players: LeBron=1966, Curry=3975, Jokic=3112335, Giannis=3032977, SGA=4277905)
 
-    return {
-      title: sport === 'MLB' ? "DAILY DINGER SHEET" : "PROP LOTTO HEATBOARD",
-      subtitle: "GOD-ENGINE ALGORITHMIC EDGE // LIVE DATA SYNTHESIS",
-      data: aiResponse,
-      timestamp: new Date().toLocaleDateString()
-    };
-  } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : String(error);
-    console.error("ALPHA_SHEET_FAILURE:", message);
-    throw error;
+Output ONLY a raw JSON array of exactly 10 objects:
+[
+  {
+    "rank": 1,
+    "team_logo": "NBA team abbreviation e.g. GSW",
+    "player_name": "Full Player Name",
+    "metric_label": "e.g. POINTS PROP or STRIKEOUTS",
+    "metric_value": "e.g. Over 27.5 -115",
+    "season_stat": "e.g. 29.4 PPG L10 or .312 BA",
+    "ai_score": 7.8,
+    "status_color": "#22c55e",
+    "espn_id": "3975"
   }
+]
+
+Be specific. Real players, real prop lines, real reasoning baked into metric_value.
+`.trim();
+
+  const raw = await ask(prompt);
+  const data = parseJSON(raw) as AlphaSheetItem[];
+
+  const titles: Record<string, string> = {
+    NBA: "NBA PROP HEATBOARD", MLB: "DINGER & STRIKEOUT SHEET",
+    NFL: "NFL PROP SHEET", NHL: "PUCK LINE PROPS",
+    TENNIS: "TENNIS EDGE SHEET", SOCCER: "SOCCER PROP SHEET",
+  };
+
+  return {
+    title: titles[s] || `${s} PROP SHEET`,
+    subtitle: `@winwithtovy AI Edge — ${today}`,
+    data,
+    timestamp: new Date().toLocaleDateString()
+  };
 }
 
 app.post('/api/alpha-sheets', async (req: express.Request, res: express.Response) => {
-    try {
-        const { sport } = req.body;
-        const data = await generateAlphaSheet(sport || 'NBA');
-        res.json(data);
-    } catch (e: unknown) {
-        const message = e instanceof Error ? e.message : String(e);
-        res.status(500).json({ error: message });
-    }
+  const ip = req.ip || 'unknown';
+  if (rateLimit(ip, 5, 60_000)) return res.status(429).json({ error: "RATE_LIMIT" });
+
+  try {
+    const { sport } = req.body;
+    const data = await generateAlphaSheet(sport || 'NBA');
+    res.json(data);
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error("ALPHA_SHEET_FAILURE:", msg);
+    res.status(500).json({ error: msg });
+  }
 });
 
-app.post('/api/analyze-unified', async (req: express.Request, res: express.Response) => {
-    try {
-        const { matchup, sport } = req.body;
-        if (!matchup) return res.status(400).json({ error: "MATCHUP_REQUIRED" });
-        const data = await swarm.analyzeUnified(matchup, sport || 'NBA');
-        res.json(data);
-    } catch (e: unknown) {
-        const message = e instanceof Error ? e.message : String(e);
-        console.error("SWARM_FAILURE:", message);
-        res.status(500).json({ error: message });
-    }
-});
+// ─────────────────────────────────────────────────────────────────────────────
+// IMAGE PROXY — ESPN headshots for html2canvas (ESPN domains only)
+// ─────────────────────────────────────────────────────────────────────────────
+const ALLOWED_HOSTS = ['a.espncdn.com', 'cdn.nba.com', 'img.mlbstatic.com'];
 
-app.post('/api/quantum-mission', async (req: express.Request, res: express.Response) => {
-    try {
-        const { goal } = req.body;
-        if (!goal) return res.status(400).json({ error: "GOAL_REQUIRED" });
-        const data = await swarm.quantumMission(goal);
-        res.json(data);
-    } catch (e: unknown) {
-        const message = e instanceof Error ? e.message : String(e);
-        console.error("QUANTUM_MISSION_FAILURE:", message);
-        res.status(500).json({ error: message });
-    }
-});
-
-// Prophet Engine: single highest-conviction pick for the day
-app.get('/api/prophet', async (req: express.Request, res: express.Response) => {
-    try {
-        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-
-        const today = new Date().toLocaleDateString('en-US', {
-            weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
-        });
-
-        const prompt = `
-ROLE: V13 God-Engine // Prophet Terminal // Single Best Pick Generator.
-DATE: ${today}.
-
-TASK: Generate today's single highest-conviction sports betting pick using first-principles quantitative reasoning.
-
-REQUIRED FORMAT: Output ONLY a raw JSON object — no markdown, no explanation — with exactly these keys:
-{
-  "selection": "string (e.g. 'LeBron James Over 26.5 Points' or 'Celtics -5.5')",
-  "odds": "string (American odds e.g. '-110' or '+145')",
-  "game_name": "string (e.g. 'Celtics vs Lakers — NBA — Tonight 7:30 PM ET')",
-  "value_gap": "string (e.g. '+8.4% EV' or '+11.2% EDGE')",
-  "recommended_unit": "string (e.g. '2 UNITS' or '1.5 UNITS')",
-  "logic_bullets": ["string", "string", "string"],
-  "correlated_insight": "string (a correlated SGP or parlay leg suggestion)"
-}
-
-LOGIC: Pick a real NBA or MLB game likely scheduled tonight. Use sharp, quantitative reasoning. Cite specific stats, trends, and matchup inefficiencies. Be precise. No filler.
-        `.trim();
-
-        const result = await model.generateContent(prompt);
-        const textResp = result.response.text().replace(/```json|```/g, "").trim();
-        const parsed = SafeSwarmParser(textResp) as Record<string, unknown>;
-
-        res.json({
-            ...parsed,
-            hash: "Σ_" + Math.random().toString(36).substring(7).toUpperCase()
-        });
-    } catch (e: unknown) {
-        const message = e instanceof Error ? e.message : String(e);
-        console.error("PROPHET_ENGINE_FAILURE:", message);
-        res.status(500).json({ error: "PROPHET_ENGINE_FAILURE", message });
-    }
-});
-
-// Proxy route to fetch images and supply CORS headers so html2canvas doesn't taint
 app.get('/api/proxy-image', async (req: express.Request, res: express.Response) => {
-    try {
-        const { url } = req.query;
-        if (!url) return res.status(400).send('URL is required');
+  try {
+    const raw = req.query.url as string;
+    if (!raw) return res.status(400).send('url required');
 
-        const response = await fetch(decodeURIComponent(url as string));
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    let parsed: URL;
+    try { parsed = new URL(decodeURIComponent(raw)); }
+    catch { return res.status(400).send('invalid url'); }
 
-        const arrayBuffer = await response.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
-
-        res.set('Access-Control-Allow-Origin', '*');
-        res.set('Content-Type', response.headers.get('content-type') || 'image/png');
-        res.set('Cache-Control', 'public, max-age=31536000');
-        res.send(buffer);
-    } catch (error) {
-        console.error('Image proxy error:', error);
-        res.status(500).send('Error proxying image');
+    if (!ALLOWED_HOSTS.includes(parsed.hostname)) {
+      return res.status(403).send('host not allowed');
     }
+
+    const response = await fetch(parsed.toString(), { signal: AbortSignal.timeout(5000) });
+    if (!response.ok) throw new Error(`upstream ${response.status}`);
+
+    const buf = Buffer.from(await response.arrayBuffer());
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Content-Type', response.headers.get('content-type') || 'image/png');
+    res.set('Cache-Control', 'public, max-age=86400');
+    res.send(buf);
+  } catch (e) {
+    res.status(500).send('proxy error');
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SERVE BUILT FRONTEND in production
+// ─────────────────────────────────────────────────────────────────────────────
+const distPath = path.resolve(process.cwd(), 'dist');
+app.use(express.static(distPath));
+app.get('/{*splat}', (_req, res) => {
+  res.sendFile(path.join(distPath, 'index.html'));
 });
 
 app.listen(port, '0.0.0.0', () => {
-    console.log(`🚀 God-Engine V14.0 First-Principles Backend Active on port ${port}`);
+  console.log(`🚀 WinWithTovy Engine live → http://localhost:${port}`);
 });
