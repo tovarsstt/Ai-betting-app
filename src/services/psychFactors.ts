@@ -1,6 +1,10 @@
 /**
- * Implements 'The Tilt Tensor' and 'Fatigue Decay' logic.
+ * Implements 'The Tilt Tensor' and 'Fatigue Decay' logic along with 'Swarm Consensus'.
  */
+
+import { SwarmPredictor } from './swarmPredictor';
+import type { SwarmSimulationParams, SwarmConsensus } from './swarmPredictor';
+
 export class PsychFactors {
     /**
      * Quantifies a team's performance variance after a 'High-Stress/Low-Outcome' event.
@@ -30,5 +34,30 @@ export class PsychFactors {
         const baseline = 200.0;
         const rValue = 1 - Math.exp(-minutesPlayed7d / baseline);
         return parseFloat(rValue.toFixed(4));
+    }
+
+    /**
+     * Integrates Swarm Intelligence by running a multi-agent debate simulation.
+     * The resulting swarm confidence is combined with negative psych factors (Tilt, Fatigue)
+     * to provide a final Confluence Multiplier.
+     */
+    static getSwarmConfluenceMultiplier(swarmParams: SwarmSimulationParams, tiltFactor: number, fatigueDecay: number): number {
+        const consensus: SwarmConsensus = SwarmPredictor.runSimulation(swarmParams);
+        
+        // Base multiplier starts at Swarm predicted probability
+        const baseMultiplier = consensus.predictedProbability;
+        
+        // If swarm confidence is very high, it mitigates some tilt/fatigue
+        const confidenceBuffer = consensus.swarmConfidence * 0.5; // Up to 50% buffer
+
+        // Effective negative factors
+        const effectiveTilt = Math.max(0, tiltFactor - confidenceBuffer);
+        const effectiveFatigue = Math.max(0, fatigueDecay - (confidenceBuffer / 2));
+
+        // Penalty application
+        const finalMultiplier = baseMultiplier * (1 - effectiveTilt) * (1 - effectiveFatigue);
+        
+        // Return bounded [0, 1]
+        return parseFloat(Math.max(0, Math.min(1, finalMultiplier)).toFixed(4));
     }
 }

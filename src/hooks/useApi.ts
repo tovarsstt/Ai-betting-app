@@ -1,7 +1,7 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import type { SwarmFinalPayload, AlphaSheetContainer } from '../types/swarm';
 
-const API_BASE = 'http://localhost:3001/api';
+const API_BASE = '/api';
 
 export function useAlphaSheets(sport: string = 'NBA') {
     return useQuery<AlphaSheetContainer>({

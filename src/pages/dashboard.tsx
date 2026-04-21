@@ -43,7 +43,7 @@ export default function Dashboard() {
     
     try {
       setPhase(0); // PHASE 1: QUANT ASSASSIN
-      const response = await fetch('http://localhost:3001/api/analyze-unified', {
+      const response = await fetch('/api/analyze-unified', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ matchup, sport: 'NBA' })
@@ -76,7 +76,7 @@ export default function Dashboard() {
     setSheetData(null);
     
     try {
-      const response = await fetch('http://localhost:3001/api/alpha-sheets', {
+      const response = await fetch('/api/alpha-sheets', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ sport: targetSport })

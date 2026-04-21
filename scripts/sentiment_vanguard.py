@@ -20,29 +20,35 @@ class SentimentRequest(BaseModel):
 
 class SentimentResponse(BaseModel):
     friction_score: float
+    detected_alerts: list[str] = []
 
-def calculate_narrative_friction(tweet_text: str) -> float:
+def calculate_narrative_friction(tweet_text: str):
     """
     Analyzes social sentiment to find 'Micro-Injuries' or 'Locker Room Beef'.
-    Returns a Narrative Penalty score from 0.0 to 1.5.
+    Returns (friction_score, alerts).
     """
     if not nlp:
-        return 1.0 # fallback
+        return 1.0, [] # fallback
         
     doc = nlp(tweet_text.lower())
-    negative_triggers = ["limping", "soreness", "questionable", "beef", "frustrated", "limited"]
+    negative_triggers = ["limping", "soreness", "questionable", "beef", "frustrated", "limited", "out", "inactive", "injury", "dtd", "gtd", "scratched"]
     
     friction_score = 1.0
-    for token in doc:
-        if token.text in negative_triggers:
-            friction_score += 0.15 # Each trigger increases the quantitative risk
+    alerts = []
+    
+    # Simple extraction: if a player name (token or phrase) is near an injury trigger
+    # For now, we return any sentence containing a trigger as an 'alert'
+    for sent in doc.sents:
+        if any(trigger in sent.text for trigger in negative_triggers):
+            alerts.append(sent.text.strip())
+            friction_score += 0.15
             
-    return min(friction_score, 1.5)
+    return min(friction_score, 1.5), list(set(alerts))
 
 @app.post("/analyze-sentiment", response_model=SentimentResponse)
 async def analyze_sentiment(request: SentimentRequest):
-    score = calculate_narrative_friction(request.tweet_text)
-    return SentimentResponse(friction_score=score)
+    score, alerts = calculate_narrative_friction(request.tweet_text)
+    return SentimentResponse(friction_score=score, detected_alerts=alerts)
 
 if __name__ == "__main__":
     import uvicorn

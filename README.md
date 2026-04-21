@@ -1,63 +1,53 @@
-# app-ai-bets
+# V15.0 // THE GOD-ENGINE TERMINAL
 
-A high-performance AI betting engine and prediction UI that translates predictive logic models and sharp market signals into actionable intelligence.
+A state-of-the-art **Swarm Intelligence** platform designed for institutional-grade market extraction and high-conviction predictive modeling. The system has been "System Purified," eliminating all legacy technical debt to operate on pure first-principles reasoning.
 
-## Why this exists
-I’m a student of both psychology and code, building comprehensive tools that merge sports analytics, machine learning, and market sentiment. This repository represents the "V12 God-Engine"—transitioning from a Python/SQLite monolithic architecture into a modern TypeScript, Express, and PostgreSQL-powered stack, layered with an aesthetic React interface.
+## 🦾 Core Philosophy: "Model x Machine"
 
-## Current Status
-**Experimental / Active Development.** The prediction pipelines, sharp money EV math, and UI layouts are functional. We are actively refining the TypeScript schemas and autonomous background data ingestion loops.
+The God-Engine V15.0 operates via a multi-agent swarm architecture inspired by Andrej Karpathy's "Skills" framework. It maintains a strict visual and logical contrast between the sophisticated human-facing "Model" and the clinical, technical "Machine."
 
-## Features
-- **V12 God-Engine Dashboard:** A dark-mode, carbon-fibre styled interface to visualize predictions, line movements, and EV signals.
-- **Python-to-TypeScript Port:** Core python predictive logic (`psych_factors`, `circadian_friction`, `ev_market_filter`) natively executing within Node.js.
-- **Postgres DB:** Utilizing Drizzle ORM and `pglite` for highly scalable local database management.
-- **Autonomous Polling:** Background processes run autonomously to ingest live API events and recalculate match edges via Cron.
-- **React Query Hooks:** Dynamic and responsive frontend API integrations.
+## 🧠 Swarm Archetypes (Karpathy Edition)
 
-## Tech Stack
-- **Frontend:** React, Vite, Shadcn UI, Tailwind CSS, Wouter, TanStack Query
-- **Backend:** Node.js, Express, Zod (Validation), Drizzle ORM
-- **Database:** PostgreSQL (via `@electric-sql/pglite`)
+The engine orchestrates three world-class expert personas to achieve absolute predictive confluence:
 
-## How to Run It
+1.  **KARPATHY_QUANT**: Senior Quantitative Researcher. Focused on **Σ_Deviation** and global liquidity analysis.
+2.  **KARPATHY_RESEARCHER**: Strategic Predictive Analyst. Uses MiroFish-style narrative simulation to filter out retail noise.
+3.  **KARPATHY_EXECUTIVE**: Tier-1 Hedge Fund Portfolio Manager. Synthesizes swarm data into binary execution commands.
+
+## 🛠️ Tech Stack: Zero-Dark-Thirty Standard
+
+- **Brain**: Google Gemini 2.5 Flash // AgentSwarm Pipeline.
+- **Backend**: Pure TypeScript // Express // Institutional Type-Hardening.
+- **Frontend**: React // Vite // Framer Motion // Tailwind (High-Contrast Minimalism).
+- **Execution**: Recursive Logic // Sigma-Mutation Hashes // html2canvas social proofing.
+
+## 🚀 Terminal Execution
 
 ### 1. Prerequisites
-Make sure you have Node.js and `npm` installed.
+- Node.js (v20+)
+- Gemini API Key in `.env`
 
-### 2. Setup Dependencies
-From the root directory, install all packages:
+### 2. Ignition
+Install the refined dependencies and start the dual-engine terminal:
+
 ```bash
+# Total Hardening Setup
 npm install
-```
 
-### 3. Environment Config
-Create a `.env` file in the root directory and add any keys necessary to run the project. *(Note: DO NOT upload your `.env` file online. It is protected by `.gitignore` by default.)*
-```
-# Example .env format
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/app_ai_bets
-# Other API Tokens go here
-```
+# Start the Backend Machine (Port 3001)
+# Terminal A:
+npx tsx server.ts
 
-### 4. Database Initialization
-This project uses a local Postgres database embedded into the `.data/` folder via PGlite. To generate the tables, run:
-```bash
-npx tsx src/db/migrate.ts
-```
-
-### 5. Start the Engine
-Boot both the background data processes and the Vite frontend simultaneously:
-```bash
+# Start the Model Interface (Port 5173)
+# Terminal B:
 npm run dev
 ```
 
-The V12 UI will be available in your browser at: `http://localhost:5173`
+The terminal will be available at: **[http://localhost:5173](http://localhost:5173)**
 
-## Repository Structure
-- `/src/`: React frontend UI, Node.js API routes, TS predictive logic services, and DB schemas.
-- `/scripts/`: Python analytics scripts and background web scrapers.
-- `/data/`: Stored analysis, JSONs, or CSV extracts.
-- `server.js`: The Express API and Webhook entry point.
+## 📊 Sigma-Proof Audit (V15.0)
 
-## License
-MIT License - See the [LICENSE](LICENSE) file for more details.
+Every analysis generates a **Σ_Hash** and is verifiable via the **POST-TRADE_ANALYSIS** portal. Use the **AUDIT** (The Machine) theme in the visualizer for professional social proof.
+
+---
+**STATUS: SYSTEM_PURIFIED. 🚀🦾Σ**

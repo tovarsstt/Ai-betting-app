@@ -1,0 +1,2641 @@
+game_id,date,home_team,away_team,home_score,away_score,season
+1037593,2023-10-24,Denver Nuggets,Los Angeles Lakers,119,107,2023
+1037594,2023-10-24,Golden State Warriors,Phoenix Suns,104,108,2023
+1037595,2023-10-25,Charlotte Hornets,Atlanta Hawks,116,110,2023
+1037596,2023-10-25,Indiana Pacers,Washington Wizards,143,120,2023
+1037597,2023-10-25,New York Knicks,Boston Celtics,104,108,2023
+1037598,2023-10-25,Orlando Magic,Houston Rockets,116,86,2023
+1037599,2023-10-25,Brooklyn Nets,Cleveland Cavaliers,113,114,2023
+1037600,2023-10-25,Miami Heat,Detroit Pistons,103,102,2023
+1037601,2023-10-25,Toronto Raptors,Minnesota Timberwolves,97,94,2023
+1037602,2023-10-25,Chicago Bulls,Oklahoma City Thunder,104,124,2023
+1037603,2023-10-25,Memphis Grizzlies,New Orleans Pelicans,104,111,2023
+1037604,2023-10-25,Utah Jazz,Sacramento Kings,114,130,2023
+1037605,2023-10-25,San Antonio Spurs,Dallas Mavericks,119,126,2023
+1037606,2023-10-25,LA Clippers,Portland Trail Blazers,123,111,2023
+1037607,2023-10-26,Milwaukee Bucks,Philadelphia 76ers,118,117,2023
+1037608,2023-10-26,Los Angeles Lakers,Phoenix Suns,100,95,2023
+1037609,2023-10-27,Charlotte Hornets,Detroit Pistons,99,111,2023
+1037610,2023-10-27,Memphis Grizzlies,Denver Nuggets,104,108,2023
+1037611,2023-10-27,Atlanta Hawks,New York Knicks,120,126,2023
+1037612,2023-10-27,Boston Celtics,Miami Heat,119,111,2023
+1037613,2023-10-27,Cleveland Cavaliers,Oklahoma City Thunder,105,108,2023
+1037614,2023-10-27,Chicago Bulls,Toronto Raptors,104,103,2023
+1037615,2023-10-27,San Antonio Spurs,Houston Rockets,126,122,2023
+1037616,2023-10-27,Dallas Mavericks,Brooklyn Nets,125,120,2023
+1037617,2023-10-27,Utah Jazz,LA Clippers,120,118,2023
+1037618,2023-10-27,Portland Trail Blazers,Orlando Magic,97,102,2023
+1037619,2023-10-27,Sacramento Kings,Golden State Warriors,114,122,2023
+1037620,2023-10-28,Detroit Pistons,Chicago Bulls,118,102,2023
+1037621,2023-10-28,Washington Wizards,Memphis Grizzlies,113,106,2023
+1037622,2023-10-28,New Orleans Pelicans,New York Knicks,96,87,2023
+1037623,2023-10-28,Cleveland Cavaliers,Indiana Pacers,113,125,2023
+1037624,2023-10-28,Toronto Raptors,Philadelphia 76ers,107,114,2023
+1037625,2023-10-28,Minnesota Timberwolves,Miami Heat,106,90,2023
+1037626,2023-10-28,Phoenix Suns,Utah Jazz,126,104,2023
+1037627,2023-10-29,Oklahoma City Thunder,Denver Nuggets,95,128,2023
+1037628,2023-10-29,Houston Rockets,Golden State Warriors,95,106,2023
+1037629,2023-10-29,Milwaukee Bucks,Atlanta Hawks,110,127,2023
+1037630,2023-10-29,Philadelphia 76ers,Portland Trail Blazers,126,98,2023
+1037631,2023-10-29,LA Clippers,San Antonio Spurs,123,83,2023
+1037632,2023-10-29,Sacramento Kings,Los Angeles Lakers,132,127,2023
+1037633,2023-10-30,Charlotte Hornets,Brooklyn Nets,121,133,2023
+1037634,2023-10-30,Indiana Pacers,Chicago Bulls,105,112,2023
+1037635,2023-10-30,Washington Wizards,Boston Celtics,107,126,2023
+1037636,2023-10-30,Atlanta Hawks,Minnesota Timberwolves,127,113,2023
+1037637,2023-10-30,Toronto Raptors,Portland Trail Blazers,91,99,2023
+1037638,2023-10-30,Memphis Grizzlies,Dallas Mavericks,110,125,2023
+1037639,2023-10-30,Milwaukee Bucks,Miami Heat,122,114,2023
+1037640,2023-10-30,New Orleans Pelicans,Golden State Warriors,102,130,2023
+1037641,2023-10-30,Oklahoma City Thunder,Detroit Pistons,124,112,2023
+1037642,2023-10-30,Denver Nuggets,Utah Jazz,110,102,2023
+1037643,2023-10-30,Los Angeles Lakers,Orlando Magic,106,103,2023
+1037644,2023-10-31,Cleveland Cavaliers,New York Knicks,91,109,2023
+1037645,2023-10-31,Phoenix Suns,San Antonio Spurs,114,115,2023
+1037646,2023-10-31,LA Clippers,Orlando Magic,118,102,2023
+1037647,2023-11-01,Detroit Pistons,Portland Trail Blazers,101,110,2023
+1037648,2023-11-01,Toronto Raptors,Milwaukee Bucks,130,111,2023
+1037649,2023-11-01,Atlanta Hawks,Washington Wizards,130,121,2023
+1037650,2023-11-01,Boston Celtics,Indiana Pacers,155,104,2023
+1037651,2023-11-01,Miami Heat,Brooklyn Nets,105,109,2023
+1037652,2023-11-01,New York Knicks,Cleveland Cavaliers,89,95,2023
+1037653,2023-11-01,Oklahoma City Thunder,New Orleans Pelicans,106,110,2023
+1037654,2023-11-01,Houston Rockets,Charlotte Hornets,128,119,2023
+1037655,2023-11-01,Minnesota Timberwolves,Denver Nuggets,110,89,2023
+1037656,2023-11-01,Dallas Mavericks,Chicago Bulls,114,105,2023
+1037657,2023-11-01,Utah Jazz,Memphis Grizzlies,133,109,2023
+1037658,2023-11-01,Golden State Warriors,Sacramento Kings,102,101,2023
+1037659,2023-11-01,Los Angeles Lakers,LA Clippers,130,125,2023
+1037660,2023-11-02,Philadelphia 76ers,Toronto Raptors,114,99,2023
+1037661,2023-11-02,New Orleans Pelicans,Detroit Pistons,125,116,2023
+1037662,2023-11-02,Utah Jazz,Orlando Magic,113,115,2023
+1037663,2023-11-02,Phoenix Suns,San Antonio Spurs,121,132,2023
+3277349,2023-11-03,Indiana Pacers,Cleveland Cavaliers,121,116,2023
+3277350,2023-11-03,Milwaukee Bucks,New York Knicks,110,105,2023
+3277351,2023-11-03,Miami Heat,Washington Wizards,121,114,2023
+3277352,2023-11-03,Chicago Bulls,Brooklyn Nets,107,109,2023
+3277353,2023-11-03,Oklahoma City Thunder,Golden State Warriors,139,141,2023
+3277354,2023-11-03,Denver Nuggets,Dallas Mavericks,125,114,2023
+3277355,2023-11-03,Portland Trail Blazers,Memphis Grizzlies,115,113,2023
+1037671,2023-11-04,Philadelphia 76ers,Phoenix Suns,112,100,2023
+1037672,2023-11-04,Indiana Pacers,Charlotte Hornets,124,125,2023
+1037673,2023-11-04,Orlando Magic,Los Angeles Lakers,120,101,2023
+1037674,2023-11-04,New Orleans Pelicans,Atlanta Hawks,105,123,2023
+1037675,2023-11-04,Brooklyn Nets,Boston Celtics,114,124,2023
+1037676,2023-11-04,Houston Rockets,Sacramento Kings,107,89,2023
+1037677,2023-11-04,Minnesota Timberwolves,Utah Jazz,123,95,2023
+1037678,2023-11-04,Denver Nuggets,Chicago Bulls,123,101,2023
+1037679,2023-11-05,Detroit Pistons,Phoenix Suns,106,120,2023
+1037680,2023-11-05,San Antonio Spurs,Toronto Raptors,116,123,2023
+1037681,2023-11-05,Cleveland Cavaliers,Golden State Warriors,115,104,2023
+1037682,2023-11-05,Dallas Mavericks,Charlotte Hornets,124,118,2023
+1037683,2023-11-05,Portland Trail Blazers,Memphis Grizzlies,100,112,2023
+1037684,2023-11-06,Detroit Pistons,Golden State Warriors,109,120,2023
+1037685,2023-11-06,Indiana Pacers,San Antonio Spurs,152,111,2023
+1037686,2023-11-06,Orlando Magic,Dallas Mavericks,102,117,2023
+1037687,2023-11-06,Philadelphia 76ers,Washington Wizards,146,128,2023
+1037688,2023-11-06,Brooklyn Nets,Milwaukee Bucks,125,129,2023
+1037689,2023-11-06,Miami Heat,Los Angeles Lakers,108,107,2023
+1037690,2023-11-06,New York Knicks,LA Clippers,111,97,2023
+1037691,2023-11-06,Chicago Bulls,Utah Jazz,130,113,2023
+1037692,2023-11-06,Houston Rockets,Sacramento Kings,122,97,2023
+1037693,2023-11-06,Minnesota Timberwolves,Boston Celtics,114,109,2023
+1037694,2023-11-06,Oklahoma City Thunder,Atlanta Hawks,126,117,2023
+1037695,2023-11-06,Denver Nuggets,New Orleans Pelicans,134,116,2023
+1037696,2023-11-08,Charlotte Hornets,Washington Wizards,116,132,2023
+1037697,2023-11-08,Indiana Pacers,Utah Jazz,134,118,2023
+1037698,2023-11-08,Philadelphia 76ers,Boston Celtics,106,103,2023
+1037699,2023-11-08,Brooklyn Nets,LA Clippers,100,93,2023
+1037700,2023-11-08,New York Knicks,San Antonio Spurs,126,105,2023
+1037701,2023-11-08,Chicago Bulls,Phoenix Suns,115,116,2023
+1037702,2023-11-08,Houston Rockets,Los Angeles Lakers,128,94,2023
+1037703,2023-11-08,Memphis Grizzlies,Miami Heat,102,108,2023
+1037704,2023-11-08,Milwaukee Bucks,Detroit Pistons,120,118,2023
+1037705,2023-11-08,Minnesota Timberwolves,New Orleans Pelicans,122,101,2023
+1037706,2023-11-08,Oklahoma City Thunder,Cleveland Cavaliers,128,120,2023
+1037707,2023-11-08,Dallas Mavericks,Toronto Raptors,116,127,2023
+1037708,2023-11-08,Denver Nuggets,Golden State Warriors,108,105,2023
+1037709,2023-11-08,Sacramento Kings,Portland Trail Blazers,121,118,2023
+1037710,2023-11-09,Indiana Pacers,Milwaukee Bucks,126,124,2023
+1037711,2023-11-09,Orlando Magic,Atlanta Hawks,119,120,2023
+3277397,2023-11-10,Detroit Pistons,Philadelphia 76ers,106,114,2023
+3277398,2023-11-10,Washington Wizards,Charlotte Hornets,117,124,2023
+3277399,2023-11-10,Boston Celtics,Brooklyn Nets,121,107,2023
+3277400,2023-11-10,Houston Rockets,New Orleans Pelicans,104,101,2023
+3277401,2023-11-10,Memphis Grizzlies,Utah Jazz,121,127,2023
+3277402,2023-11-10,San Antonio Spurs,Minnesota Timberwolves,110,117,2023
+3277403,2023-11-10,Dallas Mavericks,LA Clippers,144,126,2023
+3277404,2023-11-10,Phoenix Suns,Los Angeles Lakers,119,122,2023
+3277405,2023-11-10,Sacramento Kings,Oklahoma City Thunder,105,98,2023
+1037721,2023-11-11,Orlando Magic,Milwaukee Bucks,112,97,2023
+1037722,2023-11-11,Boston Celtics,Toronto Raptors,117,94,2023
+1037723,2023-11-11,Atlanta Hawks,Miami Heat,109,117,2023
+1037724,2023-11-11,Golden State Warriors,Cleveland Cavaliers,110,118,2023
+1037725,2023-11-12,New York Knicks,Charlotte Hornets,129,107,2023
+1037726,2023-11-12,Brooklyn Nets,Washington Wizards,102,94,2023
+1037727,2023-11-12,LA Clippers,Memphis Grizzlies,101,105,2023
+1037728,2023-11-12,Philadelphia 76ers,Indiana Pacers,137,126,2023
+1037729,2023-11-12,Chicago Bulls,Detroit Pistons,119,108,2023
+1037730,2023-11-12,Houston Rockets,Denver Nuggets,107,104,2023
+1037731,2023-11-12,New Orleans Pelicans,Dallas Mavericks,124,136,2023
+1037732,2023-11-12,San Antonio Spurs,Miami Heat,113,118,2023
+1037733,2023-11-12,Phoenix Suns,Oklahoma City Thunder,99,111,2023
+1037734,2023-11-12,Golden State Warriors,Minnesota Timberwolves,110,116,2023
+1037735,2023-11-12,Los Angeles Lakers,Portland Trail Blazers,116,110,2023
+1037736,2023-11-13,Boston Celtics,New York Knicks,114,98,2023
+1037737,2023-11-13,Toronto Raptors,Washington Wizards,111,107,2023
+1037738,2023-11-13,Milwaukee Bucks,Chicago Bulls,118,109,2023
+1037739,2023-11-13,Sacramento Kings,Cleveland Cavaliers,132,120,2023
+3277425,2023-11-14,Charlotte Hornets,Miami Heat,105,111,2023
+3277426,2023-11-14,Detroit Pistons,Atlanta Hawks,120,126,2023
+3277427,2023-11-14,Philadelphia 76ers,Indiana Pacers,126,132,2023
+3277428,2023-11-14,Brooklyn Nets,Orlando Magic,124,104,2023
+3277429,2023-11-14,Oklahoma City Thunder,San Antonio Spurs,123,87,2023
+3277430,2023-11-14,New Orleans Pelicans,Dallas Mavericks,131,110,2023
+3277431,2023-11-14,Utah Jazz,Portland Trail Blazers,115,99,2023
+3277432,2023-11-14,Denver Nuggets,LA Clippers,111,108,2023
+3277433,2023-11-14,Golden State Warriors,Minnesota Timberwolves,101,104,2023
+3277434,2023-11-14,Los Angeles Lakers,Memphis Grizzlies,134,107,2023
+1037750,2023-11-15,Washington Wizards,Dallas Mavericks,117,130,2023
+1037751,2023-11-15,Atlanta Hawks,New York Knicks,114,116,2023
+1037752,2023-11-15,Philadelphia 76ers,Boston Celtics,107,117,2023
+1037753,2023-11-15,Toronto Raptors,Milwaukee Bucks,112,128,2023
+1037754,2023-11-15,Chicago Bulls,Orlando Magic,94,96,2023
+1037755,2023-11-15,Phoenix Suns,Minnesota Timberwolves,133,115,2023
+1037756,2023-11-15,Los Angeles Lakers,Sacramento Kings,110,125,2023
+1037757,2023-11-15,Portland Trail Blazers,Cleveland Cavaliers,95,109,2023
+1037758,2023-11-16,Miami Heat,Brooklyn Nets,122,115,2023
+1037759,2023-11-16,Golden State Warriors,Oklahoma City Thunder,109,128,2023
+3277445,2023-11-17,Charlotte Hornets,Milwaukee Bucks,99,130,2023
+3277446,2023-11-17,Washington Wizards,New York Knicks,99,120,2023
+3277447,2023-11-17,Atlanta Hawks,Philadelphia 76ers,116,126,2023
+3277448,2023-11-17,Cleveland Cavaliers,Detroit Pistons,108,100,2023
+3277449,2023-11-17,Toronto Raptors,Boston Celtics,105,108,2023
+3277450,2023-11-17,San Antonio Spurs,Sacramento Kings,120,129,2023
+3277451,2023-11-17,Chicago Bulls,Orlando Magic,97,103,2023
+3277452,2023-11-17,New Orleans Pelicans,Denver Nuggets,115,110,2023
+3277453,2023-11-17,Utah Jazz,Phoenix Suns,128,131,2023
+3277454,2023-11-17,Portland Trail Blazers,Los Angeles Lakers,95,107,2023
+3277455,2023-11-17,LA Clippers,Houston Rockets,106,100,2023
+1037771,2023-11-18,Charlotte Hornets,New York Knicks,108,122,2023
+1037772,2023-11-18,New Orleans Pelicans,Minnesota Timberwolves,120,121,2023
+1037773,2023-11-18,Chicago Bulls,Miami Heat,102,97,2023
+1037774,2023-11-18,Milwaukee Bucks,Dallas Mavericks,132,125,2023
+1037775,2023-11-18,San Antonio Spurs,Memphis Grizzlies,108,120,2023
+1037776,2023-11-18,Golden State Warriors,Oklahoma City Thunder,123,130,2023
+1037777,2023-11-19,Brooklyn Nets,Philadelphia 76ers,99,121,2023
+1037778,2023-11-19,Indiana Pacers,Orlando Magic,116,128,2023
+1037779,2023-11-19,Cleveland Cavaliers,Denver Nuggets,121,109,2023
+1037780,2023-11-19,Toronto Raptors,Detroit Pistons,142,113,2023
+1037781,2023-11-19,Dallas Mavericks,Sacramento Kings,113,129,2023
+1037782,2023-11-19,Memphis Grizzlies,Boston Celtics,100,102,2023
+1037783,2023-11-19,Utah Jazz,Phoenix Suns,137,140,2023
+1037784,2023-11-19,Portland Trail Blazers,Oklahoma City Thunder,91,134,2023
+1037785,2023-11-19,Los Angeles Lakers,Houston Rockets,105,104,2023
+1037786,2023-11-20,Charlotte Hornets,Boston Celtics,121,118,2023
+1037787,2023-11-20,Detroit Pistons,Denver Nuggets,103,107,2023
+1037788,2023-11-20,Washington Wizards,Milwaukee Bucks,129,142,2023
+1037789,2023-11-20,Chicago Bulls,Miami Heat,100,118,2023
+1037790,2023-11-20,Minnesota Timberwolves,New York Knicks,117,100,2023
+1037791,2023-11-20,New Orleans Pelicans,Sacramento Kings,129,93,2023
+1037792,2023-11-20,San Antonio Spurs,LA Clippers,99,124,2023
+1037793,2023-11-20,Golden State Warriors,Houston Rockets,121,116,2023
+3277479,2023-11-21,Orlando Magic,Toronto Raptors,126,107,2023
+3277480,2023-11-21,Atlanta Hawks,Indiana Pacers,152,157,2023
+3277481,2023-11-21,Philadelphia 76ers,Cleveland Cavaliers,119,122,2023
+3277482,2023-11-21,Phoenix Suns,Portland Trail Blazers,120,107,2023
+3277483,2023-11-21,Los Angeles Lakers,Utah Jazz,131,99,2023
+1037799,2023-11-22,Charlotte Hornets,Washington Wizards,117,114,2023
+1037800,2023-11-22,Orlando Magic,Denver Nuggets,124,119,2023
+1037801,2023-11-22,Atlanta Hawks,Brooklyn Nets,147,145,2023
+1037802,2023-11-22,Boston Celtics,Milwaukee Bucks,119,116,2023
+1037803,2023-11-22,Cleveland Cavaliers,Miami Heat,96,129,2023
+1037804,2023-11-22,Indiana Pacers,Toronto Raptors,131,132,2023
+1037805,2023-11-22,Houston Rockets,Memphis Grizzlies,111,91,2023
+1037806,2023-11-22,Minnesota Timberwolves,Philadelphia 76ers,112,99,2023
+1037807,2023-11-22,New Orleans Pelicans,Sacramento Kings,117,112,2023
+1037808,2023-11-22,Oklahoma City Thunder,Chicago Bulls,116,102,2023
+1037809,2023-11-22,San Antonio Spurs,LA Clippers,102,109,2023
+1037810,2023-11-22,Phoenix Suns,Golden State Warriors,123,115,2023
+1037811,2023-11-22,Portland Trail Blazers,Utah Jazz,121,105,2023
+1037812,2023-11-22,Los Angeles Lakers,Dallas Mavericks,101,104,2023
+3277498,2023-11-24,Orlando Magic,Boston Celtics,113,96,2023
+3277499,2023-11-24,Memphis Grizzlies,Phoenix Suns,89,110,2023
+3277500,2023-11-24,New York Knicks,Miami Heat,100,98,2023
+3277501,2023-11-24,Toronto Raptors,Chicago Bulls,121,108,2023
+3277502,2023-11-24,Indiana Pacers,Detroit Pistons,136,113,2023
+3277503,2023-11-24,Houston Rockets,Denver Nuggets,105,86,2023
+3277504,2023-11-24,Milwaukee Bucks,Washington Wizards,131,128,2023
+3277505,2023-11-24,Minnesota Timberwolves,Sacramento Kings,111,124,2023
+3277506,2023-11-24,Golden State Warriors,San Antonio Spurs,118,112,2023
+3277507,2023-11-24,LA Clippers,New Orleans Pelicans,106,116,2023
+1037823,2023-11-25,Oklahoma City Thunder,Philadelphia 76ers,123,127,2023
+1037824,2023-11-25,Brooklyn Nets,Miami Heat,112,97,2023
+1037825,2023-11-25,Washington Wizards,Atlanta Hawks,108,136,2023
+1037826,2023-11-25,Cleveland Cavaliers,Los Angeles Lakers,115,121,2023
+1037827,2023-11-25,Utah Jazz,New Orleans Pelicans,105,100,2023
+1037828,2023-11-25,LA Clippers,Dallas Mavericks,107,88,2023
+1037829,2023-11-26,Milwaukee Bucks,Portland Trail Blazers,108,102,2023
+1037830,2023-11-26,Boston Celtics,Atlanta Hawks,113,103,2023
+1037831,2023-11-26,New York Knicks,Phoenix Suns,113,116,2023
+1037832,2023-11-26,Orlando Magic,Charlotte Hornets,130,117,2023
+1037833,2023-11-26,Memphis Grizzlies,Minnesota Timberwolves,97,119,2023
+1037834,2023-11-26,Brooklyn Nets,Chicago Bulls,118,109,2023
+1037835,2023-11-26,Cleveland Cavaliers,Toronto Raptors,105,102,2023
+1037836,2023-11-26,Denver Nuggets,San Antonio Spurs,132,120,2023
+1037837,2023-11-27,Detroit Pistons,Washington Wizards,107,126,2023
+1037838,2023-11-27,Indiana Pacers,Portland Trail Blazers,110,114,2023
+1037839,2023-11-27,Philadelphia 76ers,Los Angeles Lakers,138,94,2023
+1037840,2023-11-27,Utah Jazz,New Orleans Pelicans,114,112,2023
+1037841,2023-11-27,LA Clippers,Denver Nuggets,104,113,2023
+3277527,2023-11-28,Boston Celtics,Chicago Bulls,124,97,2023
+3277528,2023-11-28,Brooklyn Nets,Toronto Raptors,115,103,2023
+3277529,2023-11-28,Cleveland Cavaliers,Atlanta Hawks,128,105,2023
+3277530,2023-11-28,Miami Heat,Milwaukee Bucks,124,131,2023
+3277531,2023-11-28,New York Knicks,Charlotte Hornets,115,91,2023
+3277532,2023-11-28,Minnesota Timberwolves,Oklahoma City Thunder,106,103,2023
+3277533,2023-11-28,Dallas Mavericks,Houston Rockets,121,115,2023
+3277534,2023-11-28,Sacramento Kings,Golden State Warriors,124,123,2023
+1037850,2023-11-29,Detroit Pistons,Los Angeles Lakers,107,133,2023
+1037851,2023-11-29,Orlando Magic,Washington Wizards,139,120,2023
+1037852,2023-11-29,Toronto Raptors,Phoenix Suns,112,105,2023
+1037853,2023-11-29,Memphis Grizzlies,Utah Jazz,105,91,2023
+1037854,2023-11-29,New Orleans Pelicans,Philadelphia 76ers,124,114,2023
+1037855,2023-11-29,Denver Nuggets,Houston Rockets,134,124,2023
+1037856,2023-11-29,Sacramento Kings,LA Clippers,117,131,2023
+1037857,2023-11-30,Cleveland Cavaliers,Portland Trail Blazers,95,103,2023
+1037858,2023-11-30,Brooklyn Nets,Charlotte Hornets,128,129,2023
+1037859,2023-11-30,Miami Heat,Indiana Pacers,142,132,2023
+1037860,2023-11-30,New York Knicks,Detroit Pistons,118,112,2023
+1037861,2023-11-30,Chicago Bulls,Milwaukee Bucks,120,113,2023
+1037862,2023-11-30,Minnesota Timberwolves,Utah Jazz,101,90,2023
+1037863,2023-11-30,Oklahoma City Thunder,Los Angeles Lakers,133,110,2023
+1037864,2023-11-30,San Antonio Spurs,Atlanta Hawks,135,137,2023
+1037865,2023-11-30,Golden State Warriors,LA Clippers,120,114,2023
+1037866,2023-12-01,Orlando Magic,Washington Wizards,130,125,2023
+1037867,2023-12-01,Boston Celtics,Philadelphia 76ers,125,119,2023
+1037868,2023-12-01,Toronto Raptors,New York Knicks,106,119,2023
+1037869,2023-12-01,Dallas Mavericks,Memphis Grizzlies,94,108,2023
+1037870,2023-12-01,New Orleans Pelicans,San Antonio Spurs,121,106,2023
+1037871,2023-12-01,Phoenix Suns,Denver Nuggets,111,119,2023
+1037872,2023-12-02,LA Clippers,Golden State Warriors,113,112,2023
+1037873,2023-12-02,Charlotte Hornets,Minnesota Timberwolves,117,123,2023
+1037874,2023-12-02,Brooklyn Nets,Orlando Magic,129,101,2023
+1037875,2023-12-02,Detroit Pistons,Cleveland Cavaliers,101,110,2023
+1037876,2023-12-02,Miami Heat,Indiana Pacers,129,144,2023
+1037877,2023-12-02,Chicago Bulls,New Orleans Pelicans,124,118,2023
+1037878,2023-12-02,Milwaukee Bucks,Atlanta Hawks,132,121,2023
+1037879,2023-12-02,Dallas Mavericks,Oklahoma City Thunder,120,126,2023
+1037880,2023-12-02,Phoenix Suns,Memphis Grizzlies,116,109,2023
+1037881,2023-12-02,Utah Jazz,Portland Trail Blazers,118,113,2023
+1037882,2023-12-02,Sacramento Kings,Denver Nuggets,123,117,2023
+1037883,2023-12-02,Los Angeles Lakers,Houston Rockets,107,97,2023
+7045521,2023-12-04,Indiana Pacers,Boston Celtics,122,112,2023
+7045522,2023-12-04,Sacramento Kings,New Orleans Pelicans,117,127,2023
+7045523,2023-12-05,Milwaukee Bucks,New York Knicks,146,122,2023
+7045524,2023-12-05,Los Angeles Lakers,Phoenix Suns,106,103,2023
+7049313,2023-12-06,Cleveland Cavaliers,Orlando Magic,121,111,2023
+7049314,2023-12-06,Detroit Pistons,Memphis Grizzlies,102,116,2023
+7049315,2023-12-06,Toronto Raptors,Miami Heat,103,112,2023
+7049316,2023-12-06,Washington Wizards,Philadelphia 76ers,126,131,2023
+7049317,2023-12-06,Atlanta Hawks,Brooklyn Nets,113,114,2023
+7049318,2023-12-06,Minnesota Timberwolves,San Antonio Spurs,102,94,2023
+7049319,2023-12-06,Chicago Bulls,Charlotte Hornets,111,100,2023
+7049320,2023-12-06,Houston Rockets,Oklahoma City Thunder,110,101,2023
+7049321,2023-12-06,Dallas Mavericks,Utah Jazz,147,97,2023
+7049322,2023-12-06,Golden State Warriors,Portland Trail Blazers,110,106,2023
+7049323,2023-12-06,LA Clippers,Denver Nuggets,111,102,2023
+7981414,2023-12-07,Milwaukee Bucks,Indiana Pacers,119,128,2023
+7996352,2023-12-07,Los Angeles Lakers,New Orleans Pelicans,133,89,2023
+7050282,2023-12-08,Charlotte Hornets,Toronto Raptors,119,116,2023
+7050283,2023-12-08,Orlando Magic,Detroit Pistons,123,91,2023
+7050284,2023-12-08,Philadelphia 76ers,Atlanta Hawks,125,114,2023
+7050285,2023-12-08,Brooklyn Nets,Washington Wizards,124,97,2023
+7050286,2023-12-08,Miami Heat,Cleveland Cavaliers,99,111,2023
+7050287,2023-12-08,Memphis Grizzlies,Minnesota Timberwolves,103,127,2023
+7050288,2023-12-08,Oklahoma City Thunder,Golden State Warriors,138,136,2023
+7050289,2023-12-08,San Antonio Spurs,Chicago Bulls,112,121,2023
+7050290,2023-12-08,Denver Nuggets,Houston Rockets,106,114,2023
+7050291,2023-12-08,Utah Jazz,LA Clippers,103,117,2023
+7050292,2023-12-08,Portland Trail Blazers,Dallas Mavericks,112,125,2023
+7981426,2023-12-08,Boston Celtics,New York Knicks,133,123,2023
+7996365,2023-12-08,Phoenix Suns,Sacramento Kings,106,114,2023
+8258317,2023-12-09,Los Angeles Lakers,Indiana Pacers,123,109,2023
+1037884,2023-12-11,Charlotte Hornets,Miami Heat,114,116,2023
+1037885,2023-12-11,Detroit Pistons,Indiana Pacers,123,131,2023
+1037886,2023-12-11,Orlando Magic,Cleveland Cavaliers,104,94,2023
+1037887,2023-12-11,Philadelphia 76ers,Washington Wizards,146,101,2023
+1037888,2023-12-11,Atlanta Hawks,Denver Nuggets,122,129,2023
+1037889,2023-12-11,New York Knicks,Toronto Raptors,136,130,2023
+1037890,2023-12-11,Houston Rockets,San Antonio Spurs,93,82,2023
+1037891,2023-12-11,Memphis Grizzlies,Dallas Mavericks,113,120,2023
+1037892,2023-12-11,Milwaukee Bucks,Chicago Bulls,133,129,2023
+1037893,2023-12-11,New Orleans Pelicans,Minnesota Timberwolves,121,107,2023
+1037894,2023-12-11,Oklahoma City Thunder,Utah Jazz,134,120,2023
+1037895,2023-12-11,Sacramento Kings,Brooklyn Nets,131,118,2023
+1037896,2023-12-11,LA Clippers,Portland Trail Blazers,132,127,2023
+1037897,2023-12-12,Boston Celtics,Cleveland Cavaliers,120,113,2023
+1037898,2023-12-12,Dallas Mavericks,Los Angeles Lakers,127,125,2023
+1037899,2023-12-12,Chicago Bulls,Denver Nuggets,106,114,2023
+1037900,2023-12-12,Phoenix Suns,Golden State Warriors,119,116,2023
+1037901,2023-12-12,LA Clippers,Sacramento Kings,119,99,2023
+1037902,2023-12-13,Detroit Pistons,Philadelphia 76ers,111,129,2023
+1037903,2023-12-13,Washington Wizards,New Orleans Pelicans,122,142,2023
+1037904,2023-12-13,Miami Heat,Charlotte Hornets,115,104,2023
+1037905,2023-12-13,Toronto Raptors,Atlanta Hawks,135,128,2023
+1037906,2023-12-13,Houston Rockets,Memphis Grizzlies,117,104,2023
+1037907,2023-12-13,Milwaukee Bucks,Indiana Pacers,140,126,2023
+1037908,2023-12-13,San Antonio Spurs,Los Angeles Lakers,119,122,2023
+1037909,2023-12-13,Phoenix Suns,Brooklyn Nets,112,116,2023
+1037910,2023-12-13,Utah Jazz,New York Knicks,117,113,2023
+1037911,2023-12-14,Boston Celtics,Cleveland Cavaliers,116,107,2023
+1037912,2023-12-14,Miami Heat,Chicago Bulls,116,124,2023
+1037913,2023-12-14,Dallas Mavericks,Minnesota Timberwolves,101,119,2023
+1037914,2023-12-14,Denver Nuggets,Brooklyn Nets,124,101,2023
+1037915,2023-12-14,Portland Trail Blazers,Utah Jazz,114,122,2023
+1037916,2023-12-14,Sacramento Kings,Oklahoma City Thunder,128,123,2023
+1037917,2023-12-14,LA Clippers,Golden State Warriors,121,113,2023
+1037918,2023-12-15,Charlotte Hornets,New Orleans Pelicans,107,112,2023
+1037919,2023-12-15,Philadelphia 76ers,Detroit Pistons,124,92,2023
+1037920,2023-12-15,Washington Wizards,Indiana Pacers,137,123,2023
+1037921,2023-12-15,Boston Celtics,Orlando Magic,128,111,2023
+1037922,2023-12-15,Toronto Raptors,Atlanta Hawks,104,125,2023
+1037923,2023-12-15,San Antonio Spurs,Los Angeles Lakers,129,115,2023
+1037924,2023-12-15,Memphis Grizzlies,Houston Rockets,96,103,2023
+1037925,2023-12-15,Phoenix Suns,New York Knicks,122,139,2023
+1037926,2023-12-16,Milwaukee Bucks,Detroit Pistons,146,114,2023
+1037927,2023-12-16,Charlotte Hornets,Philadelphia 76ers,82,135,2023
+1037928,2023-12-16,Cleveland Cavaliers,Atlanta Hawks,127,119,2023
+1037929,2023-12-16,Miami Heat,Chicago Bulls,118,116,2023
+1037930,2023-12-16,Minnesota Timberwolves,Indiana Pacers,127,109,2023
+1037931,2023-12-16,Golden State Warriors,Brooklyn Nets,124,120,2023
+1037932,2023-12-16,Denver Nuggets,Oklahoma City Thunder,117,118,2023
+1037933,2023-12-16,Portland Trail Blazers,Dallas Mavericks,120,131,2023
+1037934,2023-12-16,Sacramento Kings,Utah Jazz,125,104,2023
+1037935,2023-12-16,LA Clippers,New York Knicks,144,122,2023
+1037936,2023-12-17,Boston Celtics,Orlando Magic,114,97,2023
+1037937,2023-12-17,San Antonio Spurs,New Orleans Pelicans,110,146,2023
+1037938,2023-12-17,Milwaukee Bucks,Houston Rockets,128,119,2023
+1037939,2023-12-17,Phoenix Suns,Washington Wizards,112,108,2023
+1037940,2023-12-17,Portland Trail Blazers,Golden State Warriors,114,118,2023
+1037941,2023-12-18,Cleveland Cavaliers,Houston Rockets,135,130,2023
+1037942,2023-12-18,Indiana Pacers,LA Clippers,127,151,2023
+1037943,2023-12-18,Philadelphia 76ers,Chicago Bulls,104,108,2023
+1037944,2023-12-18,Atlanta Hawks,Detroit Pistons,130,124,2023
+1037945,2023-12-18,Miami Heat,Minnesota Timberwolves,108,112,2023
+1037946,2023-12-18,Toronto Raptors,Charlotte Hornets,114,99,2023
+1037947,2023-12-18,Oklahoma City Thunder,Memphis Grizzlies,116,97,2023
+1037948,2023-12-18,Denver Nuggets,Dallas Mavericks,130,104,2023
+1037949,2023-12-18,Utah Jazz,Brooklyn Nets,125,108,2023
+1037950,2023-12-18,Sacramento Kings,Washington Wizards,143,131,2023
+1037951,2023-12-18,Los Angeles Lakers,New York Knicks,109,114,2023
+1037952,2023-12-19,New Orleans Pelicans,Memphis Grizzlies,113,115,2023
+1037953,2023-12-19,Milwaukee Bucks,San Antonio Spurs,132,119,2023
+1037954,2023-12-19,Golden State Warriors,Boston Celtics,132,126,2023
+1037955,2023-12-19,Portland Trail Blazers,Phoenix Suns,109,104,2023
+1037956,2023-12-20,Cleveland Cavaliers,Utah Jazz,124,116,2023
+1037957,2023-12-20,Indiana Pacers,Charlotte Hornets,144,113,2023
+1037958,2023-12-20,Orlando Magic,Miami Heat,106,115,2023
+1037959,2023-12-20,Philadelphia 76ers,Minnesota Timberwolves,127,113,2023
+1037960,2023-12-20,Brooklyn Nets,New York Knicks,102,121,2023
+1037961,2023-12-20,Toronto Raptors,Denver Nuggets,104,113,2023
+1037962,2023-12-20,Chicago Bulls,Los Angeles Lakers,124,108,2023
+1037963,2023-12-20,Houston Rockets,Atlanta Hawks,127,134,2023
+1037964,2023-12-20,Dallas Mavericks,LA Clippers,111,120,2023
+1037965,2023-12-20,Sacramento Kings,Boston Celtics,119,144,2023
+1037966,2023-12-21,Detroit Pistons,Utah Jazz,111,119,2023
+1037967,2023-12-21,Cleveland Cavaliers,New Orleans Pelicans,104,123,2023
+1037968,2023-12-21,Chicago Bulls,San Antonio Spurs,114,95,2023
+1037969,2023-12-21,Memphis Grizzlies,Indiana Pacers,116,103,2023
+1037970,2023-12-21,Milwaukee Bucks,Orlando Magic,118,114,2023
+1037971,2023-12-21,Oklahoma City Thunder,LA Clippers,134,115,2023
+1037972,2023-12-21,Minnesota Timberwolves,Los Angeles Lakers,118,111,2023
+1037973,2023-12-21,Portland Trail Blazers,Washington Wizards,117,118,2023
+1037974,2023-12-22,Philadelphia 76ers,Toronto Raptors,121,111,2023
+1037975,2023-12-22,Brooklyn Nets,Denver Nuggets,117,122,2023
+1037976,2023-12-22,Miami Heat,Atlanta Hawks,122,113,2023
+1037977,2023-12-22,Houston Rockets,Dallas Mavericks,122,96,2023
+1037978,2023-12-22,Golden State Warriors,Washington Wizards,129,118,2023
+1037979,2023-12-22,Sacramento Kings,Phoenix Suns,120,105,2023
+1037980,2023-12-23,New York Knicks,Milwaukee Bucks,111,130,2023
+1037981,2023-12-23,LA Clippers,Boston Celtics,108,145,2023
+1037982,2023-12-23,Charlotte Hornets,Denver Nuggets,95,102,2023
+1037983,2023-12-23,Indiana Pacers,Orlando Magic,110,117,2023
+1037984,2023-12-23,New Orleans Pelicans,Houston Rockets,104,106,2023
+1037985,2023-12-23,Atlanta Hawks,Memphis Grizzlies,119,125,2023
+1037986,2023-12-23,Brooklyn Nets,Detroit Pistons,126,115,2023
+1037987,2023-12-23,Toronto Raptors,Utah Jazz,119,126,2023
+1037988,2023-12-23,Chicago Bulls,Cleveland Cavaliers,95,109,2023
+1037989,2023-12-23,Oklahoma City Thunder,Los Angeles Lakers,120,129,2023
+1037990,2023-12-23,Dallas Mavericks,San Antonio Spurs,144,119,2023
+1037991,2023-12-23,Golden State Warriors,Portland Trail Blazers,126,106,2023
+1037992,2023-12-23,Sacramento Kings,Minnesota Timberwolves,98,110,2023
+1037993,2023-12-25,New York Knicks,Milwaukee Bucks,129,122,2023
+1037994,2023-12-25,Denver Nuggets,Golden State Warriors,120,114,2023
+1037995,2023-12-25,Los Angeles Lakers,Boston Celtics,115,126,2023
+1037996,2023-12-25,Miami Heat,Philadelphia 76ers,119,113,2023
+1037997,2023-12-25,Phoenix Suns,Dallas Mavericks,114,128,2023
+1037998,2023-12-26,Detroit Pistons,Brooklyn Nets,112,118,2023
+1037999,2023-12-26,Washington Wizards,Orlando Magic,119,127,2023
+1038000,2023-12-26,Chicago Bulls,Atlanta Hawks,118,113,2023
+1038001,2023-12-26,Houston Rockets,Indiana Pacers,117,123,2023
+1038002,2023-12-26,New Orleans Pelicans,Memphis Grizzlies,115,116,2023
+1038003,2023-12-26,Oklahoma City Thunder,Minnesota Timberwolves,129,106,2023
+1038004,2023-12-26,San Antonio Spurs,Utah Jazz,118,130,2023
+1038005,2023-12-26,Portland Trail Blazers,Sacramento Kings,130,113,2023
+1038006,2023-12-26,LA Clippers,Charlotte Hornets,113,104,2023
+1038007,2023-12-27,Orlando Magic,Philadelphia 76ers,92,112,2023
+1038008,2023-12-27,Washington Wizards,Toronto Raptors,102,132,2023
+1038009,2023-12-27,Brooklyn Nets,Milwaukee Bucks,122,144,2023
+1038010,2023-12-27,Houston Rockets,Phoenix Suns,113,129,2023
+1038011,2023-12-27,Oklahoma City Thunder,New York Knicks,129,120,2023
+1038012,2023-12-27,Dallas Mavericks,Cleveland Cavaliers,110,113,2023
+1038013,2023-12-28,Boston Celtics,Detroit Pistons,128,122,2023
+1038014,2023-12-28,Chicago Bulls,Indiana Pacers,104,120,2023
+1038015,2023-12-28,Minnesota Timberwolves,Dallas Mavericks,118,110,2023
+1038016,2023-12-28,New Orleans Pelicans,Utah Jazz,112,105,2023
+1038017,2023-12-28,Denver Nuggets,Memphis Grizzlies,142,105,2023
+1038018,2023-12-28,Golden State Warriors,Miami Heat,102,114,2023
+1038019,2023-12-28,Portland Trail Blazers,San Antonio Spurs,105,118,2023
+1038020,2023-12-28,Los Angeles Lakers,Charlotte Hornets,133,112,2023
+1038021,2023-12-29,Orlando Magic,New York Knicks,117,108,2023
+1038022,2023-12-29,Washington Wizards,Brooklyn Nets,110,104,2023
+1038023,2023-12-29,Atlanta Hawks,Sacramento Kings,110,117,2023
+1038024,2023-12-29,Boston Celtics,Toronto Raptors,120,118,2023
+1038025,2023-12-29,Cleveland Cavaliers,Milwaukee Bucks,111,119,2023
+1038026,2023-12-29,Houston Rockets,Philadelphia 76ers,127,131,2023
+1038027,2023-12-29,Denver Nuggets,Oklahoma City Thunder,93,119,2023
+1038028,2023-12-29,Phoenix Suns,Charlotte Hornets,133,119,2023
+1038029,2023-12-29,Portland Trail Blazers,San Antonio Spurs,134,128,2023
+1038030,2023-12-29,LA Clippers,Memphis Grizzlies,117,106,2023
+1038031,2023-12-30,Utah Jazz,Miami Heat,117,109,2023
+1038032,2023-12-30,Detroit Pistons,Toronto Raptors,129,127,2023
+1038033,2023-12-30,Indiana Pacers,New York Knicks,140,126,2023
+1038034,2023-12-30,Chicago Bulls,Philadelphia 76ers,105,92,2023
+1038035,2023-12-30,Minnesota Timberwolves,Los Angeles Lakers,108,106,2023
+1038036,2023-12-30,Golden State Warriors,Dallas Mavericks,122,132,2023
+1038037,2023-12-31,Washington Wizards,Atlanta Hawks,126,130,2023
+1038038,2023-12-31,New Orleans Pelicans,Los Angeles Lakers,129,109,2023
+1038039,2023-12-31,Oklahoma City Thunder,Brooklyn Nets,124,108,2023
+1038040,2023-12-31,San Antonio Spurs,Boston Celtics,101,134,2023
+1038041,2023-12-31,Memphis Grizzlies,Sacramento Kings,92,123,2023
+1038042,2023-12-31,Phoenix Suns,Orlando Magic,112,107,2023
+1038043,2024-01-01,New York Knicks,Minnesota Timberwolves,112,106,2023
+1038044,2024-01-01,Toronto Raptors,Cleveland Cavaliers,124,121,2023
+1038045,2024-01-01,Houston Rockets,Detroit Pistons,136,113,2023
+1038046,2024-01-01,Milwaukee Bucks,Indiana Pacers,113,122,2023
+1038047,2024-01-01,Denver Nuggets,Charlotte Hornets,111,93,2023
+1038048,2024-01-01,Phoenix Suns,Portland Trail Blazers,109,88,2023
+1038049,2024-01-01,Utah Jazz,Dallas Mavericks,127,90,2023
+1038050,2024-01-01,LA Clippers,Miami Heat,121,104,2023
+1038051,2024-01-02,Philadelphia 76ers,Chicago Bulls,110,97,2023
+1038052,2024-01-02,Memphis Grizzlies,San Antonio Spurs,106,98,2023
+1038053,2024-01-02,New Orleans Pelicans,Brooklyn Nets,112,85,2023
+1038054,2024-01-02,Oklahoma City Thunder,Boston Celtics,127,123,2023
+1038055,2024-01-02,Golden State Warriors,Orlando Magic,121,115,2023
+1038056,2024-01-02,Sacramento Kings,Charlotte Hornets,104,111,2023
+1038057,2024-01-03,Cleveland Cavaliers,Washington Wizards,140,101,2023
+1038058,2024-01-03,Indiana Pacers,Milwaukee Bucks,142,130,2023
+1038059,2024-01-03,Atlanta Hawks,Oklahoma City Thunder,141,138,2023
+1038060,2024-01-03,New York Knicks,Chicago Bulls,116,100,2023
+1038061,2024-01-03,Houston Rockets,Brooklyn Nets,112,101,2023
+1038062,2024-01-03,Memphis Grizzlies,Toronto Raptors,111,116,2023
+1038063,2024-01-03,Minnesota Timberwolves,New Orleans Pelicans,106,117,2023
+1038064,2024-01-03,Dallas Mavericks,Portland Trail Blazers,126,97,2023
+1038065,2024-01-03,Phoenix Suns,LA Clippers,122,131,2023
+1038066,2024-01-03,Utah Jazz,Detroit Pistons,154,148,2023
+1038067,2024-01-03,Los Angeles Lakers,Miami Heat,96,110,2023
+1038068,2024-01-03,Sacramento Kings,Orlando Magic,138,135,2023
+1038069,2024-01-04,San Antonio Spurs,Milwaukee Bucks,121,125,2023
+1038070,2024-01-04,Golden State Warriors,Denver Nuggets,127,130,2023
+1038071,2024-01-05,Boston Celtics,Utah Jazz,126,97,2023
+1038072,2024-01-05,Indiana Pacers,Atlanta Hawks,150,116,2023
+1038073,2024-01-05,Brooklyn Nets,Oklahoma City Thunder,124,115,2023
+1038074,2024-01-05,Cleveland Cavaliers,Washington Wizards,114,90,2023
+1038075,2024-01-05,Philadelphia 76ers,New York Knicks,92,128,2023
+1038076,2024-01-05,Chicago Bulls,Charlotte Hornets,104,91,2023
+1038077,2024-01-05,Houston Rockets,Minnesota Timberwolves,95,122,2023
+1038078,2024-01-05,New Orleans Pelicans,LA Clippers,95,111,2023
+1038079,2024-01-05,Dallas Mavericks,Portland Trail Blazers,139,103,2023
+1038080,2024-01-05,Denver Nuggets,Orlando Magic,120,122,2023
+1038081,2024-01-05,Phoenix Suns,Miami Heat,113,97,2023
+1038082,2024-01-05,Golden State Warriors,Detroit Pistons,113,109,2023
+1038083,2024-01-05,Los Angeles Lakers,Memphis Grizzlies,113,127,2023
+1038084,2024-01-05,Sacramento Kings,Toronto Raptors,135,130,2023
+1038085,2024-01-06,Indiana Pacers,Boston Celtics,101,118,2023
+1038086,2024-01-06,Washington Wizards,New York Knicks,105,121,2023
+1038087,2024-01-06,Philadelphia 76ers,Utah Jazz,109,120,2023
+1038088,2024-01-06,Houston Rockets,Milwaukee Bucks,112,108,2023
+1038089,2024-01-07,Cleveland Cavaliers,San Antonio Spurs,117,115,2023
+1038090,2024-01-07,Brooklyn Nets,Portland Trail Blazers,127,134,2023
+1038091,2024-01-07,Orlando Magic,Atlanta Hawks,117,110,2023
+1038092,2024-01-07,Sacramento Kings,New Orleans Pelicans,100,133,2023
+1038093,2024-01-07,Dallas Mavericks,Minnesota Timberwolves,115,108,2023
+1038094,2024-01-07,Denver Nuggets,Detroit Pistons,131,114,2023
+1038095,2024-01-07,Phoenix Suns,Memphis Grizzlies,115,121,2023
+1038096,2024-01-07,Golden State Warriors,Toronto Raptors,118,133,2023
+1038097,2024-01-07,Los Angeles Lakers,LA Clippers,106,103,2023
+1038098,2024-01-08,Charlotte Hornets,Chicago Bulls,112,119,2023
+1038099,2024-01-08,Indiana Pacers,Boston Celtics,133,131,2023
+1038100,2024-01-08,Washington Wizards,Oklahoma City Thunder,128,136,2023
+1038101,2024-01-08,Miami Heat,Houston Rockets,120,113,2023
+1038102,2024-01-08,Milwaukee Bucks,Utah Jazz,116,132,2023
+1038103,2024-01-08,LA Clippers,Phoenix Suns,138,111,2023
+1038104,2024-01-09,Detroit Pistons,Sacramento Kings,110,131,2023
+1038105,2024-01-09,Orlando Magic,Minnesota Timberwolves,92,113,2023
+1038106,2024-01-09,New York Knicks,Portland Trail Blazers,112,84,2023
+1038107,2024-01-09,Dallas Mavericks,Memphis Grizzlies,103,120,2023
+1038108,2024-01-09,Los Angeles Lakers,Toronto Raptors,132,131,2023
+1038109,2024-01-10,Boston Celtics,Minnesota Timberwolves,127,120,2023
+1038110,2024-01-10,Charlotte Hornets,Sacramento Kings,98,123,2023
+1038111,2024-01-10,Detroit Pistons,San Antonio Spurs,108,130,2023
+1038112,2024-01-10,Indiana Pacers,Washington Wizards,112,104,2023
+1038113,2024-01-10,Atlanta Hawks,Philadelphia 76ers,139,132,2023
+1038114,2024-01-10,Miami Heat,Oklahoma City Thunder,120,128,2023
+1038115,2024-01-10,Chicago Bulls,Houston Rockets,124,119,2023
+1038116,2024-01-10,Utah Jazz,Denver Nuggets,124,111,2023
+1038117,2024-01-10,Golden State Warriors,New Orleans Pelicans,105,141,2023
+1038118,2024-01-10,LA Clippers,Toronto Raptors,126,120,2023
+1038119,2024-01-11,Cleveland Cavaliers,Brooklyn Nets,111,102,2023
+1038120,2024-01-11,Milwaukee Bucks,Boston Celtics,135,102,2023
+1038121,2024-01-11,Oklahoma City Thunder,Portland Trail Blazers,139,77,2023
+1038122,2024-01-11,Dallas Mavericks,New York Knicks,128,124,2023
+1038123,2024-01-11,Los Angeles Lakers,Phoenix Suns,109,127,2023
+1038124,2024-01-12,Philadelphia 76ers,Sacramento Kings,112,93,2023
+1038125,2024-01-12,Atlanta Hawks,Indiana Pacers,108,126,2023
+1038126,2024-01-12,Detroit Pistons,Houston Rockets,110,112,2023
+1038127,2024-01-12,Miami Heat,Orlando Magic,99,96,2023
+1038128,2024-01-12,Chicago Bulls,Golden State Warriors,131,140,2023
+1038129,2024-01-12,Memphis Grizzlies,LA Clippers,119,128,2023
+1038130,2024-01-12,Minnesota Timberwolves,Portland Trail Blazers,116,93,2023
+1038131,2024-01-12,Denver Nuggets,New Orleans Pelicans,125,113,2023
+1038132,2024-01-12,Utah Jazz,Toronto Raptors,145,113,2023
+1038133,2024-01-12,San Antonio Spurs,Charlotte Hornets,135,99,2023
+1038134,2024-01-13,Boston Celtics,Houston Rockets,145,113,2023
+1038135,2024-01-13,Atlanta Hawks,Washington Wizards,99,127,2023
+1038136,2024-01-13,Memphis Grizzlies,New York Knicks,94,106,2023
+1038137,2024-01-13,Milwaukee Bucks,Golden State Warriors,129,118,2023
+1038138,2024-01-13,Oklahoma City Thunder,Orlando Magic,112,100,2023
+1038139,2024-01-13,Dallas Mavericks,New Orleans Pelicans,108,118,2023
+1038140,2024-01-13,San Antonio Spurs,Chicago Bulls,116,122,2023
+1038141,2024-01-13,Utah Jazz,Los Angeles Lakers,132,125,2023
+1038142,2024-01-14,Denver Nuggets,Indiana Pacers,117,109,2023
+1038143,2024-01-14,Miami Heat,Charlotte Hornets,104,87,2023
+1038144,2024-01-14,Milwaukee Bucks,Sacramento Kings,143,142,2023
+1038145,2024-01-14,Minnesota Timberwolves,LA Clippers,109,105,2023
+1038146,2024-01-14,Portland Trail Blazers,Phoenix Suns,116,127,2023
+1038147,2024-01-15,Philadelphia 76ers,Houston Rockets,124,115,2023
+1038148,2024-01-15,Dallas Mavericks,New Orleans Pelicans,125,120,2023
+1038149,2024-01-15,New York Knicks,Orlando Magic,94,98,2023
+1038150,2024-01-15,Washington Wizards,Detroit Pistons,117,129,2023
+1038151,2024-01-15,Atlanta Hawks,San Antonio Spurs,109,99,2023
+1038152,2024-01-15,Memphis Grizzlies,Golden State Warriors,116,107,2023
+1038153,2024-01-15,Cleveland Cavaliers,Chicago Bulls,109,91,2023
+1038154,2024-01-15,Brooklyn Nets,Miami Heat,95,96,2023
+1038155,2024-01-15,Toronto Raptors,Boston Celtics,96,105,2023
+1038156,2024-01-15,Utah Jazz,Indiana Pacers,132,105,2023
+1038157,2024-01-15,Los Angeles Lakers,Oklahoma City Thunder,112,105,2023
+1038158,2024-01-16,Philadelphia 76ers,Denver Nuggets,126,121,2023
+1038159,2024-01-16,Phoenix Suns,Sacramento Kings,119,117,2023
+1038160,2024-01-16,LA Clippers,Oklahoma City Thunder,128,117,2023
+1038161,2024-01-17,Detroit Pistons,Minnesota Timberwolves,117,124,2023
+1038162,2024-01-17,Atlanta Hawks,Orlando Magic,106,104,2023
+1038163,2024-01-17,Boston Celtics,San Antonio Spurs,117,98,2023
+1038164,2024-01-17,Cleveland Cavaliers,Milwaukee Bucks,135,95,2023
+1038165,2024-01-17,New York Knicks,Houston Rockets,109,94,2023
+1038166,2024-01-17,Toronto Raptors,Miami Heat,121,97,2023
+1038167,2024-01-17,New Orleans Pelicans,Charlotte Hornets,132,112,2023
+1038169,2024-01-17,Los Angeles Lakers,Dallas Mavericks,127,110,2023
+1038170,2024-01-17,Portland Trail Blazers,Brooklyn Nets,105,103,2023
+1038171,2024-01-18,New York Knicks,Washington Wizards,113,109,2023
+1038172,2024-01-18,Toronto Raptors,Chicago Bulls,110,116,2023
+1038173,2024-01-18,Utah Jazz,Oklahoma City Thunder,129,134,2023
+1038174,2024-01-18,Minnesota Timberwolves,Memphis Grizzlies,118,103,2023
+1038175,2024-01-18,Sacramento Kings,Indiana Pacers,121,126,2023
+1038176,2024-01-19,Charlotte Hornets,San Antonio Spurs,124,120,2023
+1038177,2024-01-19,Orlando Magic,Philadelphia 76ers,109,124,2023
+1038178,2024-01-19,Boston Celtics,Denver Nuggets,100,102,2023
+1038179,2024-01-19,Miami Heat,Atlanta Hawks,108,109,2023
+1038180,2024-01-19,New Orleans Pelicans,Phoenix Suns,109,123,2023
+1038182,2024-01-19,Portland Trail Blazers,Indiana Pacers,118,115,2023
+1038183,2024-01-19,Los Angeles Lakers,Brooklyn Nets,112,130,2023
+1038184,2024-01-20,Detroit Pistons,Milwaukee Bucks,135,141,2023
+1038185,2024-01-20,Charlotte Hornets,Philadelphia 76ers,89,97,2023
+1038186,2024-01-20,Washington Wizards,San Antonio Spurs,127,131,2023
+1038187,2024-01-20,Atlanta Hawks,Cleveland Cavaliers,95,116,2023
+1038188,2024-01-20,New York Knicks,Toronto Raptors,126,100,2023
+1038189,2024-01-20,Chicago Bulls,Memphis Grizzlies,125,96,2023
+1038190,2024-01-20,Houston Rockets,Utah Jazz,127,126,2023
+1038191,2024-01-20,Minnesota Timberwolves,Oklahoma City Thunder,97,102,2023
+1038192,2024-01-21,LA Clippers,Brooklyn Nets,125,114,2023
+1038193,2024-01-21,Orlando Magic,Miami Heat,105,87,2023
+1038194,2024-01-21,Washington Wizards,Denver Nuggets,104,113,2023
+1038195,2024-01-21,Houston Rockets,Boston Celtics,107,116,2023
+1038196,2024-01-21,Phoenix Suns,Indiana Pacers,117,110,2023
+1038197,2024-01-21,Los Angeles Lakers,Portland Trail Blazers,134,110,2023
+1038198,2024-01-22,Detroit Pistons,Milwaukee Bucks,113,122,2023
+1038199,2024-01-22,Orlando Magic,Cleveland Cavaliers,99,126,2023
+1038200,2024-01-22,Philadelphia 76ers,San Antonio Spurs,133,123,2023
+1038201,2024-01-22,Toronto Raptors,Memphis Grizzlies,100,108,2023
+1038202,2024-01-22,Minnesota Timberwolves,Charlotte Hornets,125,128,2023
+1038203,2024-01-22,Dallas Mavericks,Boston Celtics,110,119,2023
+1038204,2024-01-22,Phoenix Suns,Chicago Bulls,115,113,2023
+1038205,2024-01-22,Sacramento Kings,Atlanta Hawks,122,107,2023
+1038206,2024-01-23,Indiana Pacers,Denver Nuggets,109,114,2023
+1038207,2024-01-23,Brooklyn Nets,New York Knicks,103,108,2023
+1038208,2024-01-23,New Orleans Pelicans,Utah Jazz,153,124,2023
+1038209,2024-01-23,Oklahoma City Thunder,Portland Trail Blazers,111,109,2023
+1038210,2024-01-23,LA Clippers,Los Angeles Lakers,127,116,2023
+1038211,2024-01-24,Detroit Pistons,Charlotte Hornets,113,106,2023
+1038212,2024-01-24,Washington Wizards,Minnesota Timberwolves,107,118,2023
+1038213,2024-01-24,Miami Heat,Memphis Grizzlies,96,105,2023
+1038214,2024-01-24,San Antonio Spurs,Oklahoma City Thunder,114,140,2023
+1038215,2024-01-24,Houston Rockets,Portland Trail Blazers,131,137,2023
+1038216,2024-01-24,Milwaukee Bucks,Cleveland Cavaliers,126,116,2023
+1038217,2024-01-24,Dallas Mavericks,Phoenix Suns,109,132,2023
+1038218,2024-01-24,Golden State Warriors,Atlanta Hawks,134,112,2023
+1038219,2024-01-25,Indiana Pacers,Philadelphia 76ers,134,122,2023
+1038220,2024-01-25,Washington Wizards,Utah Jazz,108,123,2023
+1038221,2024-01-25,Brooklyn Nets,Minnesota Timberwolves,94,96,2023
+1038222,2024-01-25,Miami Heat,Boston Celtics,110,143,2023
+1038223,2024-01-25,New York Knicks,Denver Nuggets,122,84,2023
+1038224,2024-01-25,Golden State Warriors,Sacramento Kings,133,134,2023
+1038225,2024-01-25,Los Angeles Lakers,Chicago Bulls,141,132,2023
+1038226,2024-01-26,Atlanta Hawks,Dallas Mavericks,143,148,2023
+1038227,2024-01-26,Charlotte Hornets,Houston Rockets,104,138,2023
+1038228,2024-01-26,Indiana Pacers,Phoenix Suns,133,131,2023
+1038229,2024-01-26,Toronto Raptors,LA Clippers,107,127,2023
+1038230,2024-01-26,Memphis Grizzlies,Orlando Magic,107,106,2023
+1038231,2024-01-26,Milwaukee Bucks,Cleveland Cavaliers,100,112,2023
+1038232,2024-01-26,New Orleans Pelicans,Oklahoma City Thunder,83,107,2023
+1038233,2024-01-26,San Antonio Spurs,Portland Trail Blazers,116,100,2023
+1038234,2024-01-27,Detroit Pistons,Washington Wizards,104,118,2023
+1038235,2024-01-27,New York Knicks,Miami Heat,125,109,2023
+1038236,2024-01-27,Denver Nuggets,Philadelphia 76ers,111,105,2023
+1038237,2024-01-27,Brooklyn Nets,Houston Rockets,106,104,2023
+1038238,2024-01-27,Boston Celtics,LA Clippers,96,115,2023
+1038239,2024-01-27,Charlotte Hornets,Utah Jazz,122,134,2023
+1038240,2024-01-27,Milwaukee Bucks,New Orleans Pelicans,141,117,2023
+1038241,2024-01-27,San Antonio Spurs,Minnesota Timberwolves,113,112,2023
+1038242,2024-01-27,Golden State Warriors,Los Angeles Lakers,144,145,2023
+1038243,2024-01-27,Dallas Mavericks,Sacramento Kings,115,120,2023
+1038244,2024-01-28,Indiana Pacers,Memphis Grizzlies,116,110,2023
+1038245,2024-01-28,Atlanta Hawks,Toronto Raptors,126,125,2023
+1038246,2024-01-28,Detroit Pistons,Oklahoma City Thunder,120,104,2023
+1038247,2024-01-28,Orlando Magic,Phoenix Suns,113,98,2023
+1038248,2024-01-28,Portland Trail Blazers,Chicago Bulls,96,104,2023
+1038249,2024-01-29,Charlotte Hornets,New York Knicks,92,113,2023
+1038250,2024-01-29,Cleveland Cavaliers,LA Clippers,118,108,2023
+1038251,2024-01-29,Boston Celtics,New Orleans Pelicans,118,112,2023
+1038252,2024-01-29,Brooklyn Nets,Utah Jazz,147,114,2023
+1038253,2024-01-29,Miami Heat,Phoenix Suns,105,118,2023
+1038254,2024-01-29,Houston Rockets,Los Angeles Lakers,135,119,2023
+1038255,2024-01-29,Memphis Grizzlies,Sacramento Kings,94,103,2023
+1038256,2024-01-29,Oklahoma City Thunder,Minnesota Timberwolves,101,107,2023
+1038257,2024-01-29,San Antonio Spurs,Washington Wizards,113,118,2023
+1038258,2024-01-29,Dallas Mavericks,Orlando Magic,131,129,2023
+1038259,2024-01-29,Denver Nuggets,Milwaukee Bucks,113,107,2023
+1038260,2024-01-29,Portland Trail Blazers,Philadelphia 76ers,130,104,2023
+1038261,2024-01-30,Atlanta Hawks,Los Angeles Lakers,138,122,2023
+1038262,2024-01-30,Boston Celtics,Indiana Pacers,129,124,2023
+1038263,2024-01-30,New York Knicks,Utah Jazz,118,103,2023
+1038264,2024-01-30,Chicago Bulls,Toronto Raptors,107,118,2023
+1038265,2024-01-30,Golden State Warriors,Philadelphia 76ers,119,107,2023
+1038266,2024-01-31,Charlotte Hornets,Chicago Bulls,110,117,2023
+1038267,2024-01-31,Cleveland Cavaliers,Detroit Pistons,128,121,2023
+1038268,2024-01-31,Washington Wizards,LA Clippers,109,125,2023
+1038269,2024-01-31,Brooklyn Nets,Phoenix Suns,120,136,2023
+1038270,2024-01-31,Miami Heat,Sacramento Kings,115,106,2023
+1038271,2024-01-31,Houston Rockets,New Orleans Pelicans,99,110,2023
+1038272,2024-01-31,Minnesota Timberwolves,Dallas Mavericks,121,87,2023
+1038273,2024-01-31,San Antonio Spurs,Orlando Magic,98,108,2023
+1038274,2024-01-31,Oklahoma City Thunder,Denver Nuggets,105,100,2023
+1038275,2024-01-31,Portland Trail Blazers,Milwaukee Bucks,119,116,2023
+1038276,2024-02-01,Boston Celtics,Los Angeles Lakers,105,114,2023
+1038277,2024-02-01,New York Knicks,Indiana Pacers,109,105,2023
+1038278,2024-02-01,Utah Jazz,Philadelphia 76ers,124,127,2023
+1038279,2024-02-01,Memphis Grizzlies,Cleveland Cavaliers,101,108,2023
+1038280,2024-02-02,Detroit Pistons,LA Clippers,125,136,2023
+1038281,2024-02-02,Washington Wizards,Miami Heat,102,110,2023
+1038282,2024-02-02,Atlanta Hawks,Phoenix Suns,129,120,2023
+1038283,2024-02-02,Indiana Pacers,Sacramento Kings,122,133,2023
+1038284,2024-02-02,Houston Rockets,Toronto Raptors,135,106,2023
+1038285,2024-02-02,Memphis Grizzlies,Golden State Warriors,101,121,2023
+1038286,2024-02-02,Minnesota Timberwolves,Orlando Magic,106,108,2023
+1038287,2024-02-02,Oklahoma City Thunder,Charlotte Hornets,126,106,2023
+1038288,2024-02-02,San Antonio Spurs,New Orleans Pelicans,113,114,2023
+1038289,2024-02-02,Denver Nuggets,Portland Trail Blazers,120,108,2023
+1038290,2024-02-03,Philadelphia 76ers,Brooklyn Nets,121,136,2023
+1038291,2024-02-03,Atlanta Hawks,Golden State Warriors,141,134,2023
+1038292,2024-02-03,Chicago Bulls,Sacramento Kings,115,123,2023
+1038293,2024-02-03,New York Knicks,Los Angeles Lakers,105,113,2023
+1038294,2024-02-03,Dallas Mavericks,Milwaukee Bucks,117,129,2023
+1038295,2024-02-03,San Antonio Spurs,Cleveland Cavaliers,101,117,2023
+1038296,2024-02-04,Detroit Pistons,Orlando Magic,99,111,2023
+1038297,2024-02-04,Washington Wizards,Phoenix Suns,112,140,2023
+1038298,2024-02-04,Boston Celtics,Memphis Grizzlies,131,91,2023
+1038299,2024-02-04,Charlotte Hornets,Indiana Pacers,99,115,2023
+1038300,2024-02-04,Miami Heat,LA Clippers,95,103,2023
+1038301,2024-02-04,Minnesota Timberwolves,Houston Rockets,111,90,2023
+1038302,2024-02-04,Oklahoma City Thunder,Toronto Raptors,135,127,2023
+1038303,2024-02-04,Utah Jazz,Milwaukee Bucks,123,108,2023
+1038304,2024-02-04,Denver Nuggets,Portland Trail Blazers,112,103,2023
+1038305,2024-02-05,Charlotte Hornets,Los Angeles Lakers,118,124,2023
+1038306,2024-02-05,Cleveland Cavaliers,Sacramento Kings,136,110,2023
+1038307,2024-02-05,Philadelphia 76ers,Dallas Mavericks,102,118,2023
+1038308,2024-02-05,Atlanta Hawks,LA Clippers,144,149,2023
+1038309,2024-02-05,Brooklyn Nets,Golden State Warriors,98,109,2023
+1038310,2024-02-05,New Orleans Pelicans,Toronto Raptors,138,100,2023
+1038311,2024-02-06,Indiana Pacers,Houston Rockets,132,129,2023
+1038312,2024-02-06,Brooklyn Nets,Dallas Mavericks,107,119,2023
+1038313,2024-02-06,Miami Heat,Orlando Magic,121,95,2023
+1038314,2024-02-06,New York Knicks,Memphis Grizzlies,123,113,2023
+1038315,2024-02-06,Chicago Bulls,Minnesota Timberwolves,129,123,2023
+1038316,2024-02-06,Utah Jazz,Oklahoma City Thunder,124,117,2023
+1038317,2024-02-06,Phoenix Suns,Milwaukee Bucks,114,106,2023
+1038318,2024-02-07,Charlotte Hornets,Toronto Raptors,117,123,2023
+1038319,2024-02-07,Philadelphia 76ers,Golden State Warriors,104,127,2023
+1038320,2024-02-07,Washington Wizards,Cleveland Cavaliers,106,114,2023
+1038321,2024-02-07,Boston Celtics,Atlanta Hawks,125,117,2023
+1038322,2024-02-07,Miami Heat,San Antonio Spurs,116,104,2023
+1038323,2024-02-07,LA Clippers,New Orleans Pelicans,106,117,2023
+1038324,2024-02-07,Sacramento Kings,Detroit Pistons,120,133,2023
+1038325,2024-02-08,Indiana Pacers,Golden State Warriors,109,131,2023
+1038326,2024-02-08,Orlando Magic,San Antonio Spurs,127,111,2023
+1038327,2024-02-08,Brooklyn Nets,Cleveland Cavaliers,95,118,2023
+1038328,2024-02-08,New York Knicks,Dallas Mavericks,108,122,2023
+1038329,2024-02-08,Memphis Grizzlies,Chicago Bulls,110,118,2023
+1038330,2024-02-08,Milwaukee Bucks,Minnesota Timberwolves,105,129,2023
+1038331,2024-02-08,Phoenix Suns,Utah Jazz,129,115,2023
+1038332,2024-02-08,Los Angeles Lakers,Denver Nuggets,106,114,2023
+1038333,2024-02-08,Portland Trail Blazers,Detroit Pistons,122,128,2023
+1038334,2024-02-09,Philadelphia 76ers,Atlanta Hawks,121,127,2023
+1038335,2024-02-09,Boston Celtics,Washington Wizards,133,129,2023
+1038336,2024-02-09,Toronto Raptors,Houston Rockets,107,104,2023
+1038337,2024-02-09,Milwaukee Bucks,Charlotte Hornets,120,84,2023
+1038338,2024-02-09,Sacramento Kings,Denver Nuggets,135,106,2023
+1038339,2024-02-09,Los Angeles Lakers,New Orleans Pelicans,139,122,2023
+1038340,2024-02-10,Dallas Mavericks,Oklahoma City Thunder,146,111,2023
+1038341,2024-02-10,LA Clippers,Detroit Pistons,112,106,2023
+1038342,2024-02-10,Brooklyn Nets,San Antonio Spurs,123,103,2023
+1038343,2024-02-10,Charlotte Hornets,Memphis Grizzlies,115,106,2023
+1038344,2024-02-10,Orlando Magic,Chicago Bulls,114,108,2023
+1038345,2024-02-10,Washington Wizards,Philadelphia 76ers,113,119,2023
+1038346,2024-02-10,Atlanta Hawks,Houston Rockets,122,113,2023
+1038347,2024-02-10,New York Knicks,Indiana Pacers,111,125,2023
+1038348,2024-02-10,Toronto Raptors,Cleveland Cavaliers,95,119,2023
+1038349,2024-02-10,Golden State Warriors,Phoenix Suns,113,112,2023
+1038350,2024-02-10,Portland Trail Blazers,New Orleans Pelicans,84,93,2023
+1038351,2024-02-11,Miami Heat,Boston Celtics,106,110,2023
+1038352,2024-02-11,Oklahoma City Thunder,Sacramento Kings,127,113,2023
+1038353,2024-02-12,Charlotte Hornets,Indiana Pacers,111,102,2023
+1038354,2024-02-12,Cleveland Cavaliers,Philadelphia 76ers,121,123,2023
+1038355,2024-02-12,Atlanta Hawks,Chicago Bulls,126,136,2023
+1038356,2024-02-12,Toronto Raptors,San Antonio Spurs,99,122,2023
+1038357,2024-02-12,Houston Rockets,New York Knicks,105,103,2023
+1038358,2024-02-12,Memphis Grizzlies,New Orleans Pelicans,87,96,2023
+1038359,2024-02-12,Milwaukee Bucks,Denver Nuggets,112,95,2023
+1038360,2024-02-12,Dallas Mavericks,Washington Wizards,112,104,2023
+1038361,2024-02-12,Utah Jazz,Golden State Warriors,107,129,2023
+1038362,2024-02-12,LA Clippers,Minnesota Timberwolves,100,121,2023
+1038363,2024-02-13,Brooklyn Nets,Boston Celtics,110,118,2023
+1038364,2024-02-13,Orlando Magic,Oklahoma City Thunder,113,127,2023
+1038365,2024-02-13,Milwaukee Bucks,Miami Heat,97,123,2023
+1038366,2024-02-13,Phoenix Suns,Sacramento Kings,130,125,2023
+1038367,2024-02-13,Portland Trail Blazers,Minnesota Timberwolves,109,121,2023
+1038368,2024-02-13,Los Angeles Lakers,Detroit Pistons,125,111,2023
+1038369,2024-02-14,Charlotte Hornets,Atlanta Hawks,122,99,2023
+1038370,2024-02-14,Orlando Magic,New York Knicks,118,100,2023
+1038371,2024-02-14,Philadelphia 76ers,Miami Heat,104,109,2023
+1038372,2024-02-14,Boston Celtics,Brooklyn Nets,136,86,2023
+1038373,2024-02-14,Cleveland Cavaliers,Chicago Bulls,108,105,2023
+1038374,2024-02-14,Toronto Raptors,Indiana Pacers,125,127,2023
+1038375,2024-02-14,Memphis Grizzlies,Houston Rockets,121,113,2023
+1038376,2024-02-14,New Orleans Pelicans,Washington Wizards,133,126,2023
+1038377,2024-02-14,Dallas Mavericks,San Antonio Spurs,116,93,2023
+1038378,2024-02-14,Denver Nuggets,Sacramento Kings,98,102,2023
+1038379,2024-02-14,Phoenix Suns,Detroit Pistons,116,100,2023
+1038380,2024-02-14,Utah Jazz,Los Angeles Lakers,122,138,2023
+1038381,2024-02-14,Golden State Warriors,LA Clippers,125,130,2023
+1038168,2024-02-15,Utah Jazz,Golden State Warriors,137,140,2023
+1038382,2024-02-15,Memphis Grizzlies,Milwaukee Bucks,113,110,2023
+1038383,2024-02-15,Portland Trail Blazers,Minnesota Timberwolves,91,128,2023
+1038384,2024-02-22,Cleveland Cavaliers,Orlando Magic,109,116,2023
+1038385,2024-02-22,Indiana Pacers,Detroit Pistons,129,115,2023
+1038386,2024-02-22,Philadelphia 76ers,New York Knicks,96,110,2023
+1038387,2024-02-22,Toronto Raptors,Brooklyn Nets,121,93,2023
+1038388,2024-02-22,Dallas Mavericks,Phoenix Suns,123,113,2023
+1038389,2024-02-22,Chicago Bulls,Boston Celtics,112,129,2023
+1038390,2024-02-22,New Orleans Pelicans,Houston Rockets,127,105,2023
+1038391,2024-02-22,Oklahoma City Thunder,LA Clippers,129,107,2023
+1038392,2024-02-22,Denver Nuggets,Washington Wizards,130,110,2023
+1038393,2024-02-22,Utah Jazz,Charlotte Hornets,107,115,2023
+1038394,2024-02-22,Golden State Warriors,Los Angeles Lakers,128,110,2023
+1038395,2024-02-22,Sacramento Kings,San Antonio Spurs,127,122,2023
+1038396,2024-02-23,Atlanta Hawks,Toronto Raptors,121,123,2023
+1038397,2024-02-23,Philadelphia 76ers,Cleveland Cavaliers,104,97,2023
+1038398,2024-02-23,Houston Rockets,Phoenix Suns,114,110,2023
+1038399,2024-02-23,Memphis Grizzlies,LA Clippers,95,101,2023
+1038400,2024-02-23,Minnesota Timberwolves,Milwaukee Bucks,107,112,2023
+1038401,2024-02-23,Oklahoma City Thunder,Washington Wizards,147,106,2023
+1038402,2024-02-23,New Orleans Pelicans,Miami Heat,95,106,2023
+1038403,2024-02-23,Golden State Warriors,Charlotte Hornets,97,84,2023
+1038404,2024-02-23,Portland Trail Blazers,Denver Nuggets,112,127,2023
+1038405,2024-02-23,Los Angeles Lakers,San Antonio Spurs,123,118,2023
+1038406,2024-02-24,Detroit Pistons,Orlando Magic,109,112,2023
+1038407,2024-02-24,Minnesota Timberwolves,Brooklyn Nets,101,86,2023
+1038408,2024-02-24,New York Knicks,Boston Celtics,102,116,2023
+1038409,2024-02-25,Philadelphia 76ers,Milwaukee Bucks,98,119,2023
+1038410,2024-02-25,Phoenix Suns,Los Angeles Lakers,123,113,2023
+1038411,2024-02-25,Indiana Pacers,Dallas Mavericks,133,111,2023
+1038412,2024-02-25,Washington Wizards,Cleveland Cavaliers,105,114,2023
+1038413,2024-02-25,Atlanta Hawks,Orlando Magic,109,92,2023
+1038414,2024-02-25,Houston Rockets,Oklahoma City Thunder,110,123,2023
+1038415,2024-02-25,New Orleans Pelicans,Chicago Bulls,106,114,2023
+1038416,2024-02-25,Golden State Warriors,Denver Nuggets,103,119,2023
+1038417,2024-02-25,Utah Jazz,San Antonio Spurs,128,109,2023
+1038418,2024-02-25,Portland Trail Blazers,Charlotte Hornets,80,93,2023
+1038419,2024-02-25,LA Clippers,Sacramento Kings,107,123,2023
+1038420,2024-02-26,New York Knicks,Detroit Pistons,113,111,2023
+1038421,2024-02-26,Indiana Pacers,Toronto Raptors,122,130,2023
+1038422,2024-02-26,Memphis Grizzlies,Brooklyn Nets,86,111,2023
+1038423,2024-02-26,Sacramento Kings,Miami Heat,110,121,2023
+1038424,2024-02-27,Cleveland Cavaliers,Dallas Mavericks,121,119,2023
+1038425,2024-02-27,Orlando Magic,Brooklyn Nets,108,81,2023
+1038426,2024-02-27,Washington Wizards,Golden State Warriors,112,123,2023
+1038427,2024-02-27,Atlanta Hawks,Utah Jazz,124,97,2023
+1038428,2024-02-27,Boston Celtics,Philadelphia 76ers,117,99,2023
+1038429,2024-02-27,New York Knicks,New Orleans Pelicans,92,115,2023
+1038430,2024-02-27,Minnesota Timberwolves,San Antonio Spurs,114,105,2023
+1038431,2024-02-27,Chicago Bulls,Detroit Pistons,95,105,2023
+1038432,2024-02-27,Milwaukee Bucks,Charlotte Hornets,123,85,2023
+1038433,2024-02-27,Oklahoma City Thunder,Houston Rockets,112,95,2023
+1038434,2024-02-27,Portland Trail Blazers,Miami Heat,96,106,2023
+1038435,2024-02-28,Indiana Pacers,New Orleans Pelicans,123,114,2023
+1038436,2024-02-28,Toronto Raptors,Dallas Mavericks,125,136,2023
+1038437,2024-02-28,Minnesota Timberwolves,Memphis Grizzlies,110,101,2023
+1038438,2024-02-28,Chicago Bulls,Cleveland Cavaliers,132,123,2023
+1038439,2024-02-28,Denver Nuggets,Sacramento Kings,117,96,2023
+1038440,2024-02-28,LA Clippers,Los Angeles Lakers,112,116,2023
+1038441,2024-02-29,Charlotte Hornets,Milwaukee Bucks,99,111,2023
+1038442,2024-02-29,Orlando Magic,Utah Jazz,115,107,2023
+1038443,2024-02-29,Brooklyn Nets,Atlanta Hawks,124,97,2023
+1038444,2024-02-29,New York Knicks,Golden State Warriors,99,110,2023
+1038445,2024-02-29,San Antonio Spurs,Oklahoma City Thunder,132,118,2023
+1038446,2024-02-29,Phoenix Suns,Houston Rockets,110,105,2023
+1038447,2024-02-29,Denver Nuggets,Miami Heat,103,97,2023
+1038448,2024-02-29,Los Angeles Lakers,Washington Wizards,134,131,2023
+1038449,2024-03-01,Detroit Pistons,Cleveland Cavaliers,100,110,2023
+1038450,2024-03-01,Philadelphia 76ers,Charlotte Hornets,121,114,2023
+1038451,2024-03-01,Boston Celtics,Dallas Mavericks,138,110,2023
+1038452,2024-03-01,Toronto Raptors,Golden State Warriors,105,120,2023
+1038453,2024-03-01,Memphis Grizzlies,Portland Trail Blazers,92,122,2023
+1038454,2024-03-01,Minnesota Timberwolves,Sacramento Kings,120,124,2023
+1038455,2024-03-01,New Orleans Pelicans,Indiana Pacers,129,102,2023
+1038456,2024-03-01,Chicago Bulls,Milwaukee Bucks,97,113,2023
+1038457,2024-03-01,LA Clippers,Washington Wizards,140,115,2023
+1038458,2024-03-02,Brooklyn Nets,Atlanta Hawks,114,102,2023
+1038459,2024-03-02,Miami Heat,Utah Jazz,126,120,2023
+1038460,2024-03-02,Memphis Grizzlies,Portland Trail Blazers,100,107,2023
+1038461,2024-03-02,Los Angeles Lakers,Denver Nuggets,114,124,2023
+1038462,2024-03-02,Phoenix Suns,Houston Rockets,109,118,2023
+1038463,2024-03-03,Dallas Mavericks,Philadelphia 76ers,116,120,2023
+1038464,2024-03-03,Boston Celtics,Golden State Warriors,140,88,2023
+1038465,2024-03-03,Minnesota Timberwolves,LA Clippers,88,89,2023
+1038466,2024-03-03,Orlando Magic,Detroit Pistons,113,91,2023
+1038467,2024-03-03,Toronto Raptors,Charlotte Hornets,111,106,2023
+1038468,2024-03-03,Cleveland Cavaliers,New York Knicks,98,107,2023
+1038469,2024-03-03,San Antonio Spurs,Indiana Pacers,117,105,2023
+1038470,2024-03-03,Phoenix Suns,Oklahoma City Thunder,110,118,2023
+1038471,2024-03-04,Brooklyn Nets,Memphis Grizzlies,102,106,2023
+1038472,2024-03-04,Milwaukee Bucks,LA Clippers,113,106,2023
+1038473,2024-03-04,Minnesota Timberwolves,Portland Trail Blazers,119,114,2023
+1038474,2024-03-04,Utah Jazz,Washington Wizards,127,115,2023
+1038475,2024-03-04,Sacramento Kings,Chicago Bulls,109,113,2023
+1038476,2024-03-04,Los Angeles Lakers,Oklahoma City Thunder,116,104,2023
+1038477,2024-03-05,Charlotte Hornets,Orlando Magic,89,101,2023
+1038478,2024-03-05,Cleveland Cavaliers,Boston Celtics,105,104,2023
+1038479,2024-03-05,Brooklyn Nets,Philadelphia 76ers,112,107,2023
+1038480,2024-03-05,Miami Heat,Detroit Pistons,118,110,2023
+1038481,2024-03-05,New York Knicks,Atlanta Hawks,100,116,2023
+1038482,2024-03-05,Toronto Raptors,New Orleans Pelicans,98,139,2023
+1038483,2024-03-05,Houston Rockets,San Antonio Spurs,114,101,2023
+1038484,2024-03-05,Dallas Mavericks,Indiana Pacers,120,137,2023
+1038485,2024-03-05,Denver Nuggets,Phoenix Suns,107,117,2023
+1038486,2024-03-06,Washington Wizards,Orlando Magic,109,119,2023
+1038487,2024-03-06,Atlanta Hawks,Cleveland Cavaliers,112,101,2023
+1038488,2024-03-06,Philadelphia 76ers,Memphis Grizzlies,109,115,2023
+1038489,2024-03-06,Houston Rockets,LA Clippers,116,122,2023
+1038490,2024-03-06,Utah Jazz,Chicago Bulls,117,119,2023
+1038491,2024-03-06,Golden State Warriors,Milwaukee Bucks,125,90,2023
+1038492,2024-03-06,Portland Trail Blazers,Oklahoma City Thunder,120,128,2023
+1038493,2024-03-06,Los Angeles Lakers,Sacramento Kings,120,130,2023
+1038494,2024-03-07,Detroit Pistons,Brooklyn Nets,118,112,2023
+1038495,2024-03-07,Indiana Pacers,Minnesota Timberwolves,111,113,2023
+1038496,2024-03-07,Dallas Mavericks,Miami Heat,114,108,2023
+1038497,2024-03-07,Phoenix Suns,Toronto Raptors,120,113,2023
+1038498,2024-03-07,Denver Nuggets,Boston Celtics,115,109,2023
+1038499,2024-03-07,Golden State Warriors,Chicago Bulls,122,125,2023
+1038500,2024-03-07,Sacramento Kings,San Antonio Spurs,131,129,2023
+1038501,2024-03-08,Philadelphia 76ers,New Orleans Pelicans,95,103,2023
+1038502,2024-03-08,Washington Wizards,Charlotte Hornets,112,100,2023
+1038503,2024-03-08,Cleveland Cavaliers,Minnesota Timberwolves,113,104,2023
+1038504,2024-03-08,New York Knicks,Orlando Magic,98,74,2023
+1038505,2024-03-08,Memphis Grizzlies,Atlanta Hawks,92,99,2023
+1038506,2024-03-08,Oklahoma City Thunder,Miami Heat,107,100,2023
+1038507,2024-03-08,Los Angeles Lakers,Milwaukee Bucks,123,122,2023
+1038508,2024-03-08,Portland Trail Blazers,Houston Rockets,107,123,2023
+1038509,2024-03-09,LA Clippers,Chicago Bulls,112,102,2023
+1038510,2024-03-09,Charlotte Hornets,Brooklyn Nets,110,99,2023
+1038511,2024-03-09,Detroit Pistons,Dallas Mavericks,124,142,2023
+1038512,2024-03-09,Phoenix Suns,Boston Celtics,107,117,2023
+1038513,2024-03-09,Golden State Warriors,San Antonio Spurs,113,126,2023
+1038514,2024-03-09,Denver Nuggets,Utah Jazz,142,121,2023
+1038515,2024-03-09,Portland Trail Blazers,Toronto Raptors,128,118,2023
+1038516,2024-03-10,LA Clippers,Milwaukee Bucks,117,124,2023
+1038517,2024-03-10,Atlanta Hawks,New Orleans Pelicans,103,116,2023
+1038518,2024-03-10,Miami Heat,Washington Wizards,108,110,2023
+1038519,2024-03-10,New York Knicks,Philadelphia 76ers,73,79,2023
+1038520,2024-03-10,Orlando Magic,Indiana Pacers,97,111,2023
+1038521,2024-03-10,Sacramento Kings,Houston Rockets,104,112,2023
+1038522,2024-03-10,Cleveland Cavaliers,Brooklyn Nets,101,120,2023
+1038523,2024-03-10,Oklahoma City Thunder,Memphis Grizzlies,124,93,2023
+1038524,2024-03-10,Los Angeles Lakers,Minnesota Timberwolves,120,109,2023
+1038525,2024-03-11,Detroit Pistons,Charlotte Hornets,114,97,2023
+1038526,2024-03-11,Cleveland Cavaliers,Phoenix Suns,111,117,2023
+1038527,2024-03-11,Chicago Bulls,Dallas Mavericks,92,127,2023
+1038528,2024-03-11,San Antonio Spurs,Golden State Warriors,102,112,2023
+1038529,2024-03-11,Denver Nuggets,Toronto Raptors,125,119,2023
+1038530,2024-03-11,Portland Trail Blazers,Boston Celtics,99,121,2023
+1038531,2024-03-12,New York Knicks,Philadelphia 76ers,106,79,2023
+1038532,2024-03-12,Memphis Grizzlies,Washington Wizards,109,97,2023
+1038533,2024-03-12,Oklahoma City Thunder,Indiana Pacers,111,121,2023
+1038534,2024-03-12,San Antonio Spurs,Houston Rockets,101,103,2023
+1038535,2024-03-12,Utah Jazz,Boston Celtics,107,123,2023
+1038536,2024-03-12,LA Clippers,Minnesota Timberwolves,100,118,2023
+1038537,2024-03-12,Sacramento Kings,Milwaukee Bucks,129,94,2023
+1038538,2024-03-13,Detroit Pistons,Toronto Raptors,113,104,2023
+1038539,2024-03-13,Orlando Magic,Brooklyn Nets,114,106,2023
+1038540,2024-03-13,Indiana Pacers,Chicago Bulls,129,132,2023
+1038541,2024-03-13,Miami Heat,Denver Nuggets,88,100,2023
+1038542,2024-03-13,Memphis Grizzlies,Charlotte Hornets,98,110,2023
+1038543,2024-03-13,New Orleans Pelicans,Cleveland Cavaliers,95,116,2023
+1038544,2024-03-13,Dallas Mavericks,Golden State Warriors,109,99,2023
+1038545,2024-03-13,Portland Trail Blazers,Atlanta Hawks,106,102,2023
+1038546,2024-03-13,Sacramento Kings,Los Angeles Lakers,120,107,2023
+1038547,2024-03-14,Boston Celtics,Phoenix Suns,127,112,2023
+1038548,2024-03-14,Chicago Bulls,LA Clippers,111,126,2023
+1038549,2024-03-14,Houston Rockets,Washington Wizards,135,119,2023
+1038550,2024-03-14,Milwaukee Bucks,Philadelphia 76ers,114,105,2023
+1038551,2024-03-14,Oklahoma City Thunder,Dallas Mavericks,126,119,2023
+1038552,2024-03-14,Portland Trail Blazers,New York Knicks,93,105,2023
+1038553,2024-03-15,Charlotte Hornets,Phoenix Suns,96,107,2023
+1038554,2024-03-15,Detroit Pistons,Miami Heat,95,108,2023
+1038555,2024-03-15,Toronto Raptors,Orlando Magic,103,113,2023
+1038556,2024-03-15,New Orleans Pelicans,LA Clippers,112,104,2023
+1038557,2024-03-15,San Antonio Spurs,Denver Nuggets,106,117,2023
+1038558,2024-03-15,Utah Jazz,Atlanta Hawks,124,122,2023
+1038559,2024-03-16,Houston Rockets,Cleveland Cavaliers,117,103,2023
+1038560,2024-03-16,Indiana Pacers,Brooklyn Nets,121,100,2023
+1038561,2024-03-16,Philadelphia 76ers,Charlotte Hornets,109,98,2023
+1038562,2024-03-16,New Orleans Pelicans,Portland Trail Blazers,126,107,2023
+1038563,2024-03-16,Chicago Bulls,Washington Wizards,127,98,2023
+1038564,2024-03-16,Memphis Grizzlies,Oklahoma City Thunder,112,118,2023
+1038565,2024-03-16,Los Angeles Lakers,Golden State Warriors,121,128,2023
+1038566,2024-03-16,Utah Jazz,Minnesota Timberwolves,100,119,2023
+1038567,2024-03-16,Sacramento Kings,New York Knicks,91,98,2023
+1038568,2024-03-17,Milwaukee Bucks,Phoenix Suns,140,129,2023
+1038569,2024-03-17,Detroit Pistons,Miami Heat,101,104,2023
+1038570,2024-03-17,Dallas Mavericks,Denver Nuggets,107,105,2023
+1038571,2024-03-17,Orlando Magic,Toronto Raptors,111,96,2023
+1038572,2024-03-17,Washington Wizards,Boston Celtics,104,130,2023
+1038573,2024-03-17,San Antonio Spurs,Brooklyn Nets,122,115,2023
+1038574,2024-03-17,LA Clippers,Atlanta Hawks,93,110,2023
+1038575,2024-03-18,Indiana Pacers,Cleveland Cavaliers,103,108,2023
+1038576,2024-03-18,Boston Celtics,Detroit Pistons,119,94,2023
+1038577,2024-03-18,Philadelphia 76ers,Miami Heat,98,91,2023
+1038578,2024-03-18,Chicago Bulls,Portland Trail Blazers,110,107,2023
+1038579,2024-03-18,Utah Jazz,Minnesota Timberwolves,104,114,2023
+1038580,2024-03-18,Golden State Warriors,New York Knicks,112,119,2023
+1038581,2024-03-18,Sacramento Kings,Memphis Grizzlies,121,111,2023
+1038582,2024-03-18,Los Angeles Lakers,Atlanta Hawks,136,105,2023
+1038583,2024-03-19,Orlando Magic,Charlotte Hornets,112,92,2023
+1038584,2024-03-19,Washington Wizards,Houston Rockets,114,137,2023
+1038585,2024-03-19,Brooklyn Nets,New Orleans Pelicans,91,104,2023
+1038586,2024-03-19,San Antonio Spurs,Dallas Mavericks,107,113,2023
+1038587,2024-03-19,Minnesota Timberwolves,Denver Nuggets,112,115,2023
+1038588,2024-03-20,Cleveland Cavaliers,Miami Heat,104,107,2023
+1038589,2024-03-20,Detroit Pistons,Indiana Pacers,103,122,2023
+1038590,2024-03-20,Boston Celtics,Milwaukee Bucks,122,119,2023
+1038591,2024-03-20,Toronto Raptors,Sacramento Kings,89,123,2023
+1038592,2024-03-20,Oklahoma City Thunder,Utah Jazz,119,107,2023
+1038593,2024-03-20,Golden State Warriors,Memphis Grizzlies,137,116,2023
+1038594,2024-03-20,Phoenix Suns,Philadelphia 76ers,115,102,2023
+1038595,2024-03-20,Portland Trail Blazers,LA Clippers,103,116,2023
+1038596,2024-03-21,Orlando Magic,New Orleans Pelicans,121,106,2023
+1038597,2024-03-21,Washington Wizards,Sacramento Kings,109,102,2023
+1038598,2024-03-21,Houston Rockets,Chicago Bulls,127,117,2023
+1038599,2024-03-21,Milwaukee Bucks,Brooklyn Nets,115,108,2023
+1038600,2024-03-21,Dallas Mavericks,Utah Jazz,113,97,2023
+1038601,2024-03-21,Denver Nuggets,New York Knicks,113,100,2023
+1038602,2024-03-21,Phoenix Suns,Atlanta Hawks,128,115,2023
+1038603,2024-03-22,Detroit Pistons,Boston Celtics,102,129,2023
+1038604,2024-03-22,Toronto Raptors,Oklahoma City Thunder,103,123,2023
+1038605,2024-03-22,Miami Heat,New Orleans Pelicans,88,111,2023
+1038606,2024-03-22,Minnesota Timberwolves,Cleveland Cavaliers,104,91,2023
+1038607,2024-03-22,San Antonio Spurs,Memphis Grizzlies,97,99,2023
+1038608,2024-03-22,Golden State Warriors,Indiana Pacers,111,123,2023
+1038609,2024-03-22,Portland Trail Blazers,LA Clippers,117,125,2023
+1038610,2024-03-22,Los Angeles Lakers,Philadelphia 76ers,101,94,2023
+1038611,2024-03-23,New York Knicks,Brooklyn Nets,105,93,2023
+1038612,2024-03-23,Orlando Magic,Sacramento Kings,107,109,2023
+1038613,2024-03-23,Atlanta Hawks,Charlotte Hornets,132,91,2023
+1038614,2024-03-23,Washington Wizards,Toronto Raptors,112,109,2023
+1038615,2024-03-23,Chicago Bulls,Boston Celtics,113,124,2023
+1038616,2024-03-23,Houston Rockets,Utah Jazz,147,119,2023
+1038617,2024-03-23,San Antonio Spurs,Phoenix Suns,106,131,2023
+1038618,2024-03-23,Portland Trail Blazers,Denver Nuggets,111,114,2023
+1038619,2024-03-24,Detroit Pistons,New Orleans Pelicans,101,114,2023
+1038620,2024-03-24,LA Clippers,Philadelphia 76ers,107,121,2023
+1038621,2024-03-24,Miami Heat,Cleveland Cavaliers,121,84,2023
+1038622,2024-03-24,Milwaukee Bucks,Oklahoma City Thunder,118,93,2023
+1038623,2024-03-24,Minnesota Timberwolves,Golden State Warriors,114,110,2023
+1038624,2024-03-24,Los Angeles Lakers,Indiana Pacers,150,145,2023
+1038625,2024-03-25,Cleveland Cavaliers,Charlotte Hornets,115,92,2023
+1038626,2024-03-25,Atlanta Hawks,Boston Celtics,120,118,2023
+1038627,2024-03-25,New York Knicks,Detroit Pistons,124,99,2023
+1038628,2024-03-25,Toronto Raptors,Brooklyn Nets,88,96,2023
+1038629,2024-03-25,Chicago Bulls,Washington Wizards,105,107,2023
+1038630,2024-03-25,Houston Rockets,Portland Trail Blazers,110,92,2023
+1038631,2024-03-25,San Antonio Spurs,Phoenix Suns,104,102,2023
+1038632,2024-03-25,Denver Nuggets,Memphis Grizzlies,128,103,2023
+1038633,2024-03-25,Utah Jazz,Dallas Mavericks,105,115,2023
+1038634,2024-03-25,Sacramento Kings,Philadelphia 76ers,108,96,2023
+1038635,2024-03-25,LA Clippers,Indiana Pacers,116,133,2023
+1038636,2024-03-26,Miami Heat,Golden State Warriors,92,113,2023
+1038637,2024-03-26,Milwaukee Bucks,Los Angeles Lakers,124,128,2023
+1038638,2024-03-26,New Orleans Pelicans,Oklahoma City Thunder,112,119,2023
+1038639,2024-03-26,Sacramento Kings,Dallas Mavericks,96,132,2023
+1038640,2024-03-27,Charlotte Hornets,Cleveland Cavaliers,118,111,2023
+1038641,2024-03-27,Orlando Magic,Golden State Warriors,93,101,2023
+1038642,2024-03-27,Washington Wizards,Brooklyn Nets,119,122,2023
+1038643,2024-03-27,Atlanta Hawks,Portland Trail Blazers,120,106,2023
+1038644,2024-03-27,Philadelphia 76ers,LA Clippers,107,108,2023
+1038645,2024-03-27,Toronto Raptors,New York Knicks,101,145,2023
+1038646,2024-03-27,Chicago Bulls,Indiana Pacers,125,99,2023
+1038647,2024-03-27,Memphis Grizzlies,Los Angeles Lakers,124,136,2023
+1038648,2024-03-27,Minnesota Timberwolves,Detroit Pistons,106,91,2023
+1038649,2024-03-27,Oklahoma City Thunder,Houston Rockets,126,132,2023
+1038650,2024-03-27,Utah Jazz,San Antonio Spurs,111,118,2023
+1038651,2024-03-27,Denver Nuggets,Phoenix Suns,97,104,2023
+1038652,2024-03-28,Atlanta Hawks,Boston Celtics,123,122,2023
+1038653,2024-03-28,New Orleans Pelicans,Milwaukee Bucks,107,100,2023
+1038654,2024-03-29,Charlotte Hornets,Golden State Warriors,97,115,2023
+1038655,2024-03-29,Indiana Pacers,Los Angeles Lakers,109,90,2023
+1038656,2024-03-29,Orlando Magic,LA Clippers,97,100,2023
+1038657,2024-03-29,Washington Wizards,Detroit Pistons,87,96,2023
+1038658,2024-03-29,Brooklyn Nets,Chicago Bulls,125,108,2023
+1038659,2024-03-29,Cleveland Cavaliers,Philadelphia 76ers,117,114,2023
+1038660,2024-03-29,Miami Heat,Portland Trail Blazers,142,82,2023
+1038661,2024-03-29,Oklahoma City Thunder,Phoenix Suns,128,103,2023
+1038662,2024-03-29,San Antonio Spurs,New York Knicks,130,126,2023
+1038663,2024-03-29,Denver Nuggets,Minnesota Timberwolves,98,111,2023
+1038664,2024-03-29,Utah Jazz,Houston Rockets,100,101,2023
+1038665,2024-03-29,Sacramento Kings,Dallas Mavericks,103,107,2023
+1038666,2024-03-30,New Orleans Pelicans,Boston Celtics,92,104,2023
+1038667,2024-03-30,Orlando Magic,Memphis Grizzlies,118,88,2023
+1038668,2024-03-30,Atlanta Hawks,Milwaukee Bucks,113,122,2023
+1038669,2024-03-31,Denver Nuggets,Cleveland Cavaliers,130,101,2023
+1038670,2024-03-31,Brooklyn Nets,Los Angeles Lakers,104,116,2023
+1038671,2024-03-31,Charlotte Hornets,LA Clippers,118,130,2023
+1038672,2024-03-31,Toronto Raptors,Philadelphia 76ers,120,135,2023
+1038673,2024-03-31,Washington Wizards,Miami Heat,107,119,2023
+1038674,2024-03-31,New York Knicks,Oklahoma City Thunder,112,113,2023
+1038675,2024-03-31,Houston Rockets,Dallas Mavericks,107,125,2023
+1038676,2024-03-31,Minnesota Timberwolves,Chicago Bulls,101,109,2023
+1038677,2024-03-31,San Antonio Spurs,Golden State Warriors,113,117,2023
+1038678,2024-03-31,Sacramento Kings,Utah Jazz,127,106,2023
+1038679,2024-04-01,Charlotte Hornets,Boston Celtics,104,118,2023
+1038680,2024-04-01,Detroit Pistons,Memphis Grizzlies,108,110,2023
+1038681,2024-04-01,Indiana Pacers,Brooklyn Nets,133,111,2023
+1038682,2024-04-01,Orlando Magic,Portland Trail Blazers,104,103,2023
+1038683,2024-04-01,Chicago Bulls,Atlanta Hawks,101,113,2023
+1038684,2024-04-01,New Orleans Pelicans,Phoenix Suns,111,124,2023
+1038181,2024-04-02,Golden State Warriors,Dallas Mavericks,104,100,2023
+1038685,2024-04-02,Philadelphia 76ers,Oklahoma City Thunder,109,105,2023
+1038686,2024-04-02,Toronto Raptors,Los Angeles Lakers,111,128,2023
+1038687,2024-04-02,Washington Wizards,Milwaukee Bucks,117,113,2023
+1038688,2024-04-02,Miami Heat,New York Knicks,109,99,2023
+1038690,2024-04-02,Minnesota Timberwolves,Houston Rockets,113,106,2023
+1038691,2024-04-02,Denver Nuggets,San Antonio Spurs,110,105,2023
+1038692,2024-04-02,Utah Jazz,Cleveland Cavaliers,113,129,2023
+1038693,2024-04-02,Sacramento Kings,LA Clippers,109,95,2023
+1038694,2024-04-03,Charlotte Hornets,Portland Trail Blazers,86,89,2023
+1038695,2024-04-03,Washington Wizards,Los Angeles Lakers,120,125,2023
+1038696,2024-04-03,Atlanta Hawks,Detroit Pistons,121,113,2023
+1038697,2024-04-03,Boston Celtics,Oklahoma City Thunder,135,100,2023
+1038698,2024-04-03,Brooklyn Nets,Indiana Pacers,115,111,2023
+1038699,2024-04-03,Milwaukee Bucks,Memphis Grizzlies,101,111,2023
+1038700,2024-04-03,Minnesota Timberwolves,Toronto Raptors,133,85,2023
+1038701,2024-04-03,New Orleans Pelicans,Orlando Magic,108,117,2023
+1038702,2024-04-03,Phoenix Suns,Cleveland Cavaliers,122,101,2023
+1038703,2024-04-04,Miami Heat,Philadelphia 76ers,105,109,2023
+1038704,2024-04-04,New York Knicks,Sacramento Kings,120,109,2023
+1038705,2024-04-04,Houston Rockets,Golden State Warriors,110,133,2023
+1038706,2024-04-04,LA Clippers,Denver Nuggets,102,100,2023
+1038716,2024-04-04,Dallas Mavericks,Atlanta Hawks,109,95,2023
+1038689,2024-04-05,Dallas Mavericks,Golden State Warriors,108,106,2023
+1038707,2024-04-05,Charlotte Hornets,Orlando Magic,124,115,2023
+1038708,2024-04-05,Indiana Pacers,Oklahoma City Thunder,126,112,2023
+1038709,2024-04-05,Washington Wizards,Portland Trail Blazers,102,108,2023
+1038710,2024-04-05,Boston Celtics,Sacramento Kings,101,100,2023
+1038711,2024-04-05,Chicago Bulls,New York Knicks,108,100,2023
+1038712,2024-04-05,Houston Rockets,Miami Heat,104,119,2023
+1038713,2024-04-05,Memphis Grizzlies,Detroit Pistons,108,90,2023
+1038714,2024-04-05,Milwaukee Bucks,Toronto Raptors,111,117,2023
+1038715,2024-04-05,New Orleans Pelicans,San Antonio Spurs,109,111,2023
+1038717,2024-04-05,Phoenix Suns,Minnesota Timberwolves,97,87,2023
+1038718,2024-04-05,LA Clippers,Utah Jazz,131,102,2023
+1038719,2024-04-06,Los Angeles Lakers,Cleveland Cavaliers,116,97,2023
+1038720,2024-04-06,Brooklyn Nets,Detroit Pistons,113,103,2023
+1038721,2024-04-06,Memphis Grizzlies,Philadelphia 76ers,96,116,2023
+1038722,2024-04-06,Denver Nuggets,Atlanta Hawks,142,110,2023
+1038723,2024-04-07,Dallas Mavericks,Houston Rockets,147,136,2023
+1038724,2024-04-07,LA Clippers,Cleveland Cavaliers,120,118,2023
+1038725,2024-04-07,Indiana Pacers,Miami Heat,117,115,2023
+1038726,2024-04-07,Boston Celtics,Portland Trail Blazers,124,107,2023
+1038727,2024-04-07,Charlotte Hornets,Oklahoma City Thunder,118,121,2023
+1038728,2024-04-07,Orlando Magic,Chicago Bulls,113,98,2023
+1038729,2024-04-07,Toronto Raptors,Washington Wizards,130,122,2023
+1038730,2024-04-07,Phoenix Suns,New Orleans Pelicans,105,113,2023
+1038731,2024-04-07,Milwaukee Bucks,New York Knicks,109,122,2023
+1038732,2024-04-07,San Antonio Spurs,Philadelphia 76ers,126,133,2023
+1038733,2024-04-07,Brooklyn Nets,Sacramento Kings,77,107,2023
+1038734,2024-04-07,Golden State Warriors,Utah Jazz,118,110,2023
+1038735,2024-04-07,Los Angeles Lakers,Minnesota Timberwolves,117,127,2023
+1038736,2024-04-09,Charlotte Hornets,Dallas Mavericks,104,130,2023
+1038737,2024-04-09,Philadelphia 76ers,Detroit Pistons,120,102,2023
+1038738,2024-04-09,Toronto Raptors,Indiana Pacers,123,140,2023
+1038739,2024-04-09,Atlanta Hawks,Miami Heat,111,117,2023
+1038740,2024-04-09,Milwaukee Bucks,Boston Celtics,104,91,2023
+1038741,2024-04-09,Chicago Bulls,New York Knicks,117,128,2023
+1038742,2024-04-09,Houston Rockets,Orlando Magic,118,106,2023
+1038743,2024-04-09,Memphis Grizzlies,San Antonio Spurs,87,102,2023
+1038744,2024-04-09,Minnesota Timberwolves,Washington Wizards,130,121,2023
+1038745,2024-04-09,Oklahoma City Thunder,Sacramento Kings,112,105,2023
+1038746,2024-04-09,Utah Jazz,Denver Nuggets,95,111,2023
+1038747,2024-04-09,Los Angeles Lakers,Golden State Warriors,120,134,2023
+1038748,2024-04-09,Phoenix Suns,LA Clippers,92,105,2023
+1038749,2024-04-09,Portland Trail Blazers,New Orleans Pelicans,100,110,2023
+1038750,2024-04-10,Cleveland Cavaliers,Memphis Grizzlies,110,98,2023
+1038751,2024-04-10,Atlanta Hawks,Charlotte Hornets,114,115,2023
+1038752,2024-04-10,Brooklyn Nets,Toronto Raptors,106,102,2023
+1038753,2024-04-10,Miami Heat,Dallas Mavericks,92,111,2023
+1038754,2024-04-10,Milwaukee Bucks,Orlando Magic,117,99,2023
+1038755,2024-04-10,Oklahoma City Thunder,San Antonio Spurs,127,89,2023
+1038756,2024-04-10,Denver Nuggets,Minnesota Timberwolves,116,107,2023
+1038757,2024-04-10,LA Clippers,Phoenix Suns,108,124,2023
+1038758,2024-04-11,Detroit Pistons,Chicago Bulls,105,127,2023
+1038759,2024-04-11,Boston Celtics,New York Knicks,109,118,2023
+1038760,2024-04-11,Utah Jazz,Houston Rockets,124,121,2023
+1038761,2024-04-11,Portland Trail Blazers,Golden State Warriors,92,100,2023
+1038762,2024-04-11,Sacramento Kings,New Orleans Pelicans,123,135,2023
+1038763,2024-04-12,Philadelphia 76ers,Orlando Magic,125,113,2023
+1038764,2024-04-12,Washington Wizards,Chicago Bulls,127,129,2023
+1038765,2024-04-12,Boston Celtics,Charlotte Hornets,131,98,2023
+1038766,2024-04-12,Cleveland Cavaliers,Indiana Pacers,129,120,2023
+1038767,2024-04-12,New York Knicks,Brooklyn Nets,111,107,2023
+1038768,2024-04-12,Miami Heat,Toronto Raptors,125,103,2023
+1038769,2024-04-12,Memphis Grizzlies,Los Angeles Lakers,120,123,2023
+1038770,2024-04-12,Minnesota Timberwolves,Atlanta Hawks,109,106,2023
+1038771,2024-04-12,Oklahoma City Thunder,Milwaukee Bucks,125,107,2023
+1038772,2024-04-12,San Antonio Spurs,Denver Nuggets,121,120,2023
+1038773,2024-04-12,Dallas Mavericks,Detroit Pistons,89,107,2023
+1038774,2024-04-12,Golden State Warriors,New Orleans Pelicans,109,114,2023
+1038775,2024-04-12,Portland Trail Blazers,Houston Rockets,107,116,2023
+1038776,2024-04-12,LA Clippers,Utah Jazz,109,110,2023
+1038777,2024-04-12,Sacramento Kings,Phoenix Suns,107,108,2023
+1038778,2024-04-14,Boston Celtics,Washington Wizards,132,122,2023
+1038779,2024-04-14,Cleveland Cavaliers,Charlotte Hornets,110,120,2023
+1038780,2024-04-14,Indiana Pacers,Atlanta Hawks,157,115,2023
+1038781,2024-04-14,Miami Heat,Toronto Raptors,118,103,2023
+1038782,2024-04-14,New York Knicks,Chicago Bulls,120,119,2023
+1038783,2024-04-14,Orlando Magic,Milwaukee Bucks,113,88,2023
+1038784,2024-04-14,Philadelphia 76ers,Brooklyn Nets,107,86,2023
+1038785,2024-04-14,Memphis Grizzlies,Denver Nuggets,111,126,2023
+1038786,2024-04-14,Minnesota Timberwolves,Phoenix Suns,106,125,2023
+1038787,2024-04-14,New Orleans Pelicans,Los Angeles Lakers,108,124,2023
+1038788,2024-04-14,Oklahoma City Thunder,Dallas Mavericks,135,86,2023
+1038789,2024-04-14,San Antonio Spurs,Detroit Pistons,123,95,2023
+1038790,2024-04-14,Golden State Warriors,Utah Jazz,123,116,2023
+1038791,2024-04-14,LA Clippers,Houston Rockets,105,116,2023
+1038792,2024-04-14,Sacramento Kings,Portland Trail Blazers,121,82,2023
+15881955,2024-04-16,New Orleans Pelicans,Los Angeles Lakers,106,110,2023
+15881956,2024-04-16,Sacramento Kings,Golden State Warriors,118,94,2023
+15881512,2024-04-17,Chicago Bulls,Atlanta Hawks,131,116,2023
+15881938,2024-04-17,Philadelphia 76ers,Miami Heat,105,104,2023
+15882388,2024-04-19,New Orleans Pelicans,Sacramento Kings,105,98,2023
+15883285,2024-04-19,Miami Heat,Chicago Bulls,112,91,2023
+15881959,2024-04-20,Cleveland Cavaliers,Orlando Magic,97,83,2023
+15881960,2024-04-20,Minnesota Timberwolves,Phoenix Suns,120,95,2023
+15882375,2024-04-20,Denver Nuggets,Los Angeles Lakers,114,103,2023
+15883156,2024-04-20,New York Knicks,Philadelphia 76ers,111,104,2023
+15881961,2024-04-21,Milwaukee Bucks,Indiana Pacers,109,94,2023
+15881962,2024-04-21,LA Clippers,Dallas Mavericks,109,97,2023
+15885226,2024-04-21,Boston Celtics,Miami Heat,114,94,2023
+15885376,2024-04-21,Oklahoma City Thunder,New Orleans Pelicans,94,92,2023
+15882402,2024-04-22,Cleveland Cavaliers,Orlando Magic,96,86,2023
+15882403,2024-04-22,Denver Nuggets,Los Angeles Lakers,101,99,2023
+15883162,2024-04-22,New York Knicks,Philadelphia 76ers,104,101,2023
+15882404,2024-04-23,Milwaukee Bucks,Indiana Pacers,108,125,2023
+15882405,2024-04-23,Minnesota Timberwolves,Phoenix Suns,105,93,2023
+15882406,2024-04-23,LA Clippers,Dallas Mavericks,93,96,2023
+15885235,2024-04-24,Boston Celtics,Miami Heat,101,111,2023
+15885385,2024-04-24,Oklahoma City Thunder,New Orleans Pelicans,124,92,2023
+15882407,2024-04-25,Orlando Magic,Cleveland Cavaliers,121,83,2023
+15882408,2024-04-25,Los Angeles Lakers,Denver Nuggets,105,112,2023
+15883168,2024-04-25,Philadelphia 76ers,New York Knicks,125,114,2023
+15882409,2024-04-26,Indiana Pacers,Milwaukee Bucks,121,118,2023
+15882410,2024-04-26,Phoenix Suns,Minnesota Timberwolves,109,126,2023
+15882411,2024-04-26,Dallas Mavericks,LA Clippers,101,90,2023
+15882412,2024-04-27,Orlando Magic,Cleveland Cavaliers,112,89,2023
+15882413,2024-04-27,Los Angeles Lakers,Denver Nuggets,119,108,2023
+15885242,2024-04-27,Miami Heat,Boston Celtics,84,104,2023
+15885394,2024-04-27,New Orleans Pelicans,Oklahoma City Thunder,85,106,2023
+15882414,2024-04-28,Indiana Pacers,Milwaukee Bucks,126,113,2023
+15882415,2024-04-28,Phoenix Suns,Minnesota Timberwolves,116,122,2023
+15882416,2024-04-28,Dallas Mavericks,LA Clippers,111,116,2023
+15883176,2024-04-28,Philadelphia 76ers,New York Knicks,92,97,2023
+15882417,2024-04-29,Denver Nuggets,Los Angeles Lakers,108,106,2023
+15885249,2024-04-29,Miami Heat,Boston Celtics,88,102,2023
+15885401,2024-04-29,New Orleans Pelicans,Oklahoma City Thunder,89,97,2023
+15882418,2024-04-30,Milwaukee Bucks,Indiana Pacers,115,92,2023
+15882419,2024-04-30,Cleveland Cavaliers,Orlando Magic,104,103,2023
+15883181,2024-04-30,New York Knicks,Philadelphia 76ers,106,112,2023
+15882421,2024-05-01,LA Clippers,Dallas Mavericks,93,123,2023
+15885255,2024-05-01,Boston Celtics,Miami Heat,118,84,2023
+15882422,2024-05-02,Indiana Pacers,Milwaukee Bucks,120,98,2023
+15883186,2024-05-02,Philadelphia 76ers,New York Knicks,115,118,2023
+15882425,2024-05-03,Orlando Magic,Cleveland Cavaliers,103,96,2023
+15882426,2024-05-03,Dallas Mavericks,LA Clippers,114,101,2023
+15895038,2024-05-04,Denver Nuggets,Minnesota Timberwolves,99,106,2023
+15882430,2024-05-05,Cleveland Cavaliers,Orlando Magic,106,94,2023
+15895042,2024-05-06,Denver Nuggets,Minnesota Timberwolves,80,106,2023
+15896341,2024-05-06,New York Knicks,Indiana Pacers,121,117,2023
+15896732,2024-05-07,Oklahoma City Thunder,Dallas Mavericks,117,95,2023
+15897590,2024-05-07,Boston Celtics,Cleveland Cavaliers,120,95,2023
+15896343,2024-05-08,New York Knicks,Indiana Pacers,130,121,2023
+15896734,2024-05-09,Oklahoma City Thunder,Dallas Mavericks,110,119,2023
+15897593,2024-05-09,Boston Celtics,Cleveland Cavaliers,94,118,2023
+15895043,2024-05-10,Minnesota Timberwolves,Denver Nuggets,90,117,2023
+15896344,2024-05-10,Indiana Pacers,New York Knicks,111,106,2023
+15896737,2024-05-11,Dallas Mavericks,Oklahoma City Thunder,105,101,2023
+15897597,2024-05-11,Cleveland Cavaliers,Boston Celtics,93,106,2023
+15895044,2024-05-12,Minnesota Timberwolves,Denver Nuggets,107,115,2023
+15896346,2024-05-12,Indiana Pacers,New York Knicks,121,89,2023
+15896740,2024-05-13,Dallas Mavericks,Oklahoma City Thunder,96,100,2023
+15897601,2024-05-13,Cleveland Cavaliers,Boston Celtics,102,109,2023
+15895045,2024-05-14,Denver Nuggets,Minnesota Timberwolves,112,97,2023
+15896618,2024-05-14,New York Knicks,Indiana Pacers,121,91,2023
+15896743,2024-05-15,Oklahoma City Thunder,Dallas Mavericks,92,104,2023
+15897605,2024-05-15,Boston Celtics,Cleveland Cavaliers,113,98,2023
+15895046,2024-05-16,Minnesota Timberwolves,Denver Nuggets,115,70,2023
+15896621,2024-05-17,Indiana Pacers,New York Knicks,116,103,2023
+15896746,2024-05-18,Dallas Mavericks,Oklahoma City Thunder,117,116,2023
+15895047,2024-05-19,Denver Nuggets,Minnesota Timberwolves,90,98,2023
+15896622,2024-05-19,New York Knicks,Indiana Pacers,109,130,2023
+15902612,2024-05-21,Boston Celtics,Indiana Pacers,133,128,2023
+15902644,2024-05-22,Minnesota Timberwolves,Dallas Mavericks,105,108,2023
+15902613,2024-05-23,Boston Celtics,Indiana Pacers,126,110,2023
+15902646,2024-05-24,Minnesota Timberwolves,Dallas Mavericks,108,109,2023
+15902614,2024-05-25,Indiana Pacers,Boston Celtics,111,114,2023
+15902648,2024-05-26,Dallas Mavericks,Minnesota Timberwolves,116,107,2023
+15902615,2024-05-27,Indiana Pacers,Boston Celtics,102,105,2023
+15902650,2024-05-28,Dallas Mavericks,Minnesota Timberwolves,100,105,2023
+15902652,2024-05-30,Minnesota Timberwolves,Dallas Mavericks,103,124,2023
+15905063,2024-06-06,Boston Celtics,Dallas Mavericks,107,89,2023
+15905064,2024-06-09,Boston Celtics,Dallas Mavericks,105,98,2023
+15905065,2024-06-12,Dallas Mavericks,Boston Celtics,99,106,2023
+15905066,2024-06-14,Dallas Mavericks,Boston Celtics,122,84,2023
+15905067,2024-06-17,Boston Celtics,Dallas Mavericks,106,88,2023
+15907438,2024-10-22,Boston Celtics,New York Knicks,132,109,2024
+15907439,2024-10-22,Los Angeles Lakers,Minnesota Timberwolves,110,103,2024
+15907440,2024-10-23,Detroit Pistons,Indiana Pacers,109,115,2024
+15907441,2024-10-23,Atlanta Hawks,Brooklyn Nets,120,116,2024
+15907442,2024-10-23,Miami Heat,Orlando Magic,97,116,2024
+15907443,2024-10-23,Philadelphia 76ers,Milwaukee Bucks,109,124,2024
+15907444,2024-10-23,Toronto Raptors,Cleveland Cavaliers,106,136,2024
+15907445,2024-10-23,Houston Rockets,Charlotte Hornets,105,110,2024
+15907446,2024-10-23,New Orleans Pelicans,Chicago Bulls,123,111,2024
+15907447,2024-10-23,Utah Jazz,Memphis Grizzlies,124,126,2024
+15907448,2024-10-23,LA Clippers,Phoenix Suns,113,116,2024
+15907449,2024-10-23,Portland Trail Blazers,Golden State Warriors,104,139,2024
+15907450,2024-10-24,Washington Wizards,Boston Celtics,102,122,2024
+15907451,2024-10-24,Dallas Mavericks,San Antonio Spurs,120,109,2024
+15907452,2024-10-24,Denver Nuggets,Oklahoma City Thunder,87,102,2024
+15907453,2024-10-24,Sacramento Kings,Minnesota Timberwolves,115,117,2024
+15907454,2024-10-25,Orlando Magic,Brooklyn Nets,116,101,2024
+15907455,2024-10-25,Toronto Raptors,Philadelphia 76ers,115,107,2024
+15907456,2024-10-25,Atlanta Hawks,Charlotte Hornets,125,120,2024
+15907457,2024-10-25,Cleveland Cavaliers,Detroit Pistons,113,101,2024
+15907458,2024-10-25,New York Knicks,Indiana Pacers,123,98,2024
+15907459,2024-10-25,Houston Rockets,Memphis Grizzlies,128,108,2024
+15907460,2024-10-25,Milwaukee Bucks,Chicago Bulls,122,133,2024
+15907461,2024-10-25,Utah Jazz,Golden State Warriors,86,127,2024
+15907462,2024-10-25,Los Angeles Lakers,Phoenix Suns,123,116,2024
+15907463,2024-10-25,Portland Trail Blazers,New Orleans Pelicans,103,105,2024
+15907464,2024-10-26,Denver Nuggets,LA Clippers,104,109,2024
+15907465,2024-10-26,Charlotte Hornets,Miami Heat,106,114,2024
+15907466,2024-10-26,Detroit Pistons,Boston Celtics,118,124,2024
+15907467,2024-10-26,Washington Wizards,Cleveland Cavaliers,116,135,2024
+15907468,2024-10-26,Chicago Bulls,Oklahoma City Thunder,95,114,2024
+15907469,2024-10-26,Memphis Grizzlies,Orlando Magic,124,111,2024
+15907470,2024-10-26,Minnesota Timberwolves,Toronto Raptors,112,101,2024
+15907471,2024-10-26,San Antonio Spurs,Houston Rockets,109,106,2024
+15907472,2024-10-26,Phoenix Suns,Dallas Mavericks,114,102,2024
+15907473,2024-10-26,Los Angeles Lakers,Sacramento Kings,131,127,2024
+15907474,2024-10-27,Indiana Pacers,Philadelphia 76ers,114,118,2024
+15907475,2024-10-27,Brooklyn Nets,Milwaukee Bucks,115,102,2024
+15907476,2024-10-27,Portland Trail Blazers,New Orleans Pelicans,125,103,2024
+15907477,2024-10-27,Oklahoma City Thunder,Atlanta Hawks,128,104,2024
+15907478,2024-10-27,Golden State Warriors,LA Clippers,104,112,2024
+15907479,2024-10-28,Orlando Magic,Indiana Pacers,119,115,2024
+15907480,2024-10-28,Atlanta Hawks,Washington Wizards,119,121,2024
+15907481,2024-10-28,Boston Celtics,Milwaukee Bucks,119,108,2024
+15907482,2024-10-28,Miami Heat,Detroit Pistons,106,98,2024
+15907483,2024-10-28,New York Knicks,Cleveland Cavaliers,104,110,2024
+15907484,2024-10-28,Toronto Raptors,Denver Nuggets,125,127,2024
+15907485,2024-10-28,Memphis Grizzlies,Chicago Bulls,123,126,2024
+15907486,2024-10-28,San Antonio Spurs,Houston Rockets,101,106,2024
+15907487,2024-10-28,Dallas Mavericks,Utah Jazz,110,102,2024
+15907488,2024-10-28,Phoenix Suns,Los Angeles Lakers,109,105,2024
+15907489,2024-10-28,Sacramento Kings,Portland Trail Blazers,111,98,2024
+15907490,2024-10-29,Brooklyn Nets,Denver Nuggets,139,144,2024
+15907491,2024-10-29,Minnesota Timberwolves,Dallas Mavericks,114,120,2024
+15907492,2024-10-29,Utah Jazz,Sacramento Kings,96,113,2024
+15907493,2024-10-29,Golden State Warriors,New Orleans Pelicans,124,106,2024
+15907494,2024-10-30,Charlotte Hornets,Toronto Raptors,138,133,2024
+15907495,2024-10-30,Cleveland Cavaliers,Los Angeles Lakers,134,110,2024
+15907496,2024-10-30,Indiana Pacers,Boston Celtics,135,132,2024
+15907497,2024-10-30,Philadelphia 76ers,Detroit Pistons,95,105,2024
+15907498,2024-10-30,Washington Wizards,Atlanta Hawks,133,120,2024
+15907499,2024-10-30,Miami Heat,New York Knicks,107,116,2024
+15907500,2024-10-30,Chicago Bulls,Orlando Magic,102,99,2024
+15907501,2024-10-30,Memphis Grizzlies,Brooklyn Nets,106,119,2024
+15907502,2024-10-30,Oklahoma City Thunder,San Antonio Spurs,105,93,2024
+15907503,2024-10-30,Golden State Warriors,New Orleans Pelicans,104,89,2024
+15907504,2024-10-30,LA Clippers,Portland Trail Blazers,105,106,2024
+15907505,2024-10-31,Memphis Grizzlies,Milwaukee Bucks,122,99,2024
+15907506,2024-10-31,Dallas Mavericks,Houston Rockets,102,108,2024
+15907507,2024-10-31,Utah Jazz,San Antonio Spurs,88,106,2024
+15907508,2024-10-31,LA Clippers,Phoenix Suns,119,125,2024
+15907509,2024-11-01,Charlotte Hornets,Boston Celtics,109,124,2024
+15907510,2024-11-01,Cleveland Cavaliers,Orlando Magic,120,109,2024
+15907511,2024-11-01,Detroit Pistons,New York Knicks,98,128,2024
+15907512,2024-11-01,Atlanta Hawks,Sacramento Kings,115,123,2024
+15907513,2024-11-01,Brooklyn Nets,Chicago Bulls,120,112,2024
+15907514,2024-11-01,Toronto Raptors,Los Angeles Lakers,125,131,2024
+15907515,2024-11-01,New Orleans Pelicans,Indiana Pacers,125,118,2024
+15907516,2024-11-01,Minnesota Timberwolves,Denver Nuggets,119,116,2024
+15907517,2024-11-01,Portland Trail Blazers,Oklahoma City Thunder,114,137,2024
+15907518,2024-11-02,Charlotte Hornets,Boston Celtics,103,113,2024
+15907519,2024-11-02,Philadelphia 76ers,Memphis Grizzlies,107,124,2024
+15907520,2024-11-02,Toronto Raptors,Sacramento Kings,131,128,2024
+15907521,2024-11-02,Houston Rockets,Golden State Warriors,121,127,2024
+15907522,2024-11-02,Milwaukee Bucks,Cleveland Cavaliers,113,114,2024
+15907523,2024-11-02,San Antonio Spurs,Minnesota Timberwolves,113,103,2024
+15907524,2024-11-02,Washington Wizards,Miami Heat,98,118,2024
+15907525,2024-11-02,Denver Nuggets,Utah Jazz,129,103,2024
+15907526,2024-11-02,Phoenix Suns,Portland Trail Blazers,103,97,2024
+15907527,2024-11-02,LA Clippers,Oklahoma City Thunder,92,105,2024
+15907528,2024-11-03,Brooklyn Nets,Detroit Pistons,92,106,2024
+15907529,2024-11-03,New Orleans Pelicans,Atlanta Hawks,111,126,2024
+15907530,2024-11-03,Dallas Mavericks,Orlando Magic,108,85,2024
+15907531,2024-11-04,Cleveland Cavaliers,Milwaukee Bucks,116,114,2024
+15907532,2024-11-04,Washington Wizards,Golden State Warriors,112,125,2024
+15907533,2024-11-04,Detroit Pistons,Los Angeles Lakers,115,103,2024
+15907534,2024-11-04,Atlanta Hawks,Boston Celtics,93,123,2024
+15907535,2024-11-04,Brooklyn Nets,Memphis Grizzlies,106,104,2024
+15907536,2024-11-04,Miami Heat,Sacramento Kings,110,111,2024
+15907537,2024-11-04,Chicago Bulls,Utah Jazz,126,135,2024
+15907538,2024-11-04,Houston Rockets,New York Knicks,109,97,2024
+15907539,2024-11-04,Minnesota Timberwolves,Charlotte Hornets,114,93,2024
+15907540,2024-11-04,Oklahoma City Thunder,Orlando Magic,102,86,2024
+15907541,2024-11-04,New Orleans Pelicans,Portland Trail Blazers,100,118,2024
+15907542,2024-11-04,Dallas Mavericks,Indiana Pacers,127,134,2024
+15907543,2024-11-04,Denver Nuggets,Toronto Raptors,121,119,2024
+15907544,2024-11-04,Phoenix Suns,Philadelphia 76ers,118,116,2024
+15907545,2024-11-04,LA Clippers,San Antonio Spurs,113,104,2024
+15907546,2024-11-06,Charlotte Hornets,Detroit Pistons,108,107,2024
+15907547,2024-11-06,Indiana Pacers,Orlando Magic,118,111,2024
+15907548,2024-11-06,Atlanta Hawks,New York Knicks,121,116,2024
+15907549,2024-11-06,Boston Celtics,Golden State Warriors,112,118,2024
+15907550,2024-11-06,Houston Rockets,San Antonio Spurs,127,100,2024
+15907551,2024-11-06,Memphis Grizzlies,Los Angeles Lakers,131,114,2024
+15907552,2024-11-06,New Orleans Pelicans,Cleveland Cavaliers,122,131,2024
+15907553,2024-11-06,Dallas Mavericks,Chicago Bulls,119,99,2024
+15907554,2024-11-06,Denver Nuggets,Oklahoma City Thunder,124,122,2024
+15907555,2024-11-06,Phoenix Suns,Miami Heat,115,112,2024
+15907556,2024-11-06,LA Clippers,Philadelphia 76ers,110,98,2024
+15907557,2024-11-06,Sacramento Kings,Toronto Raptors,122,107,2024
+15907558,2024-11-07,Chicago Bulls,Minnesota Timberwolves,119,135,2024
+15907559,2024-11-07,Milwaukee Bucks,Utah Jazz,123,100,2024
+15907560,2024-11-07,San Antonio Spurs,Portland Trail Blazers,118,105,2024
+15907561,2024-11-08,Charlotte Hornets,Indiana Pacers,103,83,2024
+15907562,2024-11-08,Detroit Pistons,Atlanta Hawks,122,121,2024
+15907563,2024-11-08,Orlando Magic,New Orleans Pelicans,115,88,2024
+15907564,2024-11-08,Boston Celtics,Brooklyn Nets,108,104,2024
+15907565,2024-11-08,Cleveland Cavaliers,Golden State Warriors,136,117,2024
+15907566,2024-11-08,New York Knicks,Milwaukee Bucks,116,94,2024
+15907567,2024-11-08,Dallas Mavericks,Phoenix Suns,113,114,2024
+15907568,2024-11-08,Memphis Grizzlies,Washington Wizards,128,104,2024
+15907569,2024-11-08,Oklahoma City Thunder,Houston Rockets,126,107,2024
+15907570,2024-11-08,Minnesota Timberwolves,Portland Trail Blazers,127,102,2024
+15907571,2024-11-08,Denver Nuggets,Miami Heat,135,122,2024
+15907572,2024-11-08,Los Angeles Lakers,Philadelphia 76ers,116,106,2024
+15907573,2024-11-08,Sacramento Kings,LA Clippers,98,107,2024
+15907574,2024-11-09,San Antonio Spurs,Utah Jazz,110,111,2024
+15907575,2024-11-09,Atlanta Hawks,Chicago Bulls,113,125,2024
+15907576,2024-11-09,Cleveland Cavaliers,Brooklyn Nets,105,100,2024
+15907577,2024-11-09,LA Clippers,Toronto Raptors,105,103,2024
+15907578,2024-11-10,Detroit Pistons,Houston Rockets,99,101,2024
+15907579,2024-11-10,Milwaukee Bucks,Boston Celtics,107,113,2024
+15907580,2024-11-10,Indiana Pacers,New York Knicks,132,121,2024
+15907581,2024-11-10,Orlando Magic,Washington Wizards,121,94,2024
+15907582,2024-11-10,Philadelphia 76ers,Charlotte Hornets,107,105,2024
+15907583,2024-11-10,Minnesota Timberwolves,Miami Heat,94,95,2024
+15907584,2024-11-10,Oklahoma City Thunder,Golden State Warriors,116,127,2024
+15907585,2024-11-10,Denver Nuggets,Dallas Mavericks,122,120,2024
+15907586,2024-11-10,Phoenix Suns,Sacramento Kings,118,127,2024
+15907587,2024-11-10,Portland Trail Blazers,Memphis Grizzlies,89,134,2024
+15907588,2024-11-10,Los Angeles Lakers,Toronto Raptors,123,103,2024
+15907589,2024-11-11,Chicago Bulls,Cleveland Cavaliers,113,119,2024
+15907590,2024-11-11,Houston Rockets,Washington Wizards,107,92,2024
+15907591,2024-11-11,New Orleans Pelicans,Brooklyn Nets,105,107,2024
+15907592,2024-11-11,Oklahoma City Thunder,LA Clippers,134,128,2024
+15907593,2024-11-11,San Antonio Spurs,Sacramento Kings,116,96,2024
+15907594,2024-11-12,Boston Celtics,Atlanta Hawks,116,117,2024
+15907595,2024-11-12,Detroit Pistons,Miami Heat,123,121,2024
+15907596,2024-11-12,Orlando Magic,Charlotte Hornets,114,89,2024
+15907597,2024-11-12,Philadelphia 76ers,New York Knicks,99,111,2024
+15907598,2024-11-12,Milwaukee Bucks,Toronto Raptors,99,85,2024
+15907599,2024-11-12,Utah Jazz,Phoenix Suns,112,120,2024
+15907600,2024-11-12,Golden State Warriors,Dallas Mavericks,120,117,2024
+15907601,2024-11-12,Portland Trail Blazers,Minnesota Timberwolves,122,108,2024
+15907602,2024-11-13,Orlando Magic,Indiana Pacers,94,90,2024
+15907603,2024-11-13,Brooklyn Nets,Boston Celtics,114,139,2024
+15907604,2024-11-13,New York Knicks,Chicago Bulls,123,124,2024
+15907605,2024-11-13,Philadelphia 76ers,Cleveland Cavaliers,106,114,2024
+15907606,2024-11-13,Oklahoma City Thunder,New Orleans Pelicans,106,88,2024
+15907607,2024-11-13,Houston Rockets,LA Clippers,111,103,2024
+15907608,2024-11-13,Milwaukee Bucks,Detroit Pistons,127,120,2024
+15907609,2024-11-13,San Antonio Spurs,Washington Wizards,139,130,2024
+15907610,2024-11-13,Los Angeles Lakers,Memphis Grizzlies,128,123,2024
+15907611,2024-11-13,Portland Trail Blazers,Minnesota Timberwolves,106,98,2024
+15907612,2024-11-13,Sacramento Kings,Phoenix Suns,127,104,2024
+15907613,2024-11-14,Utah Jazz,Dallas Mavericks,115,113,2024
+15907614,2024-11-15,Indiana Pacers,Miami Heat,111,124,2024
+15907615,2024-11-15,Orlando Magic,Philadelphia 76ers,98,86,2024
+15907616,2024-11-15,Toronto Raptors,Detroit Pistons,95,99,2024
+15907617,2024-11-15,Atlanta Hawks,Washington Wizards,129,117,2024
+15907618,2024-11-15,Cleveland Cavaliers,Chicago Bulls,144,126,2024
+15907619,2024-11-15,New York Knicks,Brooklyn Nets,124,122,2024
+15907620,2024-11-15,San Antonio Spurs,Los Angeles Lakers,115,120,2024
+15907621,2024-11-15,Houston Rockets,LA Clippers,125,104,2024
+15907622,2024-11-15,New Orleans Pelicans,Denver Nuggets,101,94,2024
+15907623,2024-11-15,Oklahoma City Thunder,Phoenix Suns,99,83,2024
+15907624,2024-11-15,Golden State Warriors,Memphis Grizzlies,123,118,2024
+15907625,2024-11-15,Sacramento Kings,Minnesota Timberwolves,126,130,2024
+15907626,2024-11-16,Charlotte Hornets,Milwaukee Bucks,115,114,2024
+15907627,2024-11-16,Boston Celtics,Toronto Raptors,126,123,2024
+15907628,2024-11-16,New Orleans Pelicans,Los Angeles Lakers,99,104,2024
+15907629,2024-11-16,Dallas Mavericks,San Antonio Spurs,110,93,2024
+15907630,2024-11-16,Sacramento Kings,Utah Jazz,121,117,2024
+15907631,2024-11-17,Minnesota Timberwolves,Phoenix Suns,120,117,2024
+15907632,2024-11-17,Indiana Pacers,Miami Heat,119,110,2024
+15907633,2024-11-17,Cleveland Cavaliers,Charlotte Hornets,128,114,2024
+15907634,2024-11-17,Washington Wizards,Detroit Pistons,104,124,2024
+15907635,2024-11-17,Memphis Grizzlies,Denver Nuggets,105,90,2024
+15907636,2024-11-17,Portland Trail Blazers,Atlanta Hawks,114,110,2024
+15907637,2024-11-17,New York Knicks,Brooklyn Nets,114,104,2024
+15907638,2024-11-17,Chicago Bulls,Houston Rockets,107,143,2024
+15907639,2024-11-17,Oklahoma City Thunder,Dallas Mavericks,119,121,2024
+15907640,2024-11-17,LA Clippers,Utah Jazz,116,105,2024
+15907641,2024-11-18,Detroit Pistons,Chicago Bulls,112,122,2024
+15907642,2024-11-18,Miami Heat,Philadelphia 76ers,106,89,2024
+15907643,2024-11-18,New York Knicks,Washington Wizards,134,106,2024
+15907644,2024-11-18,Toronto Raptors,Indiana Pacers,130,119,2024
+15907645,2024-11-18,Milwaukee Bucks,Houston Rockets,101,100,2024
+15907646,2024-11-18,Phoenix Suns,Orlando Magic,99,109,2024
+15907647,2024-11-18,Sacramento Kings,Atlanta Hawks,108,109,2024
+15907648,2024-11-18,LA Clippers,Golden State Warriors,102,99,2024
+15907649,2024-11-19,Boston Celtics,Cleveland Cavaliers,120,117,2024
+15907650,2024-11-19,Brooklyn Nets,Charlotte Hornets,116,115,2024
+15907651,2024-11-19,Memphis Grizzlies,Denver Nuggets,110,122,2024
+15907652,2024-11-19,Dallas Mavericks,New Orleans Pelicans,132,91,2024
+15907653,2024-11-19,San Antonio Spurs,Oklahoma City Thunder,110,104,2024
+15907654,2024-11-19,Los Angeles Lakers,Utah Jazz,124,118,2024
+15907655,2024-11-20,Cleveland Cavaliers,New Orleans Pelicans,128,100,2024
+15907656,2024-11-20,Milwaukee Bucks,Chicago Bulls,122,106,2024
+15907657,2024-11-20,Houston Rockets,Indiana Pacers,130,113,2024
+15907658,2024-11-20,Memphis Grizzlies,Philadelphia 76ers,117,111,2024
+15907659,2024-11-20,Oklahoma City Thunder,Portland Trail Blazers,109,99,2024
+15907660,2024-11-20,Phoenix Suns,New York Knicks,122,138,2024
+15907661,2024-11-20,Golden State Warriors,Atlanta Hawks,120,97,2024
+15907662,2024-11-20,LA Clippers,Orlando Magic,104,93,2024
+15907663,2024-11-21,Charlotte Hornets,Detroit Pistons,123,121,2024
+15907664,2024-11-21,Toronto Raptors,Minnesota Timberwolves,110,105,2024
+15907665,2024-11-21,San Antonio Spurs,Utah Jazz,126,118,2024
+15907666,2024-11-21,Los Angeles Lakers,Orlando Magic,118,119,2024
+15907667,2024-11-22,Philadelphia 76ers,Brooklyn Nets,113,98,2024
+15907668,2024-11-22,Washington Wizards,Boston Celtics,96,108,2024
+15907669,2024-11-22,Milwaukee Bucks,Indiana Pacers,129,117,2024
+15907670,2024-11-22,Chicago Bulls,Atlanta Hawks,136,122,2024
+15907671,2024-11-22,Houston Rockets,Portland Trail Blazers,116,88,2024
+15907672,2024-11-22,New Orleans Pelicans,Golden State Warriors,108,112,2024
+15907673,2024-11-22,Denver Nuggets,Dallas Mavericks,120,123,2024
+15907674,2024-11-22,LA Clippers,Sacramento Kings,104,88,2024
+15907675,2024-11-23,Utah Jazz,New York Knicks,121,106,2024
+15907676,2024-11-23,Orlando Magic,Detroit Pistons,111,100,2024
+15907677,2024-11-23,Chicago Bulls,Memphis Grizzlies,131,142,2024
+15907678,2024-11-23,Houston Rockets,Portland Trail Blazers,98,104,2024
+15907679,2024-11-23,Milwaukee Bucks,Charlotte Hornets,125,119,2024
+15907680,2024-11-23,San Antonio Spurs,Golden State Warriors,104,94,2024
+15907681,2024-11-23,Los Angeles Lakers,Denver Nuggets,102,127,2024
+15907682,2024-11-24,Boston Celtics,Minnesota Timberwolves,107,105,2024
+15907683,2024-11-24,Indiana Pacers,Washington Wizards,115,103,2024
+15907684,2024-11-24,Miami Heat,Dallas Mavericks,123,118,2024
+15907685,2024-11-24,Philadelphia 76ers,LA Clippers,99,125,2024
+15907686,2024-11-24,Cleveland Cavaliers,Toronto Raptors,122,108,2024
+15907687,2024-11-24,Sacramento Kings,Brooklyn Nets,103,108,2024
+15907688,2024-11-25,Charlotte Hornets,Orlando Magic,84,95,2024
+15907689,2024-11-25,Detroit Pistons,Toronto Raptors,102,100,2024
+15907690,2024-11-25,Indiana Pacers,New Orleans Pelicans,114,110,2024
+15907691,2024-11-25,Atlanta Hawks,Dallas Mavericks,119,129,2024
+15907692,2024-11-25,Boston Celtics,LA Clippers,126,94,2024
+15907693,2024-11-25,Memphis Grizzlies,Portland Trail Blazers,123,98,2024
+15907694,2024-11-25,Denver Nuggets,New York Knicks,118,145,2024
+15907695,2024-11-25,Golden State Warriors,Brooklyn Nets,120,128,2024
+15907696,2024-11-25,Sacramento Kings,Oklahoma City Thunder,109,130,2024
+15907697,2024-11-26,Washington Wizards,Chicago Bulls,108,127,2024
+15907698,2024-11-26,Miami Heat,Milwaukee Bucks,103,106,2024
+15907699,2024-11-26,Minnesota Timberwolves,Houston Rockets,111,117,2024
+15907700,2024-11-26,Utah Jazz,San Antonio Spurs,115,128,2024
+15907701,2024-11-26,Phoenix Suns,Los Angeles Lakers,127,100,2024
+15907702,2024-11-27,Charlotte Hornets,Miami Heat,94,98,2024
+15907703,2024-11-27,Cleveland Cavaliers,Atlanta Hawks,124,135,2024
+15907704,2024-11-27,Indiana Pacers,Portland Trail Blazers,121,114,2024
+15907705,2024-11-27,Orlando Magic,Chicago Bulls,133,119,2024
+15907706,2024-11-27,Philadelphia 76ers,Houston Rockets,115,122,2024
+15907707,2024-11-27,Washington Wizards,LA Clippers,96,121,2024
+15907708,2024-11-27,Dallas Mavericks,New York Knicks,129,114,2024
+15907709,2024-11-27,Memphis Grizzlies,Detroit Pistons,131,111,2024
+15907710,2024-11-27,Minnesota Timberwolves,Sacramento Kings,104,115,2024
+15907711,2024-11-27,New Orleans Pelicans,Toronto Raptors,93,119,2024
+15907712,2024-11-27,San Antonio Spurs,Los Angeles Lakers,101,119,2024
+15907713,2024-11-27,Phoenix Suns,Brooklyn Nets,117,127,2024
+15907714,2024-11-27,Utah Jazz,Denver Nuggets,103,122,2024
+15907715,2024-11-27,Golden State Warriors,Oklahoma City Thunder,101,105,2024
+15907716,2024-11-29,Charlotte Hornets,New York Knicks,98,99,2024
+15907717,2024-11-29,Atlanta Hawks,Cleveland Cavaliers,117,101,2024
+15907718,2024-11-29,Memphis Grizzlies,New Orleans Pelicans,120,109,2024
+15907719,2024-11-29,Brooklyn Nets,Orlando Magic,100,123,2024
+15907720,2024-11-29,Minnesota Timberwolves,LA Clippers,93,92,2024
+15907721,2024-11-29,Indiana Pacers,Detroit Pistons,106,130,2024
+15907722,2024-11-29,Miami Heat,Toronto Raptors,121,111,2024
+15907723,2024-11-29,Chicago Bulls,Boston Celtics,129,138,2024
+15907724,2024-11-29,Los Angeles Lakers,Oklahoma City Thunder,93,101,2024
+15907725,2024-11-29,Portland Trail Blazers,Sacramento Kings,115,106,2024
+15907726,2024-11-30,Charlotte Hornets,Atlanta Hawks,104,107,2024
+15907727,2024-11-30,Detroit Pistons,Philadelphia 76ers,96,111,2024
+15907728,2024-11-30,Milwaukee Bucks,Washington Wizards,124,114,2024
+15907729,2024-11-30,Phoenix Suns,Golden State Warriors,113,105,2024
+15907730,2024-11-30,Utah Jazz,Dallas Mavericks,94,106,2024
+15907731,2024-12-01,Brooklyn Nets,Orlando Magic,92,100,2024
+15907732,2024-12-01,Memphis Grizzlies,Indiana Pacers,136,121,2024
+15907733,2024-12-01,Cleveland Cavaliers,Boston Celtics,115,111,2024
+15907734,2024-12-01,New York Knicks,New Orleans Pelicans,118,85,2024
+15907735,2024-12-01,Toronto Raptors,Miami Heat,119,116,2024
+15907736,2024-12-01,Houston Rockets,Oklahoma City Thunder,119,116,2024
+15907737,2024-12-01,Utah Jazz,Los Angeles Lakers,104,105,2024
+15907738,2024-12-01,Portland Trail Blazers,Dallas Mavericks,131,137,2024
+15907739,2024-12-01,Sacramento Kings,San Antonio Spurs,125,127,2024
+15907740,2024-12-01,LA Clippers,Denver Nuggets,126,122,2024
+15907741,2024-12-02,Atlanta Hawks,New Orleans Pelicans,124,112,2024
+15907742,2024-12-02,Boston Celtics,Miami Heat,108,89,2024
+15907743,2024-12-02,Chicago Bulls,Brooklyn Nets,128,102,2024
+15907744,2024-12-02,Minnesota Timberwolves,Los Angeles Lakers,109,80,2024
+15907745,2024-12-03,Charlotte Hornets,Philadelphia 76ers,104,110,2024
+15907746,2024-12-03,Cleveland Cavaliers,Washington Wizards,118,87,2024
+15907747,2024-12-03,Detroit Pistons,Milwaukee Bucks,107,128,2024
+15907748,2024-12-03,New York Knicks,Orlando Magic,121,106,2024
+15907749,2024-12-03,Toronto Raptors,Indiana Pacers,122,111,2024
+15907750,2024-12-03,Oklahoma City Thunder,Utah Jazz,133,106,2024
+15907751,2024-12-03,Dallas Mavericks,Memphis Grizzlies,121,116,2024
+15907752,2024-12-03,Phoenix Suns,San Antonio Spurs,104,93,2024
+15907753,2024-12-03,Denver Nuggets,Golden State Warriors,119,115,2024
+15907754,2024-12-03,Sacramento Kings,Houston Rockets,120,111,2024
+15907755,2024-12-03,LA Clippers,Portland Trail Blazers,127,105,2024
+15907756,2024-12-04,Boston Celtics,Detroit Pistons,130,120,2024
+15907757,2024-12-04,Brooklyn Nets,Indiana Pacers,99,90,2024
+15907758,2024-12-04,Miami Heat,Los Angeles Lakers,134,93,2024
+15907759,2024-12-04,Philadelphia 76ers,Orlando Magic,102,106,2024
+15907760,2024-12-04,Milwaukee Bucks,Atlanta Hawks,104,119,2024
+15907761,2024-12-04,LA Clippers,Minnesota Timberwolves,80,108,2024
+15907762,2024-12-05,Cleveland Cavaliers,Denver Nuggets,126,114,2024
+15907763,2024-12-05,Washington Wizards,Dallas Mavericks,101,137,2024
+15907764,2024-12-05,New York Knicks,Charlotte Hornets,125,101,2024
+15907765,2024-12-05,Toronto Raptors,Oklahoma City Thunder,92,129,2024
+15907766,2024-12-05,Memphis Grizzlies,Sacramento Kings,115,110,2024
+15907767,2024-12-05,New Orleans Pelicans,Phoenix Suns,126,124,2024
+15907768,2024-12-05,San Antonio Spurs,Chicago Bulls,124,139,2024
+15907769,2024-12-05,Golden State Warriors,Houston Rockets,99,93,2024
+15907770,2024-12-06,Philadelphia 76ers,Orlando Magic,102,94,2024
+15907771,2024-12-06,Atlanta Hawks,Los Angeles Lakers,134,132,2024
+15907772,2024-12-06,Boston Celtics,Milwaukee Bucks,111,105,2024
+15907773,2024-12-06,Chicago Bulls,Indiana Pacers,123,132,2024
+15907774,2024-12-06,San Antonio Spurs,Sacramento Kings,113,140,2024
+15907775,2024-12-06,Golden State Warriors,Minnesota Timberwolves,90,107,2024
+15907776,2024-12-06,Portland Trail Blazers,Utah Jazz,99,141,2024
+15907777,2024-12-07,Charlotte Hornets,Cleveland Cavaliers,102,116,2024
+15907778,2024-12-07,Washington Wizards,Denver Nuggets,122,113,2024
+15907779,2024-12-07,New Orleans Pelicans,Oklahoma City Thunder,109,119,2024
+15907780,2024-12-07,New York Knicks,Detroit Pistons,111,120,2024
+15907781,2024-12-07,Toronto Raptors,Dallas Mavericks,118,125,2024
+15907782,2024-12-07,Boston Celtics,Memphis Grizzlies,121,127,2024
+15907783,2024-12-07,Miami Heat,Phoenix Suns,121,111,2024
+15907784,2024-12-08,Chicago Bulls,Philadelphia 76ers,100,108,2024
+15907785,2024-12-08,Brooklyn Nets,Milwaukee Bucks,113,118,2024
+15907786,2024-12-08,Indiana Pacers,Charlotte Hornets,109,113,2024
+15907787,2024-12-08,Atlanta Hawks,Denver Nuggets,111,141,2024
+15907788,2024-12-08,Miami Heat,Cleveland Cavaliers,122,113,2024
+15907789,2024-12-08,Orlando Magic,Phoenix Suns,115,110,2024
+15907790,2024-12-08,Washington Wizards,Memphis Grizzlies,112,140,2024
+15907791,2024-12-08,San Antonio Spurs,New Orleans Pelicans,121,116,2024
+15907792,2024-12-08,Golden State Warriors,Minnesota Timberwolves,114,106,2024
+15907793,2024-12-08,LA Clippers,Houston Rockets,106,117,2024
+15907794,2024-12-08,Sacramento Kings,Utah Jazz,141,97,2024
+15907795,2024-12-08,Los Angeles Lakers,Portland Trail Blazers,107,98,2024
+15907796,2024-12-09,Toronto Raptors,New York Knicks,108,113,2024
+16968270,2024-12-10,Milwaukee Bucks,Orlando Magic,114,109,2024
+16968271,2024-12-10,Oklahoma City Thunder,Dallas Mavericks,118,104,2024
+16968272,2024-12-11,New York Knicks,Atlanta Hawks,100,108,2024
+16968273,2024-12-11,Houston Rockets,Golden State Warriors,91,90,2024
+16968274,2024-12-12,Boston Celtics,Detroit Pistons,123,99,2024
+16968275,2024-12-12,Miami Heat,Toronto Raptors,114,104,2024
+16968276,2024-12-12,New Orleans Pelicans,Sacramento Kings,109,111,2024
+16968277,2024-12-13,Cleveland Cavaliers,Washington Wizards,115,105,2024
+16968278,2024-12-13,Philadelphia 76ers,Indiana Pacers,107,121,2024
+16968279,2024-12-13,Minnesota Timberwolves,Los Angeles Lakers,97,87,2024
+16968280,2024-12-13,Memphis Grizzlies,Brooklyn Nets,135,119,2024
+16968281,2024-12-13,Chicago Bulls,Charlotte Hornets,109,95,2024
+16968282,2024-12-13,Denver Nuggets,LA Clippers,120,98,2024
+16968283,2024-12-13,Utah Jazz,Phoenix Suns,126,134,2024
+16968284,2024-12-13,Portland Trail Blazers,San Antonio Spurs,116,118,2024
+17136012,2024-12-14,Milwaukee Bucks,Atlanta Hawks,110,102,2024
+17136013,2024-12-14,Oklahoma City Thunder,Houston Rockets,111,96,2024
+16968285,2024-12-15,Indiana Pacers,New Orleans Pelicans,119,104,2024
+16968286,2024-12-15,Washington Wizards,Boston Celtics,98,112,2024
+16968287,2024-12-15,San Antonio Spurs,Minnesota Timberwolves,92,106,2024
+16968288,2024-12-15,Phoenix Suns,Portland Trail Blazers,116,109,2024
+16968289,2024-12-15,Los Angeles Lakers,Memphis Grizzlies,116,110,2024
+17136019,2024-12-15,Orlando Magic,New York Knicks,91,100,2024
+17136020,2024-12-15,Golden State Warriors,Dallas Mavericks,133,143,2024
+16968290,2024-12-16,Detroit Pistons,Miami Heat,125,124,2024
+16968291,2024-12-16,Charlotte Hornets,Philadelphia 76ers,108,121,2024
+16968292,2024-12-16,Toronto Raptors,Chicago Bulls,121,122,2024
+16968293,2024-12-16,Brooklyn Nets,Cleveland Cavaliers,101,130,2024
+16968294,2024-12-16,Sacramento Kings,Denver Nuggets,129,130,2024
+16968295,2024-12-16,LA Clippers,Utah Jazz,144,107,2024
+17195500,2024-12-17,Oklahoma City Thunder,Milwaukee Bucks,81,97,2024
+15907797,2024-12-19,Detroit Pistons,Utah Jazz,119,126,2024
+15907798,2024-12-19,Orlando Magic,Oklahoma City Thunder,99,105,2024
+15907799,2024-12-19,Washington Wizards,Charlotte Hornets,123,114,2024
+15907800,2024-12-19,Boston Celtics,Chicago Bulls,108,117,2024
+15907801,2024-12-19,Toronto Raptors,Brooklyn Nets,94,101,2024
+15907802,2024-12-19,Houston Rockets,New Orleans Pelicans,133,113,2024
+15907803,2024-12-19,Memphis Grizzlies,Golden State Warriors,144,93,2024
+15907804,2024-12-19,Minnesota Timberwolves,New York Knicks,107,133,2024
+15907805,2024-12-19,Dallas Mavericks,LA Clippers,95,118,2024
+15907806,2024-12-19,Phoenix Suns,Indiana Pacers,111,120,2024
+15907807,2024-12-19,San Antonio Spurs,Atlanta Hawks,133,126,2024
+15907808,2024-12-19,Portland Trail Blazers,Denver Nuggets,126,124,2024
+15907809,2024-12-19,Sacramento Kings,Los Angeles Lakers,100,113,2024
+15907810,2024-12-20,Philadelphia 76ers,Charlotte Hornets,108,98,2024
+15907811,2024-12-20,Cleveland Cavaliers,Milwaukee Bucks,124,101,2024
+15907812,2024-12-20,Miami Heat,Oklahoma City Thunder,97,104,2024
+15907813,2024-12-21,Sacramento Kings,Los Angeles Lakers,99,103,2024
+15907814,2024-12-21,Orlando Magic,Miami Heat,121,114,2024
+15907815,2024-12-21,Atlanta Hawks,Memphis Grizzlies,112,128,2024
+15907816,2024-12-21,Brooklyn Nets,Utah Jazz,94,105,2024
+15907817,2024-12-21,Cleveland Cavaliers,Philadelphia 76ers,126,99,2024
+15907818,2024-12-21,Chicago Bulls,Boston Celtics,98,123,2024
+15907819,2024-12-21,Milwaukee Bucks,Washington Wizards,112,101,2024
+15907820,2024-12-21,Minnesota Timberwolves,Golden State Warriors,103,113,2024
+15907821,2024-12-21,New Orleans Pelicans,New York Knicks,93,104,2024
+15907822,2024-12-21,Dallas Mavericks,LA Clippers,113,97,2024
+15907823,2024-12-21,San Antonio Spurs,Portland Trail Blazers,114,94,2024
+15907824,2024-12-21,Phoenix Suns,Detroit Pistons,125,133,2024
+15907825,2024-12-22,Toronto Raptors,Houston Rockets,110,114,2024
+15907826,2024-12-22,Sacramento Kings,Indiana Pacers,95,122,2024
+15907827,2024-12-22,New Orleans Pelicans,Denver Nuggets,129,132,2024
+15907828,2024-12-23,Charlotte Hornets,Houston Rockets,101,114,2024
+15907829,2024-12-23,Cleveland Cavaliers,Utah Jazz,124,113,2024
+15907830,2024-12-23,Orlando Magic,Boston Celtics,108,104,2024
+15907831,2024-12-23,Philadelphia 76ers,San Antonio Spurs,111,106,2024
+15907832,2024-12-23,Atlanta Hawks,Minnesota Timberwolves,117,104,2024
+15907833,2024-12-23,Miami Heat,Brooklyn Nets,110,95,2024
+15907834,2024-12-23,New York Knicks,Toronto Raptors,139,125,2024
+15907835,2024-12-23,Chicago Bulls,Milwaukee Bucks,91,112,2024
+15907836,2024-12-23,Memphis Grizzlies,LA Clippers,110,114,2024
+15907837,2024-12-23,Oklahoma City Thunder,Washington Wizards,123,105,2024
+15907838,2024-12-23,Dallas Mavericks,Portland Trail Blazers,132,108,2024
+15907839,2024-12-23,Denver Nuggets,Phoenix Suns,117,90,2024
+15907840,2024-12-23,Golden State Warriors,Indiana Pacers,105,111,2024
+15907841,2024-12-23,Los Angeles Lakers,Detroit Pistons,114,117,2024
+15907842,2024-12-25,New York Knicks,San Antonio Spurs,117,114,2024
+15907843,2024-12-25,Dallas Mavericks,Minnesota Timberwolves,99,105,2024
+15907844,2024-12-25,Boston Celtics,Philadelphia 76ers,114,118,2024
+15907845,2024-12-25,Golden State Warriors,Los Angeles Lakers,113,115,2024
+15907846,2024-12-25,Phoenix Suns,Denver Nuggets,110,100,2024
+15907847,2024-12-26,Indiana Pacers,Oklahoma City Thunder,114,120,2024
+15907848,2024-12-26,Orlando Magic,Miami Heat,88,89,2024
+15907849,2024-12-26,Washington Wizards,Charlotte Hornets,113,110,2024
+15907850,2024-12-26,Atlanta Hawks,Chicago Bulls,141,133,2024
+15907851,2024-12-26,Memphis Grizzlies,Toronto Raptors,155,126,2024
+15907852,2024-12-26,Milwaukee Bucks,Brooklyn Nets,105,111,2024
+15907853,2024-12-26,New Orleans Pelicans,Houston Rockets,111,128,2024
+15907854,2024-12-26,Portland Trail Blazers,Utah Jazz,122,120,2024
+15907855,2024-12-26,Sacramento Kings,Detroit Pistons,113,114,2024
+15907856,2024-12-27,Orlando Magic,New York Knicks,85,108,2024
+15907857,2024-12-27,Boston Celtics,Indiana Pacers,142,105,2024
+15907858,2024-12-27,Brooklyn Nets,San Antonio Spurs,87,96,2024
+15907859,2024-12-27,Houston Rockets,Minnesota Timberwolves,112,113,2024
+15907860,2024-12-27,New Orleans Pelicans,Memphis Grizzlies,124,132,2024
+15907861,2024-12-27,Denver Nuggets,Cleveland Cavaliers,135,149,2024
+15907862,2024-12-27,Phoenix Suns,Dallas Mavericks,89,98,2024
+15907863,2024-12-27,LA Clippers,Golden State Warriors,102,92,2024
+15907864,2024-12-28,Atlanta Hawks,Miami Heat,120,110,2024
+15907865,2024-12-28,Charlotte Hornets,Oklahoma City Thunder,94,106,2024
+15907866,2024-12-28,Washington Wizards,New York Knicks,132,136,2024
+15907867,2024-12-28,Chicago Bulls,Milwaukee Bucks,116,111,2024
+15907868,2024-12-28,Golden State Warriors,Phoenix Suns,109,105,2024
+15907869,2024-12-28,Denver Nuggets,Detroit Pistons,134,121,2024
+15907870,2024-12-28,Utah Jazz,Philadelphia 76ers,111,114,2024
+15907871,2024-12-28,Portland Trail Blazers,Dallas Mavericks,126,122,2024
+15907872,2024-12-28,Los Angeles Lakers,Sacramento Kings,132,122,2024
+15907873,2024-12-29,Orlando Magic,Brooklyn Nets,102,101,2024
+15907874,2024-12-29,Boston Celtics,Indiana Pacers,114,123,2024
+15907875,2024-12-29,Toronto Raptors,Atlanta Hawks,107,136,2024
+15907876,2024-12-29,Houston Rockets,Miami Heat,100,104,2024
+15907877,2024-12-29,Oklahoma City Thunder,Memphis Grizzlies,130,106,2024
+15907878,2024-12-29,Minnesota Timberwolves,San Antonio Spurs,112,110,2024
+15907879,2024-12-30,Charlotte Hornets,Chicago Bulls,108,115,2024
+15907880,2024-12-30,Washington Wizards,New York Knicks,106,126,2024
+15907881,2024-12-30,New Orleans Pelicans,LA Clippers,113,116,2024
+15907882,2024-12-30,Utah Jazz,Denver Nuggets,121,132,2024
+15907883,2024-12-30,Golden State Warriors,Cleveland Cavaliers,95,113,2024
+15907884,2024-12-30,Portland Trail Blazers,Philadelphia 76ers,103,125,2024
+15907885,2024-12-30,Sacramento Kings,Dallas Mavericks,110,100,2024
+15907886,2024-12-31,Boston Celtics,Toronto Raptors,125,71,2024
+15907887,2024-12-31,Indiana Pacers,Milwaukee Bucks,112,120,2024
+15907888,2024-12-31,San Antonio Spurs,LA Clippers,122,86,2024
+15907889,2024-12-31,Oklahoma City Thunder,Minnesota Timberwolves,113,105,2024
+15907890,2024-12-31,Phoenix Suns,Memphis Grizzlies,112,117,2024
+15907891,2024-12-31,Los Angeles Lakers,Cleveland Cavaliers,110,122,2024
+15907892,2025-01-01,Detroit Pistons,Orlando Magic,105,96,2024
+15907893,2025-01-01,Washington Wizards,Chicago Bulls,125,107,2024
+15907894,2025-01-01,Miami Heat,New Orleans Pelicans,119,108,2024
+15907895,2025-01-01,New York Knicks,Utah Jazz,119,103,2024
+15907896,2025-01-01,Toronto Raptors,Brooklyn Nets,130,113,2024
+15907897,2025-01-01,Houston Rockets,Dallas Mavericks,110,99,2024
+15907898,2025-01-01,Denver Nuggets,Atlanta Hawks,139,120,2024
+15907899,2025-01-01,Sacramento Kings,Philadelphia 76ers,113,107,2024
+15907900,2025-01-02,Miami Heat,Indiana Pacers,115,128,2024
+15907901,2025-01-02,Minnesota Timberwolves,Boston Celtics,115,118,2024
+15907902,2025-01-02,Milwaukee Bucks,Brooklyn Nets,110,113,2024
+15907903,2025-01-02,Oklahoma City Thunder,LA Clippers,116,98,2024
+15907904,2025-01-02,Golden State Warriors,Philadelphia 76ers,139,105,2024
+15907905,2025-01-02,Los Angeles Lakers,Portland Trail Blazers,114,106,2024
+15907906,2025-01-03,Detroit Pistons,Charlotte Hornets,98,94,2024
+15907907,2025-01-03,Toronto Raptors,Orlando Magic,97,106,2024
+15907908,2025-01-03,Houston Rockets,Boston Celtics,86,109,2024
+15907909,2025-01-03,New Orleans Pelicans,Washington Wizards,132,120,2024
+15907910,2025-01-03,Oklahoma City Thunder,New York Knicks,117,107,2024
+15907911,2025-01-03,Dallas Mavericks,Cleveland Cavaliers,122,134,2024
+15907912,2025-01-03,Denver Nuggets,San Antonio Spurs,110,113,2024
+15907913,2025-01-03,Sacramento Kings,Memphis Grizzlies,138,133,2024
+15907914,2025-01-03,Los Angeles Lakers,Atlanta Hawks,119,102,2024
+15907915,2025-01-04,Brooklyn Nets,Philadelphia 76ers,94,123,2024
+15907916,2025-01-04,Detroit Pistons,Minnesota Timberwolves,119,105,2024
+15907917,2025-01-04,Indiana Pacers,Phoenix Suns,126,108,2024
+15907918,2025-01-04,Miami Heat,Utah Jazz,100,136,2024
+15907919,2025-01-04,Chicago Bulls,New York Knicks,139,126,2024
+15907920,2025-01-04,Milwaukee Bucks,Portland Trail Blazers,102,105,2024
+15907921,2025-01-04,San Antonio Spurs,Denver Nuggets,111,122,2024
+15907922,2025-01-04,Golden State Warriors,Memphis Grizzlies,121,113,2024
+15907923,2025-01-04,LA Clippers,Atlanta Hawks,131,105,2024
+15907924,2025-01-05,Oklahoma City Thunder,Boston Celtics,105,92,2024
+15907925,2025-01-05,Cleveland Cavaliers,Charlotte Hornets,115,105,2024
+15907926,2025-01-05,Washington Wizards,New Orleans Pelicans,98,110,2024
+15907927,2025-01-05,Orlando Magic,Utah Jazz,92,105,2024
+15907928,2025-01-05,Houston Rockets,Los Angeles Lakers,119,115,2024
+15907929,2025-01-05,Golden State Warriors,Sacramento Kings,99,129,2024
+15907930,2025-01-06,Detroit Pistons,Portland Trail Blazers,118,115,2024
+15907931,2025-01-06,Philadelphia 76ers,Phoenix Suns,99,109,2024
+15907932,2025-01-06,Brooklyn Nets,Indiana Pacers,99,113,2024
+15907933,2025-01-06,New York Knicks,Orlando Magic,94,103,2024
+15907934,2025-01-06,Toronto Raptors,Milwaukee Bucks,104,128,2024
+15907935,2025-01-06,Chicago Bulls,San Antonio Spurs,114,110,2024
+15907936,2025-01-06,Memphis Grizzlies,Dallas Mavericks,119,104,2024
+15907937,2025-01-06,Minnesota Timberwolves,LA Clippers,108,106,2024
+15907938,2025-01-06,Sacramento Kings,Miami Heat,123,118,2024
+15907939,2025-01-07,Charlotte Hornets,Phoenix Suns,115,104,2024
+15907940,2025-01-07,Washington Wizards,Houston Rockets,112,135,2024
+15907941,2025-01-07,Dallas Mavericks,Los Angeles Lakers,118,97,2024
+15907942,2025-01-07,New Orleans Pelicans,Minnesota Timberwolves,97,104,2024
+15907943,2025-01-07,Utah Jazz,Atlanta Hawks,121,124,2024
+15907944,2025-01-07,Denver Nuggets,Boston Celtics,106,118,2024
+15907945,2025-01-07,Golden State Warriors,Miami Heat,98,114,2024
+15907946,2025-01-08,Cleveland Cavaliers,Oklahoma City Thunder,129,122,2024
+15907947,2025-01-08,Indiana Pacers,Chicago Bulls,129,113,2024
+15907948,2025-01-08,New York Knicks,Toronto Raptors,112,98,2024
+15907949,2025-01-08,Philadelphia 76ers,Washington Wizards,109,103,2024
+15907950,2025-01-08,Brooklyn Nets,Detroit Pistons,98,113,2024
+15907951,2025-01-08,New Orleans Pelicans,Portland Trail Blazers,100,119,2024
+15907952,2025-01-08,Denver Nuggets,LA Clippers,126,103,2024
+15907953,2025-01-08,Milwaukee Bucks,San Antonio Spurs,121,105,2024
+15907954,2025-01-09,Cleveland Cavaliers,Toronto Raptors,132,126,2024
+15907955,2025-01-09,Detroit Pistons,Golden State Warriors,104,107,2024
+15907956,2025-01-09,Orlando Magic,Minnesota Timberwolves,89,104,2024
+15907957,2025-01-09,Memphis Grizzlies,Houston Rockets,115,119,2024
+15907958,2025-01-09,Dallas Mavericks,Portland Trail Blazers,117,111,2024
+15907959,2025-01-09,Phoenix Suns,Atlanta Hawks,123,115,2024
+15907960,2025-01-09,Utah Jazz,Miami Heat,92,97,2024
+15907962,2025-01-10,Indiana Pacers,Golden State Warriors,108,96,2024
+15907963,2025-01-10,Orlando Magic,Milwaukee Bucks,106,109,2024
+15907964,2025-01-10,Philadelphia 76ers,New Orleans Pelicans,115,123,2024
+15907965,2025-01-10,Boston Celtics,Sacramento Kings,97,114,2024
+15907966,2025-01-10,New York Knicks,Oklahoma City Thunder,101,126,2024
+15907967,2025-01-10,Chicago Bulls,Washington Wizards,138,105,2024
+15907968,2025-01-10,Denver Nuggets,Brooklyn Nets,124,105,2024
+15907970,2025-01-11,Phoenix Suns,Utah Jazz,114,106,2024
+15907971,2025-01-11,Detroit Pistons,Toronto Raptors,123,114,2024
+15907972,2025-01-11,Minnesota Timberwolves,Memphis Grizzlies,125,127,2024
+15907973,2025-01-11,Portland Trail Blazers,Miami Heat,98,119,2024
+15907976,2025-01-12,New York Knicks,Milwaukee Bucks,140,106,2024
+15907977,2025-01-12,Dallas Mavericks,Denver Nuggets,101,112,2024
+15907978,2025-01-12,Chicago Bulls,Sacramento Kings,119,124,2024
+15907979,2025-01-12,Boston Celtics,New Orleans Pelicans,120,119,2024
+15907980,2025-01-12,Cleveland Cavaliers,Indiana Pacers,93,108,2024
+15907981,2025-01-12,Orlando Magic,Philadelphia 76ers,104,99,2024
+15907982,2025-01-12,Washington Wizards,Oklahoma City Thunder,95,136,2024
+15907983,2025-01-12,Utah Jazz,Brooklyn Nets,112,111,2024
+15907984,2025-01-12,Phoenix Suns,Charlotte Hornets,120,113,2024
+15907985,2025-01-13,Washington Wizards,Minnesota Timberwolves,106,120,2024
+15907986,2025-01-13,New York Knicks,Detroit Pistons,119,124,2024
+15907987,2025-01-13,Toronto Raptors,Golden State Warriors,104,101,2024
+15907988,2025-01-13,Houston Rockets,Memphis Grizzlies,120,118,2024
+15907989,2025-01-13,Los Angeles Lakers,San Antonio Spurs,102,126,2024
+15907990,2025-01-13,LA Clippers,Miami Heat,109,98,2024
+15907991,2025-01-14,Indiana Pacers,Cleveland Cavaliers,117,127,2024
+15907992,2025-01-14,Philadelphia 76ers,Oklahoma City Thunder,102,118,2024
+15907993,2025-01-14,Atlanta Hawks,Phoenix Suns,122,117,2024
+15907994,2025-01-14,Chicago Bulls,New Orleans Pelicans,113,119,2024
+15907995,2025-01-14,Milwaukee Bucks,Sacramento Kings,130,115,2024
+15907996,2025-01-14,Dallas Mavericks,Denver Nuggets,99,118,2024
+15907997,2025-01-14,Portland Trail Blazers,Brooklyn Nets,114,132,2024
+15907998,2025-01-15,Philadelphia 76ers,New York Knicks,119,125,2024
+15907999,2025-01-15,Toronto Raptors,Boston Celtics,110,97,2024
+15908000,2025-01-15,Chicago Bulls,Atlanta Hawks,94,110,2024
+15908001,2025-01-15,Milwaukee Bucks,Orlando Magic,122,93,2024
+15908002,2025-01-15,Minnesota Timberwolves,Golden State Warriors,115,116,2024
+15908003,2025-01-15,New Orleans Pelicans,Dallas Mavericks,119,116,2024
+15908004,2025-01-15,San Antonio Spurs,Memphis Grizzlies,115,129,2024
+15908005,2025-01-15,Denver Nuggets,Houston Rockets,108,128,2024
+15908006,2025-01-15,Utah Jazz,Charlotte Hornets,112,117,2024
+15908007,2025-01-15,Los Angeles Lakers,Miami Heat,117,108,2024
+15908008,2025-01-15,LA Clippers,Brooklyn Nets,126,67,2024
+15908009,2025-01-16,Detroit Pistons,Indiana Pacers,100,111,2024
+15908010,2025-01-16,Washington Wizards,Phoenix Suns,123,130,2024
+15908011,2025-01-16,Oklahoma City Thunder,Cleveland Cavaliers,134,114,2024
+15908012,2025-01-16,Portland Trail Blazers,LA Clippers,89,118,2024
+15908013,2025-01-16,Sacramento Kings,Houston Rockets,132,127,2024
+15908014,2025-01-17,Boston Celtics,Orlando Magic,121,94,2024
+15908015,2025-01-17,New York Knicks,Minnesota Timberwolves,99,116,2024
+15908016,2025-01-17,Miami Heat,Denver Nuggets,113,133,2024
+15908017,2025-01-17,Milwaukee Bucks,Toronto Raptors,130,112,2024
+15908018,2025-01-17,New Orleans Pelicans,Utah Jazz,136,123,2024
+15908019,2025-01-17,San Antonio Spurs,Memphis Grizzlies,112,140,2024
+15908020,2025-01-17,Dallas Mavericks,Oklahoma City Thunder,106,98,2024
+15908021,2025-01-17,Chicago Bulls,Charlotte Hornets,123,125,2024
+15908022,2025-01-17,Los Angeles Lakers,Brooklyn Nets,102,101,2024
+15908023,2025-01-18,Detroit Pistons,Phoenix Suns,121,125,2024
+15908024,2025-01-18,Boston Celtics,Atlanta Hawks,115,119,2024
+15908025,2025-01-18,Indiana Pacers,Philadelphia 76ers,115,102,2024
+15908026,2025-01-18,Golden State Warriors,Washington Wizards,122,114,2024
+15908027,2025-01-18,Minnesota Timberwolves,Cleveland Cavaliers,117,124,2024
+15908028,2025-01-18,Portland Trail Blazers,Houston Rockets,103,125,2024
+15908029,2025-01-19,Miami Heat,San Antonio Spurs,128,107,2024
+15908030,2025-01-19,Orlando Magic,Denver Nuggets,100,113,2024
+15908031,2025-01-19,Milwaukee Bucks,Philadelphia 76ers,123,109,2024
+15908032,2025-01-19,Oklahoma City Thunder,Brooklyn Nets,127,101,2024
+15908033,2025-01-19,LA Clippers,Los Angeles Lakers,116,102,2024
+15908034,2025-01-19,Portland Trail Blazers,Chicago Bulls,113,102,2024
+15908035,2025-01-19,Sacramento Kings,Washington Wizards,123,100,2024
+15908036,2025-01-20,Charlotte Hornets,Dallas Mavericks,110,105,2024
+15908037,2025-01-20,Houston Rockets,Detroit Pistons,96,107,2024
+15908038,2025-01-20,Memphis Grizzlies,Minnesota Timberwolves,108,106,2024
+15908039,2025-01-20,New York Knicks,Atlanta Hawks,119,110,2024
+15908040,2025-01-20,Cleveland Cavaliers,Phoenix Suns,118,92,2024
+15908041,2025-01-20,Golden State Warriors,Boston Celtics,85,125,2024
+15908042,2025-01-20,New Orleans Pelicans,Utah Jazz,123,119,2024
+15908048,2025-01-20,LA Clippers,Chicago Bulls,99,112,2024
+15908043,2025-01-21,Brooklyn Nets,New York Knicks,95,99,2024
+15908044,2025-01-21,Miami Heat,Portland Trail Blazers,107,116,2024
+15908045,2025-01-21,Toronto Raptors,Orlando Magic,109,93,2024
+15908046,2025-01-21,Denver Nuggets,Philadelphia 76ers,144,109,2024
+15908047,2025-01-21,Los Angeles Lakers,Washington Wizards,111,88,2024
+15908049,2025-01-22,Atlanta Hawks,Detroit Pistons,104,114,2024
+15908050,2025-01-22,Brooklyn Nets,Phoenix Suns,84,108,2024
+15908051,2025-01-22,Dallas Mavericks,Minnesota Timberwolves,114,115,2024
+15908052,2025-01-22,Houston Rockets,Cleveland Cavaliers,109,108,2024
+15908053,2025-01-22,Memphis Grizzlies,Charlotte Hornets,132,120,2024
+15908055,2025-01-22,Oklahoma City Thunder,Utah Jazz,123,114,2024
+15908056,2025-01-22,Sacramento Kings,Golden State Warriors,123,117,2024
+15908057,2025-01-22,LA Clippers,Boston Celtics,113,117,2024
+15908058,2025-01-23,Indiana Pacers,San Antonio Spurs,110,140,2024
+15908059,2025-01-23,Orlando Magic,Portland Trail Blazers,79,101,2024
+15908060,2025-01-23,Atlanta Hawks,Toronto Raptors,119,122,2024
+15908061,2025-01-23,Milwaukee Bucks,Miami Heat,125,96,2024
+15908062,2025-01-23,Oklahoma City Thunder,Dallas Mavericks,115,121,2024
+15908063,2025-01-23,Denver Nuggets,Sacramento Kings,132,123,2024
+15908065,2025-01-23,Golden State Warriors,Chicago Bulls,131,106,2024
+15908066,2025-01-23,Los Angeles Lakers,Boston Celtics,117,96,2024
+15908714,2025-01-23,LA Clippers,Washington Wizards,110,93,2024
+15908067,2025-01-24,Charlotte Hornets,Portland Trail Blazers,97,102,2024
+15908068,2025-01-24,Philadelphia 76ers,Cleveland Cavaliers,132,129,2024
+15908069,2025-01-24,Memphis Grizzlies,New Orleans Pelicans,139,126,2024
+15908070,2025-01-25,San Antonio Spurs,Indiana Pacers,98,136,2024
+15908071,2025-01-25,Minnesota Timberwolves,Denver Nuggets,133,104,2024
+15908072,2025-01-25,Dallas Mavericks,Boston Celtics,107,122,2024
+15908073,2025-01-25,Brooklyn Nets,Miami Heat,97,106,2024
+15908074,2025-01-25,Charlotte Hornets,New Orleans Pelicans,123,92,2024
+15908075,2025-01-25,Orlando Magic,Detroit Pistons,121,113,2024
+15908076,2025-01-25,Atlanta Hawks,Toronto Raptors,94,117,2024
+15908077,2025-01-25,Cleveland Cavaliers,Houston Rockets,131,135,2024
+15908078,2025-01-25,New York Knicks,Sacramento Kings,143,120,2024
+15908079,2025-01-25,Chicago Bulls,Philadelphia 76ers,97,109,2024
+15908080,2025-01-25,Memphis Grizzlies,Utah Jazz,125,103,2024
+15908081,2025-01-25,Golden State Warriors,Los Angeles Lakers,108,118,2024
+15908082,2025-01-25,Phoenix Suns,Washington Wizards,119,109,2024
+15908083,2025-01-25,LA Clippers,Milwaukee Bucks,127,117,2024
+15908084,2025-01-26,Portland Trail Blazers,Oklahoma City Thunder,108,118,2024
+15908085,2025-01-27,Charlotte Hornets,Los Angeles Lakers,107,112,2024
+15908086,2025-01-27,Cleveland Cavaliers,Detroit Pistons,110,91,2024
+15908087,2025-01-27,Boston Celtics,Houston Rockets,112,114,2024
+15908088,2025-01-27,Brooklyn Nets,Sacramento Kings,96,110,2024
+15908089,2025-01-27,Miami Heat,Orlando Magic,125,119,2024
+15908090,2025-01-27,New York Knicks,Memphis Grizzlies,143,106,2024
+15908091,2025-01-27,Toronto Raptors,New Orleans Pelicans,113,104,2024
+15908092,2025-01-27,Chicago Bulls,Denver Nuggets,129,121,2024
+15908093,2025-01-27,Minnesota Timberwolves,Atlanta Hawks,100,92,2024
+15908094,2025-01-27,Dallas Mavericks,Washington Wizards,130,108,2024
+15908095,2025-01-27,Utah Jazz,Milwaukee Bucks,110,125,2024
+15908096,2025-01-27,Phoenix Suns,LA Clippers,111,109,2024
+15907969,2025-01-28,Atlanta Hawks,Houston Rockets,96,100,2024
+15908097,2025-01-28,Philadelphia 76ers,Los Angeles Lakers,118,104,2024
+15908098,2025-01-28,Golden State Warriors,Utah Jazz,114,103,2024
+15908099,2025-01-28,Portland Trail Blazers,Milwaukee Bucks,125,112,2024
+15908100,2025-01-29,Charlotte Hornets,Brooklyn Nets,83,104,2024
+15908101,2025-01-29,Indiana Pacers,Detroit Pistons,133,119,2024
+15908102,2025-01-29,Washington Wizards,Toronto Raptors,82,106,2024
+15908103,2025-01-29,Boston Celtics,Chicago Bulls,122,100,2024
+15908104,2025-01-29,Miami Heat,Cleveland Cavaliers,106,126,2024
+15908105,2025-01-29,New York Knicks,Denver Nuggets,122,112,2024
+15908106,2025-01-29,Philadelphia 76ers,Sacramento Kings,117,104,2024
+15908107,2025-01-29,New Orleans Pelicans,Dallas Mavericks,136,137,2024
+15908108,2025-01-29,San Antonio Spurs,LA Clippers,116,128,2024
+15908109,2025-01-29,Phoenix Suns,Minnesota Timberwolves,113,121,2024
+15908110,2025-01-29,Golden State Warriors,Oklahoma City Thunder,116,109,2024
+15908111,2025-01-30,Washington Wizards,Los Angeles Lakers,96,134,2024
+15908112,2025-01-30,Cleveland Cavaliers,Atlanta Hawks,137,115,2024
+15908113,2025-01-30,Memphis Grizzlies,Houston Rockets,120,119,2024
+15908114,2025-01-30,Utah Jazz,Minnesota Timberwolves,113,138,2024
+15908115,2025-01-30,Portland Trail Blazers,Orlando Magic,119,90,2024
+15908116,2025-01-31,Charlotte Hornets,LA Clippers,104,112,2024
+15908117,2025-01-31,Detroit Pistons,Dallas Mavericks,117,102,2024
+15908118,2025-01-31,Philadelphia 76ers,Denver Nuggets,134,137,2024
+15908119,2025-01-31,Toronto Raptors,Chicago Bulls,106,122,2024
+15908120,2025-01-31,New Orleans Pelicans,Boston Celtics,116,118,2024
+15908121,2025-01-31,San Antonio Spurs,Milwaukee Bucks,144,118,2024
+15908122,2025-01-31,Golden State Warriors,Phoenix Suns,105,130,2024
+15908123,2025-02-01,Indiana Pacers,Atlanta Hawks,132,127,2024
+15908124,2025-02-01,Utah Jazz,Orlando Magic,113,99,2024
+15908125,2025-02-01,Charlotte Hornets,Denver Nuggets,104,107,2024
+15908126,2025-02-01,Houston Rockets,Brooklyn Nets,98,110,2024
+15908127,2025-02-01,Minnesota Timberwolves,Washington Wizards,103,105,2024
+15908128,2025-02-01,Oklahoma City Thunder,Sacramento Kings,144,110,2024
+15908129,2025-02-01,New York Knicks,Los Angeles Lakers,112,128,2024
+15908130,2025-02-01,San Antonio Spurs,Miami Heat,103,105,2024
+15908131,2025-02-01,Portland Trail Blazers,Phoenix Suns,127,108,2024
+15908132,2025-02-02,Detroit Pistons,Chicago Bulls,127,119,2024
+15908133,2025-02-02,Cleveland Cavaliers,Dallas Mavericks,144,101,2024
+15908134,2025-02-02,Toronto Raptors,LA Clippers,115,108,2024
+15908135,2025-02-02,Philadelphia 76ers,Boston Celtics,110,118,2024
+15908136,2025-02-02,Milwaukee Bucks,Memphis Grizzlies,119,132,2024
+15908137,2025-02-03,Charlotte Hornets,Washington Wizards,114,124,2024
+15908138,2025-02-03,Detroit Pistons,Atlanta Hawks,130,132,2024
+15908139,2025-02-03,New York Knicks,Houston Rockets,124,118,2024
+15908140,2025-02-03,Memphis Grizzlies,San Antonio Spurs,128,109,2024
+15908141,2025-02-03,Minnesota Timberwolves,Sacramento Kings,114,116,2024
+15908142,2025-02-03,Oklahoma City Thunder,Milwaukee Bucks,125,96,2024
+15908143,2025-02-03,Denver Nuggets,New Orleans Pelicans,125,113,2024
+15908144,2025-02-03,Utah Jazz,Indiana Pacers,111,112,2024
+15908145,2025-02-03,Golden State Warriors,Orlando Magic,104,99,2024
+15908146,2025-02-03,Portland Trail Blazers,Phoenix Suns,121,119,2024
+15908147,2025-02-04,Cleveland Cavaliers,Boston Celtics,105,112,2024
+15908148,2025-02-04,Brooklyn Nets,Houston Rockets,99,97,2024
+15908149,2025-02-04,Philadelphia 76ers,Dallas Mavericks,118,116,2024
+15908150,2025-02-04,Toronto Raptors,New York Knicks,115,121,2024
+15908151,2025-02-04,Chicago Bulls,Miami Heat,133,124,2024
+15908152,2025-02-04,LA Clippers,Los Angeles Lakers,97,122,2024
+15908153,2025-02-04,Portland Trail Blazers,Indiana Pacers,112,89,2024
+15908154,2025-02-05,Charlotte Hornets,Milwaukee Bucks,102,112,2024
+15908155,2025-02-05,Detroit Pistons,Cleveland Cavaliers,115,118,2024
+15908156,2025-02-05,Atlanta Hawks,San Antonio Spurs,125,126,2024
+15908157,2025-02-05,Brooklyn Nets,Washington Wizards,102,119,2024
+15908158,2025-02-05,Philadelphia 76ers,Miami Heat,101,108,2024
+15908159,2025-02-05,Toronto Raptors,Memphis Grizzlies,107,138,2024
+15908160,2025-02-05,Minnesota Timberwolves,Chicago Bulls,127,108,2024
+15908161,2025-02-05,Oklahoma City Thunder,Phoenix Suns,140,109,2024
+15908162,2025-02-05,Utah Jazz,Golden State Warriors,131,128,2024
+15908163,2025-02-05,Denver Nuggets,New Orleans Pelicans,144,119,2024
+15908164,2025-02-05,Sacramento Kings,Orlando Magic,111,130,2024
+15908165,2025-02-06,Boston Celtics,Dallas Mavericks,120,127,2024
+15908166,2025-02-06,Minnesota Timberwolves,Houston Rockets,127,114,2024
+15908167,2025-02-06,Denver Nuggets,Orlando Magic,112,90,2024
+15908168,2025-02-06,Los Angeles Lakers,Golden State Warriors,120,112,2024
+15908169,2025-02-06,Portland Trail Blazers,Sacramento Kings,108,102,2024
+15908170,2025-02-06,LA Clippers,Indiana Pacers,112,119,2024
+15908171,2025-02-07,Charlotte Hornets,San Antonio Spurs,117,116,2024
+15908172,2025-02-07,Washington Wizards,Cleveland Cavaliers,124,134,2024
+15908173,2025-02-07,Atlanta Hawks,Milwaukee Bucks,115,110,2024
+15908174,2025-02-07,Brooklyn Nets,Miami Heat,102,86,2024
+15908175,2025-02-07,Detroit Pistons,Philadelphia 76ers,125,112,2024
+15908176,2025-02-07,Oklahoma City Thunder,Toronto Raptors,121,109,2024
+15908177,2025-02-07,Phoenix Suns,Utah Jazz,135,127,2024
+15908178,2025-02-08,Dallas Mavericks,Houston Rockets,116,105,2024
+15908179,2025-02-08,Los Angeles Lakers,Indiana Pacers,124,117,2024
+15908180,2025-02-08,Orlando Magic,San Antonio Spurs,112,111,2024
+15908181,2025-02-08,Washington Wizards,Atlanta Hawks,111,125,2024
+15908182,2025-02-08,Chicago Bulls,Golden State Warriors,111,132,2024
+15908183,2025-02-08,Memphis Grizzlies,Oklahoma City Thunder,112,125,2024
+15908184,2025-02-08,Minnesota Timberwolves,Portland Trail Blazers,114,98,2024
+15908185,2025-02-08,New York Knicks,Boston Celtics,104,131,2024
+15908480,2025-02-08,Phoenix Suns,Denver Nuggets,105,122,2024
+15908481,2025-02-08,Sacramento Kings,New Orleans Pelicans,123,118,2024
+15908482,2025-02-08,LA Clippers,Utah Jazz,130,110,2024
+15908483,2025-02-09,Detroit Pistons,Charlotte Hornets,112,102,2024
+15908484,2025-02-09,Houston Rockets,Toronto Raptors,94,87,2024
+15908485,2025-02-09,Milwaukee Bucks,Philadelphia 76ers,135,127,2024
+15908486,2025-02-10,Cleveland Cavaliers,Minnesota Timberwolves,128,107,2024
+15908487,2025-02-10,Orlando Magic,Atlanta Hawks,106,112,2024
+15908488,2025-02-10,Washington Wizards,San Antonio Spurs,121,131,2024
+15908489,2025-02-10,Brooklyn Nets,Charlotte Hornets,97,89,2024
+15908490,2025-02-10,Miami Heat,Boston Celtics,85,103,2024
+15908491,2025-02-10,Milwaukee Bucks,Golden State Warriors,111,125,2024
+15908492,2025-02-10,Oklahoma City Thunder,New Orleans Pelicans,137,101,2024
+15908493,2025-02-10,Dallas Mavericks,Sacramento Kings,128,129,2024
+15908494,2025-02-10,Denver Nuggets,Portland Trail Blazers,146,117,2024
+15908499,2025-02-10,Los Angeles Lakers,Utah Jazz,132,113,2024
+15908495,2025-02-11,Philadelphia 76ers,Toronto Raptors,103,106,2024
+15908496,2025-02-11,Indiana Pacers,New York Knicks,115,128,2024
+15908497,2025-02-11,Chicago Bulls,Detroit Pistons,92,132,2024
+15908498,2025-02-11,Phoenix Suns,Memphis Grizzlies,112,119,2024
+15908500,2025-02-12,Boston Celtics,San Antonio Spurs,116,103,2024
+15908501,2025-02-12,Orlando Magic,Charlotte Hornets,102,86,2024
+15908502,2025-02-12,Washington Wizards,Indiana Pacers,130,134,2024
+15908503,2025-02-12,Brooklyn Nets,Philadelphia 76ers,100,96,2024
+15908504,2025-02-12,New York Knicks,Atlanta Hawks,149,148,2024
+15908505,2025-02-12,Toronto Raptors,Cleveland Cavaliers,108,131,2024
+15908506,2025-02-12,Chicago Bulls,Detroit Pistons,110,128,2024
+15908507,2025-02-12,Minnesota Timberwolves,Milwaukee Bucks,101,103,2024
+15908508,2025-02-12,New Orleans Pelicans,Sacramento Kings,111,119,2024
+15908509,2025-02-12,Oklahoma City Thunder,Miami Heat,115,101,2024
+15908510,2025-02-12,Houston Rockets,Phoenix Suns,119,111,2024
+15908511,2025-02-12,Denver Nuggets,Portland Trail Blazers,132,121,2024
+15908512,2025-02-12,Utah Jazz,Los Angeles Lakers,131,119,2024
+15908513,2025-02-12,Dallas Mavericks,Golden State Warriors,111,107,2024
+15908514,2025-02-12,LA Clippers,Memphis Grizzlies,128,114,2024
+15908515,2025-02-13,Houston Rockets,Golden State Warriors,98,105,2024
+15908516,2025-02-13,New Orleans Pelicans,Sacramento Kings,140,133,2024
+15908517,2025-02-13,Dallas Mavericks,Miami Heat,118,113,2024
+15908518,2025-02-13,Minnesota Timberwolves,Oklahoma City Thunder,116,101,2024
+15908735,2025-02-13,Utah Jazz,LA Clippers,116,120,2024
+15907961,2025-02-19,Los Angeles Lakers,Charlotte Hornets,97,100,2024
+15908519,2025-02-20,Indiana Pacers,Memphis Grizzlies,127,113,2024
+15908520,2025-02-20,Philadelphia 76ers,Boston Celtics,104,124,2024
+15908521,2025-02-20,Atlanta Hawks,Orlando Magic,108,114,2024
+15908522,2025-02-20,Brooklyn Nets,Cleveland Cavaliers,97,110,2024
+15908523,2025-02-20,New York Knicks,Chicago Bulls,113,111,2024
+15908524,2025-02-20,Milwaukee Bucks,LA Clippers,116,110,2024
+15908525,2025-02-20,Denver Nuggets,Charlotte Hornets,129,115,2024
+15908526,2025-02-20,San Antonio Spurs,Phoenix Suns,120,109,2024
+15908527,2025-02-20,Portland Trail Blazers,Los Angeles Lakers,102,110,2024
+15908528,2025-02-21,Cleveland Cavaliers,New York Knicks,142,105,2024
+15908529,2025-02-21,Orlando Magic,Memphis Grizzlies,104,105,2024
+15908530,2025-02-21,Washington Wizards,Milwaukee Bucks,101,104,2024
+15908531,2025-02-21,Toronto Raptors,Miami Heat,111,120,2024
+15908532,2025-02-21,Houston Rockets,Minnesota Timberwolves,121,115,2024
+15908533,2025-02-21,San Antonio Spurs,Detroit Pistons,110,125,2024
+15908534,2025-02-21,Dallas Mavericks,New Orleans Pelicans,111,103,2024
+15908535,2025-02-21,Utah Jazz,Oklahoma City Thunder,107,130,2024
+15908536,2025-02-21,Sacramento Kings,Golden State Warriors,108,132,2024
+15908537,2025-02-22,Chicago Bulls,Phoenix Suns,117,121,2024
+15908538,2025-02-22,Philadelphia 76ers,Brooklyn Nets,103,105,2024
+15908539,2025-02-22,Denver Nuggets,Los Angeles Lakers,100,123,2024
+15908540,2025-02-22,Utah Jazz,Houston Rockets,124,115,2024
+15908541,2025-02-22,Portland Trail Blazers,Charlotte Hornets,141,88,2024
+15908542,2025-02-23,Boston Celtics,New York Knicks,118,105,2024
+15908543,2025-02-23,Golden State Warriors,Dallas Mavericks,126,102,2024
+15908544,2025-02-23,Indiana Pacers,LA Clippers,129,111,2024
+15908545,2025-02-23,Atlanta Hawks,Detroit Pistons,143,148,2024
+15908546,2025-02-23,Orlando Magic,Washington Wizards,110,90,2024
+15908547,2025-02-23,Toronto Raptors,Phoenix Suns,127,109,2024
+15908548,2025-02-23,Milwaukee Bucks,Miami Heat,120,113,2024
+15908549,2025-02-23,New Orleans Pelicans,San Antonio Spurs,114,96,2024
+15908550,2025-02-23,Cleveland Cavaliers,Memphis Grizzlies,129,123,2024
+15908551,2025-02-23,Minnesota Timberwolves,Oklahoma City Thunder,123,130,2024
+15908552,2025-02-24,Detroit Pistons,LA Clippers,106,97,2024
+15908553,2025-02-24,Indiana Pacers,Denver Nuggets,116,125,2024
+15908554,2025-02-24,Philadelphia 76ers,Chicago Bulls,110,142,2024
+15908555,2025-02-24,Washington Wizards,Brooklyn Nets,107,99,2024
+15908556,2025-02-24,Atlanta Hawks,Miami Heat,98,86,2024
+15908557,2025-02-24,Oklahoma City Thunder,Minnesota Timberwolves,128,131,2024
+15908558,2025-02-24,Utah Jazz,Portland Trail Blazers,112,114,2024
+15908559,2025-02-24,Sacramento Kings,Charlotte Hornets,130,88,2024
+15908560,2025-02-25,Toronto Raptors,Boston Celtics,101,111,2024
+15908561,2025-02-25,Orlando Magic,Cleveland Cavaliers,82,122,2024
+15908562,2025-02-25,Houston Rockets,Milwaukee Bucks,100,97,2024
+15908563,2025-02-25,Memphis Grizzlies,Phoenix Suns,151,148,2024
+15908564,2025-02-25,New Orleans Pelicans,San Antonio Spurs,109,103,2024
+15908565,2025-02-25,Golden State Warriors,Charlotte Hornets,128,92,2024
+15908566,2025-02-25,Los Angeles Lakers,Dallas Mavericks,107,99,2024
+15908567,2025-02-26,Detroit Pistons,Boston Celtics,117,97,2024
+15908568,2025-02-26,Indiana Pacers,Toronto Raptors,111,91,2024
+15908569,2025-02-26,New York Knicks,Philadelphia 76ers,110,105,2024
+15908570,2025-02-26,Washington Wizards,Portland Trail Blazers,121,129,2024
+15908571,2025-02-26,Brooklyn Nets,Oklahoma City Thunder,121,129,2024
+15908572,2025-02-26,Miami Heat,Atlanta Hawks,131,109,2024
+15908573,2025-02-26,Chicago Bulls,LA Clippers,117,122,2024
+15908574,2025-02-26,Utah Jazz,Sacramento Kings,101,118,2024
+15908575,2025-02-26,Houston Rockets,San Antonio Spurs,118,106,2024
+15908576,2025-02-27,Orlando Magic,Golden State Warriors,115,121,2024
+15908577,2025-02-27,Milwaukee Bucks,Denver Nuggets,121,112,2024
+15908578,2025-02-27,Dallas Mavericks,Charlotte Hornets,103,96,2024
+15908579,2025-02-27,Phoenix Suns,New Orleans Pelicans,116,124,2024
+15908580,2025-02-27,Los Angeles Lakers,Minnesota Timberwolves,111,102,2024
+15908581,2025-02-28,Detroit Pistons,Denver Nuggets,119,134,2024
+15908582,2025-02-28,Atlanta Hawks,Oklahoma City Thunder,119,135,2024
+15908583,2025-02-28,Boston Celtics,Cleveland Cavaliers,116,123,2024
+15908584,2025-02-28,Brooklyn Nets,Portland Trail Blazers,102,121,2024
+15908585,2025-02-28,Miami Heat,Indiana Pacers,125,120,2024
+15908586,2025-02-28,Chicago Bulls,Toronto Raptors,125,115,2024
+15908587,2025-02-28,Memphis Grizzlies,New York Knicks,113,114,2024
+15908588,2025-02-28,Phoenix Suns,New Orleans Pelicans,125,108,2024
+15908589,2025-02-28,Utah Jazz,Minnesota Timberwolves,117,116,2024
+15908590,2025-02-28,Los Angeles Lakers,LA Clippers,106,102,2024
+15908591,2025-03-01,Charlotte Hornets,Washington Wizards,100,113,2024
+15908592,2025-03-01,Detroit Pistons,Brooklyn Nets,115,94,2024
+15908593,2025-03-01,Houston Rockets,Sacramento Kings,103,113,2024
+15908594,2025-03-01,Memphis Grizzlies,San Antonio Spurs,128,130,2024
+15908595,2025-03-01,Philadelphia 76ers,Golden State Warriors,126,119,2024
+15908596,2025-03-01,Dallas Mavericks,Milwaukee Bucks,117,132,2024
+15908597,2025-03-02,Boston Celtics,Denver Nuggets,110,103,2024
+15908598,2025-03-02,Cleveland Cavaliers,Portland Trail Blazers,133,129,2024
+15908599,2025-03-02,Indiana Pacers,Chicago Bulls,127,112,2024
+15908600,2025-03-02,Miami Heat,New York Knicks,112,116,2024
+15908601,2025-03-02,Orlando Magic,Toronto Raptors,102,104,2024
+15908602,2025-03-02,San Antonio Spurs,Oklahoma City Thunder,132,146,2024
+15908603,2025-03-02,Utah Jazz,New Orleans Pelicans,121,128,2024
+15908604,2025-03-02,Phoenix Suns,Minnesota Timberwolves,98,116,2024
+15908605,2025-03-02,Los Angeles Lakers,LA Clippers,108,102,2024
+15908606,2025-03-03,Charlotte Hornets,Golden State Warriors,101,119,2024
+15908607,2025-03-03,Philadelphia 76ers,Portland Trail Blazers,102,119,2024
+15908608,2025-03-03,Miami Heat,Washington Wizards,106,90,2024
+15908609,2025-03-03,Memphis Grizzlies,Atlanta Hawks,130,132,2024
+15908610,2025-03-03,Oklahoma City Thunder,Houston Rockets,137,128,2024
+15908611,2025-03-03,Dallas Mavericks,Sacramento Kings,98,122,2024
+15908612,2025-03-03,Utah Jazz,Detroit Pistons,106,134,2024
+15908613,2025-03-04,Indiana Pacers,Houston Rockets,115,102,2024
+15908614,2025-03-04,Orlando Magic,Toronto Raptors,113,114,2024
+15908615,2025-03-04,Atlanta Hawks,Milwaukee Bucks,121,127,2024
+15908616,2025-03-04,New York Knicks,Golden State Warriors,102,114,2024
+15908617,2025-03-04,Chicago Bulls,Cleveland Cavaliers,117,139,2024
+15908618,2025-03-04,Minnesota Timberwolves,Philadelphia 76ers,126,112,2024
+15908619,2025-03-04,San Antonio Spurs,Brooklyn Nets,127,113,2024
+15908620,2025-03-04,Phoenix Suns,LA Clippers,119,117,2024
+15908621,2025-03-04,Los Angeles Lakers,New Orleans Pelicans,136,115,2024
+15908622,2025-03-05,Boston Celtics,Portland Trail Blazers,128,118,2024
+15908623,2025-03-05,Charlotte Hornets,Minnesota Timberwolves,110,125,2024
+15908624,2025-03-05,Cleveland Cavaliers,Miami Heat,112,107,2024
+15908625,2025-03-05,Washington Wizards,Utah Jazz,125,122,2024
+15908626,2025-03-05,Memphis Grizzlies,Oklahoma City Thunder,103,120,2024
+15908627,2025-03-05,Denver Nuggets,Sacramento Kings,116,110,2024
+15908628,2025-03-05,Milwaukee Bucks,Dallas Mavericks,137,107,2024
+15908629,2025-03-05,LA Clippers,Detroit Pistons,123,115,2024
+15908630,2025-03-06,Atlanta Hawks,Indiana Pacers,124,118,2024
+15908631,2025-03-06,Boston Celtics,Philadelphia 76ers,123,105,2024
+15908632,2025-03-06,Brooklyn Nets,Golden State Warriors,119,121,2024
+15908633,2025-03-06,New Orleans Pelicans,Houston Rockets,97,109,2024
+15908634,2025-03-06,Los Angeles Lakers,New York Knicks,113,109,2024
+15908675,2025-03-06,Orlando Magic,Chicago Bulls,123,125,2024
+15908635,2025-03-07,Charlotte Hornets,Cleveland Cavaliers,117,118,2024
+15908636,2025-03-07,Toronto Raptors,Utah Jazz,118,109,2024
+15908637,2025-03-07,Dallas Mavericks,Memphis Grizzlies,111,122,2024
+15908638,2025-03-07,Miami Heat,Minnesota Timberwolves,104,106,2024
+15908639,2025-03-07,Oklahoma City Thunder,Portland Trail Blazers,107,89,2024
+15908640,2025-03-07,Denver Nuggets,Phoenix Suns,149,141,2024
+15908641,2025-03-07,Sacramento Kings,San Antonio Spurs,127,109,2024
+15908642,2025-03-07,LA Clippers,New York Knicks,105,95,2024
+15908643,2025-03-08,Charlotte Hornets,Brooklyn Nets,105,102,2024
+15908644,2025-03-08,Houston Rockets,New Orleans Pelicans,146,117,2024
+15908645,2025-03-08,Atlanta Hawks,Indiana Pacers,120,118,2024
+15908646,2025-03-08,Toronto Raptors,Washington Wizards,117,118,2024
+15908647,2025-03-08,Miami Heat,Chicago Bulls,109,114,2024
+15908648,2025-03-08,Milwaukee Bucks,Orlando Magic,109,111,2024
+15908649,2025-03-08,Boston Celtics,Los Angeles Lakers,111,101,2024
+15908650,2025-03-08,Golden State Warriors,Detroit Pistons,115,110,2024
+15908651,2025-03-09,Oklahoma City Thunder,Denver Nuggets,127,103,2024
+15908652,2025-03-09,Dallas Mavericks,Phoenix Suns,116,125,2024
+15908653,2025-03-09,Milwaukee Bucks,Cleveland Cavaliers,100,112,2024
+15908654,2025-03-09,New Orleans Pelicans,Memphis Grizzlies,104,107,2024
+15908655,2025-03-09,Philadelphia 76ers,Utah Jazz,126,122,2024
+15908656,2025-03-09,Minnesota Timberwolves,San Antonio Spurs,141,124,2024
+15908657,2025-03-09,Portland Trail Blazers,Detroit Pistons,112,119,2024
+15908658,2025-03-09,LA Clippers,Sacramento Kings,111,110,2024
+15908659,2025-03-10,Atlanta Hawks,Philadelphia 76ers,132,123,2024
+15908660,2025-03-10,Boston Celtics,Utah Jazz,114,108,2024
+15908661,2025-03-10,Brooklyn Nets,Los Angeles Lakers,111,108,2024
+15908662,2025-03-10,Miami Heat,Charlotte Hornets,102,105,2024
+15908663,2025-03-10,Toronto Raptors,Washington Wizards,119,104,2024
+15908664,2025-03-10,Chicago Bulls,Indiana Pacers,121,103,2024
+15908665,2025-03-10,Houston Rockets,Orlando Magic,97,84,2024
+15908666,2025-03-10,Memphis Grizzlies,Phoenix Suns,120,118,2024
+15908667,2025-03-10,Oklahoma City Thunder,Denver Nuggets,127,140,2024
+15908668,2025-03-10,San Antonio Spurs,Dallas Mavericks,129,133,2024
+15908669,2025-03-10,Golden State Warriors,Portland Trail Blazers,130,120,2024
+15908670,2025-03-10,Sacramento Kings,New York Knicks,104,133,2024
+15908671,2025-03-11,Cleveland Cavaliers,Brooklyn Nets,109,104,2024
+15908672,2025-03-11,Detroit Pistons,Washington Wizards,123,103,2024
+15908673,2025-03-11,Indiana Pacers,Milwaukee Bucks,115,114,2024
+15908674,2025-03-11,New Orleans Pelicans,LA Clippers,127,120,2024
+15908676,2025-03-12,Atlanta Hawks,Charlotte Hornets,123,110,2024
+15908677,2025-03-12,Boston Celtics,Oklahoma City Thunder,112,118,2024
+15908678,2025-03-12,Toronto Raptors,Philadelphia 76ers,118,105,2024
+15908679,2025-03-12,Miami Heat,LA Clippers,104,119,2024
+15908680,2025-03-12,Houston Rockets,Phoenix Suns,111,104,2024
+15908681,2025-03-12,Memphis Grizzlies,Utah Jazz,122,115,2024
+15908682,2025-03-12,San Antonio Spurs,Dallas Mavericks,126,116,2024
+15908683,2025-03-12,Denver Nuggets,Minnesota Timberwolves,95,115,2024
+15908684,2025-03-12,Portland Trail Blazers,New York Knicks,113,114,2024
+15908685,2025-03-13,Detroit Pistons,Washington Wizards,125,129,2024
+15908686,2025-03-13,Milwaukee Bucks,Los Angeles Lakers,126,106,2024
+15908687,2025-03-13,Chicago Bulls,Brooklyn Nets,116,110,2024
+15908688,2025-03-13,Golden State Warriors,Sacramento Kings,130,104,2024
+15908872,2025-03-13,New Orleans Pelicans,Orlando Magic,93,113,2024
+15908689,2025-03-14,Miami Heat,Boston Celtics,91,103,2024
+15908690,2025-03-14,Philadelphia 76ers,Indiana Pacers,100,112,2024
+15908691,2025-03-14,Atlanta Hawks,LA Clippers,98,121,2024
+15908692,2025-03-14,Houston Rockets,Dallas Mavericks,133,96,2024
+15908693,2025-03-14,Memphis Grizzlies,Cleveland Cavaliers,124,133,2024
+15908694,2025-03-14,Minnesota Timberwolves,Orlando Magic,118,111,2024
+15908695,2025-03-14,San Antonio Spurs,Charlotte Hornets,134,145,2024
+15908696,2025-03-14,Denver Nuggets,Los Angeles Lakers,131,126,2024
+15908697,2025-03-14,Utah Jazz,Toronto Raptors,118,126,2024
+15908698,2025-03-14,Phoenix Suns,Sacramento Kings,122,106,2024
+15908699,2025-03-15,Brooklyn Nets,Boston Celtics,113,115,2024
+15908700,2025-03-15,Detroit Pistons,Oklahoma City Thunder,107,113,2024
+15908701,2025-03-15,Houston Rockets,Chicago Bulls,117,114,2024
+15908702,2025-03-15,Memphis Grizzlies,Miami Heat,125,91,2024
+15908703,2025-03-15,Milwaukee Bucks,Indiana Pacers,126,119,2024
+15908704,2025-03-15,San Antonio Spurs,New Orleans Pelicans,119,115,2024
+15908705,2025-03-15,Golden State Warriors,New York Knicks,97,94,2024
+15908706,2025-03-15,Denver Nuggets,Washington Wizards,123,126,2024
+15907975,2025-03-16,LA Clippers,Charlotte Hornets,123,88,2024
+15908707,2025-03-16,Dallas Mavericks,Philadelphia 76ers,125,130,2024
+15908708,2025-03-16,Los Angeles Lakers,Phoenix Suns,107,96,2024
+15908709,2025-03-16,Brooklyn Nets,Atlanta Hawks,122,114,2024
+15908710,2025-03-16,Cleveland Cavaliers,Orlando Magic,103,108,2024
+15908711,2025-03-16,Portland Trail Blazers,Toronto Raptors,105,102,2024
+15908712,2025-03-16,Minnesota Timberwolves,Utah Jazz,128,102,2024
+15908713,2025-03-16,Milwaukee Bucks,Oklahoma City Thunder,105,121,2024
+15907974,2025-03-17,Los Angeles Lakers,San Antonio Spurs,125,109,2024
+15908715,2025-03-17,New York Knicks,Miami Heat,116,95,2024
+15908716,2025-03-17,Houston Rockets,Philadelphia 76ers,144,137,2024
+15908717,2025-03-17,Minnesota Timberwolves,Indiana Pacers,130,132,2024
+15908718,2025-03-17,New Orleans Pelicans,Detroit Pistons,81,127,2024
+15908720,2025-03-17,Utah Jazz,Chicago Bulls,97,111,2024
+15908721,2025-03-17,Golden State Warriors,Denver Nuggets,105,114,2024
+15908722,2025-03-17,Phoenix Suns,Toronto Raptors,129,89,2024
+15908723,2025-03-17,Sacramento Kings,Memphis Grizzlies,132,122,2024
+15908726,2025-03-17,Portland Trail Blazers,Washington Wizards,112,97,2024
+15908724,2025-03-18,Charlotte Hornets,Atlanta Hawks,102,134,2024
+15908725,2025-03-18,Boston Celtics,Brooklyn Nets,104,96,2024
+15908728,2025-03-18,LA Clippers,Cleveland Cavaliers,132,119,2024
+15908743,2025-03-18,Golden State Warriors,Milwaukee Bucks,104,93,2024
+15908064,2025-03-19,Utah Jazz,Washington Wizards,128,112,2024
+15908729,2025-03-19,Indiana Pacers,Dallas Mavericks,135,131,2024
+15908730,2025-03-19,Orlando Magic,Houston Rockets,108,116,2024
+15908731,2025-03-19,Miami Heat,Detroit Pistons,113,116,2024
+15908732,2025-03-19,Minnesota Timberwolves,New Orleans Pelicans,115,119,2024
+15908733,2025-03-19,Oklahoma City Thunder,Philadelphia 76ers,133,100,2024
+15908734,2025-03-19,San Antonio Spurs,New York Knicks,120,105,2024
+15908737,2025-03-19,Los Angeles Lakers,Denver Nuggets,120,108,2024
+15908738,2025-03-19,Phoenix Suns,Chicago Bulls,127,121,2024
+15908739,2025-03-19,Portland Trail Blazers,Memphis Grizzlies,115,99,2024
+15908740,2025-03-19,Sacramento Kings,Cleveland Cavaliers,123,119,2024
+15908727,2025-03-20,Los Angeles Lakers,Milwaukee Bucks,89,118,2024
+15908736,2025-03-20,Golden State Warriors,Toronto Raptors,117,114,2024
+15908741,2025-03-20,Charlotte Hornets,New York Knicks,115,98,2024
+15908742,2025-03-20,Indiana Pacers,Brooklyn Nets,105,99,2024
+15908744,2025-03-20,Sacramento Kings,Chicago Bulls,116,128,2024
+15908745,2025-03-21,Washington Wizards,Orlando Magic,105,120,2024
+15908746,2025-03-21,Miami Heat,Houston Rockets,98,102,2024
+15908747,2025-03-21,Minnesota Timberwolves,New Orleans Pelicans,134,93,2024
+15908748,2025-03-21,Oklahoma City Thunder,Charlotte Hornets,141,106,2024
+15908749,2025-03-21,San Antonio Spurs,Philadelphia 76ers,128,120,2024
+15908750,2025-03-21,Dallas Mavericks,Detroit Pistons,123,117,2024
+15908751,2025-03-21,Utah Jazz,Boston Celtics,99,121,2024
+15908752,2025-03-21,Phoenix Suns,Cleveland Cavaliers,123,112,2024
+15908753,2025-03-21,Portland Trail Blazers,Denver Nuggets,128,109,2024
+15908754,2025-03-21,LA Clippers,Memphis Grizzlies,128,108,2024
+15908755,2025-03-22,Indiana Pacers,Brooklyn Nets,108,103,2024
+15908756,2025-03-22,Atlanta Hawks,Golden State Warriors,124,115,2024
+15908757,2025-03-22,New York Knicks,Washington Wizards,122,103,2024
+15908758,2025-03-22,Sacramento Kings,Milwaukee Bucks,108,114,2024
+15908759,2025-03-22,Los Angeles Lakers,Chicago Bulls,115,146,2024
+15908760,2025-03-23,Detroit Pistons,New Orleans Pelicans,136,130,2024
+15908761,2025-03-23,Utah Jazz,Cleveland Cavaliers,91,120,2024
+15908762,2025-03-23,Atlanta Hawks,Philadelphia 76ers,132,119,2024
+15908763,2025-03-23,Miami Heat,Charlotte Hornets,122,105,2024
+15908764,2025-03-23,Toronto Raptors,San Antonio Spurs,89,123,2024
+15908765,2025-03-23,Portland Trail Blazers,Boston Celtics,116,129,2024
+15908766,2025-03-23,Houston Rockets,Denver Nuggets,111,116,2024
+15908767,2025-03-23,LA Clippers,Oklahoma City Thunder,101,103,2024
+15908768,2025-03-24,Indiana Pacers,Minnesota Timberwolves,119,103,2024
+15908769,2025-03-24,Orlando Magic,Los Angeles Lakers,118,106,2024
+15908770,2025-03-24,Washington Wizards,Toronto Raptors,104,112,2024
+15908771,2025-03-24,Brooklyn Nets,Dallas Mavericks,101,120,2024
+15908772,2025-03-24,New Orleans Pelicans,Philadelphia 76ers,112,99,2024
+15908773,2025-03-24,Denver Nuggets,Chicago Bulls,119,129,2024
+15908774,2025-03-24,Phoenix Suns,Milwaukee Bucks,108,106,2024
+15908775,2025-03-24,Sacramento Kings,Boston Celtics,95,113,2024
+15908776,2025-03-25,Charlotte Hornets,Orlando Magic,104,111,2024
+15908777,2025-03-25,Detroit Pistons,San Antonio Spurs,122,96,2024
+15908778,2025-03-25,Miami Heat,Golden State Warriors,112,86,2024
+15908779,2025-03-25,New York Knicks,Dallas Mavericks,128,113,2024
+15908780,2025-03-25,Houston Rockets,Atlanta Hawks,121,114,2024
+15908781,2025-03-25,Utah Jazz,Memphis Grizzlies,103,140,2024
+15908782,2025-03-25,Portland Trail Blazers,Cleveland Cavaliers,111,122,2024
+15908783,2025-03-25,Sacramento Kings,Oklahoma City Thunder,105,121,2024
+15908784,2025-03-26,Philadelphia 76ers,Washington Wizards,114,119,2024
+15908785,2025-03-26,Brooklyn Nets,Toronto Raptors,86,116,2024
+15908786,2025-03-26,Indiana Pacers,Los Angeles Lakers,119,120,2024
+15908787,2025-03-26,New York Knicks,LA Clippers,113,126,2024
+15908788,2025-03-26,Denver Nuggets,Milwaukee Bucks,127,117,2024
+15908789,2025-03-26,Phoenix Suns,Boston Celtics,102,132,2024
+15908790,2025-03-27,Cleveland Cavaliers,San Antonio Spurs,124,116,2024
+15908791,2025-03-27,Orlando Magic,Dallas Mavericks,92,101,2024
+15908792,2025-03-27,Washington Wizards,Indiana Pacers,109,162,2024
+15908793,2025-03-27,Miami Heat,Atlanta Hawks,122,112,2024
+15908794,2025-03-27,Chicago Bulls,Los Angeles Lakers,119,117,2024
+15908795,2025-03-27,Oklahoma City Thunder,Memphis Grizzlies,125,104,2024
+15908796,2025-03-27,Utah Jazz,Houston Rockets,110,121,2024
+15908797,2025-03-27,Sacramento Kings,Portland Trail Blazers,128,107,2024
+15908798,2025-03-28,Detroit Pistons,Cleveland Cavaliers,133,122,2024
+15908799,2025-03-28,Brooklyn Nets,LA Clippers,100,132,2024
+15908800,2025-03-28,Toronto Raptors,Charlotte Hornets,108,97,2024
+15908801,2025-03-28,Milwaukee Bucks,New York Knicks,107,116,2024
+15908802,2025-03-28,Minnesota Timberwolves,Phoenix Suns,124,109,2024
+15908803,2025-03-28,New Orleans Pelicans,Golden State Warriors,95,111,2024
+15908804,2025-03-28,Denver Nuggets,Utah Jazz,129,93,2024
+15908805,2025-03-29,Orlando Magic,Sacramento Kings,121,91,2024
+15908806,2025-03-29,Washington Wizards,Brooklyn Nets,112,115,2024
+15908807,2025-03-29,Philadelphia 76ers,Miami Heat,95,118,2024
+15908808,2025-03-29,Chicago Bulls,Dallas Mavericks,119,120,2024
+15908809,2025-03-29,Memphis Grizzlies,Los Angeles Lakers,127,134,2024
+15908810,2025-03-29,Oklahoma City Thunder,Indiana Pacers,132,111,2024
+15908811,2025-03-29,San Antonio Spurs,Boston Celtics,111,121,2024
+15908812,2025-03-30,Cleveland Cavaliers,LA Clippers,127,122,2024
+15908813,2025-03-30,New York Knicks,Portland Trail Blazers,110,93,2024
+15908814,2025-03-30,Milwaukee Bucks,Atlanta Hawks,124,145,2024
+15908815,2025-03-30,Minnesota Timberwolves,Detroit Pistons,123,104,2024
+15908816,2025-03-30,New Orleans Pelicans,Charlotte Hornets,98,94,2024
+15908817,2025-03-30,San Antonio Spurs,Golden State Warriors,106,148,2024
+15908818,2025-03-30,Philadelphia 76ers,Toronto Raptors,109,127,2024
+15908819,2025-03-30,Phoenix Suns,Houston Rockets,109,148,2024
+15908820,2025-03-31,Charlotte Hornets,Utah Jazz,110,106,2024
+15908821,2025-03-31,Indiana Pacers,Sacramento Kings,111,109,2024
+15908822,2025-03-31,Orlando Magic,LA Clippers,87,96,2024
+15908823,2025-03-31,Washington Wizards,Miami Heat,94,120,2024
+15908824,2025-03-31,Memphis Grizzlies,Boston Celtics,103,117,2024
+15908825,2025-03-31,Oklahoma City Thunder,Chicago Bulls,145,117,2024
+15908826,2025-03-31,Dallas Mavericks,Brooklyn Nets,109,113,2024
+15908827,2025-03-31,Los Angeles Lakers,Houston Rockets,104,98,2024
+15908719,2025-04-01,San Antonio Spurs,Orlando Magic,105,116,2024
+15908828,2025-04-01,Atlanta Hawks,Portland Trail Blazers,113,127,2024
+15908829,2025-04-01,New York Knicks,Philadelphia 76ers,105,91,2024
+15908830,2025-04-01,Chicago Bulls,Toronto Raptors,137,118,2024
+15908831,2025-04-01,Memphis Grizzlies,Golden State Warriors,125,134,2024
+15908832,2025-04-01,Milwaukee Bucks,Phoenix Suns,133,123,2024
+15908833,2025-04-01,Denver Nuggets,Minnesota Timberwolves,139,140,2024
+15908834,2025-04-02,Cleveland Cavaliers,New York Knicks,124,105,2024
+15908835,2025-04-02,Indiana Pacers,Charlotte Hornets,119,105,2024
+15908836,2025-04-02,Washington Wizards,Sacramento Kings,116,111,2024
+15908837,2025-04-02,Boston Celtics,Miami Heat,103,124,2024
+15908838,2025-04-02,Houston Rockets,Utah Jazz,143,105,2024
+15908839,2025-04-02,Oklahoma City Thunder,Detroit Pistons,119,103,2024
+15908840,2025-04-02,Dallas Mavericks,Atlanta Hawks,120,118,2024
+15908841,2025-04-02,Denver Nuggets,San Antonio Spurs,106,113,2024
+15908842,2025-04-02,LA Clippers,New Orleans Pelicans,114,98,2024
+15908843,2025-04-03,Washington Wizards,Orlando Magic,97,109,2024
+15908844,2025-04-03,Brooklyn Nets,Minnesota Timberwolves,90,105,2024
+15908845,2025-04-03,Miami Heat,Memphis Grizzlies,108,110,2024
+15908846,2025-04-03,Philadelphia 76ers,Milwaukee Bucks,113,126,2024
+15908847,2025-04-03,Toronto Raptors,Portland Trail Blazers,103,112,2024
+15908848,2025-04-03,Los Angeles Lakers,Golden State Warriors,116,123,2024
+15908849,2025-04-04,Charlotte Hornets,Sacramento Kings,102,125,2024
+15908850,2025-04-04,Indiana Pacers,Utah Jazz,140,112,2024
+15908851,2025-04-04,Boston Celtics,Phoenix Suns,123,103,2024
+15908852,2025-04-04,Toronto Raptors,Detroit Pistons,105,117,2024
+15908853,2025-04-04,Chicago Bulls,Portland Trail Blazers,118,113,2024
+15908854,2025-04-04,Houston Rockets,Oklahoma City Thunder,125,111,2024
+15908855,2025-04-04,San Antonio Spurs,Cleveland Cavaliers,113,114,2024
+15908856,2025-04-04,Golden State Warriors,Denver Nuggets,118,104,2024
+15908857,2025-04-04,Los Angeles Lakers,New Orleans Pelicans,124,108,2024
+15908858,2025-04-04,LA Clippers,Dallas Mavericks,114,91,2024
+15908859,2025-04-05,Atlanta Hawks,New York Knicks,105,121,2024
+15908860,2025-04-05,Detroit Pistons,Memphis Grizzlies,103,109,2024
+15908861,2025-04-05,Philadelphia 76ers,Minnesota Timberwolves,109,114,2024
+15908862,2025-04-05,Miami Heat,Milwaukee Bucks,115,121,2024
+15908863,2025-04-05,LA Clippers,Dallas Mavericks,135,104,2024
+15908054,2025-04-06,New Orleans Pelicans,Milwaukee Bucks,107,111,2024
+15908864,2025-04-06,Charlotte Hornets,Chicago Bulls,117,131,2024
+15908865,2025-04-06,Brooklyn Nets,Toronto Raptors,109,120,2024
+15908866,2025-04-06,Oklahoma City Thunder,Los Angeles Lakers,99,126,2024
+15908867,2025-04-06,Atlanta Hawks,Utah Jazz,147,134,2024
+15908868,2025-04-06,Boston Celtics,Washington Wizards,124,90,2024
+15908869,2025-04-06,Cleveland Cavaliers,Sacramento Kings,113,120,2024
+15908870,2025-04-06,Portland Trail Blazers,San Antonio Spurs,120,109,2024
+15908871,2025-04-06,New York Knicks,Phoenix Suns,112,98,2024
+15908873,2025-04-06,Denver Nuggets,Indiana Pacers,120,125,2024
+15908874,2025-04-06,Golden State Warriors,Houston Rockets,96,106,2024
+15908875,2025-04-07,Detroit Pistons,Sacramento Kings,117,127,2024
+15908876,2025-04-07,Miami Heat,Philadelphia 76ers,117,105,2024
+15908877,2025-04-08,Charlotte Hornets,Memphis Grizzlies,100,124,2024
+15908878,2025-04-08,Cleveland Cavaliers,Chicago Bulls,135,113,2024
+15908879,2025-04-08,Indiana Pacers,Washington Wizards,104,98,2024
+15908880,2025-04-08,Orlando Magic,Atlanta Hawks,119,112,2024
+15908881,2025-04-08,Brooklyn Nets,New Orleans Pelicans,119,114,2024
+15908882,2025-04-08,New York Knicks,Boston Celtics,117,119,2024
+15908883,2025-04-08,Milwaukee Bucks,Minnesota Timberwolves,110,103,2024
+15908884,2025-04-08,Oklahoma City Thunder,Los Angeles Lakers,136,120,2024
+15908885,2025-04-08,Phoenix Suns,Golden State Warriors,95,133,2024
+15908886,2025-04-08,LA Clippers,San Antonio Spurs,122,117,2024
+15908887,2025-04-09,Orlando Magic,Boston Celtics,96,76,2024
+15908888,2025-04-09,Washington Wizards,Philadelphia 76ers,103,122,2024
+15908889,2025-04-09,Toronto Raptors,Charlotte Hornets,126,96,2024
+15908890,2025-04-09,Dallas Mavericks,Los Angeles Lakers,97,112,2024
+15908891,2025-04-09,Chicago Bulls,Miami Heat,119,111,2024
+15908893,2025-04-09,Utah Jazz,Portland Trail Blazers,133,126,2024
+15908894,2025-04-09,Golden State Warriors,San Antonio Spurs,111,114,2024
+15908895,2025-04-09,Phoenix Suns,Oklahoma City Thunder,112,125,2024
+15908896,2025-04-09,Sacramento Kings,Denver Nuggets,116,124,2024
+15908897,2025-04-09,LA Clippers,Houston Rockets,134,117,2024
+15908892,2025-04-10,Milwaukee Bucks,New Orleans Pelicans,136,111,2024
+15908898,2025-04-10,Detroit Pistons,New York Knicks,115,106,2024
+15908899,2025-04-10,Indiana Pacers,Cleveland Cavaliers,114,112,2024
+15908900,2025-04-10,Brooklyn Nets,Atlanta Hawks,109,133,2024
+15908901,2025-04-10,Memphis Grizzlies,Minnesota Timberwolves,125,141,2024
+15908902,2025-04-11,Detroit Pistons,Milwaukee Bucks,119,125,2024
+15908903,2025-04-11,Indiana Pacers,Orlando Magic,115,129,2024
+15908904,2025-04-11,Philadelphia 76ers,Atlanta Hawks,110,124,2024
+15908905,2025-04-11,Boston Celtics,Charlotte Hornets,130,94,2024
+15908906,2025-04-11,New York Knicks,Cleveland Cavaliers,102,108,2024
+15908907,2025-04-11,Chicago Bulls,Washington Wizards,119,89,2024
+15908908,2025-04-11,New Orleans Pelicans,Miami Heat,104,153,2024
+15908909,2025-04-11,Dallas Mavericks,Toronto Raptors,124,102,2024
+15908910,2025-04-11,Minnesota Timberwolves,Brooklyn Nets,117,91,2024
+15908911,2025-04-11,Denver Nuggets,Memphis Grizzlies,117,109,2024
+15908912,2025-04-11,Utah Jazz,Oklahoma City Thunder,111,145,2024
+15908913,2025-04-11,Phoenix Suns,San Antonio Spurs,117,98,2024
+15908914,2025-04-11,Portland Trail Blazers,Golden State Warriors,86,103,2024
+15908915,2025-04-11,Sacramento Kings,LA Clippers,100,101,2024
+15908916,2025-04-11,Los Angeles Lakers,Houston Rockets,140,109,2024
+15908917,2025-04-13,Atlanta Hawks,Orlando Magic,117,105,2024
+15908918,2025-04-13,Boston Celtics,Charlotte Hornets,93,86,2024
+15908919,2025-04-13,Brooklyn Nets,New York Knicks,105,113,2024
+15908920,2025-04-13,Cleveland Cavaliers,Indiana Pacers,118,126,2024
+15908921,2025-04-13,Miami Heat,Washington Wizards,118,119,2024
+15908922,2025-04-13,Philadelphia 76ers,Chicago Bulls,102,122,2024
+15908923,2025-04-13,Milwaukee Bucks,Detroit Pistons,140,133,2024
+15908924,2025-04-13,Houston Rockets,Denver Nuggets,111,126,2024
+15908925,2025-04-13,Memphis Grizzlies,Dallas Mavericks,132,97,2024
+15908926,2025-04-13,Minnesota Timberwolves,Utah Jazz,116,105,2024
+15908927,2025-04-13,New Orleans Pelicans,Oklahoma City Thunder,100,115,2024
+15908928,2025-04-13,San Antonio Spurs,Toronto Raptors,125,118,2024
+15908929,2025-04-13,Golden State Warriors,LA Clippers,119,124,2024
+15908930,2025-04-13,Portland Trail Blazers,Los Angeles Lakers,109,81,2024
+15908931,2025-04-13,Sacramento Kings,Phoenix Suns,109,98,2024
+18421229,2025-04-15,Orlando Magic,Atlanta Hawks,120,95,2024
+18421910,2025-04-15,Golden State Warriors,Memphis Grizzlies,121,116,2024
+18421253,2025-04-16,Chicago Bulls,Miami Heat,90,109,2024
+18421908,2025-04-16,Sacramento Kings,Dallas Mavericks,106,120,2024
+18423164,2025-04-18,Atlanta Hawks,Miami Heat,114,123,2024
+18423251,2025-04-18,Memphis Grizzlies,Dallas Mavericks,120,106,2024
+18421937,2025-04-19,New York Knicks,Detroit Pistons,123,112,2024
+18421938,2025-04-19,Indiana Pacers,Milwaukee Bucks,117,98,2024
+18421939,2025-04-19,Los Angeles Lakers,Minnesota Timberwolves,95,117,2024
+18421940,2025-04-19,Denver Nuggets,LA Clippers,112,110,2024
+18422268,2025-04-20,Boston Celtics,Orlando Magic,103,86,2024
+18422290,2025-04-20,Houston Rockets,Golden State Warriors,85,95,2024
+18425147,2025-04-20,Cleveland Cavaliers,Miami Heat,121,100,2024
+18425247,2025-04-20,Oklahoma City Thunder,Memphis Grizzlies,131,80,2024
+18422291,2025-04-21,New York Knicks,Detroit Pistons,94,100,2024
+18422292,2025-04-21,Denver Nuggets,LA Clippers,102,105,2024
+18422293,2025-04-22,Indiana Pacers,Milwaukee Bucks,123,115,2024
+18422294,2025-04-22,Los Angeles Lakers,Minnesota Timberwolves,94,85,2024
+18425252,2025-04-22,Oklahoma City Thunder,Memphis Grizzlies,118,99,2024
+18422295,2025-04-23,Boston Celtics,Orlando Magic,109,100,2024
+18422296,2025-04-23,Houston Rockets,Golden State Warriors,109,94,2024
+18425154,2025-04-23,Cleveland Cavaliers,Miami Heat,121,112,2024
+18422297,2025-04-24,Detroit Pistons,New York Knicks,116,118,2024
+18422298,2025-04-24,LA Clippers,Denver Nuggets,117,83,2024
+18425258,2025-04-24,Memphis Grizzlies,Oklahoma City Thunder,108,114,2024
+18422299,2025-04-25,Orlando Magic,Boston Celtics,95,93,2024
+18422300,2025-04-25,Milwaukee Bucks,Indiana Pacers,117,101,2024
+18422301,2025-04-25,Minnesota Timberwolves,Los Angeles Lakers,116,104,2024
+18422302,2025-04-26,Golden State Warriors,Houston Rockets,104,93,2024
+18422303,2025-04-26,LA Clippers,Denver Nuggets,99,101,2024
+18425162,2025-04-26,Miami Heat,Cleveland Cavaliers,87,124,2024
+18425264,2025-04-26,Memphis Grizzlies,Oklahoma City Thunder,115,117,2024
+18422304,2025-04-27,Orlando Magic,Boston Celtics,98,107,2024
+18422305,2025-04-27,Detroit Pistons,New York Knicks,93,94,2024
+18422306,2025-04-27,Milwaukee Bucks,Indiana Pacers,103,129,2024
+18422307,2025-04-27,Minnesota Timberwolves,Los Angeles Lakers,116,113,2024
+18422308,2025-04-28,Golden State Warriors,Houston Rockets,109,106,2024
+18425169,2025-04-28,Miami Heat,Cleveland Cavaliers,83,138,2024
+18422309,2025-04-29,Boston Celtics,Orlando Magic,120,89,2024
+18422310,2025-04-29,New York Knicks,Detroit Pistons,103,106,2024
+18422311,2025-04-29,Indiana Pacers,Milwaukee Bucks,119,118,2024
+18422312,2025-04-29,Denver Nuggets,LA Clippers,131,115,2024
+18422313,2025-04-30,Houston Rockets,Golden State Warriors,131,116,2024
+18422314,2025-04-30,Los Angeles Lakers,Minnesota Timberwolves,96,103,2024
+18422316,2025-05-01,Detroit Pistons,New York Knicks,113,116,2024
+18422317,2025-05-01,LA Clippers,Denver Nuggets,111,105,2024
+18422319,2025-05-02,Golden State Warriors,Houston Rockets,107,115,2024
+18422323,2025-05-03,Denver Nuggets,LA Clippers,120,101,2024
+18422325,2025-05-04,Houston Rockets,Golden State Warriors,89,103,2024
+18435059,2025-05-04,Cleveland Cavaliers,Indiana Pacers,112,121,2024
+18435668,2025-05-05,Boston Celtics,New York Knicks,105,108,2024
+18436460,2025-05-05,Oklahoma City Thunder,Denver Nuggets,119,121,2024
+18435236,2025-05-06,Cleveland Cavaliers,Indiana Pacers,119,120,2024
+18436932,2025-05-06,Minnesota Timberwolves,Golden State Warriors,88,99,2024
+18435670,2025-05-07,Boston Celtics,New York Knicks,90,91,2024
+18436463,2025-05-07,Oklahoma City Thunder,Denver Nuggets,149,106,2024
+18436935,2025-05-08,Minnesota Timberwolves,Golden State Warriors,117,93,2024
+18435237,2025-05-09,Indiana Pacers,Cleveland Cavaliers,104,126,2024
+18436465,2025-05-09,Denver Nuggets,Oklahoma City Thunder,113,104,2024
+18435672,2025-05-10,New York Knicks,Boston Celtics,93,115,2024
+18436939,2025-05-10,Golden State Warriors,Minnesota Timberwolves,97,102,2024
+18435238,2025-05-11,Indiana Pacers,Cleveland Cavaliers,129,109,2024
+18436468,2025-05-11,Denver Nuggets,Oklahoma City Thunder,87,92,2024
+18435674,2025-05-12,New York Knicks,Boston Celtics,121,113,2024
+18436943,2025-05-12,Golden State Warriors,Minnesota Timberwolves,110,117,2024
+18435239,2025-05-13,Cleveland Cavaliers,Indiana Pacers,105,114,2024
+18436945,2025-05-13,Oklahoma City Thunder,Denver Nuggets,112,105,2024
+18435676,2025-05-14,Boston Celtics,New York Knicks,127,102,2024
+18436947,2025-05-14,Minnesota Timberwolves,Golden State Warriors,121,110,2024
+18436949,2025-05-15,Denver Nuggets,Oklahoma City Thunder,119,107,2024
+18435678,2025-05-16,New York Knicks,Boston Celtics,119,81,2024
+18436952,2025-05-18,Oklahoma City Thunder,Denver Nuggets,125,93,2024
+18441830,2025-05-20,Oklahoma City Thunder,Minnesota Timberwolves,114,88,2024
+18441479,2025-05-21,New York Knicks,Indiana Pacers,135,138,2024
+18441832,2025-05-22,Oklahoma City Thunder,Minnesota Timberwolves,118,103,2024
+18441480,2025-05-23,New York Knicks,Indiana Pacers,109,114,2024
+18441834,2025-05-24,Minnesota Timberwolves,Oklahoma City Thunder,143,101,2024
+18441481,2025-05-25,Indiana Pacers,New York Knicks,100,106,2024
+18441836,2025-05-26,Minnesota Timberwolves,Oklahoma City Thunder,126,128,2024
+18441482,2025-05-27,Indiana Pacers,New York Knicks,130,121,2024
+18441838,2025-05-28,Oklahoma City Thunder,Minnesota Timberwolves,124,94,2024
+18441483,2025-05-29,New York Knicks,Indiana Pacers,111,94,2024
+18441484,2025-05-31,Indiana Pacers,New York Knicks,125,108,2024
+18444558,2025-06-05,Oklahoma City Thunder,Indiana Pacers,110,111,2024
+18444559,2025-06-08,Oklahoma City Thunder,Indiana Pacers,123,107,2024
+18444560,2025-06-11,Indiana Pacers,Oklahoma City Thunder,116,107,2024
+18444561,2025-06-13,Indiana Pacers,Oklahoma City Thunder,104,111,2024
+18444562,2025-06-16,Oklahoma City Thunder,Indiana Pacers,120,109,2024
+18444563,2025-06-19,Indiana Pacers,Oklahoma City Thunder,108,91,2024
+18444564,2025-06-22,Oklahoma City Thunder,Indiana Pacers,103,91,2024

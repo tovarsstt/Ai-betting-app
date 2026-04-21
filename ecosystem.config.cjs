@@ -3,7 +3,7 @@ module.exports = {
         {
             name: "god-engine-math",
             script: "scripts/math_engine.py",
-            interpreter: ".venv/bin/python",
+            interpreter: "python3",
             env: {
                 PORT: 8001,
                 PYTHONUNBUFFERED: "1"
@@ -12,7 +12,7 @@ module.exports = {
         {
             name: "god-engine-osint",
             script: "scripts/v13_sentinel.py",
-            interpreter: ".venv/bin/python",
+            interpreter: "python3",
             env: {
                 PYTHONUNBUFFERED: "1"
             }
