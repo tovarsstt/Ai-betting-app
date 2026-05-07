@@ -16,6 +16,58 @@ const port = Number(process.env.PORT) || 3001;
 app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 
+// ── Pure betting math utilities ──────────────────────────────────────────────
+
+// American odds → raw implied probability (vig included)
+function impliedProb(americanOdds: number): number {
+  if (americanOdds < 0) return (-americanOdds) / (-americanOdds + 100);
+  return 100 / (americanOdds + 100);
+}
+
+// Remove bookmaker vig from a 2-way market → fair (true) probabilities
+function devig(p1Raw: number, p2Raw: number): { p1: number; p2: number; vig: number } {
+  const sum = p1Raw + p2Raw;
+  return { p1: p1Raw / sum, p2: p2Raw / sum, vig: (sum - 1) * 100 };
+}
+
+// American odds → decimal odds
+function toDecimal(americanOdds: number): number {
+  return americanOdds >= 0 ? americanOdds / 100 + 1 : 100 / (-americanOdds) + 1;
+}
+
+// Half-Kelly fraction — how much of bankroll to bet (capped 0–25% for ruin prevention)
+// p = true win probability, americanOdds = line being bet
+function halfKelly(p: number, americanOdds: number): number {
+  const b = toDecimal(americanOdds) - 1;
+  if (b <= 0 || p <= 0) return 0;
+  const fullKelly = (b * p - (1 - p)) / b;
+  return Math.max(0, Math.min(fullKelly / 2, 0.25));
+}
+
+// Expected Value as decimal (positive = +EV)
+function ev(p: number, americanOdds: number): number {
+  const b = toDecimal(americanOdds) - 1;
+  return p * b - (1 - p);
+}
+
+// Standard normal CDF — Hart approximation, accurate to 5 decimal places
+function normalCDF(z: number): number {
+  if (z < -8) return 0;
+  if (z >  8) return 1;
+  const p = 0.2316419;
+  const b = [0.319381530, -0.356563782, 1.781477937, -1.821255978, 1.330274429];
+  const t   = 1 / (1 + p * Math.abs(z));
+  const y   = ((((b[4]*t + b[3])*t + b[2])*t + b[1])*t + b[0]) * t;
+  const pdf = Math.exp(-0.5 * z * z) / Math.sqrt(2 * Math.PI);
+  return z >= 0 ? 1 - pdf * y : pdf * y;
+}
+
+// Point margin → win probability via normal distribution
+// sigma: std-dev of final margin (NBA ~11.5, NFL ~13.5, MLB ~3.0 runs)
+function marginToWinProb(margin: number, sigma = 11.5): number {
+  return normalCDF(margin / sigma);
+}
+
 // ── Simple in-memory rate limit ───────────────────────────────────────────────
 const rateCounts = new Map<string, { count: number; reset: number }>();
 function rateLimit(req: express.Request, max: number, windowMs: number): boolean {
@@ -297,11 +349,25 @@ async function fetchLiveOdds(sport: string, gameQuery?: string): Promise<string>
         const altTotals: string[] = [];
         for (const market of pinnacle.markets) {
           if (market.key === 'h2h') {
+            const [o1, o2] = market.outcomes;
             const ml = market.outcomes.map(o => `${o.name} ML ${o.price > 0 ? '+' : ''}${o.price}`).join(' | ');
             lines.push(`  Moneyline: ${ml}`);
+            // Implied probability + devig math embedded inline
+            if (o1 && o2) {
+              const p1r = impliedProb(o1.price), p2r = impliedProb(o2.price);
+              const dv  = devig(p1r, p2r);
+              lines.push(`  → Implied(devigged): ${o1.name} ${(dv.p1*100).toFixed(1)}% | ${o2.name} ${(dv.p2*100).toFixed(1)}% | Book vig: ${dv.vig.toFixed(1)}%`);
+            }
           } else if (market.key === 'spreads') {
             const sp = market.outcomes.map(o => `${o.name} ${o.point && o.point > 0 ? '+' : ''}${o.point} (${o.price > 0 ? '+' : ''}${o.price})`).join(' | ');
             lines.push(`  Spread: ${sp}`);
+            // Devig spread juice
+            if (market.outcomes.length === 2) {
+              const [s1, s2] = market.outcomes;
+              const sp1r = impliedProb(s1.price), sp2r = impliedProb(s2.price);
+              const sdv  = devig(sp1r, sp2r);
+              lines.push(`  → Spread devigged: ${s1.name} ${(sdv.p1*100).toFixed(1)}% | ${s2.name} ${(sdv.p2*100).toFixed(1)}% | Vig: ${sdv.vig.toFixed(1)}%`);
+            }
           } else if (market.key === 'totals') {
             const tot = market.outcomes.map(o => `${o.name} ${o.point} (${o.price > 0 ? '+' : ''}${o.price})`).join(' | ');
             lines.push(`  Total: ${tot}`);
@@ -567,6 +633,136 @@ async function fetchESPNScoreboard(sport: string): Promise<string> {
     });
     return `${sport} TODAY (ESPN):\n${games.join('\n')}`;
   } catch { return ""; }
+}
+
+// ── NBA Stats API — Advanced metrics (pace, OffRtg, DefRtg, NetRtg) ─────────
+// Works with proper headers. Fetches all 30 teams at once; cached 30 min.
+// Season: auto-detect (Oct–Sep spans two calendar years).
+const NBA_STATS_HEADERS: Record<string, string> = {
+  "Host": "stats.nba.com",
+  "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+  "Accept": "application/json, text/plain, */*",
+  "Accept-Language": "en-US,en;q=0.5",
+  "Accept-Encoding": "identity",
+  "Connection": "keep-alive",
+  "Referer": "https://www.nba.com/",
+  "Pragma": "no-cache",
+  "Cache-Control": "no-cache",
+  "Sec-Ch-Ua": '"Not:A-Brand";v="99", "Google Chrome";v="145", "Chromium";v="145"',
+  "Sec-Ch-Ua-Mobile": "?0",
+  "Sec-Fetch-Dest": "empty",
+};
+
+interface NBAMetricRow {
+  name: string; teamId: number;
+  w: number; l: number; wPct: number;
+  offRtg: number; defRtg: number; netRtg: number;
+  pace: number; astRatio: number; tovPct: number;
+}
+
+let nbaMetricsCache: { data: NBAMetricRow[]; expires: number } | null = null;
+
+function currentNBASeason(): string {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = now.getMonth() + 1; // 1-12
+  return m >= 10 ? `${y}-${String(y + 1).slice(-2)}` : `${y - 1}-${String(y).slice(-2)}`;
+}
+
+async function fetchNBAMetricsAll(): Promise<NBAMetricRow[]> {
+  if (nbaMetricsCache && Date.now() < nbaMetricsCache.expires) return nbaMetricsCache.data;
+  try {
+    const season = currentNBASeason();
+    const url = `https://stats.nba.com/stats/teamestimatedmetrics?LeagueID=00&Season=${encodeURIComponent(season)}&SeasonType=Regular%20Season`;
+    const res = await fetch(url, { signal: AbortSignal.timeout(8000), headers: NBA_STATS_HEADERS });
+    if (!res.ok) return [];
+    const json = await res.json() as { resultSet: { headers: string[]; rowSet: unknown[][] } };
+    const { headers, rowSet } = json.resultSet;
+    const idx = (n: string) => headers.indexOf(n);
+    const data: NBAMetricRow[] = rowSet.map(r => ({
+      name:     r[idx('TEAM_NAME')]    as string,
+      teamId:   r[idx('TEAM_ID')]      as number,
+      w:        r[idx('W')]            as number,
+      l:        r[idx('L')]            as number,
+      wPct:     r[idx('W_PCT')]        as number,
+      offRtg:   r[idx('E_OFF_RATING')] as number,
+      defRtg:   r[idx('E_DEF_RATING')] as number,
+      netRtg:   r[idx('E_NET_RATING')] as number,
+      pace:     r[idx('E_PACE')]       as number,
+      astRatio: r[idx('E_AST_RATIO')]  as number,
+      tovPct:   r[idx('E_TM_TOV_PCT')] as number,
+    }));
+    nbaMetricsCache = { data, expires: Date.now() + 30 * 60 * 1000 };
+    return data;
+  } catch { return []; }
+}
+
+// Adjusted-rating scoring model (industry standard):
+//   ExpScore_A = (A.OffRtg × B.DefRtg / leagueAvg) × avgPace / 100
+// League avg OffRtg/DefRtg balance at ~113.5 for 2024-25.
+const NBA_LEAGUE_AVG_RTG = 113.5;
+
+function nbaExpectedScores(
+  homeOff: number, homeDef: number, homePace: number,
+  awayOff: number, awayDef: number, awayPace: number
+): { homeScore: number; awayScore: number; total: number; margin: number } {
+  const avgPace = (homePace + awayPace) / 2;
+  const homeScore = (homeOff * awayDef / NBA_LEAGUE_AVG_RTG) * avgPace / 100;
+  const awayScore = (awayOff * homeDef / NBA_LEAGUE_AVG_RTG) * avgPace / 100;
+  return { homeScore, awayScore, total: homeScore + awayScore, margin: homeScore - awayScore };
+}
+
+async function fetchNBAAdvancedStats(matchup: string): Promise<string> {
+  if (!matchup) return "";
+  const allTeams = await fetchNBAMetricsAll();
+  if (allTeams.length === 0) return "";
+
+  const lower = matchup.toLowerCase();
+  const parts  = lower.split(/\s+(?:vs\.?|@|-)\s+/);
+
+  const findTeam = (query: string): NBAMetricRow | undefined =>
+    allTeams.find(t => {
+      const n = t.name.toLowerCase();
+      return n.includes(query.trim()) ||
+             query.trim().split(/\s+/).some(w => w.length > 3 && n.includes(w));
+    });
+
+  const found = parts.map(findTeam).filter((t): t is NBAMetricRow => t !== undefined);
+  if (found.length < 2) return "";
+
+  // Convention: parts[0] = away team, parts[1] = home team (standard "Away @ Home" format)
+  const [away, home] = found;
+  const scores = nbaExpectedScores(home.offRtg, home.defRtg, home.pace, away.offRtg, away.defRtg, away.pace);
+  const homeWinProb = marginToWinProb(scores.margin);
+  const fmt = (n: number) => n > 0 ? `+${n.toFixed(1)}` : n.toFixed(1);
+
+  return [
+    `NBA ADVANCED STATS (stats.nba.com — real numbers, cite exactly):`,
+    `  Season: ${currentNBASeason()} Regular Season`,
+    `  ${away.name}: ${away.w}-${away.l} (${(away.wPct*100).toFixed(0)}%) | OffRtg:${away.offRtg} DefRtg:${away.defRtg} NetRtg:${fmt(away.netRtg)} Pace:${away.pace} TOV%:${(away.tovPct*100).toFixed(1)}%`,
+    `  ${home.name}: ${home.w}-${home.l} (${(home.wPct*100).toFixed(0)}%) | OffRtg:${home.offRtg} DefRtg:${home.defRtg} NetRtg:${fmt(home.netRtg)} Pace:${home.pace} TOV%:${(home.tovPct*100).toFixed(1)}%`,
+    `  ── Adjusted-Rating Model ──`,
+    `  Expected Total: ${scores.total.toFixed(1)} pts  (${away.name} ${scores.awayScore.toFixed(1)} | ${home.name} ${scores.homeScore.toFixed(1)})`,
+    `  Expected Margin: ${home.name} ${fmt(scores.margin)} (model win prob: ${home.name} ${(homeWinProb*100).toFixed(1)}% | ${away.name} ${((1-homeWinProb)*100).toFixed(1)}%)`,
+    `  Net-Rating edge: ${away.netRtg > home.netRtg ? away.name : home.name} ${fmt(Math.abs(away.netRtg - home.netRtg))} pts advantage`,
+  ].join('\n');
+}
+
+// Top-10 / Bottom-10 teams by NetRtg — useful for prophet without a specific matchup
+async function fetchNBALeagueSnapshot(): Promise<string> {
+  const all = await fetchNBAMetricsAll();
+  if (all.length === 0) return "";
+  const sorted = [...all].sort((a, b) => b.netRtg - a.netRtg);
+  const fmt = (n: number) => n > 0 ? `+${n.toFixed(1)}` : n.toFixed(1);
+  const row = (t: NBAMetricRow) =>
+    `  ${t.name}: ${t.w}-${t.l} | NetRtg:${fmt(t.netRtg)} OffRtg:${t.offRtg} DefRtg:${t.defRtg} Pace:${t.pace}`;
+  return [
+    `NBA LEAGUE EFFICIENCY (stats.nba.com — ${currentNBASeason()} Regular Season):`,
+    `Top 5 by NetRtg:`,
+    ...sorted.slice(0, 5).map(row),
+    `Bottom 5 by NetRtg:`,
+    ...sorted.slice(-5).reverse().map(row),
+  ].join('\n');
 }
 
 // ── ESPN NBA Team Stats (free, no auth) ─────────────────────────────────────
@@ -926,12 +1122,13 @@ app.get('/api/prophet', async (req: express.Request, res: express.Response) => {
     const prophetSport = sport || 'ALL';
     const heuristics = getBettingHeuristics(prophetSport === 'ALL' ? 'NBA' : prophetSport);
     const activeSport = prophetSport === 'ALL' ? 'NBA' : prophetSport;
-    const [liveOdds, scheduleCtx, injuryData, newsData, pitcherData, sharpSignals] = await Promise.all([
+    const [liveOdds, scheduleCtx, injuryData, newsData, pitcherData, advancedData, sharpSignals] = await Promise.all([
       fetchLiveOdds(activeSport),
       activeSport === 'NBA' ? fetchNBAScheduleToday() : fetchESPNScoreboard(activeSport),
       fetchInjuries(activeSport),
       fetchESPNNews(activeSport),
       activeSport === 'MLB' ? fetchMLBPitcherStats('') : Promise.resolve(''),
+      activeSport === 'NBA' ? fetchNBALeagueSnapshot() : Promise.resolve(''),
       fetchSharpSignals(activeSport),
     ]);
     const prompt = `
@@ -944,6 +1141,7 @@ ${heuristics}
 
 ${liveOdds}
 ${scheduleCtx ? `\n${scheduleCtx}` : ''}
+${advancedData ? `\n${advancedData}` : ''}
 ${injuryData ? `\nINJURY REPORT (ESPN — LIVE):\n${injuryData}` : ''}
 ${pitcherData ? `\nREAL PITCHER STATS (MLB API — cite exact numbers):\n${pitcherData}` : ''}
 ${newsData ? `\nLATEST NEWS (ESPN):\n${newsData}` : ''}
@@ -1045,9 +1243,9 @@ Output ONLY this raw JSON (no markdown, no commentary):
     "value_gap": "+X.X% EV",
     "confidence_score": 0.75,
     "sgp_blueprint": [
-      { "label": "SGP Leg 1", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "3975" },
-      { "label": "SGP Leg 2", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "3202" },
-      { "label": "SGP Leg 3", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "6450" }
+      { "label": "SGP Leg 1", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "" },
+      { "label": "SGP Leg 2", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "" },
+      { "label": "SGP Leg 3", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "" }
     ],
     "omni_report": "2 sentence quant view — cite specific numbers and CLV signal."
   },
@@ -1056,9 +1254,9 @@ Output ONLY this raw JSON (no markdown, no commentary):
     "value_gap": "+X.X% EV",
     "confidence_score": 0.70,
     "sgp_blueprint": [
-      { "label": "SGP Leg 1", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "3975" },
-      { "label": "SGP Leg 2", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "3202" },
-      { "label": "SGP Leg 3", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "6450" }
+      { "label": "SGP Leg 1", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "" },
+      { "label": "SGP Leg 2", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "" },
+      { "label": "SGP Leg 3", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "" }
     ],
     "omni_report": "2 sentence situational view — cite game script, fatigue, or contrarian signal."
   },
@@ -1066,9 +1264,9 @@ Output ONLY this raw JSON (no markdown, no commentary):
   "value_gap": "Final EV estimate",
   "confidence_score": 0.80,
   "sgp_blueprint": [
-    { "label": "SGP Leg 1", "value": "Pick + odds", "rationale": "Why this leg", "espn_id": "3975" },
-    { "label": "SGP Leg 2", "value": "Pick + odds", "rationale": "Why this leg", "espn_id": "6450" },
-    { "label": "SGP Leg 3", "value": "Pick + odds", "rationale": "Why this leg", "espn_id": "3202" }
+    { "label": "SGP Leg 1", "value": "Pick + odds", "rationale": "Why this leg", "espn_id": "" },
+    { "label": "SGP Leg 2", "value": "Pick + odds", "rationale": "Why this leg", "espn_id": "" },
+    { "label": "SGP Leg 3", "value": "Pick + odds", "rationale": "Why this leg", "espn_id": "" }
   ],
   "omni_report": "Final 2-sentence verdict. State conviction and single biggest risk. Flag [HIGH-RISK] if any heuristic violated."
 }
@@ -1125,7 +1323,7 @@ For each player:
 - Identify the most mispriced prop line (points, rebounds, assists, strikeouts, hits, etc.)
 - ai_score = your confidence this is +EV (0-10 scale, be realistic — 6-8 range is good, 9+ is rare)
 - status_color: #22c55e (strong edge), #eab308 (moderate edge), #f97316 (speculative)
-- espn_id: use a realistic ESPN player ID number (e.g. NBA players: LeBron=1966, Curry=3975, Jokic=3112335, Giannis=3032977, SGA=4277905)
+- espn_id: leave as "" — do NOT invent ESPN player IDs, they will be wrong
 
 Output ONLY a raw JSON array of exactly 10 objects:
 [
@@ -1138,7 +1336,7 @@ Output ONLY a raw JSON array of exactly 10 objects:
     "season_stat": "e.g. 29.4 PPG L10 or .312 BA",
     "ai_score": 7.8,
     "status_color": "#22c55e",
-    "espn_id": "3975"
+    "espn_id": ""
   }
 ]
 
@@ -1474,11 +1672,14 @@ app.post('/api/full-breakdown', async (req: express.Request, res: express.Respon
     const crossSports = ['NBA', 'MLB', 'NFL', 'SOCCER', 'WNBA'].filter(inSeason);
 
     // Fetch all data in parallel — real stats, news, odds, injuries, sharp signals
-    const [oddsCtx, injuryCtx, playerStatsCtx, teamStatsCtx, newsCtx, pitcherCtx, weatherCtx, sharpCtx, crossOdds] = await Promise.all([
+    const [oddsCtx, injuryCtx, playerStatsCtx, advancedCtx, teamStatsCtx, newsCtx, pitcherCtx, weatherCtx, sharpCtx, crossOdds] = await Promise.all([
       fetchLiveOdds(league, matchup),
       fetchInjuries(league, matchup),
       league === 'NBA' || league === 'WNBA'
         ? fetchNBAPlayerStats(matchup)
+        : Promise.resolve(''),
+      league === 'NBA' || league === 'WNBA'
+        ? fetchNBAAdvancedStats(matchup)
         : Promise.resolve(''),
       league === 'NBA' || league === 'WNBA'
         ? fetchNBATeamStats(matchup)
@@ -1506,11 +1707,21 @@ ${oddsCtx || "No live odds found — note this clearly in your output, do not fa
 INJURY REPORT (ONLY reference players listed here — do NOT invent injuries):
 ${injuryCtx || "No injury data available from ESPN right now. Do NOT fabricate any injuries."}
 
+${advancedCtx ? `${advancedCtx}\n` : ''}
 ${playerStatsCtx ? `REAL PLAYER STATS — BallDontLie API (cite these exact numbers, do NOT invent):\n${playerStatsCtx}\n` : ''}
 ${teamStatsCtx ? `REAL TEAM STATS — ESPN API (cite these exact numbers, do NOT invent):\n${teamStatsCtx}\n` : ''}
 ${pitcherCtx ? `REAL PITCHER STATS — MLB Official API (cite these exact numbers, do NOT invent):\n${pitcherCtx}\n` : ''}
 ${weatherCtx ? `WEATHER DATA — wttr.in real-time:\n${weatherCtx}\n` : ''}
 ${newsCtx ? `LATEST NEWS — ESPN live:\n${newsCtx}\n` : ''}
+📐 MATH ENGINE — use these formulas when computing EV and Kelly in your rationale:
+- Implied prob already devigged: see "→ Implied(devigged)" lines in LIVE ODDS above.
+- EV = (your_win_prob × (decimal_odds − 1)) − (1 − your_win_prob)
+  decimal_odds: americanOdds ≥ 0 → odds/100+1 | americanOdds < 0 → 100/|odds|+1
+- Half-Kelly units = max(0, (b×p − (1−p)) / b / 2)  where b = decimal_odds − 1, p = win_prob
+- NBA model total/margin: see "Model Expected Total" and "Model Win Prob" above.
+- Edge = your win_prob − devigged market probability. Positive edge = bet has value.
+- Cite: "Model: 54.3% | Market(devigged): 51.8% | Edge: +2.5% | EV: +3.1% | Half-Kelly: 0.6u"
+⚠️ If model stats block is present, your win_prob MUST align with the model within ±15%. Do not wildly deviate without explaining why.
 SHARP SIGNALS (Pinnacle vs DK line gap — directional signal only):
 ${sharpCtx || "No significant line gap detected."}
 
@@ -1521,7 +1732,8 @@ ${sharpCtx || "No significant line gap detected."}
 - rationale must cite at least one real number from the data blocks above or from the live odds. No narrative-only rationale accepted.
 
 ⚠️ ANTI-HALLUCINATION RULES — MUST FOLLOW:
-1. PLAYER STATS: If REAL PLAYER STATS block is present, cite exact numbers in rationale (PPG, L5 form). Never round or invent — copy the number directly.
+1. PLAYER STATS: If REAL PLAYER STATS block is present, cite exact numbers (PPG, L5 form). Never round or invent.
+   ADVANCED STATS: If NBA ADVANCED STATS block is present, cite OffRtg/DefRtg/NetRtg/Pace. Use "Model Expected Total" to anchor total pick. Use "Model Win Prob" to anchor spread/ML win_prob.
 2. PITCHER STATS: If REAL PITCHER STATS block is present, cite pitcher's ERA, K/9, WHIP directly. Never say "2.80 ERA" if the block shows "3.84 ERA".
 3. WEATHER: If WEATHER block shows wind ≥15mph, it MUST affect your total pick and any passing props. Do not ignore it.
 4. INJURIES: Only cite players from the INJURY REPORT. Empty report = say "no injury data" — never invent.
