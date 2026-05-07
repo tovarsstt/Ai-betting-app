@@ -569,6 +569,171 @@ async function fetchESPNScoreboard(sport: string): Promise<string> {
   } catch { return ""; }
 }
 
+// ── MLB Official Stats API (statsapi.mlb.com — free, no auth) ───────────────
+// Real pitcher ERA / K9 / WHIP / last-3-starts for both starters tonight.
+// Kills hallucinated pitcher stats — every number below is from the MLB API.
+type MLBPitcher = { id: number; fullName: string };
+type MLBPitchingStat = {
+  era: string; strikeOuts: number; whip: string; inningsPitched: string;
+  wins: number; losses: number; gamesStarted: number; strikeoutsPer9Inn: string;
+};
+type MLBGameLogStat = { era: string; strikeOuts: number; inningsPitched: string };
+
+async function fetchMLBPitcherStats(matchup: string): Promise<string> {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const schedRes = await fetch(
+      `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${today}&hydrate=probablePitcher(note)`,
+      { signal: AbortSignal.timeout(7000) }
+    );
+    if (!schedRes.ok) return "";
+    const sched = await schedRes.json() as {
+      dates: Array<{ games: Array<{
+        venue: { name: string };
+        teams: {
+          home: { team: { name: string }; leagueRecord: { wins: number; losses: number }; probablePitcher?: MLBPitcher };
+          away: { team: { name: string }; leagueRecord: { wins: number; losses: number }; probablePitcher?: MLBPitcher };
+        };
+      }> }>
+    };
+
+    const games = sched.dates?.[0]?.games ?? [];
+    const keywords = matchup.toLowerCase().split(/\s+vs?\.?\s+/i).map(t => t.trim());
+    const game = games.find(g =>
+      keywords.some(kw =>
+        g.teams.home.team.name.toLowerCase().includes(kw) ||
+        g.teams.away.team.name.toLowerCase().includes(kw)
+      )
+    );
+    if (!game) return "";
+
+    const season = new Date().getFullYear();
+    const sides = [
+      { label: 'HOME', t: game.teams.home },
+      { label: 'AWAY', t: game.teams.away },
+    ];
+
+    const lines = [`MLB PITCHER STATS (official MLB API — real numbers, not estimates):\nVenue: ${game.venue.name}`];
+
+    for (const { label, t } of sides) {
+      const rec = `${t.leagueRecord.wins}-${t.leagueRecord.losses}`;
+      if (!t.probablePitcher) { lines.push(`  ${label} ${t.team.name} (${rec}): TBD starter`); continue; }
+
+      const pid = t.probablePitcher.id;
+      // Try current season first, fall back to previous if empty
+      const trySeasons = [season, season - 1];
+      let seasonStat: MLBPitchingStat | null = null;
+      for (const yr of trySeasons) {
+        try {
+          const r = await fetch(
+            `https://statsapi.mlb.com/api/v1/people/${pid}/stats?stats=season&group=pitching&season=${yr}`,
+            { signal: AbortSignal.timeout(5000) }
+          );
+          if (!r.ok) continue;
+          const d = await r.json() as { stats: Array<{ splits: Array<{ stat: MLBPitchingStat }> }> };
+          const s = d.stats?.[0]?.splits?.[0]?.stat;
+          if (s?.gamesStarted >= 1) { seasonStat = s; break; }
+        } catch { continue; }
+      }
+
+      // Last 3 starts
+      let logStr = '';
+      try {
+        const lr = await fetch(
+          `https://statsapi.mlb.com/api/v1/people/${pid}/stats?stats=gameLog&group=pitching&season=${season}&limit=3`,
+          { signal: AbortSignal.timeout(5000) }
+        );
+        if (lr.ok) {
+          const ld = await lr.json() as { stats: Array<{ splits: Array<{ stat: MLBGameLogStat }> }> };
+          const logs = ld.stats?.[0]?.splits?.slice(0, 3) ?? [];
+          if (logs.length) logStr = ` | L3: ${logs.map(l => `${l.stat.era}ERA ${l.stat.strikeOuts}K ${l.stat.inningsPitched}IP`).join(', ')}`;
+        }
+      } catch { /* skip */ }
+
+      const statStr = seasonStat
+        ? `${seasonStat.era} ERA | ${seasonStat.strikeoutsPer9Inn} K/9 | ${seasonStat.whip} WHIP | ${seasonStat.wins}-${seasonStat.losses} (${seasonStat.gamesStarted}GS)${logStr}`
+        : 'season stats not yet available';
+
+      lines.push(`  ${label} ${t.team.name} (${rec}) — ${t.probablePitcher.fullName}: ${statStr}`);
+    }
+
+    return lines.join('\n');
+  } catch { return ""; }
+}
+
+// ── Weather via wttr.in (completely free, no auth) ────────────────────────────
+// Only called for outdoor sports: MLB, NFL. Indoor (NBA/NHL) = skip.
+const STADIUM_CITIES: Record<string, string> = {
+  // MLB
+  'yankees': 'New York', 'mets': 'New York', 'red sox': 'Boston',
+  'cubs': 'Chicago', 'white sox': 'Chicago', 'dodgers': 'Los Angeles',
+  'angels': 'Anaheim', 'giants': 'San Francisco', 'athletics': 'Oakland',
+  'padres': 'San Diego', 'rockies': 'Denver', 'diamondbacks': 'Phoenix',
+  'cardinals': 'St. Louis', 'brewers': 'Milwaukee', 'reds': 'Cincinnati',
+  'pirates': 'Pittsburgh', 'phillies': 'Philadelphia', 'braves': 'Atlanta',
+  'marlins': 'Miami', 'nationals': 'Washington', 'orioles': 'Baltimore',
+  'blue jays': 'Toronto', 'rays': 'St. Petersburg', 'tigers': 'Detroit',
+  'guardians': 'Cleveland', 'royals': 'Kansas City', 'twins': 'Minneapolis',
+  'astros': 'Houston', 'rangers': 'Arlington', 'mariners': 'Seattle',
+  // NFL
+  'patriots': 'Foxborough', 'bills': 'Orchard Park', 'dolphins': 'Miami Gardens',
+  'jets': 'East Rutherford', 'ravens': 'Baltimore', 'bengals': 'Cincinnati',
+  'browns': 'Cleveland', 'steelers': 'Pittsburgh', 'texans': 'Houston',
+  'colts': 'Indianapolis', 'jaguars': 'Jacksonville', 'titans': 'Nashville',
+  'chiefs': 'Kansas City', 'raiders': 'Las Vegas', 'chargers': 'Inglewood',
+  'broncos': 'Denver', 'cowboys': 'Arlington', 'giants': 'East Rutherford',
+  'eagles': 'Philadelphia', 'commanders': 'Landover', 'bears': 'Chicago',
+  'lions': 'Detroit', 'packers': 'Green Bay', 'vikings': 'Minneapolis',
+  'falcons': 'Atlanta', 'panthers': 'Charlotte', 'saints': 'New Orleans',
+  'buccaneers': 'Tampa', 'rams': 'Inglewood', 'seahawks': 'Seattle',
+  '49ers': 'Santa Clara', 'cardinals': 'Glendale',
+};
+
+async function fetchWeather(matchup: string, sport: string): Promise<string> {
+  const s = sport.toUpperCase();
+  if (!['MLB', 'NFL'].includes(s)) return ""; // NBA/NHL/Tennis are indoor
+
+  // Extract home team (right side of "vs")
+  const parts = matchup.toLowerCase().split(/\s+vs?\.?\s+/i);
+  const homeStr = (parts[parts.length - 1] ?? parts[0]).trim();
+
+  let city = '';
+  for (const [kw, c] of Object.entries(STADIUM_CITIES)) {
+    if (homeStr.includes(kw)) { city = c; break; }
+  }
+  if (!city) return "";
+
+  try {
+    const res = await fetch(
+      `https://wttr.in/${encodeURIComponent(city)}?format=j1`,
+      { signal: AbortSignal.timeout(5000), headers: { 'Accept': 'application/json', 'User-Agent': 'cavemanlocks/1.0' } }
+    );
+    if (!res.ok) return "";
+    const data = await res.json() as {
+      current_condition: Array<{
+        temp_F: string; windspeedMiles: string; winddir16Point: string;
+        weatherDesc: Array<{ value: string }>; FeelsLikeF: string;
+      }>;
+      weather: Array<{ hourly: Array<{ time: string; tempF: string; windspeedMiles: string; winddir16Point: string }> }>;
+    };
+    const w = data.current_condition?.[0];
+    if (!w) return "";
+
+    const wind = parseInt(w.windspeedMiles);
+    const temp = parseInt(w.temp_F);
+    const dir  = w.winddir16Point;
+    const desc = w.weatherDesc[0]?.value ?? '';
+
+    const flags: string[] = [];
+    if (wind >= 20) flags.push(`⚠️ WIND ${wind}mph ${dir} — lean Under total, fade passing props`);
+    else if (wind >= 15) flags.push(`WIND ${wind}mph ${dir} — note: affects passing/ball flight`);
+    if (temp <= 40) flags.push(`🥶 COLD (${temp}°F) — lean Under`);
+    if (temp >= 88) flags.push(`☀️ HOT (${temp}°F) — if wind OUT: lean Over`);
+
+    return `WEATHER — ${city} now: ${temp}°F | Wind: ${wind}mph ${dir} | ${desc}${flags.length ? '\nBETTING IMPACT: ' + flags.join(' | ') : ''}`;
+  } catch { return ""; }
+}
+
 // ── Synthetic Sharp Signal (Pinnacle vs soft-book line gap) ───────────────────
 // Pinnacle is the sharpest book. When Pinnacle line diverges from DraftKings/FanDuel,
 // that gap reveals where the sharp money is pointing.
@@ -676,11 +841,12 @@ app.get('/api/prophet', async (req: express.Request, res: express.Response) => {
     const prophetSport = sport || 'ALL';
     const heuristics = getBettingHeuristics(prophetSport === 'ALL' ? 'NBA' : prophetSport);
     const activeSport = prophetSport === 'ALL' ? 'NBA' : prophetSport;
-    const [liveOdds, scheduleCtx, injuryData, newsData, sharpSignals] = await Promise.all([
+    const [liveOdds, scheduleCtx, injuryData, newsData, pitcherData, sharpSignals] = await Promise.all([
       fetchLiveOdds(activeSport),
       activeSport === 'NBA' ? fetchNBAScheduleToday() : fetchESPNScoreboard(activeSport),
       fetchInjuries(activeSport),
       fetchESPNNews(activeSport),
+      activeSport === 'MLB' ? fetchMLBPitcherStats('') : Promise.resolve(''),
       fetchSharpSignals(activeSport),
     ]);
     const prompt = `
@@ -694,13 +860,15 @@ ${heuristics}
 ${liveOdds}
 ${scheduleCtx ? `\n${scheduleCtx}` : ''}
 ${injuryData ? `\nINJURY REPORT (ESPN — LIVE):\n${injuryData}` : ''}
+${pitcherData ? `\nREAL PITCHER STATS (MLB API — cite exact numbers):\n${pitcherData}` : ''}
 ${newsData ? `\nLATEST NEWS (ESPN):\n${newsData}` : ''}
 ${sharpSignals ? `\n${sharpSignals}` : ''}
 
-IMPORTANT: The lines above are REAL LIVE ODDS from Pinnacle/DraftKings. Use these exact lines in your output — do not invent odds.
-The injury report is LIVE from ESPN. Factor injured/doubtful players into your analysis immediately — apply Next Man Up logic.
-The sharp signals show Pinnacle vs DraftKings line gaps — gaps ≥8pts mean sharp money is moving. Follow the sharp money.
-The news headlines are LIVE from ESPN — if a player is listed questionable or out, reprice immediately.
+IMPORTANT: Lines above are REAL from Pinnacle/DraftKings — use exact lines, do not invent.
+Injuries are LIVE from ESPN — apply Next Man Up logic immediately.
+Sharp signals = Pinnacle vs DK gap ≥8pts — follow the sharp side.
+News = live ESPN headlines — questionable/out tags reprice the market.
+⚠️ win_prob cap: never output >0.82. EV: label "est." — no true prob model exists here.
 
 Your job: apply the above heuristics to identify TODAY's single highest-conviction bet from the real games listed. Run the SHARP CHECK before selecting.
 
@@ -1221,13 +1389,15 @@ app.post('/api/full-breakdown', async (req: express.Request, res: express.Respon
     const crossSports = ['NBA', 'MLB', 'NFL', 'SOCCER', 'WNBA'].filter(inSeason);
 
     // Fetch all data in parallel — real stats, news, odds, injuries, sharp signals
-    const [oddsCtx, injuryCtx, playerStatsCtx, newsCtx, sharpCtx, crossOdds] = await Promise.all([
+    const [oddsCtx, injuryCtx, playerStatsCtx, newsCtx, pitcherCtx, weatherCtx, sharpCtx, crossOdds] = await Promise.all([
       fetchLiveOdds(league, matchup),
       fetchInjuries(league, matchup),
       league === 'NBA' || league === 'WNBA'
         ? fetchNBAPlayerStats(matchup)
-        : fetchESPNScoreboard(league),
+        : Promise.resolve(''),
       fetchESPNNews(league, matchup),
+      league === 'MLB' ? fetchMLBPitcherStats(matchup) : Promise.resolve(''),
+      fetchWeather(matchup, league),
       fetchSharpSignals(league),
       Promise.all(crossSports.filter(s => s !== league).map(s => fetchLiveOdds(s))).then(r => r.filter(Boolean).join('\n\n')),
     ]);
@@ -1248,17 +1418,27 @@ ${oddsCtx || "No live odds found — note this clearly in your output, do not fa
 INJURY REPORT (ONLY reference players listed here — do NOT invent injuries):
 ${injuryCtx || "No injury data available from ESPN right now. Do NOT fabricate any injuries."}
 
-${playerStatsCtx ? `REAL PLAYER STATS (use these exact numbers in rationale — do NOT invent stats):\n${playerStatsCtx}\n` : ''}
-${newsCtx ? `LATEST NEWS (lineup updates, injury headlines — factor into analysis):\n${newsCtx}\n` : ''}
-SHARP SIGNALS:
-${sharpCtx || "No sharp signals detected."}
+${playerStatsCtx ? `REAL PLAYER STATS — BallDontLie API (cite these exact numbers, do NOT invent):\n${playerStatsCtx}\n` : ''}
+${pitcherCtx ? `REAL PITCHER STATS — MLB Official API (cite these exact numbers, do NOT invent):\n${pitcherCtx}\n` : ''}
+${weatherCtx ? `WEATHER DATA — wttr.in real-time:\n${weatherCtx}\n` : ''}
+${newsCtx ? `LATEST NEWS — ESPN live:\n${newsCtx}\n` : ''}
+SHARP SIGNALS (Pinnacle vs DK line gap — directional signal only):
+${sharpCtx || "No significant line gap detected."}
+
+⚠️ HONESTY RULES — NON-NEGOTIABLE:
+- win_prob: your calibrated estimate based on available data. Do NOT output >0.82 — real sharp bettors rarely see edge that clean.
+- EV: label as "est." — we have no true probability model. Only output EV if you can ground it in the real stats/odds above.
+- If a stat block is missing (no player stats, no pitcher data), say so in game_summary. Do NOT invent replacement numbers.
+- rationale must cite at least one real number from the data blocks above or from the live odds. No narrative-only rationale accepted.
 
 ⚠️ ANTI-HALLUCINATION RULES — MUST FOLLOW:
-1. STATS RULE: If REAL PLAYER STATS block is present, use those exact numbers (PPG, RPG, APG, L5 pts) in your rationale. These are real API data — cite them directly, e.g. "Edwards averaging 24.6PPG, L5: 28,22,31,25,19pts".
-2. INJURY RULE: Only cite injuries from the INJURY REPORT. If empty, say "no current injury data" — never invent.
-3. ODDS RULE: Use exact lines from LIVE ODDS block. If empty, estimate and label "est."
-4. NEWS RULE: If LATEST NEWS mentions a lineup change, injury update, or questionable player — factor it in immediately.
-5. PROP RULE: Base prop lines on the REAL PLAYER STATS averages above — if Edwards averages 24.6PPG, his prop should be near that, not invented.
+1. PLAYER STATS: If REAL PLAYER STATS block is present, cite exact numbers in rationale (PPG, L5 form). Never round or invent — copy the number directly.
+2. PITCHER STATS: If REAL PITCHER STATS block is present, cite pitcher's ERA, K/9, WHIP directly. Never say "2.80 ERA" if the block shows "3.84 ERA".
+3. WEATHER: If WEATHER block shows wind ≥15mph, it MUST affect your total pick and any passing props. Do not ignore it.
+4. INJURIES: Only cite players from the INJURY REPORT. Empty report = say "no injury data" — never invent.
+5. ODDS: Use exact lines from LIVE ODDS. If block is empty, label estimates as "est."
+6. PROPS: Set prop lines relative to the REAL averages provided. Player averaging 24.6PPG → prop near 24.5, not invented 28.5.
+7. NEWS: Lineup changes, questionable tags in news → reprice that market immediately before picking.
 
 🔍 ALT LINE HUNTING — VERY IMPORTANT:
 The LIVE ODDS block may contain alternate_spreads and alternate_totals alongside standard lines.
