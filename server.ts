@@ -238,7 +238,7 @@ const SPORT_KEYS: Record<string, string[]> = {
   NFL:    ["americanfootball_nfl"],
   NHL:    ["icehockey_nhl"],
   SOCCER: ["soccer_epl", "soccer_usa_mls", "soccer_uefa_champs_league", "soccer_spain_la_liga"],
-  TENNIS: ["tennis_atp_french_open", "tennis_wta_french_open", "tennis_atp_us_open", "tennis_wta_us_open"],
+  TENNIS: ["tennis_atp_french_open", "tennis_wta_french_open", "tennis_atp_wimbledon", "tennis_wta_wimbledon", "tennis_atp_us_open", "tennis_wta_us_open", "tennis_atp_aus_open", "tennis_wta_aus_open"],
   UFC:    ["mma_mixed_martial_arts"],
   F1:     [], // not on this API
 };
@@ -293,6 +293,8 @@ async function fetchLiveOdds(sport: string, gameQuery?: string): Promise<string>
 
         const lines: string[] = [`${ev.away_team} @ ${ev.home_team} — ${gameTime} ET`];
 
+        const altSpreads: string[] = [];
+        const altTotals: string[] = [];
         for (const market of pinnacle.markets) {
           if (market.key === 'h2h') {
             const ml = market.outcomes.map(o => `${o.name} ML ${o.price > 0 ? '+' : ''}${o.price}`).join(' | ');
@@ -303,8 +305,16 @@ async function fetchLiveOdds(sport: string, gameQuery?: string): Promise<string>
           } else if (market.key === 'totals') {
             const tot = market.outcomes.map(o => `${o.name} ${o.point} (${o.price > 0 ? '+' : ''}${o.price})`).join(' | ');
             lines.push(`  Total: ${tot}`);
+          } else if (market.key === 'alternate_spreads') {
+            const alts = market.outcomes.map(o => `${o.name} ${o.point && o.point > 0 ? '+' : ''}${o.point} (${o.price > 0 ? '+' : ''}${o.price})`);
+            for (let i = 0; i < alts.length; i += 2) altSpreads.push(alts.slice(i, i + 2).join(' | '));
+          } else if (market.key === 'alternate_totals') {
+            const alts = market.outcomes.map(o => `${o.name} ${o.point} (${o.price > 0 ? '+' : ''}${o.price})`);
+            for (let i = 0; i < alts.length; i += 2) altTotals.push(alts.slice(i, i + 2).join(' | '));
           }
         }
+        if (altSpreads.length) lines.push(`  Alt Spreads: ${altSpreads.slice(0, 4).join(' // ')}`);
+        if (altTotals.length) lines.push(`  Alt Totals: ${altTotals.slice(0, 4).join(' // ')}`);
         results.push(lines.join('\n'));
       }
     } catch { /* skip failed sport key */ }
@@ -1195,12 +1205,6 @@ Output ONLY raw JSON — no markdown:
     console.error("FULL_BREAKDOWN_FAILURE:", msg);
     res.status(500).json({ error: "FULL_BREAKDOWN_FAILURE", message: msg });
   }
-});
-
-// Keep old endpoint as alias
-app.post('/api/game-breakdown', async (req: express.Request, res: express.Response) => {
-  return (req as express.Request & { url: string }).url = '/api/full-breakdown',
-    res.redirect(307, '/api/full-breakdown');
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
