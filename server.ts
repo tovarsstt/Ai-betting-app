@@ -569,6 +569,91 @@ async function fetchESPNScoreboard(sport: string): Promise<string> {
   } catch { return ""; }
 }
 
+// ── ESPN NBA Team Stats (free, no auth) ─────────────────────────────────────
+// Real team PPG / FG% / 3P% / defensive stats for both NBA teams in a matchup.
+const ESPN_NBA_TEAM_IDS: Record<string, number> = {
+  "atlanta hawks": 1, "hawks": 1, "atl": 1,
+  "boston celtics": 2, "celtics": 2, "bos": 2,
+  "brooklyn nets": 17, "nets": 17, "bkn": 17,
+  "charlotte hornets": 30, "hornets": 30, "cha": 30,
+  "chicago bulls": 4, "bulls": 4, "chi": 4,
+  "cleveland cavaliers": 5, "cavaliers": 5, "cavs": 5, "cle": 5,
+  "dallas mavericks": 6, "mavericks": 6, "mavs": 6, "dal": 6,
+  "denver nuggets": 7, "nuggets": 7, "den": 7,
+  "detroit pistons": 8, "pistons": 8, "det": 8,
+  "golden state warriors": 9, "warriors": 9, "gsw": 9,
+  "houston rockets": 10, "rockets": 10, "hou": 10,
+  "indiana pacers": 11, "pacers": 11, "ind": 11,
+  "la clippers": 12, "clippers": 12, "lac": 12,
+  "los angeles clippers": 12,
+  "los angeles lakers": 13, "lakers": 13, "lal": 13, "la lakers": 13,
+  "memphis grizzlies": 29, "grizzlies": 29, "mem": 29,
+  "miami heat": 14, "heat": 14, "mia": 14,
+  "milwaukee bucks": 15, "bucks": 15, "mil": 15,
+  "minnesota timberwolves": 16, "timberwolves": 16, "wolves": 16, "min": 16,
+  "new orleans pelicans": 3, "pelicans": 3, "nop": 3,
+  "new york knicks": 18, "knicks": 18, "nyk": 18,
+  "oklahoma city thunder": 25, "thunder": 25, "okc": 25,
+  "orlando magic": 19, "magic": 19, "orl": 19,
+  "philadelphia 76ers": 20, "76ers": 20, "sixers": 20, "phi": 20,
+  "phoenix suns": 21, "suns": 21, "phx": 21,
+  "portland trail blazers": 22, "trail blazers": 22, "blazers": 22, "por": 22,
+  "sacramento kings": 23, "kings": 23, "sac": 23,
+  "san antonio spurs": 24, "spurs": 24, "sas": 24,
+  "toronto raptors": 28, "raptors": 28, "tor": 28,
+  "utah jazz": 26, "jazz": 26, "uta": 26,
+  "washington wizards": 27, "wizards": 27, "was": 27,
+};
+
+async function fetchNBATeamStats(matchup: string): Promise<string> {
+  if (!matchup) return "";
+  const lower = matchup.toLowerCase();
+  const STAT_KEYS = ['avgPoints','fieldGoalPct','threePointPct','avgRebounds','avgAssists','avgTurnovers','avgBlocks','avgSteals'];
+  const STAT_LABELS: Record<string,string> = {
+    avgPoints:'PPG', fieldGoalPct:'FG%', threePointPct:'3P%',
+    avgRebounds:'REB', avgAssists:'AST', avgTurnovers:'TO',
+    avgBlocks:'BLK', avgSteals:'STL',
+  };
+
+  const extractTeamId = (part: string): number | null => {
+    for (const [key, id] of Object.entries(ESPN_NBA_TEAM_IDS)) {
+      if (part.includes(key)) return id;
+    }
+    return null;
+  };
+
+  // Try to split matchup into two team names
+  const parts = lower.split(/\s+(?:vs\.?|@|-)\s+/);
+  const ids = parts.map(extractTeamId).filter((id): id is number => id !== null);
+  if (ids.length === 0) return "";
+
+  const lines: string[] = ["NBA TEAM STATS (ESPN — real numbers, cite these):"];
+  await Promise.all(ids.slice(0, 2).map(async (teamId) => {
+    try {
+      const res = await fetch(
+        `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams/${teamId}/statistics`,
+        { signal: AbortSignal.timeout(5000) }
+      );
+      if (!res.ok) return;
+      const data = await res.json() as {
+        results: { stats: { categories: Array<{ stats: Array<{ name: string; displayValue: string }> }> } };
+        team: { displayName: string };
+      };
+      const teamName = data.team?.displayName ?? `Team ${teamId}`;
+      const stats: Record<string,string> = {};
+      for (const cat of data.results.stats.categories) {
+        for (const s of cat.stats) {
+          if (STAT_KEYS.includes(s.name)) stats[s.name] = s.displayValue;
+        }
+      }
+      const statStr = STAT_KEYS.filter(k => stats[k]).map(k => `${STAT_LABELS[k]}:${stats[k]}`).join(' | ');
+      lines.push(`  ${teamName}: ${statStr}`);
+    } catch { /* skip if unavailable */ }
+  }));
+
+  return lines.length > 1 ? lines.join('\n') : "";
+}
+
 // ── MLB Official Stats API (statsapi.mlb.com — free, no auth) ───────────────
 // Real pitcher ERA / K9 / WHIP / last-3-starts for both starters tonight.
 // Kills hallucinated pitcher stats — every number below is from the MLB API.
@@ -1389,11 +1474,14 @@ app.post('/api/full-breakdown', async (req: express.Request, res: express.Respon
     const crossSports = ['NBA', 'MLB', 'NFL', 'SOCCER', 'WNBA'].filter(inSeason);
 
     // Fetch all data in parallel — real stats, news, odds, injuries, sharp signals
-    const [oddsCtx, injuryCtx, playerStatsCtx, newsCtx, pitcherCtx, weatherCtx, sharpCtx, crossOdds] = await Promise.all([
+    const [oddsCtx, injuryCtx, playerStatsCtx, teamStatsCtx, newsCtx, pitcherCtx, weatherCtx, sharpCtx, crossOdds] = await Promise.all([
       fetchLiveOdds(league, matchup),
       fetchInjuries(league, matchup),
       league === 'NBA' || league === 'WNBA'
         ? fetchNBAPlayerStats(matchup)
+        : Promise.resolve(''),
+      league === 'NBA' || league === 'WNBA'
+        ? fetchNBATeamStats(matchup)
         : Promise.resolve(''),
       fetchESPNNews(league, matchup),
       league === 'MLB' ? fetchMLBPitcherStats(matchup) : Promise.resolve(''),
@@ -1419,6 +1507,7 @@ INJURY REPORT (ONLY reference players listed here — do NOT invent injuries):
 ${injuryCtx || "No injury data available from ESPN right now. Do NOT fabricate any injuries."}
 
 ${playerStatsCtx ? `REAL PLAYER STATS — BallDontLie API (cite these exact numbers, do NOT invent):\n${playerStatsCtx}\n` : ''}
+${teamStatsCtx ? `REAL TEAM STATS — ESPN API (cite these exact numbers, do NOT invent):\n${teamStatsCtx}\n` : ''}
 ${pitcherCtx ? `REAL PITCHER STATS — MLB Official API (cite these exact numbers, do NOT invent):\n${pitcherCtx}\n` : ''}
 ${weatherCtx ? `WEATHER DATA — wttr.in real-time:\n${weatherCtx}\n` : ''}
 ${newsCtx ? `LATEST NEWS — ESPN live:\n${newsCtx}\n` : ''}
