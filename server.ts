@@ -324,23 +324,110 @@ async function fetchLiveOdds(sport: string, gameQuery?: string): Promise<string>
   return `LIVE ODDS (Pinnacle/DraftKings) — ${sport}:\n${results.join('\n\n')}`;
 }
 
-// ── BallDontLie NBA Stats ─────────────────────────────────────────────────────
+// ── BallDontLie — real NBA player stats + schedule ───────────────────────────
 const BDL_KEY = process.env.BALLDONTLIE_API_KEY || "";
 
-async function fetchNBAContext(query: string): Promise<string> {
-  if (!BDL_KEY || !query) return "";
+type BDLTeam   = { id: number; full_name: string; abbreviation: string };
+type BDLGame   = { id: number; home_team: BDLTeam; visitor_team: BDLTeam; status: string };
+type BDLPlayer = { id: number; first_name: string; last_name: string; position: string };
+type BDLAvg    = { player_id: number; pts: number; reb: number; ast: number; fg_pct: number; fg3_pct: number; games_played: number };
+type BDLStat   = { player: { id: number }; pts: number };
+
+async function fetchNBAGamesToday(): Promise<BDLGame[]> {
+  if (!BDL_KEY) return [];
   try {
-    // Get today's games
     const today = new Date().toISOString().split('T')[0];
     const res = await fetch(
       `https://api.balldontlie.io/v1/games?dates[]=${today}&per_page=15`,
       { headers: { Authorization: BDL_KEY }, signal: AbortSignal.timeout(5000) }
     );
-    if (!res.ok) return "";
-    const data = await res.json() as { data: Array<{ home_team: { full_name: string }; visitor_team: { full_name: string }; status: string }> };
-    if (!data.data?.length) return "";
-    const games = data.data.map(g => `${g.visitor_team.full_name} @ ${g.home_team.full_name} (${g.status})`).join(', ');
-    return `NBA TODAY (BallDontLie): ${games}`;
+    if (!res.ok) return [];
+    const data = await res.json() as { data: BDLGame[] };
+    return data.data ?? [];
+  } catch { return []; }
+}
+
+// Real season averages + last-5 pts form for both matchup teams
+async function fetchNBAPlayerStats(matchup: string): Promise<string> {
+  if (!BDL_KEY) return "";
+  try {
+    const games = await fetchNBAGamesToday();
+    const keywords = matchup.toLowerCase().split(/\s+vs?\.?\s+/i).map(t => t.trim());
+
+    const game = games.find(g =>
+      keywords.some(kw =>
+        g.home_team.full_name.toLowerCase().includes(kw) ||
+        g.visitor_team.full_name.toLowerCase().includes(kw) ||
+        g.home_team.abbreviation.toLowerCase().includes(kw) ||
+        g.visitor_team.abbreviation.toLowerCase().includes(kw)
+      )
+    );
+    if (!game) return "";
+
+    const month  = new Date().getMonth() + 1;
+    const season = month >= 10 ? new Date().getFullYear() : new Date().getFullYear() - 1;
+    const teams  = [game.home_team, game.visitor_team];
+    const blocks: string[] = [];
+
+    for (const team of teams) {
+      const pRes = await fetch(
+        `https://api.balldontlie.io/v1/players/active?team_ids[]=${team.id}&per_page=12`,
+        { headers: { Authorization: BDL_KEY }, signal: AbortSignal.timeout(5000) }
+      );
+      if (!pRes.ok) continue;
+      const pData = await pRes.json() as { data: BDLPlayer[] };
+      if (!pData.data?.length) continue;
+
+      const ids      = pData.data.slice(0, 10).map(p => p.id);
+      const idParams = ids.map(id => `player_ids[]=${id}`).join('&');
+
+      const [avgRes, recentRes] = await Promise.all([
+        fetch(`https://api.balldontlie.io/v1/season_averages?season=${season}&${idParams}`,
+          { headers: { Authorization: BDL_KEY }, signal: AbortSignal.timeout(5000) }),
+        fetch(`https://api.balldontlie.io/v1/stats?${idParams}&per_page=50&seasons[]=${season}`,
+          { headers: { Authorization: BDL_KEY }, signal: AbortSignal.timeout(5000) }),
+      ]);
+
+      const avgData    = avgRes.ok    ? (await avgRes.json()    as { data: BDLAvg[]  }).data : [];
+      const recentData = recentRes.ok ? (await recentRes.json() as { data: BDLStat[] }).data : [];
+
+      // last-5 pts per player (API returns most-recent first)
+      const recentByPlayer = new Map<number, number[]>();
+      for (const s of recentData) {
+        const arr = recentByPlayer.get(s.player.id) ?? [];
+        if (arr.length < 5) { arr.push(s.pts); recentByPlayer.set(s.player.id, arr); }
+      }
+
+      const playerMap = new Map(pData.data.map(p => [p.id, p]));
+      const top = avgData.sort((a, b) => b.pts - a.pts).slice(0, 6);
+
+      const lines = [`${team.full_name.toUpperCase()}:`];
+      for (const avg of top) {
+        const p = playerMap.get(avg.player_id);
+        if (!p || avg.games_played < 5) continue;
+        const recent    = recentByPlayer.get(avg.player_id) ?? [];
+        const recentStr = recent.length ? ` | L${recent.length}: ${recent.join(',')}pts` : '';
+        lines.push(
+          `  ${p.first_name} ${p.last_name}: ${avg.pts.toFixed(1)}PPG ` +
+          `${avg.reb.toFixed(1)}RPG ${avg.ast.toFixed(1)}APG ` +
+          `${(avg.fg_pct * 100).toFixed(0)}%FG ${(avg.fg3_pct * 100).toFixed(0)}%3P ` +
+          `(${avg.games_played}G)${recentStr}`
+        );
+      }
+      if (lines.length > 1) blocks.push(lines.join('\n'));
+    }
+
+    if (!blocks.length) return "";
+    return `NBA REAL PLAYER STATS (BallDontLie — ${season}-${String(season + 1).slice(2)} season):\n${blocks.join('\n\n')}`;
+  } catch { return ""; }
+}
+
+async function fetchNBAScheduleToday(): Promise<string> {
+  if (!BDL_KEY) return "";
+  try {
+    const games = await fetchNBAGamesToday();
+    if (!games.length) return "";
+    return `NBA TODAY: ${games.map(g => `${g.visitor_team.full_name} @ ${g.home_team.full_name} (${g.status})`).join(' | ')}`;
   } catch { return ""; }
 }
 
@@ -408,6 +495,77 @@ async function fetchInjuries(sport: string, matchup?: string): Promise<string> {
 
     if (lines.length === 0) return "No injury data found for these two teams.";
     return `INJURY REPORT — ${sport} (ESPN, matchup teams only):\n${lines.join("\n")}`;
+  } catch { return ""; }
+}
+
+// ── ESPN News Feed ────────────────────────────────────────────────────────────
+const ESPN_NEWS_ROUTES: Record<string, string> = {
+  NBA: 'basketball/nba', WNBA: 'basketball/wnba',
+  NFL: 'football/nfl',   MLB:  'baseball/mlb',
+  NHL: 'hockey/nhl',     SOCCER: 'soccer',
+  TENNIS: 'tennis',      UFC: 'mma/ufc',
+};
+
+async function fetchESPNNews(sport: string, matchup?: string): Promise<string> {
+  const route = ESPN_NEWS_ROUTES[sport.toUpperCase()];
+  if (!route) return "";
+  try {
+    const res = await fetch(
+      `https://site.api.espn.com/apis/site/v2/sports/${route}/news?limit=10`,
+      { signal: AbortSignal.timeout(5000) }
+    );
+    if (!res.ok) return "";
+    const data = await res.json() as { articles?: Array<{ headline: string; description?: string }> };
+    if (!data.articles?.length) return "";
+
+    const keywords = matchup
+      ? matchup.toLowerCase().split(/[\s\W]+/).filter(w => w.length > 3)
+      : [];
+
+    const relevant = keywords.length
+      ? data.articles.filter(a => {
+          const txt = (a.headline + ' ' + (a.description ?? '')).toLowerCase();
+          return keywords.some(kw => txt.includes(kw));
+        })
+      : [];
+
+    const articles = (relevant.length ? relevant : data.articles).slice(0, 5);
+    return `${sport} NEWS (ESPN):\n${articles.map(a => `• ${a.headline}`).join('\n')}`;
+  } catch { return ""; }
+}
+
+// ── ESPN Scoreboard — today's schedule for non-NBA sports ────────────────────
+const ESPN_SCOREBOARD_ROUTES: Record<string, string> = {
+  MLB: 'baseball/mlb', NFL: 'football/nfl',
+  NHL: 'hockey/nhl',   WNBA: 'basketball/wnba',
+  SOCCER: 'soccer/usa.1',
+};
+
+async function fetchESPNScoreboard(sport: string): Promise<string> {
+  const route = ESPN_SCOREBOARD_ROUTES[sport.toUpperCase()];
+  if (!route) return "";
+  try {
+    const res = await fetch(
+      `https://site.api.espn.com/apis/site/v2/sports/${route}/scoreboard`,
+      { signal: AbortSignal.timeout(5000) }
+    );
+    if (!res.ok) return "";
+    const data = await res.json() as {
+      events?: Array<{
+        date: string;
+        status: { type: { description: string } };
+        competitions: Array<{ competitors: Array<{ team: { displayName: string } }> }>;
+      }>
+    };
+    if (!data.events?.length) return "";
+
+    const games = data.events.slice(0, 10).map(ev => {
+      const teams = ev.competitions[0]?.competitors?.map(c => c.team.displayName).join(' @ ') ?? '';
+      const time  = new Date(ev.date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'America/New_York' });
+      const st    = ev.status.type.description;
+      return `  ${teams} — ${st === 'Scheduled' ? time + ' ET' : st}`;
+    });
+    return `${sport} TODAY (ESPN):\n${games.join('\n')}`;
   } catch { return ""; }
 }
 
@@ -518,10 +676,11 @@ app.get('/api/prophet', async (req: express.Request, res: express.Response) => {
     const prophetSport = sport || 'ALL';
     const heuristics = getBettingHeuristics(prophetSport === 'ALL' ? 'NBA' : prophetSport);
     const activeSport = prophetSport === 'ALL' ? 'NBA' : prophetSport;
-    const [liveOdds, nbaCtx, injuryData, sharpSignals] = await Promise.all([
+    const [liveOdds, scheduleCtx, injuryData, newsData, sharpSignals] = await Promise.all([
       fetchLiveOdds(activeSport),
-      activeSport === 'NBA' || prophetSport === 'ALL' ? fetchNBAContext('today') : Promise.resolve(''),
+      activeSport === 'NBA' ? fetchNBAScheduleToday() : fetchESPNScoreboard(activeSport),
       fetchInjuries(activeSport),
+      fetchESPNNews(activeSport),
       fetchSharpSignals(activeSport),
     ]);
     const prompt = `
@@ -533,13 +692,15 @@ Today is ${today} (Eastern Time). ${sportFilter}
 ${heuristics}
 
 ${liveOdds}
-${nbaCtx}
-${injuryData ? `\n${injuryData}` : ''}
+${scheduleCtx ? `\n${scheduleCtx}` : ''}
+${injuryData ? `\nINJURY REPORT (ESPN — LIVE):\n${injuryData}` : ''}
+${newsData ? `\nLATEST NEWS (ESPN):\n${newsData}` : ''}
 ${sharpSignals ? `\n${sharpSignals}` : ''}
 
 IMPORTANT: The lines above are REAL LIVE ODDS from Pinnacle/DraftKings. Use these exact lines in your output — do not invent odds.
 The injury report is LIVE from ESPN. Factor injured/doubtful players into your analysis immediately — apply Next Man Up logic.
 The sharp signals show Pinnacle vs DraftKings line gaps — gaps ≥8pts mean sharp money is moving. Follow the sharp money.
+The news headlines are LIVE from ESPN — if a player is listed questionable or out, reprice immediately.
 
 Your job: apply the above heuristics to identify TODAY's single highest-conviction bet from the real games listed. Run the SHARP CHECK before selecting.
 
@@ -604,7 +765,7 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
 
     const [swarmLiveOdds, swarmNbaCtx, swarmInjuries, swarmSharp] = await Promise.all([
       fetchLiveOdds(league, matchup),
-      league === 'NBA' || league === 'WNBA' ? fetchNBAContext(matchup) : Promise.resolve(''),
+      league === 'NBA' || league === 'WNBA' ? fetchNBAPlayerStats(matchup) : fetchESPNScoreboard(league),
       fetchInjuries(league, matchup),
       fetchSharpSignals(league),
     ]);
@@ -827,7 +988,7 @@ app.get('/api/parlays', async (req: express.Request, res: express.Response) => {
       isAllSports
         ? Promise.all(crossSportKeys.map(s => fetchLiveOdds(s))).then(r => r.filter(Boolean).join('\n\n'))
         : Promise.all(crossSportKeys.filter(s => s !== sport).map(s => fetchLiveOdds(s))).then(r => r.filter(Boolean).join('\n\n')),
-      (isAllSports || sport === 'NBA' || sport === 'WNBA') ? fetchNBAContext(game || 'today') : Promise.resolve(''),
+      (isAllSports || sport === 'NBA' || sport === 'WNBA') ? fetchNBAScheduleToday() : fetchESPNScoreboard(sport),
       fetchInjuries(sgpSport, game || undefined),
       fetchSharpSignals(sgpSport),
     ]);
@@ -1059,11 +1220,14 @@ app.post('/api/full-breakdown', async (req: express.Request, res: express.Respon
     };
     const crossSports = ['NBA', 'MLB', 'NFL', 'SOCCER', 'WNBA'].filter(inSeason);
 
-    // Fetch all data in parallel
-    const [oddsCtx, injuryCtx, nbaCtx, sharpCtx, crossOdds] = await Promise.all([
+    // Fetch all data in parallel — real stats, news, odds, injuries, sharp signals
+    const [oddsCtx, injuryCtx, playerStatsCtx, newsCtx, sharpCtx, crossOdds] = await Promise.all([
       fetchLiveOdds(league, matchup),
       fetchInjuries(league, matchup),
-      (league === 'NBA' || league === 'WNBA') ? fetchNBAContext(matchup) : Promise.resolve(''),
+      league === 'NBA' || league === 'WNBA'
+        ? fetchNBAPlayerStats(matchup)
+        : fetchESPNScoreboard(league),
+      fetchESPNNews(league, matchup),
       fetchSharpSignals(league),
       Promise.all(crossSports.filter(s => s !== league).map(s => fetchLiveOdds(s))).then(r => r.filter(Boolean).join('\n\n')),
     ]);
@@ -1084,16 +1248,17 @@ ${oddsCtx || "No live odds found — note this clearly in your output, do not fa
 INJURY REPORT (ONLY reference players listed here — do NOT invent injuries):
 ${injuryCtx || "No injury data available from ESPN right now. Do NOT fabricate any injuries."}
 
+${playerStatsCtx ? `REAL PLAYER STATS (use these exact numbers in rationale — do NOT invent stats):\n${playerStatsCtx}\n` : ''}
+${newsCtx ? `LATEST NEWS (lineup updates, injury headlines — factor into analysis):\n${newsCtx}\n` : ''}
 SHARP SIGNALS:
 ${sharpCtx || "No sharp signals detected."}
 
-${nbaCtx ? `CONTEXT:\n${nbaCtx}\n` : ''}
-
 ⚠️ ANTI-HALLUCINATION RULES — MUST FOLLOW:
-1. PLAYER ROSTER RULE: Only name players who ACTUALLY play for the teams in this matchup based on your training knowledge. NEVER assign a player to the wrong team. If unsure whether a player is on a roster, omit them.
-2. INJURY RULE: Only cite injuries that appear in the INJURY REPORT above. If the report is empty, say "no current injury data" — do not invent injuries.
-3. ODDS RULE: Use lines from LIVE ODDS block. If empty, estimate realistically and label as "est."
-4. PROP RULE: Only suggest props for players who genuinely play for one of these two teams. Use realistic lines based on their actual season averages from your training knowledge.
+1. STATS RULE: If REAL PLAYER STATS block is present, use those exact numbers (PPG, RPG, APG, L5 pts) in your rationale. These are real API data — cite them directly, e.g. "Edwards averaging 24.6PPG, L5: 28,22,31,25,19pts".
+2. INJURY RULE: Only cite injuries from the INJURY REPORT. If empty, say "no current injury data" — never invent.
+3. ODDS RULE: Use exact lines from LIVE ODDS block. If empty, estimate and label "est."
+4. NEWS RULE: If LATEST NEWS mentions a lineup change, injury update, or questionable player — factor it in immediately.
+5. PROP RULE: Base prop lines on the REAL PLAYER STATS averages above — if Edwards averages 24.6PPG, his prop should be near that, not invented.
 
 🔍 ALT LINE HUNTING — VERY IMPORTANT:
 The LIVE ODDS block may contain alternate_spreads and alternate_totals alongside standard lines.
@@ -1228,7 +1393,7 @@ app.get('/api/sharp-money', async (req: express.Request, res: express.Response) 
     const sharpHeuristics = getShortHeuristics(sport);
     const [sharpOdds, sharpNba, sharpInjuries, sharpSignals] = await Promise.all([
       fetchLiveOdds(sport, game || undefined),
-      sport === 'NBA' || sport === 'WNBA' ? fetchNBAContext(game || 'today') : Promise.resolve(''),
+      sport === 'NBA' || sport === 'WNBA' ? fetchNBAScheduleToday() : fetchESPNScoreboard(sport),
       fetchInjuries(sport, game || undefined),
       fetchSharpSignals(sport),
     ]);
