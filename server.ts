@@ -115,78 +115,232 @@ GLOBAL HEURISTICS (apply to every pick):
 
   const SPORT_RULES: Record<string, string> = {
     NBA: `
-NBA HEURISTICS:
-- BLOWOUT RISK: If spread >10 points, DISCOUNT "Over" on the star player's points prop. High-spread games = 4th quarter rest. Flag SGP that pairs team ML (heavy favorite) + star Over points.
-- PACE VARIABLE: Only suggest "Over" game totals when BOTH teams rank Top-10 in pace. Check pace matchup. Slow-pace team vs fast-pace team = lean Under.
-- B2B FATIGUE: On second night of back-to-back, weight Under on veteran star props regardless of opponent. Rest beats talent on night 2.
-- SGP RULE: Prefer "Team Total Over" + "Lead Playmaker Assists Over" (not just points). Assists correlate to team pace/scoring more cleanly than points alone.
-- KEY NUMBERS: Spread moves of 1-2 points matter. A team going from -9 to -11 shifts blowout probability significantly.`,
+NBA NICHE VARIABLES + HEURISTICS:
+━━ ADVANCED METRICS (use the NBA ADVANCED STATS block if present):
+- NetRtg = best single predictor of team quality. Gap of 5+ NetRtg pts = strong favorite signal.
+- OffRtg vs opponent DefRtg gap → true scoring edge. If a team's OffRtg (118) faces DefRtg (110) = +8 scoring edge → they score more than the book expects.
+- Pace: Use model Expected Total vs book total line. If model >4 pts above book → lean Over. If model <4 pts below → lean Under.
+━━ SITUATIONAL VARIABLES:
+- ALTITUDE (Denver): Nuggets home games = +2.5 pts edge. Thin air at 5,280 ft exhausts visitors by Q3. Always add +2.5 to Nuggets home spread confidence.
+- REST DIFFERENTIAL: Team with 2+ days rest vs 0 days rest = +1.5–2 pts historical edge. Never ignore rest mismatch.
+- B2B FATIGUE: Night-2 of B2B → veteran star props average -3.5 pts vs their season avg. Young legs (<25) are less affected. Flag B2B for every prop.
+- BACK-TO-BACK ROAD: Away team on B2B night-2 → fade them vs home team. Home team on B2B → slight fade but home crowd partially offsets.
+- HOME/AWAY EFFICIENCY: Some teams' OffRtg drops >5 pts on road. If away team OffRtg drops to below opponent DefRtg → fade them.
+━━ BLOWOUT & USAGE:
+- BLOWOUT RISK: If spread >10, discount "Over" on star prop. 4th quarter rest = props die. Flag any SGP combining heavy favorite ML + star Over.
+- USAGE SHIFT: Star out → backup usage rises 25–35%. Backup's prop is still set to pre-injury level = massive EV. Calculate: missing_star_minutes × usage% → redistributed possessions.
+- KEY NUMBERS: 3, 5, 7, 10. Moving from -9.5 to -10.5 crosses key number 10 — blowout cover probability drops ~8%.
+━━ SGP RULES:
+- Team Total Over + Lead Playmaker Assists (NOT points). Assists are a pace proxy. If team scores more, playmaker gets more assists — pure correlation.
+- Avoid: Star Points Over + Team ML (heavy fav). Blowout makes both legs contradict each other in Q4.`,
 
     MLB: `
-MLB HEURISTICS:
-- F5 PRIORITY: When an Ace starts, favor F5 (First 5 Innings) ML/spread over full-game. This removes bullpen variance — sharp plays on aces get killed by bad middle relief.
-- PARK & WEATHER: Wind blowing OUT + temp >85°F = lean Over. Wind IN + cold = lean Under. Cite specific ballpark factors.
-- UMPIRE BIAS: High K-rate umpire (tight zone) = lean Over on pitcher strikeouts, lean Under on game total hits. Flag if K-zone umpire assigned.
-- SGP RULE: "Pitcher To Earn Win" + "Under Team Hits Allowed" — ace dominates = low hits = pitcher gets the win. Clean correlation.
-- AVOID: Run lines in parlays. Low payout relative to blowout risk. NRFI is a sharp single bet, not a parlay leg.`,
+MLB NICHE VARIABLES + HEURISTICS:
+━━ PITCHER CONTEXT (use REAL PITCHER STATS block if present):
+- ERA/K9/WHIP: Cite exact numbers. ERA <3.50 = elite. WHIP <1.10 = elite. K9 >10 = high strikeout value.
+- PITCHER REST: 5+ days rest → ace performs better. 3 days rest → expect shorter outing, higher ERA, fade K props.
+- HANDEDNESS PLATOON: LHP vs R-heavy lineup → lean pitcher. RHP vs L-heavy lineup → lean pitcher. Check lineup handedness vs pitcher.
+- BULLPEN USAGE: Team's RP thrown 12+ IP in last 3 days → vulnerable late game. Lean Over 7th-9th inning total or full-game Over.
+━━ PARK FACTORS (memorize these):
+- COORS FIELD (COL) = +20–25% runs above average. Always lean Over and fade pitchers here.
+- PETCO PARK (SD), ORACLE PARK (SF), KAUFFMAN (KC) = -15–20% runs. Strong lean Under, strong pitcher ERA support.
+- YANKEE STADIUM (NYY), FENWAY (BOS), GREAT AMERICAN (CIN) = +10–15% runs. Lean Over, especially on windy days.
+- All others: neutral ±5%. Park factor context = cite the specific park name in rationale.
+━━ REGRESSION SIGNALS:
+- BABIP >.320 sustained = luck factor. Fade that pitcher next 2 weeks (regression incoming).
+- Pythagorean W%: RS^1.83/(RS^1.83+RA^1.83). If actual W% > Pythagorean by >8% → team is overperforming. Fade them.
+━━ WEATHER (use WEATHER DATA block):
+- Wind blowing OUT 15+mph + temp >80°F = lean Over (1–1.5 run adjustment).
+- Wind blowing IN 15+mph + temp <60°F = lean Under (1–1.5 run adjustment).
+- Rain delay risk → lean Under (pitchers shaken, relievers used early).
+━━ SHARP BETS:
+- F5 (First 5 Innings): Best when ace vs weak offense. Removes bullpen variance entirely. Sharp bettors prefer F5 on elite starters.
+- NRFI (No Run First Inning): Both aces starting in pitcher park = NRFI best value. Sharp single only, never a parlay leg.
+- UMPIRE ZONE: High-K ump (tight strike zone) → Over on K props, Under on hits total. Always flag if K-zone ump is assigned.
+━━ SGP RULES:
+- Pitcher strikeouts Over + Under hits allowed + Pitcher to win = clean triple correlation on ace days.
+- AVOID run lines in parlays — low payout vs blowout bust risk.`,
 
     NFL: `
-NFL HEURISTICS:
-- KEY NUMBERS: Spreads at 3, 7, and 10 are sacred. A line moving from -2.5 to -3.5 is MASSIVE (covers the margin of a FG). From -4 to -5 is negligible. Weight accordingly.
-- NEGATIVE VOLUME CORRELATION: NEVER pair "QB Over Passing Yards" with "RB Over Rushing Yards" in an SGP unless the RB is a heavy pass-catcher (50+ receptions). They compete for the same offensive reps.
-- DEFENSIVE EPA: High-flying offense vs. high-pressure defense = lean Under on QB completion%. Evaluate EPA allowed vs EPA generated.
-- SGP RULE: QB Over passing yards + WR1 Over receiving yards + team to win — clean correlation if pass-heavy team.
-- WEATHER: Wind >15 mph = fade passing props, lean Under total.`,
+NFL NICHE VARIABLES + HEURISTICS:
+━━ KEY NUMBERS (non-negotiable):
+- 3 and 7 are sacred. Half-point off 3 or 7 worth 3–5% win probability.
+- Key sequence: 3, 6, 7, 10, 13, 14, 17. Never buy past 10 unless price is -105 or better.
+- Line moves from -2.5 to -3.5 = enormous (FG margin). From -4 to -5 = negligible. Never pay -130 to buy a half-point off 4.
+━━ WEATHER FORMULA (use WEATHER DATA block):
+- Wind >15mph → fade all passing props -30%, lean Under on game total.
+- Wind >25mph → hard Under, fade QBs entirely, lean Run game props.
+- Rain + cold + wind = compound effect. Each adds ~0.5 pts to Under confidence.
+- Dome teams (Chiefs, Saints, Rams, Vikings) playing outdoors in cold/wind = -2 pt adjustment.
+━━ REST + TRAVEL:
+- Bye week team vs no-bye = +3.2 pts historical edge (biggest rest edge in sports).
+- Short week (Thursday game) team = -1.7 pts. Books rarely fully adjust.
+- West Coast team playing 10am local time (East Coast road game) = -1.5 pts. Circadian disruption is real.
+- Long travel (LAX → NYC in winter) = -0.8 pts on road side.
+━━ SITUATION EDGES:
+- DIVISIONAL DOGS: ATS record for divisional underdogs = ~54% historically. Familiarity flattens lines.
+- TURNOVER REGRESSION: Team +5 in turnover margin over last 3 games → regression incoming. Fade them vs positive turnover differential team.
+- REVENGE SPOT: Team coming off embarrassing loss (>17 pts) at home = +2.5 pts ATS edge (motivated performance).
+━━ EFFICIENCY PROXY:
+- Net yards per play differential (offense - defense). >0.5 yd/play advantage = ~3 pt spread edge.
+- 3rd down conversion rate: 50%+ team vs 35%- team = sustained possession advantage.
+- Red zone TD% vs Red zone scoring%: Team converting TDs not FGs = scoring efficiency edge.
+━━ SGP RULES:
+- QB Over passing yards + WR1 Over receiving yards + Team Win = clean triple if pass-heavy team with no wind.
+- NEVER pair QB passing yards + RB rushing yards unless RB is elite receiver (50+ receptions/yr).
+- Avoid: TD scorer props in parlays. Too volatile, kills SGPs constantly.`,
 
     NHL: `
-NHL HEURISTICS:
-- GOALIE FIRST: The starting goalie is the single most important variable. A top-10 SV% goalie vs bottom-10 offense = lean Under and puck line.
-- B2B: Teams on second game of B2B show -8% goals scored on average. Lean Under.
-- POWER PLAY: Teams with top-5 PP% against teams with bottom-5 PK% = lean Over and anytime goal scorer on PP specialist.
-- SGP RULE: Team puck line (-1.5) + Over team total goals — only valid if opposing team has bottom-10 defense.`,
+NHL NICHE VARIABLES + HEURISTICS:
+━━ GOALTENDER (use NHL TEAM STATS block):
+- GOALIE IS THE SINGLE MOST IMPORTANT VARIABLE. Check SV% in the stats block.
+- SV% >.915 = elite. .900–.915 = average. <.900 = vulnerable. Top goalie vs bottom-10 offense = lean Under and puck line.
+- NEVER BET until starting goalie is confirmed (typically announced ~1–2 hrs before puck drop). Backup goalie = line moves 0.5–1 goal instantly.
+- GAA: <2.50 = elite. >3.00 = vulnerable. Cite exact from stats block.
+━━ SPECIAL TEAMS (use NHL TEAM STATS block):
+- PP Goals (PPG): High PPG team vs low-penalty kill team = lean Over and PP scorer prop.
+- Faceoff% >52% = possession advantage. More possessions → more shots → more goals. Slight Over lean.
+━━ SITUATIONAL VARIABLES:
+- B2B PENALTY: Second game of B2B → -8% goals scored on average. Away B2B = -12%. Always lean Under.
+- TRAVEL: East team playing Pacific coast away games = -5% performance. Pacific team playing 7pm ET road game = -3% (body clock).
+- HOME ICE: NHL home advantage ≈ 0.3 extra goals per game. Small but consistent.
+- HIGH SHOTS ≠ HIGH GOALS: Distinguish shot quantity (shots for/against) from shot quality. 35 perimeter shots ≠ 35 dangerous chances.
+━━ POSSESSION METRICS:
+- Corsi% >55% = dominant possession team. Their goal totals are sustainable (not PDO-inflated).
+- Corsi% <45% = possession-weak. Good record may be PDO-inflated (shooting % + SV% above sustainable). Regression incoming.
+- PDO = shooting% + save% (should ≈ 100). >102 = lucky team. <98 = unlucky team. Regress accordingly.
+━━ SGP RULES:
+- Team puck line (-1.5) + Over team total goals = only valid if opponent has bottom-10 defense AND your team has elite possession Corsi.
+- Anytime goal scorer + Over team goals = clean correlation. If team scores 4+, multiple scorers hit.
+- AVOID: Puck line parlays across multiple games. Hockey variance is violent — one goalie meltdown kills everything.`,
 
     SOCCER: `
-SOCCER HEURISTICS:
-- ASIAN HANDICAP PRIORITY: Shift to Asian Handicaps (-0.25, +0.75) over 1X2. Splits the bet, eliminates the "draw kill" on moneyline. Primary edge vehicle.
-- XG FRAUD DETECTION: Identify "Fraudulent Winners" — teams winning games they were out-produced in xG. Fade them next match. "Overperforming teams regress."
-- CORNER VOLUME: Evaluate corners based on WING PLAY tactics, not score. High crossing teams (e.g., Man City, Porto) generate corners even when losing. Corners O/U is bookmaker-soft.
-- SGP RULE: Result + Under/Over Cards based on the assigned referee's cards-per-game average. High card ref = Over cards + underdog +AH (tactical fouling).
-- AVOID: Draws in parlays. Draw kill rate makes them parlay poison. Use double chance instead.`,
+SOCCER NICHE VARIABLES + HEURISTICS:
+━━ xG (EXPECTED GOALS) — THE CORE SIGNAL:
+- xG > actual goals = team is underperforming. Positive regression incoming. BACK THEM next match.
+- xG < actual goals = team is overperforming ("fraudulent winner"). Regression incoming. FADE THEM next match.
+- Both teams with xG >1.5/game → lean BTTS (Both Teams To Score). Both under 1.0 xGA → lean Clean Sheet / Under.
+━━ FORM CONTEXT (use SOCCER STANDINGS if provided):
+- W/D/L last 5 + GD (Goal Differential) are the primary signals.
+- GD >+15 in a league = dominant team, fully justify -1.5 AH or -0.5 AH.
+- PPG (Points Per Game) >.67 = above average. <.40 = relegation form.
+━━ ASIAN HANDICAP (PRIMARY MARKET):
+- Use AH over 1X2 always. Eliminates draw kill. -0.25 AH (quarter ball) = half bet wins even on draw. Best EV entry.
+- AH -0.5 = must win outright. AH -1.5 = must win by 2. AH +0.5 = wins or draws.
+━━ SITUATION EDGES:
+- HOME ADVANTAGE: EPL ≈ 0.5 goals, La Liga ≈ 0.4, MLS ≈ 0.6, Bundesliga ≈ 0.45. Apply to every line.
+- FIXTURE CONGESTION: 3 games in 8 days = rotation risk. Backup XI reduces quality ~15%.
+- MOTIVATION: Relegation battle team vs comfortable mid-table = massive underdog value. The bottom team fights; mid-table doesn't.
+- LATE-SEASON FATIGUE: Champions League participant playing domestic league late season = 20% extra fatigue. Rotation likely.
+━━ NICHE MARKETS:
+- CORNERS: Wing-heavy teams (crosses per game >15) generate corners even when losing. Corners O/U is bookmaker-soft — less sharp money.
+- CARDS: High-card referee (>5 yellows/game) + physical matchup (derby, relegation) = Over cards EV.
+- BTTS: Defend by checking last 5 H/A splits separately. A team scoring at home but not away skews BTTS calculations.
+━━ SGP RULES:
+- Over game goals + BTTS = correlated only if both teams have >1.2 GF/game. One defensive team kills it.
+- Result + Under/Over Cards based on referee card rate = clean correlation for high-card refs.
+- AVOID: Draws in parlays. Draw kill rate = parlay poison. Use double chance (Win or Draw) instead.`,
 
     TENNIS: `
-TENNIS HEURISTICS:
-- SURFACE SPECIALIZATION: Weight surface win% OVER total win%. A top-10 hardcourt player can be bottom-50 on grass. Always cite surface record, not just ranking.
-- HOLD RATE STABILITY: Prioritize players with Hold% >80%. They are harder to break, providing spread safety. Low hold% players are volatile — avoid as heavy ML favorites.
-- POST-TITLE HANGOVER: Fade players coming off a tournament WIN the previous week. Historically, post-title week shows elevated early-round upset rate (fatigue + motivation dip).
-- PREFER GAME HANDICAPS: Use game handicap (+3.5/-3.5) over ML for top players vs. mid-tier opponents. Protects against tiebreak variance. Better EV structure.
-- FATIGUE STACK: Players who played 3-set matches in previous rounds tire faster. Track match duration, not just W/L.`,
+TENNIS NICHE VARIABLES + HEURISTICS:
+━━ SURFACE IS THE DOMINANT VARIABLE — ALWAYS CHECK THE TOURNAMENT SURFACE FIRST:
+- CLAY (Roland Garros): Slowest surface. High-bounce, topspin-dominant, long baseline rallies. Serve matters LESS. Baseline grinders, physicality, and topspin excel. Big servers underperform. Fade flat-hitters and pure serve-bots.
+- GRASS (Wimbledon): Fastest surface. Low-bounce, serve+volley, short points. Big servers and net players dominate. First-set results are highly predictive (serve holds easy). Fade clay specialists — their topspin loops into the net.
+- HARD / OUTDOOR (US Open, Australian Open): Balanced surface. US Open is medium-fast. Aus Open Plexicushion is medium-slow. Recent form and ranking most predictive here. Serve still matters but not as dominant as grass.
+- HARD / INDOOR: Fast, controlled. No wind, no sun. Predictable bounce. Serve dominant. Big servers favorite. Baseline players struggle more indoors than outdoor hard.
+━━ SERVE + RETURN STATS BY SURFACE:
+- Hold% >80% = reliable server. Use game handicap over ML. Hold% <65% = volatile — fade as heavy favorite.
+- Ace rate: On grass, high ace rate = massive advantage. On clay, almost irrelevant. On hard, moderate advantage.
+- Break point conversion: On clay, high because longer rallies create more opportunities. On grass, very low.
+━━ FATIGUE TRACKING:
+- Total SETS played this tournament week (not just W/L). 3-setter in R1 + 3-setter in R2 = 6 sets of high-intensity = fatigue by R3+.
+- Total GAMES played is even better. >50 games in 2 rounds = physical fatigue. Lean against in next round.
+- POST-TITLE HANGOVER: Fade any player the week AFTER winning a tournament. Documented 58% underperformance vs. expected line. Fatigue + motivation dip is real.
+━━ CONDITIONS:
+- Roland Garros: Heavy balls (humidity), slow court, physical. Stamina dominant.
+- Wimbledon: Light balls, fast grass, serve dominant. First 2 rounds often upsets (grass specialists appear).
+- US Open night sessions: Faster ball under lights, loud crowd, momentum swings. Serve is enhanced at night.
+- Australian Open heat policy: Extreme heat = delays, physical attrition. Heavy favorites in 5-set danger.
+━━ BETTING STRUCTURE:
+- Game Handicap (+3.5/-3.5) > ML for heavy favorites (-250+). Protects against bagel+tiebreak variance. Much better EV.
+- Set Handicap (-1.5 sets = must win 2-0) = value when one player is clearly physically superior AND on their best surface.
+- Early rounds (R128, R64): Highest upset rate. 15–20% higher upset frequency vs R16+. Value on underdogs especially on grass.`,
 
     UFC: `
-UFC HEURISTICS:
-- GRAPPLER VS STRIKER: When high-level wrestler faces pure striker, FAVOR wrestler ML or "Decision" props. Wrestling controls the clock, neutralizes striking.
-- CAGE SIZE IMPACT: Small cage (UFC Apex) = higher finish rates (KO/Sub). Large cage (big arena) = more "Decision" and out-fighting style. Adjust method props.
-- REACH + AGE ADVANTAGE: Fighter with >2-inch reach advantage AND younger by >3 years wins >65% statistically. Flag these as high-value.
-- USE ITD (Inside The Distance): For heavy hitters, prefer "Wins Inside Distance" over specific round betting. Covers both KO and Submission. Better EV, same edge.
-- AVOID: UFC parlays. Single fight upsets kill everything. Max 2-leg UFC. Method bets carry higher EV than straight ML.`,
+UFC NICHE VARIABLES + HEURISTICS:
+━━ STYLE MATCHUP — THE PRIMARY VARIABLE:
+- WRESTLER vs STRIKER: Elite wrestlers win 68%+ vs pure strikers. Takedowns control time, nullify striking. Fade the striker ML unless he has elite takedown defense.
+- JUDO/BJJ vs STRIKER: Submission threat = striker can't fully commit to punching. Grappler ML or Decision prop.
+- STRIKER vs STRIKER: Judge it on reach, speed, accuracy, recent KO results. Pressure fighter vs counter fighter = reach decides distance control.
+- GRAPPLER vs GRAPPLER: Evaluate who has better takedown defense. The one who stays standing is usually better on the feet.
+━━ CAGE VARIABLES:
+- SMALL CAGE (UFC Apex, ~25-ft): Higher finish rate (+15% KO/Sub vs large venues). Less room to run. Pressure fighters thrive. Lean ITD (Inside the Distance).
+- LARGE ARENA (MSG, T-Mobile, Kaseya): More space = more out-fighting. Counter strikers thrive. Decision rate rises. Method:Decision bet has value.
+- OUTDOOR EVENT: Rarely happens but wind/heat factors apply to striking accuracy.
+━━ PHYSICAL ADVANTAGES:
+- REACH: >3-inch reach advantage + age advantage >3 yrs = significant edge. Every inch matters at distance fighting.
+- HEIGHT: Tall fighters with long reach prefer distance. Short stocky fighters prefer clinch and grappling.
+- WEIGHT CLASS: Naturally bigger fighters who cut weight hard vs fighters at their natural weight = dehydration edge for natural-weight fighter post-weigh-in.
+━━ PSYCHOLOGICAL + FORM SIGNALS:
+- RECENT KO LOSS: Chin concern is real. Documented increased KO vulnerability in subsequent fights. Fade under pressure vs KO artist, even if they recovered.
+- STREAK: Win streak (5+) on betting favorites can be overvalued by public. Regression to mean is common.
+- REVENGE SPOT: Fighter coming off a close controversial loss = motivated. Slight underdog value if styles align.
+- LATE NOTICE: Fighter taking fight on <2 weeks notice = -5–8% performance estimate. Book doesn't always adjust.
+━━ BETTING STRUCTURE:
+- ITD (Inside the Distance) > specific round: Covers both KO and Submission. Better EV, same edge.
+- Method props carry highest EV of any UFC market: Decision, KO/TKO, Submission.
+- Max 2-leg UFC parlays. Single fight upset destroys 3+ leg parlays constantly.
+- Main card vs Prelim: Prelim fighters less scouted by books = more mispricings in prelims.`,
 
     WNBA: `
-WNBA HEURISTICS:
-- BOOKS ARE 2-3 SEASONS BEHIND: Sportsbooks allocate minimal modeling resources to WNBA. Lines are often set by NBA quants using rough adjustments. Systematic mispricing exists — this is the core edge.
-- PACE EXPLOIT: Atlanta Dream, Dallas Wings, and Indiana Fever run top-3 pace. When these teams play slow-pace opponents (Seattle, New York), fade the Under — the pace mismatch drags the total UP above the soft book estimate. Lean Over aggressively in these matchups.
-- STAR REMOVAL = PROP EXPLOSION: WNBA rosters are thin (12 players, no G-League depth call-ups mid-season). A'ja Wilson out → Breanna Stewart-tier backup doesn't exist. Usage redistributes across 2-3 players who each get 5-8 extra possessions. Their points/rebounds props are almost always set to pre-injury levels — massive EV.
-- B2B FADE: WNBA schedules include 48-hour turnarounds. No charter flights — teams travel commercial. Away team on 2nd game of B2B: fade their spread, fade star props (especially minutes-based stats).
-- ROAD FATIGUE IS UNDERWEIGHTED: Books apply weak travel adjustments. WNBA home court advantage ~3.5 pts but books price it at ~1.5-2. Small home favorites should be bumped up in confidence.
-- MORNING LINE CLV WINDOW: WNBA props open late (often 2hrs before tip). Low liquidity = sharp money moves lines fast. Grab early props on pace-up stars before public hammers them. CLV window is 4-6x bigger than NBA.
-- SGP RULE: Team Total Over + Lead Playmaker Assists (not points) — in pace-up games, assists correlate better to final score than points because they track ball movement efficiency. Clean, non-redundant correlation.
-- QUARTER LINES: Books set q1/q2 lines using stale data. Teams like Seattle Storm start slow (bottom-5 Q1 scoring) but dominate Q4 — fade Seattle Q1 totals, back Q3/Q4. Atlanta Dream go opposite: explosive starters.
-- AVOID: WNBA moneyline parlays with heavy favorites. WNBA has 30%+ upset rate on -200+ favorites — variance is violent due to short rosters and single-player dependency.`,
+WNBA NICHE VARIABLES + HEURISTICS:
+━━ CORE EDGE: BOOKS ARE 2–3 SEASONS BEHIND:
+- Sportsbooks allocate minimal modeling resources to WNBA. Lines are set by NBA quants using rough adjustment. Systematic mispricing exists — this is the core exploitable edge.
+- Props open late (2hrs before tip). Low liquidity. Sharp money moves lines fast. Grab early props on pace-up stars before public discovers them. CLV window is 4–6x bigger than NBA.
+━━ PACE EXPLOIT:
+- Atlanta Dream, Dallas Wings, Indiana Fever = top-3 pace WNBA. When they play slow-pace opponents (Seattle, New York), the pace mismatch drags totals UP above book estimates. Lean Over aggressively.
+- Seattle Storm = explosive Q3/Q4 but slow Q1/Q2. Fade Seattle team total in Q1 lines. Back Seattle Q4 total.
+━━ STAR REMOVAL = PROP EXPLOSION:
+- WNBA rosters: 12 players. No G-League call-ups. A'ja Wilson out → no equivalent backup exists. Usage redistributes across 2–3 players who get 5–8 extra possessions each.
+- Their props are still set at pre-injury levels = massive EV.
+- Formula: missing star usage% × team possessions → redistributed possessions to specific backups. Those backups' props are the value bet.
+━━ B2B + TRAVEL:
+- WNBA B2B: 48-hour turnaround, no charter flights — commercial travel only. Away team on B2B night-2: fade their spread, fade star props (especially minutes-based props).
+- Home advantage in WNBA ≈ 3.5 pts but books price it at 1.5–2. Small home favorites underpriced by ~1–1.5 pts.
+━━ QUARTER LINES:
+- Books set Q1/Q2 totals using stale full-game models. Teams with strong quarter-specific patterns:
+  → Atlanta Dream: explosive starters, Q1 Over value.
+  → Seattle Storm: slow starters (bottom-5 Q1 scoring), explosive Q3/Q4. Fade Q1, back Q3.
+  → Indiana Fever: Caitlin Clark creates high-pace Q2–Q3 surge. Q2 total often underpriced.
+━━ SGP RULES:
+- Team Total Over + Lead Playmaker Assists (not points). Assists proxy ball movement + pace better than points alone.
+- Avoid WNBA moneyline parlays on heavy favorites (-200+). 30%+ upset rate on big WNBA favorites — variance is violent.`,
 
     F1: `
-F1 HEURISTICS:
-- QUALIFYING WEIGHT BY TRACK: Street circuit (Monaco, Singapore, Zandvoort, Baku) = weight qualifying position at 80% of win probability. Overtaking near-impossible. Power circuit (Monza, Spa, Bahrain) = weight at 50%. Overtaking common.
-- TEAMMATE H2H: Primary edge. Use FP3 long-run pace data (fuel-corrected lap times) to determine which teammate has better race-trim setup. This predicts race H2H better than qualifying.
-- DNF PROBABILITY: High-attrition street circuits = evaluate "Classified Finishers Under" as value play. Monaco historically sees 30-40% DNF rate.
-- AVOID: Race winner outright on non-dominant team in dry conditions. Podium finish (top 3) is better EV with more coverage.`,
+F1 NICHE VARIABLES + HEURISTICS:
+━━ CIRCUIT TYPE IS THE PRIMARY VARIABLE (check CIRCUIT CONTEXT if provided):
+- STREET CIRCUIT (Monaco, Singapore, Baku/Azerbaijan, Jeddah, Miami, Las Vegas, Melbourne/Albert Park, Zandvoort):
+  Qualifying position predicts 80–95% of race result. Overtaking near-impossible. Dirty air = catastrophic. Back the pole sitter. Heavy favorite is actually underpriced here.
+- POWER CIRCUIT (Monza, Spa/Belgium, Bahrain, Abu Dhabi, Austin):
+  Engine power = dominant factor. Overtaking common via long straights. Qualifying matters ~50%. Red Bull and Ferrari power units historically strongest here.
+- TECHNICAL CIRCUIT (Hungary, Silverstone, Suzuka, Interlagos):
+  Aerodynamic downforce + setup critical. Low-drag vs high-downforce setups diverge. Teams with best aero engineers (Red Bull, Ferrari) dominate. Overtaking moderate.
+- SPRINT WEEKEND: FP3 pace data available before race. Sprint result reveals race-trim setup directly. Adjust race bets based on sprint performance.
+━━ KEY BETTING VARIABLES:
+- TEAMMATE H2H: Most predictable F1 market. Both on identical equipment. Use FP3 long-run (fuel-corrected) pace to identify which teammate is better set up for race-trim.
+- WET WEATHER: Rain = field normalizer. Midfield cars gain 2–3 grid positions vs dry. Back underdog +AH (top-10 finish). Fade heavy favorites (they have more to lose).
+  → Rain probability on race day = major line mover. Always check weather context.
+- DNF PROBABILITY: Street circuits 20–40% historical DNF rate. "Classified Finisher" prop has clear value on street circuits. Safety car = guaranteed in Monaco, Singapore.
+- TIRE STRATEGY: Soft → Medium → Hard progression. Teams choosing aggressive undercut (early pit stop) gain track position. Conservative teams (overcut) rely on pace. Undercut success rate ≈ 70%.
+━━ CHAMPIONSHIP PRESSURE:
+- Tight championship battle → drivers race harder in early laps = higher DNF risk.
+- Drivers already clinched = race management mode. Fade them in risky circuits.
+- Midfield constructor battle: Teams gambling on strategy for points = more variance in results.
+━━ BETTING STRUCTURE:
+- Outright Race Winner: Only bet on street circuits (pole = 80% win prob) or dominant cars in dry.
+- Podium Finish (Top 3): Better EV than race winner. More coverage, same edge from dominant team.
+- Teammate H2H: Cleanest, most predictable F1 market. Always look here first.
+- AVOID: Race winner outright on technical circuits in mixed conditions. Too many variables.`,
   };
 
   return `${GLOBAL}\n\n${SPORT_RULES[sport.toUpperCase()] || SPORT_RULES.NBA}`;
@@ -315,6 +469,18 @@ async function fetchLiveOdds(sport: string, gameQuery?: string): Promise<string>
   const sportKeys = SPORT_KEYS[sport] || SPORT_KEYS.NBA;
   if (sportKeys.length === 0) return `No odds API coverage for ${sport}.`;
 
+  // Tennis: surface type from sport_key — critical betting variable
+  const TENNIS_SURFACE: Record<string, string> = {
+    'tennis_atp_french_open':  '🏟️ ROLAND GARROS — Surface: CLAY (slowest, topspin-dominant, baseline grinders excel, big servers fade)',
+    'tennis_wta_french_open':  '🏟️ ROLAND GARROS — Surface: CLAY (slowest, topspin-dominant, physical endurance key)',
+    'tennis_atp_wimbledon':    '🏟️ WIMBLEDON — Surface: GRASS (fastest, serve+volley, big servers/net players dominate, clay specialists fade)',
+    'tennis_wta_wimbledon':    '🏟️ WIMBLEDON — Surface: GRASS (fastest, serve dominant, low bounce, aggressive baseliners)',
+    'tennis_atp_us_open':      '🏟️ US OPEN — Surface: HARD/OUTDOOR (medium-fast, night sessions faster ball under lights, loud crowd)',
+    'tennis_wta_us_open':      '🏟️ US OPEN — Surface: HARD/OUTDOOR (medium-fast, night session crowd/momentum factor)',
+    'tennis_atp_aus_open':     '🏟️ AUSTRALIAN OPEN — Surface: HARD/OUTDOOR (medium-slow Plexicushion, heat policy in January, long rallies)',
+    'tennis_wta_aus_open':     '🏟️ AUSTRALIAN OPEN — Surface: HARD/OUTDOOR (medium-slow Plexicushion, heat delays possible)',
+  };
+
   const results: string[] = [];
 
   for (const key of sportKeys) {
@@ -325,6 +491,9 @@ async function fetchLiveOdds(sport: string, gameQuery?: string): Promise<string>
 
       const events = await res.json() as OddsEvent[];
       if (!Array.isArray(events) || events.length === 0) continue;
+
+      // Inject tennis surface header before listing events for this tournament
+      if (TENNIS_SURFACE[key]) results.push(TENNIS_SURFACE[key]);
 
       // Filter by game query if provided
       const filtered = gameQuery
@@ -1015,6 +1184,200 @@ async function fetchWeather(matchup: string, sport: string): Promise<string> {
   } catch { return ""; }
 }
 
+// ── NHL Team Stats — ESPN (SV%, GAA, PPG, shots, faceoff%) ───────────────────
+const ESPN_NHL_TEAM_IDS: Record<string, number> = {
+  "anaheim ducks": 25, "ducks": 25, "ana": 25,
+  "boston bruins": 1, "bruins": 1, "bos": 1,
+  "buffalo sabres": 2, "sabres": 2, "buf": 2,
+  "calgary flames": 3, "flames": 3, "cgy": 3,
+  "carolina hurricanes": 7, "hurricanes": 7, "canes": 7, "car": 7,
+  "chicago blackhawks": 4, "blackhawks": 4, "chi": 4,
+  "colorado avalanche": 17, "avalanche": 17, "avs": 17, "col": 17,
+  "columbus blue jackets": 29, "blue jackets": 29, "cbj": 29,
+  "dallas stars": 9, "stars": 9, "dal": 9,
+  "detroit red wings": 5, "red wings": 5, "det": 5,
+  "edmonton oilers": 6, "oilers": 6, "edm": 6,
+  "florida panthers": 26, "panthers": 26, "fla": 26,
+  "los angeles kings": 8, "kings": 8, "lak": 8, "la kings": 8,
+  "minnesota wild": 30, "wild": 30, "mnw": 30,
+  "montreal canadiens": 10, "canadiens": 10, "habs": 10, "mtl": 10,
+  "nashville predators": 27, "predators": 27, "preds": 27, "nsh": 27,
+  "new jersey devils": 11, "devils": 11, "njd": 11,
+  "new york islanders": 12, "islanders": 12, "nyi": 12,
+  "new york rangers": 13, "rangers": 13, "nyr": 13,
+  "ottawa senators": 14, "senators": 14, "sens": 14, "ott": 14,
+  "philadelphia flyers": 15, "flyers": 15, "phi": 15,
+  "pittsburgh penguins": 16, "penguins": 16, "pens": 16, "pit": 16,
+  "san jose sharks": 18, "sharks": 18, "sjs": 18,
+  "seattle kraken": 124292, "kraken": 124292, "sea": 124292,
+  "st. louis blues": 19, "st louis blues": 19, "blues": 19, "stl": 19,
+  "tampa bay lightning": 20, "lightning": 20, "bolts": 20, "tbl": 20,
+  "toronto maple leafs": 21, "maple leafs": 21, "leafs": 21, "tor": 21,
+  "utah mammoth": 129764, "mammoth": 129764, "utah": 129764,
+  "vancouver canucks": 22, "canucks": 22, "van": 22,
+  "vegas golden knights": 37, "golden knights": 37, "vgk": 37, "vegas": 37,
+  "washington capitals": 23, "capitals": 23, "caps": 23, "wsh": 23,
+  "winnipeg jets": 28, "jets": 28, "wpg": 28,
+};
+
+async function fetchNHLTeamStats(matchup: string): Promise<string> {
+  if (!matchup) return "";
+  const lower = matchup.toLowerCase();
+  const parts = lower.split(/\s+(?:vs\.?|@|-)\s+/);
+
+  const findTeam = (q: string): number | null => {
+    for (const [key, id] of Object.entries(ESPN_NHL_TEAM_IDS)) {
+      if (q.includes(key)) return id;
+    }
+    return null;
+  };
+
+  const ids = parts.map(findTeam).filter((id): id is number => id !== null);
+  if (ids.length === 0) return "";
+
+  const lines: string[] = ["NHL TEAM STATS (ESPN — real numbers, cite exactly):"];
+  await Promise.all(ids.slice(0, 2).map(async teamId => {
+    try {
+      const res = await fetch(
+        `https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/teams/${teamId}/statistics`,
+        { signal: AbortSignal.timeout(5000) }
+      );
+      if (!res.ok) return;
+      const d = await res.json() as {
+        results: { stats: { categories: Array<{ stats: Array<{ name: string; displayValue: string }> }> } };
+        team: { displayName: string };
+      };
+      const teamName = d.team?.displayName ?? `Team ${teamId}`;
+      const all: Record<string, string> = {};
+      for (const cat of d.results.stats.categories)
+        for (const s of cat.stats) all[s.name] = s.displayValue;
+      const gp = parseFloat(all['gamesPlayed'] || '1') || 1;
+      const gf = parseFloat(all['goals'] || '0');
+      const ga = parseFloat(all['goalsAgainst'] || '0');
+      lines.push(
+        `  ${teamName}: ` +
+        `GF/G:${(gf/gp).toFixed(2)} | GAA:${all['avgGoalsAgainst'] ?? (ga/gp).toFixed(2)} | ` +
+        `SV%:${all['savePct'] ?? '?'} | ` +
+        `PPG:${all['powerPlayGoals'] ?? '?'} | ` +
+        `FO%:${all['faceoffPercent'] ?? '?'} | ` +
+        `SF/G:${(parseFloat(all['shotsTotal']||'0')/gp).toFixed(1)} | ` +
+        `SA/G:${(parseFloat(all['shotsAgainst']||'0')/gp).toFixed(1)}`
+      );
+    } catch { /* skip */ }
+  }));
+  return lines.length > 1 ? lines.join('\n') : "";
+}
+
+// ── Soccer context — ESPN standings (W/D/L, GF, GA, GD, PPG) ─────────────────
+// Tries EPL, La Liga, MLS, Champions League in parallel; returns matched teams.
+const SOCCER_LEAGUE_ROUTES: Record<string, string> = {
+  EPL: 'eng.1', 'LA LIGA': 'esp.1', MLS: 'usa.1', UCL: 'uefa.champions',
+  BUNDESLIGA: 'ger.1', 'SERIE A': 'ita.1', 'LIGUE 1': 'fra.1',
+};
+
+async function fetchSoccerContext(matchup: string): Promise<string> {
+  if (!matchup) return "";
+  const parts = matchup.toLowerCase().split(/\s+(?:vs\.?|@|-)\s+/).map(p => p.trim());
+  if (parts.length < 2) return "";
+
+  type StandingsEntry = { name: string; w: number; d: number; l: number; gf: number; ga: number; pts: number; gp: number };
+
+  const fetchLeague = async (route: string): Promise<StandingsEntry[]> => {
+    try {
+      const res = await fetch(
+        `https://site.api.espn.com/apis/v2/sports/soccer/${route}/standings`,
+        { signal: AbortSignal.timeout(5000) }
+      );
+      if (!res.ok) return [];
+      const data = await res.json() as {
+        children?: Array<{ standings?: { entries?: Array<{ team: { displayName: string }; stats: Array<{ name: string; value: number }> }> } }>;
+      };
+      const results: StandingsEntry[] = [];
+      for (const group of data.children ?? []) {
+        for (const entry of group.standings?.entries ?? []) {
+          const st: Record<string, number> = {};
+          for (const s of entry.stats) st[s.name] = s.value;
+          results.push({
+            name: entry.team.displayName.toLowerCase(),
+            w: st['wins'] ?? 0, d: st['ties'] ?? 0, l: st['losses'] ?? 0,
+            gf: st['pointsFor'] ?? 0, ga: st['pointsAgainst'] ?? 0,
+            pts: st['points'] ?? 0, gp: st['gamesPlayed'] ?? 1,
+          });
+        }
+      }
+      return results;
+    } catch { return []; }
+  };
+
+  // Fetch all leagues in parallel, flatten
+  const allEntries = (await Promise.all(Object.values(SOCCER_LEAGUE_ROUTES).map(fetchLeague))).flat();
+  if (allEntries.length === 0) return "";
+
+  const findTeam = (query: string): StandingsEntry | undefined =>
+    allEntries.find(e => e.name.includes(query) || query.split(' ').some(w => w.length > 3 && e.name.includes(w)));
+
+  const teams = parts.map(findTeam).filter((t): t is StandingsEntry => t !== undefined);
+  if (teams.length === 0) return "";
+
+  const lines = ["SOCCER STANDINGS (ESPN — real data, cite exactly):"];
+  for (const t of teams) {
+    const ppg = t.gp > 0 ? (t.pts / t.gp).toFixed(2) : '?';
+    const gd  = t.gf - t.ga;
+    lines.push(`  ${t.name.toUpperCase()}: ${t.w}W-${t.d}D-${t.l}L | GF:${t.gf} GA:${t.ga} GD:${gd >= 0 ? '+' : ''}${gd} | PPG:${ppg}`);
+  }
+  return lines.join('\n');
+}
+
+// ── F1 Circuit Database (local — no API needed) ───────────────────────────────
+interface F1CircuitInfo {
+  name: string; type: 'Street' | 'Power' | 'Technical' | 'Mixed';
+  qualifyingWeight: number; // 0-1: how much qualifying position predicts race result
+  overtaking: 'Extreme' | 'Very High' | 'High' | 'Moderate' | 'Low';
+  dnfRate: string; safetyCar: string;
+  notes: string;
+}
+const F1_CIRCUITS: Record<string, F1CircuitInfo> = {
+  monaco:       { name:'Circuit de Monaco',              type:'Street',    qualifyingWeight:0.95, overtaking:'Extreme',  dnfRate:'~25%', safetyCar:'Near-certain', notes:'Pole almost always wins. No overtaking. Bet pole sitter. DNF props hold huge value.' },
+  singapore:    { name:'Marina Bay Street Circuit',      type:'Street',    qualifyingWeight:0.85, overtaking:'Extreme',  dnfRate:'~20%', safetyCar:'Near-certain', notes:'Night race. Safety car = guaranteed. Long wheelbase cars advantage.' },
+  baku:         { name:'Baku City Circuit',              type:'Street',    qualifyingWeight:0.80, overtaking:'Very High', dnfRate:'~18%', safetyCar:'High',         notes:'Long straight allows some overtaking into Turn 1. Safety car extremely likely. Big upsets common.' },
+  jeddah:       { name:'Jeddah Corniche Circuit',        type:'Street',    qualifyingWeight:0.85, overtaking:'Very High', dnfRate:'~15%', safetyCar:'High',         notes:'Fastest street circuit. Multiple crashes likely. High-speed walls punish any error.' },
+  miami:        { name:'Miami International Autodrome',  type:'Street',    qualifyingWeight:0.75, overtaking:'High',      dnfRate:'~10%', safetyCar:'Moderate',     notes:'Semi-permanent street circuit. Some DRS overtaking zones. Tire management key.' },
+  lasvegas:     { name:'Las Vegas Street Circuit',       type:'Street',    qualifyingWeight:0.80, overtaking:'High',      dnfRate:'~12%', safetyCar:'Moderate',     notes:'Night race, cold temps in November. Tire graining in cold = big wildcard.' },
+  zandvoort:    { name:'Circuit Zandvoort',              type:'Street',    qualifyingWeight:0.85, overtaking:'Extreme',  dnfRate:'~8%',  safetyCar:'Moderate',     notes:'Banking turns make overtaking nearly impossible. Qualifying result highly predictive.' },
+  monza:        { name:'Autodromo Nazionale Monza',      type:'Power',     qualifyingWeight:0.50, overtaking:'Low',       dnfRate:'~8%',  safetyCar:'Low',          notes:'Temple of Speed. Slipstream creates genuine overtaking. Engine power dominant. Low-drag setups.' },
+  spa:          { name:'Circuit de Spa-Francorchamps',   type:'Power',     qualifyingWeight:0.55, overtaking:'Low',       dnfRate:'~12%', safetyCar:'Moderate',     notes:'Long Kemmel straight = genuine DRS overtaking. Weather changes rapidly — wet weather wild card.' },
+  bahrain:      { name:'Bahrain International Circuit',  type:'Power',     qualifyingWeight:0.55, overtaking:'Low',       dnfRate:'~8%',  safetyCar:'Low',          notes:'Multiple DRS zones. Tire degradation critical. Hot and dusty — evolution of grip during weekend.' },
+  abudhabi:     { name:'Yas Marina Circuit',             type:'Power',     qualifyingWeight:0.60, overtaking:'Moderate',  dnfRate:'~5%',  safetyCar:'Low',          notes:'Season finale. Championship pressure = higher risk-taking. DRS zones allow some overtaking.' },
+  austin:       { name:'Circuit of the Americas (COTA)', type:'Technical', qualifyingWeight:0.65, overtaking:'Moderate',  dnfRate:'~8%',  safetyCar:'Low',          notes:'Loved by aerodynamic cars (Red Bull, Ferrari). High downforce setup advantage. Bumpy surface.' },
+  hungary:      { name:'Hungaroring',                    type:'Technical', qualifyingWeight:0.80, overtaking:'High',      dnfRate:'~5%',  safetyCar:'Low',          notes:'Slow, twisty. Like Monaco without the walls. High downforce = overtaking near-impossible. Qualifying hugely important.' },
+  silverstone:  { name:'Silverstone Circuit',            type:'Technical', qualifyingWeight:0.65, overtaking:'Moderate',  dnfRate:'~8%',  safetyCar:'Moderate',     notes:'High-speed flowing corners. Aerodynamic setup crucial. British crowd creates pressure for home teams.' },
+  suzuka:       { name:'Suzuka Circuit',                 type:'Technical', qualifyingWeight:0.70, overtaking:'High',      dnfRate:'~10%', safetyCar:'Moderate',     notes:'Beloved technical circuit. High-speed S-curves require precision setup. Weather variable in October.' },
+  interlagos:   { name:'Autodromo José Carlos Pace',     type:'Technical', qualifyingWeight:0.65, overtaking:'Moderate',  dnfRate:'~12%', safetyCar:'Moderate',     notes:'Altitude (800m) affects engine power. Rain very common — huge wildcard. Sprint weekends here create extra data.' },
+  imola:        { name:'Autodromo Enzo e Dino Ferrari',  type:'Technical', qualifyingWeight:0.75, overtaking:'High',      dnfRate:'~10%', safetyCar:'Moderate',     notes:'Limited overtaking zones. Safety car likely. Old-school circuit rewards technical setup.' },
+};
+
+function getF1CircuitContext(matchup: string): string {
+  if (!matchup) return "";
+  const lower = matchup.toLowerCase();
+  for (const [key, info] of Object.entries(F1_CIRCUITS)) {
+    if (lower.includes(key) || lower.includes(info.name.toLowerCase())) {
+      return [
+        `F1 CIRCUIT CONTEXT (${info.name}):`,
+        `  Type: ${info.type} Circuit | Overtaking: ${info.overtaking}`,
+        `  Qualifying → Race Prediction Weight: ${(info.qualifyingWeight * 100).toFixed(0)}%`,
+        `  Historical DNF Rate: ${info.dnfRate} | Safety Car: ${info.safetyCar}`,
+        `  Notes: ${info.notes}`,
+        `  BETTING IMPLICATION: ${info.type === 'Street'
+          ? 'Pole sitter is primary bet. DNF props have value. Backup puck line / podium finish safer than race winner.'
+          : info.type === 'Power'
+          ? 'Overtaking possible via DRS. Engine power units (Red Bull PU, Ferrari PU) are advantaged. Race winner more open.'
+          : 'Setup and aerodynamics dominate. High downforce cars (Red Bull, Ferrari) excel. Mid-field upsets less likely.'}`,
+      ].join('\n');
+    }
+  }
+  return "";
+}
+
 // ── Synthetic Sharp Signal (Pinnacle vs soft-book line gap) ───────────────────
 // Pinnacle is the sharpest book. When Pinnacle line diverges from DraftKings/FanDuel,
 // that gap reveals where the sharp money is pointing.
@@ -1672,7 +2035,7 @@ app.post('/api/full-breakdown', async (req: express.Request, res: express.Respon
     const crossSports = ['NBA', 'MLB', 'NFL', 'SOCCER', 'WNBA'].filter(inSeason);
 
     // Fetch all data in parallel — real stats, news, odds, injuries, sharp signals
-    const [oddsCtx, injuryCtx, playerStatsCtx, advancedCtx, teamStatsCtx, newsCtx, pitcherCtx, weatherCtx, sharpCtx, crossOdds] = await Promise.all([
+    const [oddsCtx, injuryCtx, playerStatsCtx, advancedCtx, teamStatsCtx, nicheCtx, newsCtx, pitcherCtx, weatherCtx, sharpCtx, crossOdds] = await Promise.all([
       fetchLiveOdds(league, matchup),
       fetchInjuries(league, matchup),
       league === 'NBA' || league === 'WNBA'
@@ -1684,6 +2047,11 @@ app.post('/api/full-breakdown', async (req: express.Request, res: express.Respon
       league === 'NBA' || league === 'WNBA'
         ? fetchNBATeamStats(matchup)
         : Promise.resolve(''),
+      // Sport-specific niche stats
+      league === 'NHL'    ? fetchNHLTeamStats(matchup) :
+      league === 'SOCCER' ? fetchSoccerContext(matchup) :
+      league === 'F1'     ? Promise.resolve(getF1CircuitContext(matchup)) :
+      Promise.resolve(''),
       fetchESPNNews(league, matchup),
       league === 'MLB' ? fetchMLBPitcherStats(matchup) : Promise.resolve(''),
       fetchWeather(matchup, league),
@@ -1708,6 +2076,7 @@ INJURY REPORT (ONLY reference players listed here — do NOT invent injuries):
 ${injuryCtx || "No injury data available from ESPN right now. Do NOT fabricate any injuries."}
 
 ${advancedCtx ? `${advancedCtx}\n` : ''}
+${nicheCtx ? `SPORT-SPECIFIC NICHE DATA (cite these exact numbers, do NOT invent):\n${nicheCtx}\n` : ''}
 ${playerStatsCtx ? `REAL PLAYER STATS — BallDontLie API (cite these exact numbers, do NOT invent):\n${playerStatsCtx}\n` : ''}
 ${teamStatsCtx ? `REAL TEAM STATS — ESPN API (cite these exact numbers, do NOT invent):\n${teamStatsCtx}\n` : ''}
 ${pitcherCtx ? `REAL PITCHER STATS — MLB Official API (cite these exact numbers, do NOT invent):\n${pitcherCtx}\n` : ''}
@@ -1740,6 +2109,12 @@ ${sharpCtx || "No significant line gap detected."}
 5. ODDS: Use exact lines from LIVE ODDS. If block is empty, label estimates as "est."
 6. PROPS: Set prop lines relative to the REAL averages provided. Player averaging 24.6PPG → prop near 24.5, not invented 28.5.
 7. NEWS: Lineup changes, questionable tags in news → reprice that market immediately before picking.
+8. NICHE DATA: If SPORT-SPECIFIC NICHE DATA block is present:
+   - NHL: cite exact SV%, GAA, PPG from the block. If SV% <.900 = vulnerable goalie — flag it.
+   - SOCCER: cite exact W/D/L, GF, GA, GD from standings. Use PPG to assess form.
+   - F1: cite circuit type and qualifying weight. If qualifying weight ≥80%, the pole sitter is primary pick.
+   - TENNIS: cite the surface annotation from LIVE ODDS header (Clay/Grass/Hard). Surface MUST appear in rationale.
+9. SURFACE (TENNIS): The LIVE ODDS block starts with a surface annotation (🏟️ line). The surface type is NON-NEGOTIABLE context. Do NOT pick a flat-hitter on clay or ignore a big server's grass advantage.
 
 🔍 ALT LINE HUNTING — VERY IMPORTANT:
 The LIVE ODDS block may contain alternate_spreads and alternate_totals alongside standard lines.
