@@ -17,7 +17,7 @@ from nba_api.stats.endpoints import playercareerstats, leaguedashplayerstats
 app = FastAPI(title="God-Engine Quant Simulation Node")
 
 # v11 Environment
-BALLDONTLIE_API_KEY = os.environ.get("BALLDONTLIE_API_KEY", "1e77d224-f28e-4dd1-9fd1-c0633dd872e1")
+BALLDONTLIE_API_KEY = os.environ.get("BALLDONTLIE_API_KEY", "")
 NBA_API_SEASON = '2025-26'
 
 class OddsRequest(BaseModel):
@@ -77,6 +77,23 @@ class RankedSimulationResult(BaseModel):
 
 # Global State for Sigma-3 Programmatic Evolution
 VOLATILITY_SCALING = 1.0
+
+# In-memory cache for NBA stats — prevents hitting NBA API on every request
+_nba_stats_cache: dict = {"df": None, "fetched_at": 0.0}
+_NBA_STATS_TTL = 3600  # 1 hour
+
+def get_cached_nba_stats():
+    now = time.time()
+    if _nba_stats_cache["df"] is not None and now - _nba_stats_cache["fetched_at"] < _NBA_STATS_TTL:
+        return _nba_stats_cache["df"]
+    try:
+        df = leaguedashplayerstats.LeagueDashPlayerStats(season=NBA_API_SEASON).get_data_frames()[0]
+        _nba_stats_cache["df"] = df
+        _nba_stats_cache["fetched_at"] = now
+        return df
+    except Exception as e:
+        print(f"Warning: Could not fetch NBA API stats ({e})")
+        return _nba_stats_cache["df"]  # return stale if available
 
 @app.post("/evolve")
 async def evolve_engine(request: EvolveRequest):
@@ -329,9 +346,9 @@ async def simulate_ranked(request: OddsRequest):
     correlation_edge = primary_edge * 0.85
 
     potential_plays = [
-        {"label": f"{primary_team} ML/Spread", "edge": primary_edge, "prob": true_prob * 100, "ev": ev, "kelly": kelly},
-        {"label": f"{primary_team} Derivative Prop", "edge": derivative_edge, "prob": true_prob * 90, "ev": ev * 0.95, "kelly": kelly * 0.95},
-        {"label": "Correlated Market Alpha", "edge": correlation_edge, "prob": true_prob * 85, "ev": ev * 0.85, "kelly": kelly * 0.85}
+        {"label": f"{primary_team} ML/Spread", "edge": primary_edge, "prob": round(true_prob * 100, 1), "ev": ev, "kelly": kelly},
+        {"label": f"{primary_team} Derivative Prop", "edge": derivative_edge, "prob": round(true_prob * 100 * 0.90, 1), "ev": ev * 0.95, "kelly": kelly * 0.95},
+        {"label": "Correlated Market Alpha", "edge": correlation_edge, "prob": round(true_prob * 100 * 0.82, 1), "ev": ev * 0.85, "kelly": kelly * 0.85}
     ]
 
     # SORT BY EDGE (Highest to Lowest)
@@ -407,8 +424,9 @@ async def fetch_nba_stats(query: str):
 @app.get("/nba-matchup-context/{team_a}/{team_b}")
 async def fetch_nba_matchup_context(team_a: str, team_b: str):
     try:
-        # Cache season stats for speed if called frequently (but fetching fresh is fine for now)
-        stats_df = leaguedashplayerstats.LeagueDashPlayerStats(season='2025-26').get_data_frames()[0]
+        stats_df = get_cached_nba_stats()
+        if stats_df is None:
+            raise HTTPException(status_code=503, detail="NBA stats unavailable")
         
         nba_teams = teams.get_teams()
         
@@ -466,7 +484,7 @@ async def execute_v11_analysis(request: OddsRequest):
     
     # 2. Fetch Deep Player Stats
     try:
-        stats_df = leaguedashplayerstats.LeagueDashPlayerStats(season=NBA_API_SEASON).get_data_frames()[0]
+        stats_df = get_cached_nba_stats()
         nba_teams = teams.get_teams()
         
         def get_team_abbrev(search_str):
@@ -513,15 +531,9 @@ async def execute_v11_analysis(request: OddsRequest):
     if live_odds and live_odds["team_a_sharp"] > 0:
         prob_a = 1.0 / live_odds["team_a_sharp"]
         prob_b = 1.0 / live_odds["team_b_sharp"]
-        
-        # [V11.6] AI Alpha Injection
-        # Retail odds inherently have negative EV due to the vig. To simulate our God-Engine 
-        # finding a mathematical edge against the book, we apply a hard +4.5% Alpha edge to the favorite.
-        ALPHA_BUMP = 0.045
-        
+
         if prob_a >= prob_b:
-            # AI Prefers Team A
-            true_prob = prob_a + ALPHA_BUMP
+            true_prob = prob_a  # vig-free probability from Pinnacle — no fake bump
             request.market_spread = live_odds["team_a_spread"] or 0.0
             primary_decimal_odds = live_odds["team_a_soft"]
             spread_str = f" {request.market_spread:+g}" if request.market_spread != 0 else " ML"
@@ -529,8 +541,7 @@ async def execute_v11_analysis(request: OddsRequest):
             lock_team = name_a
             fade_team = name_b
         else:
-            # AI Prefers Team B
-            true_prob = prob_b + ALPHA_BUMP
+            true_prob = prob_b
             request.market_spread = live_odds["team_b_spread"] or 0.0
             primary_decimal_odds = live_odds["team_b_soft"]
             spread_str = f" {request.market_spread:+g}" if request.market_spread != 0 else " ML"
@@ -576,7 +587,7 @@ async def execute_v11_analysis(request: OddsRequest):
         matchup=f"{name_a} vs {name_b}",
         date_context=datetime.now().strftime("%B %d, %Y"),
         target_odds=target_odds_str,
-        vig_adjusted_ev=f"+${max(0.10, round(primary_ev, 2))}",
+        vig_adjusted_ev=f"${round(primary_ev, 2):+.2f}",
         alpha_edge=f"+{round((primary_prob - (1 / primary_decimal_odds)) * 100, 2)}%",
         primary_lock=PickAlpha(
             label=lock_label,

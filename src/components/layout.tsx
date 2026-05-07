@@ -1,14 +1,10 @@
 import type { ReactNode } from "react";
 import { Link, useLocation } from "wouter";
 import { SidebarProvider, Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarTrigger, SidebarHeader } from "@/components/ui/sidebar";
-import { Activity, Crosshair, Swords, Trophy, Zap } from "lucide-react";
+import { Swords } from "lucide-react";
 
 const navigation = [
-  { name: "Dashboard",   href: "/",            icon: Activity  },
-  { name: "Picks",       href: "/predictions",  icon: Zap       },
-  { name: "Sharp Money", href: "/sharp",        icon: Crosshair },
-  { name: "Matchups",    href: "/matchups",     icon: Swords    },
-  { name: "History",     href: "/history",      icon: Trophy    },
+  { name: "Game Breakdown", href: "/", icon: Swords },
 ];
 
 export function AppLayout({ children }: { children: ReactNode }) {
@@ -26,16 +22,16 @@ export function AppLayout({ children }: { children: ReactNode }) {
                 className="w-9 h-9 rounded-xl flex items-center justify-center shadow-lg shrink-0"
                 style={{ background: "linear-gradient(135deg, #7c3aed 0%, #2563eb 100%)" }}
               >
-                <span className="text-white font-black text-base select-none">W</span>
+                <span className="text-white font-black text-base select-none">🦴</span>
               </div>
               <div className="flex flex-col min-w-0">
                 <span
                   className="font-display font-bold text-base truncate"
                   style={{ background: "linear-gradient(90deg,#a78bfa,#60a5fa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}
                 >
-                  WinWithTovy
+                  Caveman Locks
                 </span>
-                <span className="text-[10px] text-muted-foreground uppercase tracking-widest">AI Sports Edge</span>
+                <span className="text-[10px] text-muted-foreground uppercase tracking-widest">CTE Certified Picks</span>
               </div>
             </div>
           </SidebarHeader>
@@ -73,7 +69,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           </SidebarContent>
 
           <div className="mt-auto p-4 border-t border-sidebar-border/30">
-            <p className="text-[10px] text-muted-foreground/40 text-center uppercase tracking-widest">@winwithtovy</p>
+            <p className="text-[10px] text-muted-foreground/40 text-center uppercase tracking-widest">caveman locks</p>
           </div>
         </Sidebar>
 
@@ -84,7 +80,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
               <SidebarTrigger className="text-muted-foreground hover:text-foreground transition-colors" />
               <div className="h-4 w-px bg-border hidden sm:block" />
               <h1 className="text-lg font-display font-bold tracking-wide hidden sm:block">
-                {navigation.find((n) => n.href === location)?.name ?? "Dashboard"}
+                Game Breakdown
               </h1>
             </div>
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/10">

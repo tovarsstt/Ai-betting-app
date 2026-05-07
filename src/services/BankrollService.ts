@@ -176,7 +176,6 @@ export class BankrollService {
 
         switch (entry.type) {
             case 'deposit':
-            case 'bet_won':
                 existingConfig.totalBankroll -= entry.amount;
                 break;
             case 'withdrawal':
@@ -184,56 +183,15 @@ export class BankrollService {
                 existingConfig.totalBankroll += entry.amount;
                 break;
             case 'bet_lost':
+                // Undo the stake deduction that happened at placement
                 existingConfig.totalBankroll += entry.amount;
                 break;
-        }
-
-        // Special cleanup for bet_won (remove profit)
-        if (entry.type === 'bet_won') {
-            const returnAmount = entry.amount * (entry.odds || 2.0);
-            existingConfig.totalBankroll -= returnAmount;
-            // We subtracted entry.amount (Stake) in the switch.
-            // We also need to subtract Payout (Profit + Stake).
-            // NO.
-            // Logic when Winning:
-            // 1. Place: -Stake.
-            // 2. Win: +Payout.
-            // Net: +Profit.
-            //
-            // Logic in deleteTransaction:
-            // 1. Switch 'bet_won': -Stake. (Wait, bet_won entry.amount IS Stake).
-            //    So Bankroll = Bankroll - Stake.
-            // 2. We need to revert the +Payout.
-            //    Bankroll = Bankroll - Payout.
-            // 3. We need to revert the Place (-Stake).
-            //    Bankroll = Bankroll + Stake.
-            // Net change needed: -Payout + Stake.
-            //
-            // Current code:
-            // Switch: -Stake.
-            // If block: -returnAmount (Payout). +entry.amount (Stake).
-            // Net: -Stake - Payout + Stake = -Payout.
-            // But we ALSO need to revert the original Place (-Stake)?
-            // The 'bet_won' entry REPLACES the 'bet_placed' entry in IDB?
-            // YES. `resolveBet` uses `put(entry)`. The entry ID is the same.
-            // So there is only ONE entry.
-            // If we delete it, we delete the fact that a bet was placed.
-            // So we must undo the -Stake from placement.
-            //
-            // So: -Payout + Stake.
-            // Implementation:
-            // Switch: -Stake.
-            // If block: -Payout + Stake.
-            // Net: -Stake - Payout + Stake = -Payout.
-            // This is NOT correct. We need -Payout + Stake.
-            // We are missing a +Stake somewhere.
-            // Ah, `switch` uses `entry.type`.
-            // If `bet_won`: `-= amount`.
-            // We want final delta to be `-Payout + Stake`.
-            // `-Stake` (from switch) ` - Payout + 2*Stake`? = `-Payout + Stake`.
-            // Yes.
-
-            existingConfig.totalBankroll += entry.amount; // Add back Stake (undo switch + undo place)
+            case 'bet_won':
+                // Undo: win payout (+returnAmount) and original stake deduction (-stake)
+                // Net needed: -returnAmount + stake
+                existingConfig.totalBankroll -= entry.amount * (entry.odds || 2.0); // undo payout
+                existingConfig.totalBankroll += entry.amount; // undo stake deduction
+                break;
         }
 
         await configStore.put(existingConfig, 'main');

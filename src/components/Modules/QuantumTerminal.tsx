@@ -19,22 +19,26 @@ export const QuantumTerminal: React.FC = () => {
     const [goal, setGoal] = useState("");
     const [missionData, setMissionData] = useState<QuantumSession | null>(null);
     const [isEngaged, setIsEngaged] = useState(false);
+    const [missionError, setMissionError] = useState<string | null>(null);
     const logContainerRef = useRef<HTMLDivElement>(null);
 
     const engageQuantumMission = async () => {
         if (!goal) return;
         setIsEngaged(true);
         setMissionData(null);
+        setMissionError(null);
         try {
             const res = await fetch('/api/quantum-mission', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ goal })
             });
+            if (!res.ok) throw new Error(`Server error: ${res.status}`);
             const data = await res.json();
+            if (data.error) throw new Error(data.error);
             setMissionData(data);
         } catch (err) {
-            console.error("Quantum Error:", err);
+            setMissionError(err instanceof Error ? err.message : "UNKNOWN_ERROR");
         } finally {
             setIsEngaged(false);
         }
@@ -115,6 +119,12 @@ export const QuantumTerminal: React.FC = () => {
                         <div className="flex items-center gap-3 text-purple-400 animate-pulse font-bold tracking-widest uppercase italic">
                             <Loader2 size={12} className="animate-spin" />
                             Coordinating Savant Agents...
+                        </div>
+                    )}
+
+                    {missionError && (
+                        <div className="text-red-400 font-bold text-xs tracking-widest uppercase p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                            ERROR: {missionError}
                         </div>
                     )}
 

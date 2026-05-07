@@ -3,11 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppLayout } from "./components/layout";
-import Dashboard from "./pages/dashboard";
-import Predictions from "./pages/predictions";
-import SharpMoney from "./pages/sharp-money";
-import Matchups from "./pages/matchups";
-import History from "./pages/history";
+import GameBreakdown from "./pages/game-breakdown";
 import NotFound from "./pages/not-found";
 
 const queryClient = new QueryClient({
@@ -18,11 +14,7 @@ function Router() {
   return (
     <AppLayout>
       <Switch>
-        <Route path="/" component={Dashboard} />
-        <Route path="/predictions" component={Predictions} />
-        <Route path="/sharp" component={SharpMoney} />
-        <Route path="/matchups" component={Matchups} />
-        <Route path="/history" component={History} />
+        <Route path="/" component={GameBreakdown} />
         <Route component={NotFound} />
       </Switch>
     </AppLayout>

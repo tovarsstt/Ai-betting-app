@@ -76,11 +76,12 @@ export const AlphaSheet: React.FC<AlphaSheetProps> = ({ data }) => {
                </div>
             </div>
             <div className="col-span-4 flex items-center gap-4">
-              <div className="w-10 h-10 rounded-full bg-white/5 overflow-hidden border border-white/10 group-hover:border-blue-500/50">
-                <img 
+              <div className="w-10 h-10 rounded-full bg-white/5 overflow-hidden border border-white/10 group-hover:border-blue-500/50 flex items-center justify-center">
+                <img
                    src={`/api/proxy-image?url=${encodeURIComponent(`https://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/${row.espn_id}.png`)}`}
                    className="w-full h-full object-cover mt-1 scale-150"
                    alt={row.player_name}
+                   onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
                 />
               </div>
               <div className="flex flex-col">
@@ -99,7 +100,7 @@ export const AlphaSheet: React.FC<AlphaSheetProps> = ({ data }) => {
             <div className="col-span-3">
               <div className="flex flex-col items-end gap-1.5">
                 <div className="flex items-center gap-2">
-                   <span className="text-xs font-black" style={{ color: row.status_color }}>{row.ai_score.toFixed(2)}</span>
+                   <span className="text-xs font-black" style={{ color: row.status_color }}>{(row.ai_score ?? 0).toFixed(1)}</span>
                    <ShieldCheck size={14} style={{ color: row.status_color }} />
                 </div>
                 <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden border border-white/5">

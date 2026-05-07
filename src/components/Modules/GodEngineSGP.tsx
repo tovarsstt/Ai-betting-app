@@ -9,7 +9,7 @@ export type OmniData = SwarmFinalPayload;
 const GodEngineSGP = ({ data, onClose }: { data: OmniData; onClose: () => void }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isExporting, setIsExporting] = useState(false);
-  const [theme, setTheme] = useState<'standard' | 'baanggg' | 'audit'>('standard');
+  const [theme, setTheme] = useState<'standard' | 'baanggg' | 'audit'>('baanggg');
 
   const isBaanggg = theme === 'baanggg';
   const isAudit = theme === 'audit';
@@ -90,7 +90,7 @@ const GodEngineSGP = ({ data, onClose }: { data: OmniData; onClose: () => void }
                             </div>
                             <div className="bg-white/5 p-4 border border-white/5">
                                 <div className="text-[8px] font-black text-white/30 uppercase tracking-[0.2em] mb-1">MARKET_CAPTURE</div>
-                                <div className="text-xs font-black text-white">+12.4% ROI</div>
+                                <div className="text-xs font-black text-white">{data.value_gap || "N/A"}</div>
                             </div>
                         </div>
 
@@ -148,12 +148,15 @@ const GodEngineSGP = ({ data, onClose }: { data: OmniData; onClose: () => void }
                             ))}
                         </div>
                         <div className="w-1/2 bg-[#22c55e] rounded-xl overflow-hidden relative border-2 border-[#22c55e] shadow-[0_0_30px_rgba(34,197,94,0.3)] min-h-[140px]">
-                            <img 
-                               src={`/api/proxy-image?url=${encodeURIComponent(`https://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/${data.sgp_blueprint?.[0]?.espn_id ?? ''}.png`)}`}
-                               className="w-full h-full object-cover scale-150 mt-10 origin-bottom"
-                               alt="Featured Player"
-                               crossOrigin="anonymous"
-                            />
+                            {data.sgp_blueprint?.[0]?.espn_id && (
+                              <img
+                                 src={`/api/proxy-image?url=${encodeURIComponent(`https://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/${data.sgp_blueprint[0].espn_id}.png`)}`}
+                                 className="w-full h-full object-cover scale-150 mt-10 origin-bottom"
+                                 alt="Featured Player"
+                                 crossOrigin="anonymous"
+                                 onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                              />
+                            )}
                         </div>
                     </div>
 
@@ -205,11 +208,12 @@ const GodEngineSGP = ({ data, onClose }: { data: OmniData; onClose: () => void }
                     {(data.sgp_blueprint ?? []).map((leg, i) => (
                         <div key={i} className="relative flex items-center gap-5 z-10">
                             <div className="relative w-10 h-10 rounded-full bg-gray-50 border-2 border-white shadow-sm flex-shrink-0 flex items-center justify-center overflow-hidden ring-1 ring-gray-100">
-                                 <img 
+                                 <img
                                     src={`/api/proxy-image?url=${encodeURIComponent(`https://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/${leg.espn_id}.png`)}`}
                                     alt={leg.label}
                                     crossOrigin="anonymous"
                                     className="w-full h-full object-cover scale-150 mt-2"
+                                    onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
                                  />
                             </div>
                             <div className="flex-1">
