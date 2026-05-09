@@ -5,10 +5,146 @@ import dotenv from 'dotenv';
 import Anthropic from '@anthropic-ai/sdk';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { readFileSync } from 'fs';
+import { spawn, ChildProcess } from 'child_process';
+import { router } from './src/services/modelRouter.js';
+import { memory } from './src/lib/persistentMemory.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, '.env'), override: true });
+
+// ── Model weights — loaded from data/model_weights.json ──────────────────────
+interface ModelWeights {
+  math_weight: number;
+  sentiment_weight: number;
+  dissonance_threshold: number;
+  sport_confidence: Record<string, number>;
+  last_updated: string;
+}
+function loadModelWeights(): ModelWeights {
+  try {
+    const raw = readFileSync(path.resolve(__dirname, 'data/model_weights.json'), 'utf8');
+    return JSON.parse(raw) as ModelWeights;
+  } catch {
+    return { math_weight: 0.7, sentiment_weight: 0.3, dissonance_threshold: 8.0, sport_confidence: {}, last_updated: 'default' };
+  }
+}
+let MODEL_WEIGHTS = loadModelWeights();
+setInterval(() => { MODEL_WEIGHTS = loadModelWeights(); }, 30 * 60 * 1000);
+
+// ── Edge Model API — spawned as child process ─────────────────────────────────
+let _edgeProc: ChildProcess | null = null;
+function startEdgeApi() {
+  const script = path.resolve(__dirname, 'scripts/edge_api.py');
+  _edgeProc = spawn('python3', [script], { stdio: ['ignore', 'pipe', 'pipe'] });
+  _edgeProc.stdout?.on('data', (d: Buffer) => process.stdout.write('[EdgeAPI] ' + d));
+  _edgeProc.stderr?.on('data', (d: Buffer) => {
+    const msg = d.toString();
+    if (!msg.includes('DeprecationWarning') && !msg.includes('on_event')) process.stderr.write('[EdgeAPI] ' + msg);
+  });
+  _edgeProc.on('exit', (code: number | null) => {
+    if (code !== 0 && code !== null) setTimeout(startEdgeApi, 5000);
+  });
+}
+startEdgeApi();
+process.on('exit', () => _edgeProc?.kill());
+
+// ── fetchEdgeModel — calls edge API, returns formatted quant context block ────
+interface EdgeResult {
+  sport: string; predicted_margin: number; spread: number; model_edge: number;
+  home_cover_prob: number; away_cover_prob: number;
+  home_ev_pct: number; away_ev_pct: number;
+  home_kelly_usd: number; away_kelly_usd: number;
+  home_true_prob: number; away_true_prob: number;
+  vig_pct: number; bet_signal: string; edge_strength: string;
+  home_ratings: Record<string, number>; away_ratings: Record<string, number>;
+  model_mae: number; trained_on: number; model_loaded: boolean;
+  lambda_home?: number; lambda_away?: number; method?: string;
+}
+
+async function fetchEdgeModel(
+  sport: string, homeTeam: string, awayTeam: string,
+  spread: number, homeOdds: number, awayOdds: number,
+  bankroll = 1000
+): Promise<string> {
+  try {
+    const r = await fetch('http://127.0.0.1:8001/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sport, home_team: homeTeam, away_team: awayTeam,
+                             spread, home_odds: homeOdds, away_odds: awayOdds, bankroll }),
+      signal: AbortSignal.timeout(4000),
+    });
+    if (!r.ok) return '';
+    const d = await r.json() as EdgeResult;
+    const conf = (MODEL_WEIGHTS.sport_confidence as Record<string, { trained_games: number; reliable: boolean }>)?.[sport.toUpperCase()];
+    const confStr = conf?.reliable ? `${conf.trained_games.toLocaleString()} games trained` : 'LOW CONFIDENCE';
+    const maeStr = sport === 'MLB' ? `±${d.model_mae} runs` : sport === 'Soccer' ? `±${d.model_mae} goals` : `±${d.model_mae} pts`;
+    const poissonLine = d.lambda_home != null
+      ? `• Poisson λ: HOME ${d.lambda_home} goals / AWAY ${d.lambda_away} goals expected\n`
+      : '';
+    const ratingsLine = sport.toUpperCase() === 'NBA' || sport.toUpperCase() === 'WNBA'
+      ? `• Home: OffRtg ${d.home_ratings.off_rtg?.toFixed(1)} DefRtg ${d.home_ratings.def_rtg?.toFixed(1)} NetRtg ${d.home_ratings.net_rtg?.toFixed(1)} | Away: OffRtg ${d.away_ratings.off_rtg?.toFixed(1)} DefRtg ${d.away_ratings.def_rtg?.toFixed(1)} NetRtg ${d.away_ratings.net_rtg?.toFixed(1)}\n`
+      : sport.toUpperCase() === 'MLB'
+      ? `• Home: RS/G ${d.home_ratings.rs?.toFixed(2)} RA/G ${d.home_ratings.ra?.toFixed(2)} | Away: RS/G ${d.away_ratings.rs?.toFixed(2)} RA/G ${d.away_ratings.ra?.toFixed(2)}\n`
+      : sport.toUpperCase() === 'NFL'
+      ? `• Home: PPG ${d.home_ratings.ppg} PAG ${d.home_ratings.pag} NET ${d.home_ratings.net} | Away: PPG ${d.away_ratings.ppg} PAG ${d.away_ratings.pag} NET ${d.away_ratings.net}\n`
+      : `• Home ratings: ${JSON.stringify(d.home_ratings)} | Away ratings: ${JSON.stringify(d.away_ratings)}\n`;
+    return [
+      `\n━━ QUANTITATIVE MODEL (${sport.toUpperCase()} — ${confStr}) ━━`,
+      `• Predicted margin: ${homeTeam} ${d.predicted_margin > 0 ? '+' : ''}${d.predicted_margin} vs spread ${d.spread > 0 ? '+' : ''}${d.spread} → MODEL EDGE ${d.model_edge > 0 ? '+' : ''}${d.model_edge} pts`,
+      poissonLine.trim() ? poissonLine.trimEnd() : null,
+      `• Cover probability: HOME ${(d.home_cover_prob * 100).toFixed(1)}% / AWAY ${(d.away_cover_prob * 100).toFixed(1)}%`,
+      `• Devigged true prob: HOME ${(d.home_true_prob * 100).toFixed(1)}% / AWAY ${(d.away_true_prob * 100).toFixed(1)}% (book vig: ${d.vig_pct}%)`,
+      `• Model EV: HOME ${d.home_ev_pct > 0 ? '+' : ''}${d.home_ev_pct}% / AWAY ${d.away_ev_pct > 0 ? '+' : ''}${d.away_ev_pct}%`,
+      `• Half-Kelly bet: HOME $${d.home_kelly_usd} / AWAY $${d.away_kelly_usd} (of $${bankroll})`,
+      ratingsLine.trimEnd(),
+      `• Model uncertainty: ${maeStr} | Signal: ${d.bet_signal} [${d.edge_strength}]`,
+      `⚡ INSTRUCTION: ${d.edge_strength === 'STRONG' || d.edge_strength === 'MODERATE' ? `Model says ${d.bet_signal} with ${d.edge_strength} edge — HEAVILY weight this. Math weight = ${MODEL_WEIGHTS.math_weight * 100}%.` : `Model edge is ${d.edge_strength} — use as secondary input only.`}`,
+    ].filter(Boolean).join('\n');
+  } catch {
+    return '';
+  }
+}
+
+// ── parseOddsForTeams — extract home/away + spread from live odds text ────────
+function parseOddsForTeams(oddsText: string): { home: string; away: string; spread: number; homeOdds: number; awayOdds: number } | null {
+  try {
+    // Live odds format: "Away @ Home — HH:MM ET"
+    const atMatch = oddsText.match(/([A-Z][a-zA-Z\s]+?)\s+@\s+([A-Z][a-zA-Z\s]+?)\s+[—–-]/);
+    if (!atMatch) return null;
+    const away = atMatch[1].trim();
+    const home = atMatch[2].trim();
+    // Name-based extractor — Odds API returns outcomes alphabetically, so index is unreliable.
+    // Match team name keywords to find their specific odds/spread in the line.
+    const extractByName = (teamName: string, line: string, pattern: string): string | null => {
+      const words = teamName.split(' ');
+      for (let i = words.length - 1; i >= 0; i--) {
+        const kw = words[i].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        if (kw.length < 3) continue;
+        const re = new RegExp(kw + '[^|]*?' + pattern, 'i');
+        const m = line.match(re);
+        if (m) return m[1];
+      }
+      return null;
+    };
+    // Extract spread (home team perspective) from "Spread: Team A -X.X (...) | Team B +X.X (...)"
+    const spreadLine = oddsText.match(/Spread:[^\n]*/)?.[0] ?? '';
+    const homeSpreadStr = spreadLine ? extractByName(home, spreadLine, '([+-]\\d+\\.?\\d*)\\s*\\(') : null;
+    // Fallback: second spread value in the line
+    const allSpreads = [...spreadLine.matchAll(/([+-]\d+\.?\d*)\s*\(/g)].map(m => parseFloat(m[1]));
+    const spread = homeSpreadStr ? parseFloat(homeSpreadStr) : (allSpreads[1] ?? allSpreads[0] ?? 0);
+    // Extract ML odds by team name
+    const mlSection = oddsText.match(/Moneyline:[^\n]*/);
+    const oddsMatches = mlSection
+      ? [...mlSection[0].matchAll(/([+-]\d{2,4})/g)].map(m => parseInt(m[1]))
+      : [];
+    const homeOdds = mlSection ? (parseInt(extractByName(home, mlSection[0], '([+-]\\d{2,4})') ?? '') || oddsMatches[1] ?? -110) : -110;
+    const awayOdds = mlSection ? (parseInt(extractByName(away, mlSection[0], '([+-]\\d{2,4})') ?? '') || oddsMatches[0] ?? -110) : -110;
+    return { home, away, spread, homeOdds, awayOdds };
+  } catch { return null; }
+}
 
 const app = express();
 const port = Number(process.env.PORT) || 3001;
@@ -39,7 +175,7 @@ function toDecimal(americanOdds: number): number {
 // p = true win probability, americanOdds = line being bet
 function halfKelly(p: number, americanOdds: number): number {
   const b = toDecimal(americanOdds) - 1;
-  if (b <= 0 || p <= 0) return 0;
+  if (b <= 0 || p <= 0 || p >= 1) return 0;
   const fullKelly = (b * p - (1 - p)) / b;
   return Math.max(0, Math.min(fullKelly / 2, 0.25));
 }
@@ -82,268 +218,31 @@ function rateLimit(req: express.Request, max: number, windowMs: number): boolean
   return entry.count > max;
 }
 
-// ── Response cache (30-min TTL) — Fix #1 ─────────────────────────────────────
-const responseCache = new Map<string, { data: unknown; expires: number }>();
-function getCached(key: string): unknown | null {
-  const entry = responseCache.get(key);
-  if (!entry) return null;
-  if (Date.now() > entry.expires) { responseCache.delete(key); return null; }
-  return entry.data;
-}
-function setCache(key: string, data: unknown, ttlMs = 30 * 60 * 1000): void {
-  // Evict oldest if cache grows too large
-  if (responseCache.size > 200) {
-    const oldest = [...responseCache.entries()].sort((a, b) => a[1].expires - b[1].expires)[0];
-    if (oldest) responseCache.delete(oldest[0]);
-  }
-  responseCache.set(key, { data, expires: Date.now() + ttlMs });
+// ── Persistent Memory Wrapper (AgentMemory Integration) ────────────────────────
+function getCached(key: string): any {
+  const now = Date.now();
+  const entry = memory.get(key);
+  if (entry && entry.expires > now) return entry.data;
+  if (entry) memory.delete(key);
+  return null;
 }
 
-// ── Dynamic Heuristic Framework ───────────────────────────────────────────────
+function setCache(key: string, data: any, ttlMs = 15 * 60 * 1000) {
+  memory.set(key, { data, expires: Date.now() + ttlMs });
+}
+
+// ── SkillLoader (Agent-Skills Integration) ────────────────────────────────────
 function getBettingHeuristics(sport: string): string {
-  const GLOBAL = `
-GLOBAL HEURISTICS (apply to every pick):
-1. EV OVER NARRATIVE: Never pick "who will win." Find where the bookmaker's implied probability is LOWER than the true statistical probability. That gap is the edge.
-2. CORRELATION STRESS TEST (SGPs): Only pair legs with MATHEMATICAL multiplier effect. If Leg A hits, does it make Leg B statistically more likely — or just emotionally more likely? Reject emotional correlation.
-3. JUICE FILTER: Reject any parlay where cumulative vig exceeds 15%.
-4. CLV (CLOSING LINE VALUE): Evaluate whether the current line is better or worse than it was 4-8 hours ago. If line moved heavily toward a team, ask: "Is value still here or did sharps already close the window?" If line moves AGAINST your logic without obvious reason, flag as SHARP_OPPOSITION — possible injury news missed.
-5. DERIVATIVE MARKET PIVOT: If the main market (game spread/total) looks efficient (heavy juice, sharp action already priced in), pivot to derivative markets. NBA: 1st quarter spread for fast-starters. NFL: team totals instead of game total. MLB: F5 line instead of full game. These are softer, less surveilled.
-6. INJURY IMPACT QUANTIFIER: Missing player = structural team change. NBA: high-usage star out → analyze usage increase for backup → backup's Over props are often highest EV in the game. MLB: high-leverage reliever pitched 2 nights in a row → assume unavailable → lean Over on 7th-9th innings total.
-7. CONTRARIAN FILTER: If >75% public betting volume is on one side but the line is NOT moving (or moving the opposite direction = RLM), flag as CONTRARIAN_SIGNAL. The underdog or Under usually holds statistical edge in public traps.
-8. SHARP CHECK (final step before any output): (a) CLV Check: Is this line better than 4hrs ago? (b) Correlation: Is this SGP statistically grounded or "perfect world" logic? (c) Derivative: Is there a softer market with cleaner EV? (d) Fragility: If one player gets hurt/foul trouble early, does the whole thesis collapse? If yes, reduce unit size to 0.5u.
-9. FLAG HIGH-RISK: If a bet violates any rule above, label it [HIGH-RISK] and provide a PIVOT that aligns with statistical reality.`.trim();
-
-  const SPORT_RULES: Record<string, string> = {
-    NBA: `
-NBA NICHE VARIABLES + HEURISTICS:
-━━ ADVANCED METRICS (use the NBA ADVANCED STATS block if present):
-- NetRtg = best single predictor of team quality. Gap of 5+ NetRtg pts = strong favorite signal.
-- OffRtg vs opponent DefRtg gap → true scoring edge. If a team's OffRtg (118) faces DefRtg (110) = +8 scoring edge → they score more than the book expects.
-- Pace: Use model Expected Total vs book total line. If model >4 pts above book → lean Over. If model <4 pts below → lean Under.
-━━ SITUATIONAL VARIABLES:
-- ALTITUDE (Denver): Nuggets home games = +2.5 pts edge. Thin air at 5,280 ft exhausts visitors by Q3. Always add +2.5 to Nuggets home spread confidence.
-- REST DIFFERENTIAL: Team with 2+ days rest vs 0 days rest = +1.5–2 pts historical edge. Never ignore rest mismatch.
-- B2B FATIGUE: Night-2 of B2B → veteran star props average -3.5 pts vs their season avg. Young legs (<25) are less affected. Flag B2B for every prop.
-- BACK-TO-BACK ROAD: Away team on B2B night-2 → fade them vs home team. Home team on B2B → slight fade but home crowd partially offsets.
-- HOME/AWAY EFFICIENCY: Some teams' OffRtg drops >5 pts on road. If away team OffRtg drops to below opponent DefRtg → fade them.
-━━ BLOWOUT & USAGE:
-- BLOWOUT RISK: If spread >10, discount "Over" on star prop. 4th quarter rest = props die. Flag any SGP combining heavy favorite ML + star Over.
-- USAGE SHIFT: Star out → backup usage rises 25–35%. Backup's prop is still set to pre-injury level = massive EV. Calculate: missing_star_minutes × usage% → redistributed possessions.
-- KEY NUMBERS: 3, 5, 7, 10. Moving from -9.5 to -10.5 crosses key number 10 — blowout cover probability drops ~8%.
-━━ SGP RULES:
-- Team Total Over + Lead Playmaker Assists (NOT points). Assists are a pace proxy. If team scores more, playmaker gets more assists — pure correlation.
-- Avoid: Star Points Over + Team ML (heavy fav). Blowout makes both legs contradict each other in Q4.`,
-
-    MLB: `
-MLB NICHE VARIABLES + HEURISTICS:
-━━ PITCHER CONTEXT (use REAL PITCHER STATS block if present):
-- ERA/K9/WHIP: Cite exact numbers. ERA <3.50 = elite. WHIP <1.10 = elite. K9 >10 = high strikeout value.
-- PITCHER REST: 5+ days rest → ace performs better. 3 days rest → expect shorter outing, higher ERA, fade K props.
-- HANDEDNESS PLATOON: LHP vs R-heavy lineup → lean pitcher. RHP vs L-heavy lineup → lean pitcher. Check lineup handedness vs pitcher.
-- BULLPEN USAGE: Team's RP thrown 12+ IP in last 3 days → vulnerable late game. Lean Over 7th-9th inning total or full-game Over.
-━━ PARK FACTORS (memorize these):
-- COORS FIELD (COL) = +20–25% runs above average. Always lean Over and fade pitchers here.
-- PETCO PARK (SD), ORACLE PARK (SF), KAUFFMAN (KC) = -15–20% runs. Strong lean Under, strong pitcher ERA support.
-- YANKEE STADIUM (NYY), FENWAY (BOS), GREAT AMERICAN (CIN) = +10–15% runs. Lean Over, especially on windy days.
-- All others: neutral ±5%. Park factor context = cite the specific park name in rationale.
-━━ REGRESSION SIGNALS:
-- BABIP >.320 sustained = luck factor. Fade that pitcher next 2 weeks (regression incoming).
-- Pythagorean W%: RS^1.83/(RS^1.83+RA^1.83). If actual W% > Pythagorean by >8% → team is overperforming. Fade them.
-━━ WEATHER (use WEATHER DATA block):
-- Wind blowing OUT 15+mph + temp >80°F = lean Over (1–1.5 run adjustment).
-- Wind blowing IN 15+mph + temp <60°F = lean Under (1–1.5 run adjustment).
-- Rain delay risk → lean Under (pitchers shaken, relievers used early).
-━━ SHARP BETS:
-- F5 (First 5 Innings): Best when ace vs weak offense. Removes bullpen variance entirely. Sharp bettors prefer F5 on elite starters.
-- NRFI (No Run First Inning): Both aces starting in pitcher park = NRFI best value. Sharp single only, never a parlay leg.
-- UMPIRE ZONE: High-K ump (tight strike zone) → Over on K props, Under on hits total. Always flag if K-zone ump is assigned.
-━━ SGP RULES:
-- Pitcher strikeouts Over + Under hits allowed + Pitcher to win = clean triple correlation on ace days.
-- AVOID run lines in parlays — low payout vs blowout bust risk.`,
-
-    NFL: `
-NFL NICHE VARIABLES + HEURISTICS:
-━━ KEY NUMBERS (non-negotiable):
-- 3 and 7 are sacred. Half-point off 3 or 7 worth 3–5% win probability.
-- Key sequence: 3, 6, 7, 10, 13, 14, 17. Never buy past 10 unless price is -105 or better.
-- Line moves from -2.5 to -3.5 = enormous (FG margin). From -4 to -5 = negligible. Never pay -130 to buy a half-point off 4.
-━━ WEATHER FORMULA (use WEATHER DATA block):
-- Wind >15mph → fade all passing props -30%, lean Under on game total.
-- Wind >25mph → hard Under, fade QBs entirely, lean Run game props.
-- Rain + cold + wind = compound effect. Each adds ~0.5 pts to Under confidence.
-- Dome teams (Chiefs, Saints, Rams, Vikings) playing outdoors in cold/wind = -2 pt adjustment.
-━━ REST + TRAVEL:
-- Bye week team vs no-bye = +3.2 pts historical edge (biggest rest edge in sports).
-- Short week (Thursday game) team = -1.7 pts. Books rarely fully adjust.
-- West Coast team playing 10am local time (East Coast road game) = -1.5 pts. Circadian disruption is real.
-- Long travel (LAX → NYC in winter) = -0.8 pts on road side.
-━━ SITUATION EDGES:
-- DIVISIONAL DOGS: ATS record for divisional underdogs = ~54% historically. Familiarity flattens lines.
-- TURNOVER REGRESSION: Team +5 in turnover margin over last 3 games → regression incoming. Fade them vs positive turnover differential team.
-- REVENGE SPOT: Team coming off embarrassing loss (>17 pts) at home = +2.5 pts ATS edge (motivated performance).
-━━ EFFICIENCY PROXY:
-- Net yards per play differential (offense - defense). >0.5 yd/play advantage = ~3 pt spread edge.
-- 3rd down conversion rate: 50%+ team vs 35%- team = sustained possession advantage.
-- Red zone TD% vs Red zone scoring%: Team converting TDs not FGs = scoring efficiency edge.
-━━ SGP RULES:
-- QB Over passing yards + WR1 Over receiving yards + Team Win = clean triple if pass-heavy team with no wind.
-- NEVER pair QB passing yards + RB rushing yards unless RB is elite receiver (50+ receptions/yr).
-- Avoid: TD scorer props in parlays. Too volatile, kills SGPs constantly.`,
-
-    NHL: `
-NHL NICHE VARIABLES + HEURISTICS:
-━━ GOALTENDER (use NHL TEAM STATS block):
-- GOALIE IS THE SINGLE MOST IMPORTANT VARIABLE. Check SV% in the stats block.
-- SV% >.915 = elite. .900–.915 = average. <.900 = vulnerable. Top goalie vs bottom-10 offense = lean Under and puck line.
-- NEVER BET until starting goalie is confirmed (typically announced ~1–2 hrs before puck drop). Backup goalie = line moves 0.5–1 goal instantly.
-- GAA: <2.50 = elite. >3.00 = vulnerable. Cite exact from stats block.
-━━ SPECIAL TEAMS (use NHL TEAM STATS block):
-- PP Goals (PPG): High PPG team vs low-penalty kill team = lean Over and PP scorer prop.
-- Faceoff% >52% = possession advantage. More possessions → more shots → more goals. Slight Over lean.
-━━ SITUATIONAL VARIABLES:
-- B2B PENALTY: Second game of B2B → -8% goals scored on average. Away B2B = -12%. Always lean Under.
-- TRAVEL: East team playing Pacific coast away games = -5% performance. Pacific team playing 7pm ET road game = -3% (body clock).
-- HOME ICE: NHL home advantage ≈ 0.3 extra goals per game. Small but consistent.
-- HIGH SHOTS ≠ HIGH GOALS: Distinguish shot quantity (shots for/against) from shot quality. 35 perimeter shots ≠ 35 dangerous chances.
-━━ POSSESSION METRICS:
-- Corsi% >55% = dominant possession team. Their goal totals are sustainable (not PDO-inflated).
-- Corsi% <45% = possession-weak. Good record may be PDO-inflated (shooting % + SV% above sustainable). Regression incoming.
-- PDO = shooting% + save% (should ≈ 100). >102 = lucky team. <98 = unlucky team. Regress accordingly.
-━━ SGP RULES:
-- Team puck line (-1.5) + Over team total goals = only valid if opponent has bottom-10 defense AND your team has elite possession Corsi.
-- Anytime goal scorer + Over team goals = clean correlation. If team scores 4+, multiple scorers hit.
-- AVOID: Puck line parlays across multiple games. Hockey variance is violent — one goalie meltdown kills everything.`,
-
-    SOCCER: `
-SOCCER NICHE VARIABLES + HEURISTICS:
-━━ xG (EXPECTED GOALS) — THE CORE SIGNAL:
-- xG > actual goals = team is underperforming. Positive regression incoming. BACK THEM next match.
-- xG < actual goals = team is overperforming ("fraudulent winner"). Regression incoming. FADE THEM next match.
-- Both teams with xG >1.5/game → lean BTTS (Both Teams To Score). Both under 1.0 xGA → lean Clean Sheet / Under.
-━━ FORM CONTEXT (use SOCCER STANDINGS if provided):
-- W/D/L last 5 + GD (Goal Differential) are the primary signals.
-- GD >+15 in a league = dominant team, fully justify -1.5 AH or -0.5 AH.
-- PPG (Points Per Game) >.67 = above average. <.40 = relegation form.
-━━ ASIAN HANDICAP (PRIMARY MARKET):
-- Use AH over 1X2 always. Eliminates draw kill. -0.25 AH (quarter ball) = half bet wins even on draw. Best EV entry.
-- AH -0.5 = must win outright. AH -1.5 = must win by 2. AH +0.5 = wins or draws.
-━━ SITUATION EDGES:
-- HOME ADVANTAGE: EPL ≈ 0.5 goals, La Liga ≈ 0.4, MLS ≈ 0.6, Bundesliga ≈ 0.45. Apply to every line.
-- FIXTURE CONGESTION: 3 games in 8 days = rotation risk. Backup XI reduces quality ~15%.
-- MOTIVATION: Relegation battle team vs comfortable mid-table = massive underdog value. The bottom team fights; mid-table doesn't.
-- LATE-SEASON FATIGUE: Champions League participant playing domestic league late season = 20% extra fatigue. Rotation likely.
-━━ NICHE MARKETS:
-- CORNERS: Wing-heavy teams (crosses per game >15) generate corners even when losing. Corners O/U is bookmaker-soft — less sharp money.
-- CARDS: High-card referee (>5 yellows/game) + physical matchup (derby, relegation) = Over cards EV.
-- BTTS: Defend by checking last 5 H/A splits separately. A team scoring at home but not away skews BTTS calculations.
-━━ SGP RULES:
-- Over game goals + BTTS = correlated only if both teams have >1.2 GF/game. One defensive team kills it.
-- Result + Under/Over Cards based on referee card rate = clean correlation for high-card refs.
-- AVOID: Draws in parlays. Draw kill rate = parlay poison. Use double chance (Win or Draw) instead.`,
-
-    TENNIS: `
-TENNIS NICHE VARIABLES + HEURISTICS:
-━━ SURFACE IS THE DOMINANT VARIABLE — ALWAYS CHECK THE TOURNAMENT SURFACE FIRST:
-- CLAY (Roland Garros): Slowest surface. High-bounce, topspin-dominant, long baseline rallies. Serve matters LESS. Baseline grinders, physicality, and topspin excel. Big servers underperform. Fade flat-hitters and pure serve-bots.
-- GRASS (Wimbledon): Fastest surface. Low-bounce, serve+volley, short points. Big servers and net players dominate. First-set results are highly predictive (serve holds easy). Fade clay specialists — their topspin loops into the net.
-- HARD / OUTDOOR (US Open, Australian Open): Balanced surface. US Open is medium-fast. Aus Open Plexicushion is medium-slow. Recent form and ranking most predictive here. Serve still matters but not as dominant as grass.
-- HARD / INDOOR: Fast, controlled. No wind, no sun. Predictable bounce. Serve dominant. Big servers favorite. Baseline players struggle more indoors than outdoor hard.
-━━ SERVE + RETURN STATS BY SURFACE:
-- Hold% >80% = reliable server. Use game handicap over ML. Hold% <65% = volatile — fade as heavy favorite.
-- Ace rate: On grass, high ace rate = massive advantage. On clay, almost irrelevant. On hard, moderate advantage.
-- Break point conversion: On clay, high because longer rallies create more opportunities. On grass, very low.
-━━ FATIGUE TRACKING:
-- Total SETS played this tournament week (not just W/L). 3-setter in R1 + 3-setter in R2 = 6 sets of high-intensity = fatigue by R3+.
-- Total GAMES played is even better. >50 games in 2 rounds = physical fatigue. Lean against in next round.
-- POST-TITLE HANGOVER: Fade any player the week AFTER winning a tournament. Documented 58% underperformance vs. expected line. Fatigue + motivation dip is real.
-━━ CONDITIONS:
-- Roland Garros: Heavy balls (humidity), slow court, physical. Stamina dominant.
-- Wimbledon: Light balls, fast grass, serve dominant. First 2 rounds often upsets (grass specialists appear).
-- US Open night sessions: Faster ball under lights, loud crowd, momentum swings. Serve is enhanced at night.
-- Australian Open heat policy: Extreme heat = delays, physical attrition. Heavy favorites in 5-set danger.
-━━ BETTING STRUCTURE:
-- Game Handicap (+3.5/-3.5) > ML for heavy favorites (-250+). Protects against bagel+tiebreak variance. Much better EV.
-- Set Handicap (-1.5 sets = must win 2-0) = value when one player is clearly physically superior AND on their best surface.
-- Early rounds (R128, R64): Highest upset rate. 15–20% higher upset frequency vs R16+. Value on underdogs especially on grass.`,
-
-    UFC: `
-UFC NICHE VARIABLES + HEURISTICS:
-━━ STYLE MATCHUP — THE PRIMARY VARIABLE:
-- WRESTLER vs STRIKER: Elite wrestlers win 68%+ vs pure strikers. Takedowns control time, nullify striking. Fade the striker ML unless he has elite takedown defense.
-- JUDO/BJJ vs STRIKER: Submission threat = striker can't fully commit to punching. Grappler ML or Decision prop.
-- STRIKER vs STRIKER: Judge it on reach, speed, accuracy, recent KO results. Pressure fighter vs counter fighter = reach decides distance control.
-- GRAPPLER vs GRAPPLER: Evaluate who has better takedown defense. The one who stays standing is usually better on the feet.
-━━ CAGE VARIABLES:
-- SMALL CAGE (UFC Apex, ~25-ft): Higher finish rate (+15% KO/Sub vs large venues). Less room to run. Pressure fighters thrive. Lean ITD (Inside the Distance).
-- LARGE ARENA (MSG, T-Mobile, Kaseya): More space = more out-fighting. Counter strikers thrive. Decision rate rises. Method:Decision bet has value.
-- OUTDOOR EVENT: Rarely happens but wind/heat factors apply to striking accuracy.
-━━ PHYSICAL ADVANTAGES:
-- REACH: >3-inch reach advantage + age advantage >3 yrs = significant edge. Every inch matters at distance fighting.
-- HEIGHT: Tall fighters with long reach prefer distance. Short stocky fighters prefer clinch and grappling.
-- WEIGHT CLASS: Naturally bigger fighters who cut weight hard vs fighters at their natural weight = dehydration edge for natural-weight fighter post-weigh-in.
-━━ PSYCHOLOGICAL + FORM SIGNALS:
-- RECENT KO LOSS: Chin concern is real. Documented increased KO vulnerability in subsequent fights. Fade under pressure vs KO artist, even if they recovered.
-- STREAK: Win streak (5+) on betting favorites can be overvalued by public. Regression to mean is common.
-- REVENGE SPOT: Fighter coming off a close controversial loss = motivated. Slight underdog value if styles align.
-- LATE NOTICE: Fighter taking fight on <2 weeks notice = -5–8% performance estimate. Book doesn't always adjust.
-━━ BETTING STRUCTURE:
-- ITD (Inside the Distance) > specific round: Covers both KO and Submission. Better EV, same edge.
-- Method props carry highest EV of any UFC market: Decision, KO/TKO, Submission.
-- Max 2-leg UFC parlays. Single fight upset destroys 3+ leg parlays constantly.
-- Main card vs Prelim: Prelim fighters less scouted by books = more mispricings in prelims.`,
-
-    WNBA: `
-WNBA NICHE VARIABLES + HEURISTICS:
-━━ CORE EDGE: BOOKS ARE 2–3 SEASONS BEHIND:
-- Sportsbooks allocate minimal modeling resources to WNBA. Lines are set by NBA quants using rough adjustment. Systematic mispricing exists — this is the core exploitable edge.
-- Props open late (2hrs before tip). Low liquidity. Sharp money moves lines fast. Grab early props on pace-up stars before public discovers them. CLV window is 4–6x bigger than NBA.
-━━ PACE EXPLOIT:
-- Atlanta Dream, Dallas Wings, Indiana Fever = top-3 pace WNBA. When they play slow-pace opponents (Seattle, New York), the pace mismatch drags totals UP above book estimates. Lean Over aggressively.
-- Seattle Storm = explosive Q3/Q4 but slow Q1/Q2. Fade Seattle team total in Q1 lines. Back Seattle Q4 total.
-━━ STAR REMOVAL = PROP EXPLOSION:
-- WNBA rosters: 12 players. No G-League call-ups. A'ja Wilson out → no equivalent backup exists. Usage redistributes across 2–3 players who get 5–8 extra possessions each.
-- Their props are still set at pre-injury levels = massive EV.
-- Formula: missing star usage% × team possessions → redistributed possessions to specific backups. Those backups' props are the value bet.
-━━ B2B + TRAVEL:
-- WNBA B2B: 48-hour turnaround, no charter flights — commercial travel only. Away team on B2B night-2: fade their spread, fade star props (especially minutes-based props).
-- Home advantage in WNBA ≈ 3.5 pts but books price it at 1.5–2. Small home favorites underpriced by ~1–1.5 pts.
-━━ QUARTER LINES:
-- Books set Q1/Q2 totals using stale full-game models. Teams with strong quarter-specific patterns:
-  → Atlanta Dream: explosive starters, Q1 Over value.
-  → Seattle Storm: slow starters (bottom-5 Q1 scoring), explosive Q3/Q4. Fade Q1, back Q3.
-  → Indiana Fever: Caitlin Clark creates high-pace Q2–Q3 surge. Q2 total often underpriced.
-━━ SGP RULES:
-- Team Total Over + Lead Playmaker Assists (not points). Assists proxy ball movement + pace better than points alone.
-- Avoid WNBA moneyline parlays on heavy favorites (-200+). 30%+ upset rate on big WNBA favorites — variance is violent.`,
-
-    F1: `
-F1 NICHE VARIABLES + HEURISTICS:
-━━ CIRCUIT TYPE IS THE PRIMARY VARIABLE (check CIRCUIT CONTEXT if provided):
-- STREET CIRCUIT (Monaco, Singapore, Baku/Azerbaijan, Jeddah, Miami, Las Vegas, Melbourne/Albert Park, Zandvoort):
-  Qualifying position predicts 80–95% of race result. Overtaking near-impossible. Dirty air = catastrophic. Back the pole sitter. Heavy favorite is actually underpriced here.
-- POWER CIRCUIT (Monza, Spa/Belgium, Bahrain, Abu Dhabi, Austin):
-  Engine power = dominant factor. Overtaking common via long straights. Qualifying matters ~50%. Red Bull and Ferrari power units historically strongest here.
-- TECHNICAL CIRCUIT (Hungary, Silverstone, Suzuka, Interlagos):
-  Aerodynamic downforce + setup critical. Low-drag vs high-downforce setups diverge. Teams with best aero engineers (Red Bull, Ferrari) dominate. Overtaking moderate.
-- SPRINT WEEKEND: FP3 pace data available before race. Sprint result reveals race-trim setup directly. Adjust race bets based on sprint performance.
-━━ KEY BETTING VARIABLES:
-- TEAMMATE H2H: Most predictable F1 market. Both on identical equipment. Use FP3 long-run (fuel-corrected) pace to identify which teammate is better set up for race-trim.
-- WET WEATHER: Rain = field normalizer. Midfield cars gain 2–3 grid positions vs dry. Back underdog +AH (top-10 finish). Fade heavy favorites (they have more to lose).
-  → Rain probability on race day = major line mover. Always check weather context.
-- DNF PROBABILITY: Street circuits 20–40% historical DNF rate. "Classified Finisher" prop has clear value on street circuits. Safety car = guaranteed in Monaco, Singapore.
-- TIRE STRATEGY: Soft → Medium → Hard progression. Teams choosing aggressive undercut (early pit stop) gain track position. Conservative teams (overcut) rely on pace. Undercut success rate ≈ 70%.
-━━ CHAMPIONSHIP PRESSURE:
-- Tight championship battle → drivers race harder in early laps = higher DNF risk.
-- Drivers already clinched = race management mode. Fade them in risky circuits.
-- Midfield constructor battle: Teams gambling on strategy for points = more variance in results.
-━━ BETTING STRUCTURE:
-- Outright Race Winner: Only bet on street circuits (pole = 80% win prob) or dominant cars in dry.
-- Podium Finish (Top 3): Better EV than race winner. More coverage, same edge from dominant team.
-- Teammate H2H: Cleanest, most predictable F1 market. Always look here first.
-- AVOID: Race winner outright on technical circuits in mixed conditions. Too many variables.`,
-  };
-
-  return `${GLOBAL}\n\n${SPORT_RULES[sport.toUpperCase()] || SPORT_RULES.NBA}`;
+  try {
+    const coreH = readFileSync(path.resolve(__dirname, 'skills/betting/cte_core_skill.md'), 'utf8');
+    const globalH = readFileSync(path.resolve(__dirname, 'skills/betting/global_heuristics.md'), 'utf8');
+    const sportPath = path.resolve(__dirname, `skills/betting/${sport.toLowerCase()}_skill.md`);
+    const sportH = existsSync(sportPath) ? readFileSync(sportPath, 'utf8') : '';
+    return `${coreH}\n\n${globalH}\n\n${sportH}`;
+  } catch (err) {
+    console.error(`[SkillLoader] Failed to load heuristics for ${sport}:`, err);
+    return "CTE LOCKS: Find the edge. No fluff.";
+  }
 }
 
 // ── Sport-specific bet type context ───────────────────────────────────────────
@@ -442,11 +341,9 @@ const SPORT_KEYS: Record<string, string[]> = {
   WNBA:   ["basketball_wnba"],
   MLB:    ["baseball_mlb"],
   NFL:    ["americanfootball_nfl"],
-  NHL:    ["icehockey_nhl"],
-  SOCCER: ["soccer_epl", "soccer_usa_mls", "soccer_uefa_champs_league", "soccer_spain_la_liga"],
-  TENNIS: ["tennis_atp_french_open", "tennis_wta_french_open", "tennis_atp_wimbledon", "tennis_wta_wimbledon", "tennis_atp_us_open", "tennis_wta_us_open", "tennis_atp_aus_open", "tennis_wta_aus_open"],
-  UFC:    ["mma_mixed_martial_arts"],
-  F1:     [], // not on this API
+  SOCCER: ["soccer_epl", "soccer_usa_mls", "soccer_uefa_champs_league", "soccer_spain_la_liga", "soccer_brazil_campeonato", "soccer_mexico_ligamx"],
+  TENNIS: ["tennis_atp_french_open", "tennis_wta_french_open", "tennis_atp_wimbledon", "tennis_wta_wimbledon", "tennis_atp_us_open", "tennis_wta_us_open", "tennis_atp_italian_open", "tennis_wta_italian_open"],
+  F1:     [], // not on Odds API
 };
 
 interface OddsEvent {
@@ -464,36 +361,129 @@ interface OddsEvent {
   }>;
 }
 
+// Cache active tennis keys so we don't hit the sports list API on every odds call
+let _activeTennisKeys: string[] | null = null;
+let _activeTennisExpiry = 0;
+async function getActiveTennisKeys(): Promise<string[]> {
+  if (_activeTennisKeys && Date.now() < _activeTennisExpiry) return _activeTennisKeys;
+  try {
+    const r = await fetch(`${ODDS_API_BASE}/sports?apiKey=${ODDS_API_KEY}`, { signal: AbortSignal.timeout(5000) });
+    if (!r.ok) return SPORT_KEYS.TENNIS;
+    const all = await r.json() as Array<{ key: string; active: boolean }>;
+    const active = all.filter(s => s.key.startsWith('tennis_') && s.active).map(s => s.key);
+    _activeTennisKeys = active.length ? active : SPORT_KEYS.TENNIS;
+    _activeTennisExpiry = Date.now() + 6 * 60 * 60 * 1000; // 6hr cache
+    return _activeTennisKeys;
+  } catch { return SPORT_KEYS.TENNIS; }
+}
+
+// ── Raw odds cache — ONE API call per sport key per 10 min, shared by all callers ─
+const _rawOddsCache = new Map<string, { events: OddsEvent[]; expires: number }>();
+
+async function fetchRawOdds(sportKey: string): Promise<OddsEvent[]> {
+  const cached = _rawOddsCache.get(sportKey);
+  if (cached && Date.now() < cached.expires) return cached.events;
+  try {
+    const url = `${ODDS_API_BASE}/sports/${sportKey}/odds?apiKey=${ODDS_API_KEY}&regions=us&markets=h2h,spreads,totals&bookmakers=pinnacle,draftkings,fanduel&dateFormat=iso&oddsFormat=american`;
+    const res = await fetch(url, { signal: AbortSignal.timeout(6000) });
+    if (res.status === 422) return [];
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => ({})) as { error_code?: string };
+      if (errBody?.error_code === 'OUT_OF_USAGE_CREDITS') {
+        console.warn('[OddsAPI] Quota exhausted');
+        _rawOddsCache.set(sportKey, { events: [], expires: Date.now() + 60 * 60 * 1000 }); // block 1hr
+      }
+      return [];
+    }
+    const events = await res.json() as OddsEvent[];
+    if (!Array.isArray(events)) return [];
+    _rawOddsCache.set(sportKey, { events, expires: Date.now() + 10 * 60 * 1000 }); // 10 min
+    return events;
+  } catch { return []; }
+}
+
 async function fetchLiveOdds(sport: string, gameQuery?: string): Promise<string> {
   if (!ODDS_API_KEY) return "Odds API key not configured.";
-  const sportKeys = SPORT_KEYS[sport] || SPORT_KEYS.NBA;
+  let sportKeys = SPORT_KEYS[sport] || SPORT_KEYS.NBA;
+  // For tennis, always use dynamically discovered active tournaments
+  if (sport.toUpperCase() === 'TENNIS') sportKeys = await getActiveTennisKeys();
   if (sportKeys.length === 0) return `No odds API coverage for ${sport}.`;
 
-  // Tennis: surface type from sport_key — critical betting variable
+  // Tennis: surface type from sport_key — critical betting variable (Rule 9: surface MUST appear in odds block)
   const TENNIS_SURFACE: Record<string, string> = {
-    'tennis_atp_french_open':  '🏟️ ROLAND GARROS — Surface: CLAY (slowest, topspin-dominant, baseline grinders excel, big servers fade)',
-    'tennis_wta_french_open':  '🏟️ ROLAND GARROS — Surface: CLAY (slowest, topspin-dominant, physical endurance key)',
-    'tennis_atp_wimbledon':    '🏟️ WIMBLEDON — Surface: GRASS (fastest, serve+volley, big servers/net players dominate, clay specialists fade)',
-    'tennis_wta_wimbledon':    '🏟️ WIMBLEDON — Surface: GRASS (fastest, serve dominant, low bounce, aggressive baseliners)',
-    'tennis_atp_us_open':      '🏟️ US OPEN — Surface: HARD/OUTDOOR (medium-fast, night sessions faster ball under lights, loud crowd)',
-    'tennis_wta_us_open':      '🏟️ US OPEN — Surface: HARD/OUTDOOR (medium-fast, night session crowd/momentum factor)',
-    'tennis_atp_aus_open':     '🏟️ AUSTRALIAN OPEN — Surface: HARD/OUTDOOR (medium-slow Plexicushion, heat policy in January, long rallies)',
-    'tennis_wta_aus_open':     '🏟️ AUSTRALIAN OPEN — Surface: HARD/OUTDOOR (medium-slow Plexicushion, heat delays possible)',
+    'tennis_atp_french_open':         '🏟️ ROLAND GARROS — Surface: CLAY (slowest, topspin-dominant, baseline grinders excel, big servers fade)',
+    'tennis_wta_french_open':         '🏟️ ROLAND GARROS — Surface: CLAY (slowest, topspin-dominant, physical endurance key)',
+    'tennis_atp_wimbledon':           '🏟️ WIMBLEDON — Surface: GRASS (fastest, serve+volley, big servers/net players dominate, clay specialists fade)',
+    'tennis_wta_wimbledon':           '🏟️ WIMBLEDON — Surface: GRASS (fastest, serve dominant, low bounce, aggressive baseliners)',
+    'tennis_atp_us_open':             '🏟️ US OPEN — Surface: HARD/OUTDOOR (medium-fast, night sessions faster ball under lights, loud crowd)',
+    'tennis_wta_us_open':             '🏟️ US OPEN — Surface: HARD/OUTDOOR (medium-fast, night session crowd/momentum factor)',
+    'tennis_atp_italian_open':        '🏟️ ITALIAN OPEN (Rome) — Surface: CLAY (Roland Garros warmup, baseline grinders excel, big servers fade)',
+    'tennis_wta_italian_open':        '🏟️ ITALIAN OPEN (Rome) — Surface: CLAY (pre-RG clay form, topspin/endurance dominant)',
+    'tennis_atp_australian_open':     '🏟️ AUSTRALIAN OPEN — Surface: HARD/OUTDOOR (medium-fast, hot Melbourne conditions, big servers thrive, long rallies common)',
+    'tennis_wta_australian_open':     '🏟️ AUSTRALIAN OPEN — Surface: HARD/OUTDOOR (medium-fast, heat policy in effect, physically demanding)',
+    'tennis_atp_madrid_open':         '🏟️ MADRID OPEN — Surface: CLAY/ALTITUDE (altitude 650m makes ball fly faster than typical clay, slight server advantage vs other clay)',
+    'tennis_wta_madrid_open':         '🏟️ MADRID OPEN — Surface: CLAY/ALTITUDE (altitude 650m, ball flies faster, defender slightly less advantaged than standard clay)',
+    'tennis_atp_barcelona':           '🏟️ BARCELONA OPEN — Surface: CLAY (slow, high bounce, topspin specialists excel)',
+    'tennis_atp_monte_carlo':         '🏟️ MONTE-CARLO — Surface: CLAY (slowest clay in the calendar, defensive baseliners dominate, upsets common)',
+    'tennis_atp_montecarlo':          '🏟️ MONTE-CARLO — Surface: CLAY (slowest clay in the calendar, defensive baseliners dominate, upsets common)',
+    'tennis_atp_hamburg':             '🏟️ HAMBURG OPEN — Surface: CLAY (outdoor clay, heavy conditions, grinders rewarded)',
+    'tennis_wta_hamburg':             '🏟️ HAMBURG OPEN — Surface: CLAY',
+    'tennis_atp_halle':               '🏟️ HALLE OPEN — Surface: GRASS (Wimbledon warmup, big servers dominate, net-rusher friendly)',
+    'tennis_atp_queens_club':         '🏟️ QUEENS CLUB — Surface: GRASS (Wimbledon warmup, serve-dominant, fast courts)',
+    'tennis_wta_eastbourne':          '🏟️ EASTBOURNE — Surface: GRASS (Wimbledon warmup, fast and low-bouncing)',
+    'tennis_wta_birmingham':          '🏟️ BIRMINGHAM — Surface: GRASS (Wimbledon warmup)',
+    'tennis_atp_miami_open':          '🏟️ MIAMI OPEN — Surface: HARD/OUTDOOR (medium-fast, humid Florida conditions, baseline rallies)',
+    'tennis_wta_miami_open':          '🏟️ MIAMI OPEN — Surface: HARD/OUTDOOR (medium-fast, high humidity, consistent ball behavior)',
+    'tennis_atp_indian_wells_masters':'🏟️ INDIAN WELLS — Surface: HARD/OUTDOOR (fast, dry desert air, ball stays low, big hitters favored)',
+    'tennis_wta_indian_wells_masters':'🏟️ INDIAN WELLS — Surface: HARD/OUTDOOR (fast, desert conditions, flat ball trajectory)',
+    'tennis_atp_cincinnati':          '🏟️ CINCINNATI OPEN — Surface: HARD/OUTDOOR (medium-fast, Wimbledon tuneup for US Open, balanced play)',
+    'tennis_wta_cincinnati':          '🏟️ CINCINNATI OPEN — Surface: HARD/OUTDOOR (medium-fast, pre-US-Open form guide)',
+    'tennis_atp_canada_masters':      '🏟️ CANADIAN OPEN — Surface: HARD/OUTDOOR (medium-fast, alternates Montreal/Toronto, physical conditions)',
+    'tennis_wta_canada_masters':      '🏟️ CANADIAN OPEN — Surface: HARD/OUTDOOR',
+    'tennis_atp_dubai':               '🏟️ DUBAI DUTY FREE — Surface: HARD/OUTDOOR (fast, low humidity, serve advantage, Middle East desert conditions)',
+    'tennis_atp_doha':                '🏟️ QATAR OPEN (Doha) — Surface: HARD/OUTDOOR (fast, indoor-like conditions, low bounce)',
+    'tennis_atp_rotterdam':           '🏟️ ROTTERDAM — Surface: HARD/INDOOR (fast indoor, big servers dominate, short points)',
+    'tennis_atp_marseille':           '🏟️ MARSEILLE — Surface: HARD/INDOOR (fast, big serve advantage)',
+    'tennis_atp_vienna':              '🏟️ VIENNA — Surface: HARD/INDOOR (medium-fast indoor, baseline favored)',
+    'tennis_atp_paris_masters':       '🏟️ PARIS MASTERS — Surface: HARD/INDOOR (fast, big servers thrive, year-end fatigue factor)',
+    'tennis_wta_paris':               '🏟️ PARIS — Surface: HARD/INDOOR (fast indoor, aggressive baseliners favored)',
+    'tennis_atp_stockholm':           '🏟️ STOCKHOLM — Surface: HARD/INDOOR',
+    'tennis_atp_gijon':               '🏟️ GIJON — Surface: HARD/INDOOR',
+    'tennis_atp_lyon':                '🏟️ LYON — Surface: CLAY (pre-Roland Garros clay)',
+    'tennis_wta_lyon':                '🏟️ LYON — Surface: CLAY',
+    'tennis_atp_geneva':              '🏟️ GENEVA — Surface: CLAY (pre-Roland Garros clay, high altitude, heavy ball)',
+    'tennis_wta_geneva':              '🏟️ GENEVA — Surface: CLAY',
+    'tennis_atp_estoril':             '🏟️ ESTORIL — Surface: CLAY',
+    'tennis_atp_munich':              '🏟️ MUNICH — Surface: CLAY',
+    'tennis_atp_bucharest':           '🏟️ BUCHAREST — Surface: CLAY',
+    'tennis_atp_marrakech':           '🏟️ MARRAKECH — Surface: CLAY (very slow, physical grinders rewarded)',
+    'tennis_atp_gstaad':              '🏟️ GSTAAD — Surface: CLAY (high altitude clay, heavy conditions)',
+    'tennis_atp_umag':                '🏟️ UMAG — Surface: CLAY',
+    'tennis_atp_kitzbuhel':           '🏟️ KITZBUHEL — Surface: CLAY',
+  };
+  // Fallback: derive surface from sport key pattern if not in map
+  const getTennisSurface = (key: string): string => {
+    if (TENNIS_SURFACE[key]) return TENNIS_SURFACE[key];
+    const k = key.toLowerCase();
+    const name = key.replace(/^tennis_(atp|wta)_/, '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    if (/french|roland|madrid|barcelona|monte.?carlo|clay|rome|italian|hamburg|lyon|geneva|estoril|munich|bucharest|marrakech|gstaad|umag|kitzbuhel|houston|bogota/.test(k))
+      return `🏟️ ${name} — Surface: CLAY (topspin-dominant, baseline grinders excel, big servers fade)`;
+    if (/wimbledon|queens|halle|eastbourne|birmingham|grass/.test(k))
+      return `🏟️ ${name} — Surface: GRASS (fastest, serve+volley, big servers dominate)`;
+    if (/indoor|rotterdam|marseille|vienna|paris|stockholm|sofia|gijon|montpellier/.test(k))
+      return `🏟️ ${name} — Surface: HARD/INDOOR (fast, big servers favored, short points)`;
+    return `🏟️ ${name} — Surface: HARD/OUTDOOR (medium-fast, balanced baseline/serve play)`;
   };
 
   const results: string[] = [];
 
   for (const key of sportKeys) {
     try {
-      const url = `${ODDS_API_BASE}/sports/${key}/odds?apiKey=${ODDS_API_KEY}&regions=us&markets=h2h,spreads,totals,alternate_spreads,alternate_totals&bookmakers=pinnacle,draftkings,fanduel&dateFormat=iso&oddsFormat=american`;
-      const res = await fetch(url, { signal: AbortSignal.timeout(6000) });
-      if (!res.ok) continue;
-
-      const events = await res.json() as OddsEvent[];
-      if (!Array.isArray(events) || events.length === 0) continue;
+      const events = await fetchRawOdds(key);
+      if (!events.length) continue;
 
       // Inject tennis surface header before listing events for this tournament
-      if (TENNIS_SURFACE[key]) results.push(TENNIS_SURFACE[key]);
+      if (sport.toUpperCase() === 'TENNIS') results.push(getTennisSurface(key));
 
       // Filter by game query if provided
       const filtered = gameQuery
@@ -514,8 +504,6 @@ async function fetchLiveOdds(sport: string, gameQuery?: string): Promise<string>
 
         const lines: string[] = [`${ev.away_team} @ ${ev.home_team} — ${gameTime} ET`];
 
-        const altSpreads: string[] = [];
-        const altTotals: string[] = [];
         for (const market of pinnacle.markets) {
           if (market.key === 'h2h') {
             const [o1, o2] = market.outcomes;
@@ -540,16 +528,8 @@ async function fetchLiveOdds(sport: string, gameQuery?: string): Promise<string>
           } else if (market.key === 'totals') {
             const tot = market.outcomes.map(o => `${o.name} ${o.point} (${o.price > 0 ? '+' : ''}${o.price})`).join(' | ');
             lines.push(`  Total: ${tot}`);
-          } else if (market.key === 'alternate_spreads') {
-            const alts = market.outcomes.map(o => `${o.name} ${o.point && o.point > 0 ? '+' : ''}${o.point} (${o.price > 0 ? '+' : ''}${o.price})`);
-            for (let i = 0; i < alts.length; i += 2) altSpreads.push(alts.slice(i, i + 2).join(' | '));
-          } else if (market.key === 'alternate_totals') {
-            const alts = market.outcomes.map(o => `${o.name} ${o.point} (${o.price > 0 ? '+' : ''}${o.price})`);
-            for (let i = 0; i < alts.length; i += 2) altTotals.push(alts.slice(i, i + 2).join(' | '));
           }
         }
-        if (altSpreads.length) lines.push(`  Alt Spreads: ${altSpreads.slice(0, 4).join(' // ')}`);
-        if (altTotals.length) lines.push(`  Alt Totals: ${altTotals.slice(0, 4).join(' // ')}`);
         results.push(lines.join('\n'));
       }
     } catch { /* skip failed sport key */ }
@@ -559,110 +539,156 @@ async function fetchLiveOdds(sport: string, gameQuery?: string): Promise<string>
   return `LIVE ODDS (Pinnacle/DraftKings) — ${sport}:\n${results.join('\n\n')}`;
 }
 
-// ── BallDontLie — real NBA player stats + schedule ───────────────────────────
-const BDL_KEY = process.env.BALLDONTLIE_API_KEY || "";
+// ── NBA Player Stats — ESPN box score (free, no key needed) ──────────────────
+// Uses ESPN game summary box score. Works for games in-progress AND final.
+// For pre-game (Scheduled) → returns "" → hard gate in alpha sheet returns [].
 
-type BDLTeam   = { id: number; full_name: string; abbreviation: string };
-type BDLGame   = { id: number; home_team: BDLTeam; visitor_team: BDLTeam; status: string };
-type BDLPlayer = { id: number; first_name: string; last_name: string; position: string };
-type BDLAvg    = { player_id: number; pts: number; reb: number; ast: number; fg_pct: number; fg3_pct: number; games_played: number };
-type BDLStat   = { player: { id: number }; pts: number };
+type ESPNEvent = {
+  id: string; name: string;
+  status: { type: { description: string; completed: boolean } };
+  competitions: Array<{ competitors: Array<{ homeAway: string; team: { displayName: string; abbreviation: string } }> }>;
+};
 
-async function fetchNBAGamesToday(): Promise<BDLGame[]> {
-  if (!BDL_KEY) return [];
+async function fetchNBAEventsToday(league: 'nba' | 'wnba' = 'nba'): Promise<ESPNEvent[]> {
   try {
-    const today = new Date().toISOString().split('T')[0];
     const res = await fetch(
-      `https://api.balldontlie.io/v1/games?dates[]=${today}&per_page=15`,
-      { headers: { Authorization: BDL_KEY }, signal: AbortSignal.timeout(5000) }
+      `https://site.api.espn.com/apis/site/v2/sports/basketball/${league}/scoreboard`,
+      { signal: AbortSignal.timeout(5000) }
     );
     if (!res.ok) return [];
-    const data = await res.json() as { data: BDLGame[] };
-    return data.data ?? [];
+    const data = await res.json() as { events?: ESPNEvent[] };
+    return data.events ?? [];
   } catch { return []; }
 }
 
-// Real season averages + last-5 pts form for both matchup teams
-async function fetchNBAPlayerStats(matchup: string): Promise<string> {
-  if (!BDL_KEY) return "";
+// Real player stats from ESPN box score for a specific matchup
+async function fetchNBAPlayerStats(matchup: string, league: 'nba' | 'wnba' = 'nba'): Promise<string> {
   try {
-    const games = await fetchNBAGamesToday();
+    const events = await fetchNBAEventsToday(league);
     const keywords = matchup.toLowerCase().split(/\s+vs?\.?\s+/i).map(t => t.trim());
 
-    const game = games.find(g =>
-      keywords.some(kw =>
-        g.home_team.full_name.toLowerCase().includes(kw) ||
-        g.visitor_team.full_name.toLowerCase().includes(kw) ||
-        g.home_team.abbreviation.toLowerCase().includes(kw) ||
-        g.visitor_team.abbreviation.toLowerCase().includes(kw)
+    const event = events.find(e =>
+      e.competitions[0]?.competitors.some(c =>
+        keywords.some(kw =>
+          c.team.displayName.toLowerCase().includes(kw) ||
+          c.team.abbreviation.toLowerCase().includes(kw)
+        )
       )
     );
-    if (!game) return "";
+    if (!event) return "";
 
-    const month  = new Date().getMonth() + 1;
-    const season = month >= 10 ? new Date().getFullYear() : new Date().getFullYear() - 1;
-    const teams  = [game.home_team, game.visitor_team];
+    const status = event.status.type.description;
+    // Only return stats if the game has real box score data (In Progress or Final)
+    if (status === 'Scheduled') return "";
+
+    const sumRes = await fetch(
+      `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event=${event.id}`,
+      { signal: AbortSignal.timeout(6000) }
+    );
+    if (!sumRes.ok) return "";
+    const sumData = await sumRes.json() as {
+      boxscore?: {
+        players?: Array<{
+          team: { displayName: string };
+          statistics: Array<{
+            names: string[];
+            athletes: Array<{ athlete: { displayName: string }; stats: string[]; starter?: boolean }>;
+          }>;
+        }>;
+      };
+    };
+
+    const playersSection = sumData.boxscore?.players;
+    if (!playersSection?.length) return "";
+
     const blocks: string[] = [];
+    for (const teamData of playersSection) {
+      const statGroup = teamData.statistics[0];
+      if (!statGroup) continue;
+      const h = statGroup.names;
+      const ptsI = h.indexOf('PTS');
+      const rebI = h.indexOf('REB');
+      const astI = h.indexOf('AST');
+      const minI = h.indexOf('MIN');
+      const stlI = h.indexOf('STL');
+      const blkI = h.indexOf('BLK');
+      const fgI  = h.indexOf('FG');
 
-    for (const team of teams) {
-      const pRes = await fetch(
-        `https://api.balldontlie.io/v1/players/active?team_ids[]=${team.id}&per_page=12`,
-        { headers: { Authorization: BDL_KEY }, signal: AbortSignal.timeout(5000) }
-      );
-      if (!pRes.ok) continue;
-      const pData = await pRes.json() as { data: BDLPlayer[] };
-      if (!pData.data?.length) continue;
+      const athletes = statGroup.athletes.filter(a => {
+        const min = parseFloat(a.stats[minI] ?? '0');
+        return min >= 5;
+      });
+      athletes.sort((a, b) => parseInt(b.stats[ptsI] ?? '0') - parseInt(a.stats[ptsI] ?? '0'));
 
-      const ids      = pData.data.slice(0, 10).map(p => p.id);
-      const idParams = ids.map(id => `player_ids[]=${id}`).join('&');
-
-      const [avgRes, recentRes] = await Promise.all([
-        fetch(`https://api.balldontlie.io/v1/season_averages?season=${season}&${idParams}`,
-          { headers: { Authorization: BDL_KEY }, signal: AbortSignal.timeout(5000) }),
-        fetch(`https://api.balldontlie.io/v1/stats?${idParams}&per_page=50&seasons[]=${season}`,
-          { headers: { Authorization: BDL_KEY }, signal: AbortSignal.timeout(5000) }),
-      ]);
-
-      const avgData    = avgRes.ok    ? (await avgRes.json()    as { data: BDLAvg[]  }).data : [];
-      const recentData = recentRes.ok ? (await recentRes.json() as { data: BDLStat[] }).data : [];
-
-      // last-5 pts per player (API returns most-recent first)
-      const recentByPlayer = new Map<number, number[]>();
-      for (const s of recentData) {
-        const arr = recentByPlayer.get(s.player.id) ?? [];
-        if (arr.length < 5) { arr.push(s.pts); recentByPlayer.set(s.player.id, arr); }
-      }
-
-      const playerMap = new Map(pData.data.map(p => [p.id, p]));
-      const top = avgData.sort((a, b) => b.pts - a.pts).slice(0, 6);
-
-      const lines = [`${team.full_name.toUpperCase()}:`];
-      for (const avg of top) {
-        const p = playerMap.get(avg.player_id);
-        if (!p || avg.games_played < 5) continue;
-        const recent    = recentByPlayer.get(avg.player_id) ?? [];
-        const recentStr = recent.length ? ` | L${recent.length}: ${recent.join(',')}pts` : '';
+      const lines = [`${teamData.team.displayName.toUpperCase()} (${status}):`];
+      for (const ath of athletes.slice(0, 7)) {
+        const pts = ath.stats[ptsI] ?? '0';
+        const reb = ath.stats[rebI] ?? '0';
+        const ast = ath.stats[astI] ?? '0';
+        const stl = stlI >= 0 ? (ath.stats[stlI] ?? '0') : '0';
+        const blk = blkI >= 0 ? (ath.stats[blkI] ?? '0') : '0';
+        const fg  = fgI  >= 0 ? (ath.stats[fgI]  ?? '') : '';
+        const min = ath.stats[minI] ?? '?';
         lines.push(
-          `  ${p.first_name} ${p.last_name}: ${avg.pts.toFixed(1)}PPG ` +
-          `${avg.reb.toFixed(1)}RPG ${avg.ast.toFixed(1)}APG ` +
-          `${(avg.fg_pct * 100).toFixed(0)}%FG ${(avg.fg3_pct * 100).toFixed(0)}%3P ` +
-          `(${avg.games_played}G)${recentStr}`
+          `  ${ath.athlete.displayName}: ${pts}pts ${reb}reb ${ast}ast ${stl}stl ${blk}blk` +
+          `${fg ? ` ${fg}FG` : ''} (${min}min)`
         );
       }
       if (lines.length > 1) blocks.push(lines.join('\n'));
     }
 
     if (!blocks.length) return "";
-    return `NBA REAL PLAYER STATS (BallDontLie — ${season}-${String(season + 1).slice(2)} season):\n${blocks.join('\n\n')}`;
+    return `${league.toUpperCase()} PLAYER STATS (ESPN box score — ${status}):\n${blocks.join('\n\n')}`;
   } catch { return ""; }
 }
 
-async function fetchNBAScheduleToday(): Promise<string> {
-  if (!BDL_KEY) return "";
+async function fetchNBAScheduleToday(league: 'nba' | 'wnba' = 'nba'): Promise<string> {
   try {
-    const games = await fetchNBAGamesToday();
-    if (!games.length) return "";
-    return `NBA TODAY: ${games.map(g => `${g.visitor_team.full_name} @ ${g.home_team.full_name} (${g.status})`).join(' | ')}`;
+    const events = await fetchNBAEventsToday(league);
+    if (!events.length) return "";
+    const label = league.toUpperCase();
+    return `${label} TODAY: ${events.map(e => {
+      const comps = e.competitions[0]?.competitors ?? [];
+      const away = comps.find(c => c.homeAway === 'away')?.team.displayName ?? '?';
+      const home = comps.find(c => c.homeAway === 'home')?.team.displayName ?? '?';
+      return `${away} @ ${home} (${e.status.type.description})`;
+    }).join(' | ')}`;
+  } catch { return ""; }
+}
+
+// ── ESPN Playoff Series Score (NBA playoffs — series record + last game result) ─
+async function fetchNBASeriesContext(matchup: string): Promise<string> {
+  try {
+    const res = await fetch(
+      `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${new Date(Date.now()-30*86400000).toISOString().slice(0,10).replace(/-/g,'')}-${new Date().toISOString().slice(0,10).replace(/-/g,'')}`,
+      { signal: AbortSignal.timeout(5000) }
+    );
+    if (!res.ok) return "";
+    const data = await res.json() as {
+      events?: Array<{
+        name: string;
+        competitions?: Array<{
+          series?: { type?: string; title?: string };
+          competitors: Array<{ team: { displayName: string }; score: string; winner?: boolean }>;
+          status?: { type?: { completed?: boolean } };
+        }>;
+      }>;
+    };
+    const keywords = matchup.toLowerCase().split(/\s+vs?\.?\s+/i).map(t => t.trim());
+    const relevant = (data.events ?? []).filter(ev =>
+      keywords.some(kw => ev.name.toLowerCase().includes(kw))
+    );
+    if (!relevant.length) return "";
+    const results: string[] = ["NBA PLAYOFF SERIES CONTEXT (ESPN):"];
+    for (const ev of relevant.slice(-5)) {
+      const comp = ev.competitions?.[0];
+      if (!comp?.status?.type?.completed) continue;
+      const [h, a] = comp.competitors;
+      if (!h || !a) continue;
+      const winner = comp.competitors.find(c => c.winner);
+      results.push(`  ${a.team.displayName} ${a.score} @ ${h.team.displayName} ${h.score}${winner ? ` — ${winner.team.displayName} WIN` : ''}`);
+    }
+    return results.length > 1 ? results.join('\n') : "";
   } catch { return ""; }
 }
 
@@ -673,7 +699,8 @@ const ESPN_INJURY_ROUTES: Record<string, string> = {
   NFL:    "football/nfl",
   MLB:    "baseball/mlb",
   NHL:    "hockey/nhl",
-  SOCCER: "soccer/usa.1", // MLS as default; EPL = soccer/eng.1
+  SOCCER: "soccer/usa.1",
+  UFC:    "mma/ufc",
 };
 
 async function fetchInjuries(sport: string, matchup?: string): Promise<string> {
@@ -771,9 +798,13 @@ async function fetchESPNNews(sport: string, matchup?: string): Promise<string> {
 
 // ── ESPN Scoreboard — today's schedule for non-NBA sports ────────────────────
 const ESPN_SCOREBOARD_ROUTES: Record<string, string> = {
-  MLB: 'baseball/mlb', NFL: 'football/nfl',
-  NHL: 'hockey/nhl',   WNBA: 'basketball/wnba',
+  MLB:    'baseball/mlb',
+  NFL:    'football/nfl',
+  NHL:    'hockey/nhl',
+  WNBA:   'basketball/wnba',
   SOCCER: 'soccer/usa.1',
+  TENNIS: 'tennis/atp',
+  UFC:    'mma/ufc',
 };
 
 async function fetchESPNScoreboard(sport: string): Promise<string> {
@@ -868,8 +899,8 @@ async function fetchNBAMetricsAll(): Promise<NBAMetricRow[]> {
 
 // Adjusted-rating scoring model (industry standard):
 //   ExpScore_A = (A.OffRtg × B.DefRtg / leagueAvg) × avgPace / 100
-// League avg OffRtg/DefRtg balance at ~113.5 for 2024-25.
-const NBA_LEAGUE_AVG_RTG = 113.5;
+// League avg OffRtg/DefRtg balance at ~114.5 for 2025-26 (update each season).
+const NBA_LEAGUE_AVG_RTG = 114.5;
 
 function nbaExpectedScores(
   homeOff: number, homeDef: number, homePace: number,
@@ -970,9 +1001,25 @@ const ESPN_NBA_TEAM_IDS: Record<string, number> = {
   "washington wizards": 27, "wizards": 27, "was": 27,
 };
 
-async function fetchNBATeamStats(matchup: string): Promise<string> {
+const ESPN_WNBA_TEAM_IDS: Record<string, number> = {
+  "atlanta dream": 1, "dream": 1,
+  "chicago sky": 2, "sky": 2,
+  "connecticut sun": 3, "sun": 3,
+  "dallas wings": 4, "wings": 4,
+  "indiana fever": 5, "fever": 5,
+  "las vegas aces": 6, "aces": 6,
+  "los angeles sparks": 7, "sparks": 7,
+  "minnesota lynx": 8, "lynx": 8,
+  "new york liberty": 9, "liberty": 9,
+  "phoenix mercury": 10, "mercury": 10,
+  "seattle storm": 11, "storm": 11,
+  "washington mystics": 12, "mystics": 12,
+};
+
+async function fetchNBATeamStats(matchup: string, league: 'nba' | 'wnba' = 'nba'): Promise<string> {
   if (!matchup) return "";
   const lower = matchup.toLowerCase();
+  const idMap = league === 'wnba' ? ESPN_WNBA_TEAM_IDS : ESPN_NBA_TEAM_IDS;
   const STAT_KEYS = ['avgPoints','fieldGoalPct','threePointPct','avgRebounds','avgAssists','avgTurnovers','avgBlocks','avgSteals'];
   const STAT_LABELS: Record<string,string> = {
     avgPoints:'PPG', fieldGoalPct:'FG%', threePointPct:'3P%',
@@ -981,7 +1028,7 @@ async function fetchNBATeamStats(matchup: string): Promise<string> {
   };
 
   const extractTeamId = (part: string): number | null => {
-    for (const [key, id] of Object.entries(ESPN_NBA_TEAM_IDS)) {
+    for (const [key, id] of Object.entries(idMap)) {
       if (part.includes(key)) return id;
     }
     return null;
@@ -992,11 +1039,12 @@ async function fetchNBATeamStats(matchup: string): Promise<string> {
   const ids = parts.map(extractTeamId).filter((id): id is number => id !== null);
   if (ids.length === 0) return "";
 
-  const lines: string[] = ["NBA TEAM STATS (ESPN — real numbers, cite these):"];
+  const leagueLabel = league.toUpperCase();
+  const lines: string[] = [`${leagueLabel} TEAM STATS (ESPN — real numbers, cite these):`];
   await Promise.all(ids.slice(0, 2).map(async (teamId) => {
     try {
       const res = await fetch(
-        `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams/${teamId}/statistics`,
+        `https://site.api.espn.com/apis/site/v2/sports/basketball/${league}/teams/${teamId}/statistics`,
         { signal: AbortSignal.timeout(5000) }
       );
       if (!res.ok) return;
@@ -1095,7 +1143,7 @@ async function fetchMLBPitcherStats(matchup: string): Promise<string> {
         );
         if (lr.ok) {
           const ld = await lr.json() as { stats: Array<{ splits: Array<{ stat: MLBGameLogStat }> }> };
-          const logs = ld.stats?.[0]?.splits?.slice(0, 3) ?? [];
+          const logs = (ld.stats?.[0]?.splits ?? []).slice(-3).reverse();
           if (logs.length) logStr = ` | L3: ${logs.map(l => `${l.stat.era}ERA ${l.stat.strikeOuts}K ${l.stat.inningsPitched}IP`).join(', ')}`;
         }
       } catch { /* skip */ }
@@ -1111,21 +1159,112 @@ async function fetchMLBPitcherStats(matchup: string): Promise<string> {
   } catch { return ""; }
 }
 
+// ── MLB Batter Stats (MLB Stats API — free, no key) ──────────────────────────
+// Returns top 5 hitters per team by OPS for today's game matchup
+const MLB_TEAM_IDS: Record<string, number> = {
+  'arizona diamondbacks':109,'arizona':109,'diamondbacks':109,'d-backs':109,
+  'atlanta braves':144,'atlanta':144,'braves':144,
+  'baltimore orioles':110,'baltimore':110,'orioles':110,
+  'boston red sox':111,'boston':111,'red sox':111,
+  'chicago cubs':112,'cubs':112,
+  'chicago white sox':145,'white sox':145,
+  'cincinnati reds':113,'cincinnati':113,'reds':113,
+  'cleveland guardians':114,'cleveland':114,'guardians':114,
+  'colorado rockies':115,'colorado':115,'rockies':115,
+  'detroit tigers':116,'detroit':116,'tigers':116,
+  'houston astros':117,'houston':117,'astros':117,
+  'kansas city royals':118,'kansas city':118,'royals':118,
+  'los angeles angels':108,'angels':108,'la angels':108,
+  'los angeles dodgers':119,'dodgers':119,'la dodgers':119,
+  'miami marlins':146,'miami':146,'marlins':146,
+  'milwaukee brewers':158,'milwaukee':158,'brewers':158,
+  'minnesota twins':142,'minnesota':142,'twins':142,
+  'new york mets':121,'mets':121,
+  'new york yankees':147,'yankees':147,
+  'oakland athletics':133,'athletics':133,'a\'s':133,
+  'philadelphia phillies':143,'philadelphia':143,'phillies':143,
+  'pittsburgh pirates':134,'pittsburgh':134,'pirates':134,
+  'san diego padres':135,'san diego':135,'padres':135,
+  'san francisco giants':137,'san francisco':137,'giants':137,
+  'seattle mariners':136,'seattle':136,'mariners':136,
+  'st. louis cardinals':138,'st louis':138,'cardinals':138,
+  'tampa bay rays':139,'tampa bay':139,'rays':139,
+  'texas rangers':140,'texas':140,'rangers':140,
+  'toronto blue jays':141,'toronto':141,'blue jays':141,
+  'washington nationals':120,'washington':120,'nationals':120,
+};
+
+function resolveMLBTeamId(name: string): number | null {
+  const k = name.toLowerCase().trim();
+  if (MLB_TEAM_IDS[k]) return MLB_TEAM_IDS[k];
+  for (const [alias, id] of Object.entries(MLB_TEAM_IDS)) {
+    if (k.includes(alias) || alias.includes(k)) return id;
+  }
+  return null;
+}
+
+async function fetchMLBBatterStats(matchup: string): Promise<string> {
+  if (!matchup) return "";
+  const parts = matchup.split(/\s+(?:vs\.?|@|-)\s+/i).map(p => p.trim()).filter(Boolean);
+  if (parts.length < 2) return "";
+
+  const season = new Date().getFullYear();
+
+  const fetchTeamBatters = async (teamName: string): Promise<string> => {
+    const id = resolveMLBTeamId(teamName);
+    if (!id) return "";
+    try {
+      const res = await fetch(
+        `https://statsapi.mlb.com/api/v1/stats?stats=season&group=hitting&season=${season}&teamId=${id}&sportId=1&gameType=R&limit=40`,
+        { signal: AbortSignal.timeout(6000) }
+      );
+      if (!res.ok) return "";
+      const data = await res.json() as {
+        stats: Array<{ splits: Array<{ player?: { fullName: string }; stat: { atBats?: number; avg?: string; homeRuns?: number; rbi?: number; ops?: string; strikeOuts?: number } }> }>
+      };
+      const splits = data.stats?.[0]?.splits ?? [];
+      const hitters = splits
+        .filter(s => s.player && (s.stat.atBats ?? 0) >= 50)
+        .map(s => ({
+          name: s.player!.fullName,
+          ab: s.stat.atBats ?? 0,
+          avg: s.stat.avg ?? '.000',
+          hr: s.stat.homeRuns ?? 0,
+          rbi: s.stat.rbi ?? 0,
+          ops: parseFloat(s.stat.ops ?? '0'),
+          k: s.stat.strikeOuts ?? 0,
+        }))
+        .sort((a, b) => b.ops - a.ops)
+        .slice(0, 5);
+      if (!hitters.length) return "";
+      const rows = hitters.map(h =>
+        `    ${h.name}: .${h.avg.replace('.','').padEnd(3,'0')} AVG | ${h.hr}HR | ${h.rbi}RBI | ${h.ops.toFixed(3)} OPS | ${h.k}K`
+      );
+      return `  ${teamName.toUpperCase()} TOP BATS:\n${rows.join('\n')}`;
+    } catch { return ""; }
+  };
+
+  const results = await Promise.all(parts.map(fetchTeamBatters));
+  const valid = results.filter(Boolean);
+  if (!valid.length) return "";
+  return `MLB BATTER STATS — Top 5 by OPS (MLB API — real data, cite exactly):\n${valid.join('\n')}`;
+}
+
 // ── Weather via wttr.in (completely free, no auth) ────────────────────────────
 // Only called for outdoor sports: MLB, NFL. Indoor (NBA/NHL) = skip.
-const STADIUM_CITIES: Record<string, string> = {
-  // MLB
+const STADIUM_CITIES_MLB: Record<string, string> = {
   'yankees': 'New York', 'mets': 'New York', 'red sox': 'Boston',
   'cubs': 'Chicago', 'white sox': 'Chicago', 'dodgers': 'Los Angeles',
-  'angels': 'Anaheim', 'giants': 'San Francisco', 'athletics': 'Oakland',
+  'angels': 'Anaheim', 'giants': 'San Francisco', 'athletics': 'West Sacramento',
   'padres': 'San Diego', 'rockies': 'Denver', 'diamondbacks': 'Phoenix',
   'cardinals': 'St. Louis', 'brewers': 'Milwaukee', 'reds': 'Cincinnati',
-  'pirates': 'Pittsburgh', 'phillies': 'Philadelphia', 'braves': 'Atlanta',
+  'pirates': 'Pittsburgh', 'phillies': 'Philadelphia', 'braves': 'Cumberland',
   'marlins': 'Miami', 'nationals': 'Washington', 'orioles': 'Baltimore',
   'blue jays': 'Toronto', 'rays': 'St. Petersburg', 'tigers': 'Detroit',
   'guardians': 'Cleveland', 'royals': 'Kansas City', 'twins': 'Minneapolis',
   'astros': 'Houston', 'rangers': 'Arlington', 'mariners': 'Seattle',
-  // NFL
+};
+const STADIUM_CITIES_NFL: Record<string, string> = {
   'patriots': 'Foxborough', 'bills': 'Orchard Park', 'dolphins': 'Miami Gardens',
   'jets': 'East Rutherford', 'ravens': 'Baltimore', 'bengals': 'Cincinnati',
   'browns': 'Cleveland', 'steelers': 'Pittsburgh', 'texans': 'Houston',
@@ -1139,6 +1278,9 @@ const STADIUM_CITIES: Record<string, string> = {
   '49ers': 'Santa Clara', 'cardinals': 'Glendale',
 };
 
+// MLB teams with domed or retractable-roof stadiums — weather irrelevant
+const MLB_DOME_TEAMS = new Set(['rays','blue jays','astros','marlins','mariners','diamondbacks','brewers']);
+
 async function fetchWeather(matchup: string, sport: string): Promise<string> {
   const s = sport.toUpperCase();
   if (!['MLB', 'NFL'].includes(s)) return ""; // NBA/NHL/Tennis are indoor
@@ -1147,8 +1289,12 @@ async function fetchWeather(matchup: string, sport: string): Promise<string> {
   const parts = matchup.toLowerCase().split(/\s+vs?\.?\s+/i);
   const homeStr = (parts[parts.length - 1] ?? parts[0]).trim();
 
+  // Skip weather for domed/retractable MLB stadiums
+  if (s === 'MLB' && [...MLB_DOME_TEAMS].some(t => homeStr.includes(t))) return "";
+
+  const cityMap = s === 'MLB' ? STADIUM_CITIES_MLB : STADIUM_CITIES_NFL;
   let city = '';
-  for (const [kw, c] of Object.entries(STADIUM_CITIES)) {
+  for (const [kw, c] of Object.entries(cityMap)) {
     if (homeStr.includes(kw)) { city = c; break; }
   }
   if (!city) return "";
@@ -1325,6 +1471,84 @@ async function fetchSoccerContext(matchup: string): Promise<string> {
     const gd  = t.gf - t.ga;
     lines.push(`  ${t.name.toUpperCase()}: ${t.w}W-${t.d}D-${t.l}L | GF:${t.gf} GA:${t.ga} GD:${gd >= 0 ? '+' : ''}${gd} | PPG:${ppg}`);
   }
+  // Add recent form: last 5 results — fetch teams list once, then schedules in parallel
+  try {
+    const teamsRes = await fetch(
+      `https://site.api.espn.com/apis/site/v2/sports/soccer/all/teams`,
+      { signal: AbortSignal.timeout(4000) }
+    );
+    if (teamsRes.ok) {
+      const rd = await teamsRes.json() as { sports?: Array<{ leagues?: Array<{ teams?: Array<{ team: { displayName: string; id: string } }> }> }> };
+      const allTeams = (rd.sports?.[0]?.leagues ?? []).flatMap(l => l.teams ?? []);
+      await Promise.all(teams.map(async t => {
+        // Score each ESPN team by how many words from t.name it contains — pick best match
+        const tWords = t.name.split(' ').filter(w => w.length > 2);
+        const score = (dn: string) => tWords.filter(w => dn.toLowerCase().includes(w)).length;
+        const ranked = allTeams
+          .map(e => ({ e, s: score(e.team.displayName) }))
+          .filter(x => x.s > 0)
+          .sort((a, b) => b.s - a.s);
+        const match = ranked[0]?.e;
+        if (!match) return;
+        const schedRes = await fetch(
+          `https://site.api.espn.com/apis/site/v2/sports/soccer/all/teams/${match.team.id}/schedule`,
+          { signal: AbortSignal.timeout(4000) }
+        ).catch(() => null);
+        if (!schedRes?.ok) return;
+        const sd = await schedRes.json() as { events?: Array<{ competitions?: Array<{ competitors: Array<{ team: { displayName: string }; score: string; winner: boolean }> }> }> };
+        const results: string[] = [];
+        for (const ev of (sd.events ?? []).slice(-5)) {
+          const comp = ev.competitions?.[0];
+          if (!comp) continue;
+          const [h, a] = comp.competitors;
+          if (!h || !a) continue;
+          const won = comp.competitors.find(c =>
+            tWords.some(w => c.team.displayName.toLowerCase().includes(w))
+          )?.winner;
+          results.push(`${won === true ? 'W' : won === false ? 'L' : 'D'} ${h.score}-${a.score}`);
+        }
+        if (results.length) lines.push(`  ${t.name.toUpperCase()} LAST 5: ${results.join(' ')}`);
+      }));
+    }
+  } catch { /* form is bonus data, ignore errors */ }
+
+  return lines.join('\n');
+}
+
+// ── Tennis context — ATP rankings + recent results via ESPN ──────────────────
+async function fetchTennisContext(matchup: string): Promise<string> {
+  if (!matchup) return "";
+  const parts = matchup.split(/\s+(?:vs\.?|-)\s+/i).map(p => p.trim());
+  if (parts.length < 2) return "";
+  const lines = ["TENNIS PLAYER CONTEXT (ESPN):"];
+  try {
+    const rankRes = await fetch(
+      'https://site.api.espn.com/apis/site/v2/sports/tennis/atp/rankings?limit=200',
+      { signal: AbortSignal.timeout(5000) }
+    );
+    if (rankRes.ok) {
+      const rd = await rankRes.json() as { rankings?: Array<{ athlete: { displayName: string }; rankFrom: number; current: number }> };
+      for (const name of parts) {
+        const found = (rd.rankings ?? []).find(r => r.athlete.displayName.toLowerCase().includes(name.toLowerCase()));
+        if (found) lines.push(`  ${found.athlete.displayName}: ATP Rank #${found.current} (was #${found.rankFrom})`);
+      }
+    }
+    // WTA fallback for women's tennis
+    if (lines.length < 3) {
+      const wtaRes = await fetch(
+        'https://site.api.espn.com/apis/site/v2/sports/tennis/wta/rankings?limit=200',
+        { signal: AbortSignal.timeout(5000) }
+      );
+      if (wtaRes.ok) {
+        const wd = await wtaRes.json() as { rankings?: Array<{ athlete: { displayName: string }; current: number }> };
+        for (const name of parts) {
+          const found = (wd.rankings ?? []).find(r => r.athlete.displayName.toLowerCase().includes(name.toLowerCase()));
+          if (found) lines.push(`  ${found.athlete.displayName}: WTA Rank #${found.current}`);
+        }
+      }
+    }
+  } catch { /* bonus data */ }
+  if (lines.length === 1) return "";
   return lines.join('\n');
 }
 
@@ -1343,7 +1567,7 @@ const F1_CIRCUITS: Record<string, F1CircuitInfo> = {
   jeddah:       { name:'Jeddah Corniche Circuit',        type:'Street',    qualifyingWeight:0.85, overtaking:'Very High', dnfRate:'~15%', safetyCar:'High',         notes:'Fastest street circuit. Multiple crashes likely. High-speed walls punish any error.' },
   miami:        { name:'Miami International Autodrome',  type:'Street',    qualifyingWeight:0.75, overtaking:'High',      dnfRate:'~10%', safetyCar:'Moderate',     notes:'Semi-permanent street circuit. Some DRS overtaking zones. Tire management key.' },
   lasvegas:     { name:'Las Vegas Street Circuit',       type:'Street',    qualifyingWeight:0.80, overtaking:'High',      dnfRate:'~12%', safetyCar:'Moderate',     notes:'Night race, cold temps in November. Tire graining in cold = big wildcard.' },
-  zandvoort:    { name:'Circuit Zandvoort',              type:'Street',    qualifyingWeight:0.85, overtaking:'Extreme',  dnfRate:'~8%',  safetyCar:'Moderate',     notes:'Banking turns make overtaking nearly impossible. Qualifying result highly predictive.' },
+  zandvoort:    { name:'Circuit Zandvoort',              type:'Technical', qualifyingWeight:0.88, overtaking:'Extreme',  dnfRate:'~8%',  safetyCar:'Moderate',     notes:'Banking turns + no DRS zones make overtaking nearly impossible. Qualifying result extremely predictive. Behaves like a street circuit.' },
   monza:        { name:'Autodromo Nazionale Monza',      type:'Power',     qualifyingWeight:0.50, overtaking:'Low',       dnfRate:'~8%',  safetyCar:'Low',          notes:'Temple of Speed. Slipstream creates genuine overtaking. Engine power dominant. Low-drag setups.' },
   spa:          { name:'Circuit de Spa-Francorchamps',   type:'Power',     qualifyingWeight:0.55, overtaking:'Low',       dnfRate:'~12%', safetyCar:'Moderate',     notes:'Long Kemmel straight = genuine DRS overtaking. Weather changes rapidly — wet weather wild card.' },
   bahrain:      { name:'Bahrain International Circuit',  type:'Power',     qualifyingWeight:0.55, overtaking:'Low',       dnfRate:'~8%',  safetyCar:'Low',          notes:'Multiple DRS zones. Tire degradation critical. Hot and dusty — evolution of grip during weekend.' },
@@ -1378,6 +1602,157 @@ function getF1CircuitContext(matchup: string): string {
   return "";
 }
 
+// ── F1 Live Context (Jolpica/Ergast — free, no key) ──────────────────────────
+async function fetchF1LiveContext(matchup: string): Promise<string> {
+  try {
+    const [driversRes, constructorsRes, qualRes] = await Promise.all([
+      fetch('https://api.jolpi.ca/ergast/f1/current/driverStandings.json', { signal: AbortSignal.timeout(5000) }),
+      fetch(`https://api.jolpi.ca/ergast/f1/${new Date().getFullYear()}/constructorStandings.json`, { signal: AbortSignal.timeout(5000) }),
+      fetch('https://api.jolpi.ca/ergast/f1/current/last/qualifying.json', { signal: AbortSignal.timeout(5000) }),
+    ]);
+
+    const lines: string[] = ['F1 LIVE STANDINGS (Jolpica/Ergast — real data, cite exactly):'];
+
+    if (driversRes.ok) {
+      const d = await driversRes.json() as { MRData: { StandingsTable: { StandingsLists: Array<{ DriverStandings: Array<{ position: string; points: string; wins: string; Driver: { familyName: string; givenName: string }; Constructors: Array<{ name: string }> }> }> } } };
+      const standings = d.MRData.StandingsTable.StandingsLists[0]?.DriverStandings ?? [];
+      lines.push('  Driver Championship (Top 8):');
+      for (const s of standings.slice(0, 8)) {
+        lines.push(`    P${s.position}: ${s.Driver.givenName} ${s.Driver.familyName} (${s.Constructors[0]?.name ?? '?'}) — ${s.points}pts, ${s.wins}W`);
+      }
+    }
+
+    if (constructorsRes.ok) {
+      const d = await constructorsRes.json() as { MRData: { StandingsTable: { StandingsLists: Array<{ ConstructorStandings: Array<{ position: string; points: string; wins: string; Constructor: { name: string } }> }> } } };
+      const standings = d.MRData.StandingsTable.StandingsLists[0]?.ConstructorStandings ?? [];
+      lines.push('  Constructor Championship (Top 5):');
+      for (const s of standings.slice(0, 5)) {
+        lines.push(`    P${s.position}: ${s.Constructor.name} — ${s.points}pts, ${s.wins}W`);
+      }
+    }
+
+    if (qualRes.ok) {
+      const d = await qualRes.json() as { MRData: { RaceTable: { Races: Array<{ raceName: string; QualifyingResults: Array<{ position: string; Driver: { familyName: string; givenName: string }; Constructor: { name: string }; Q3?: string; Q2?: string; Q1?: string }> }> } } };
+      const race = d.MRData.RaceTable.Races[0];
+      if (race) {
+        lines.push(`  Last Qualifying: ${race.raceName}`);
+        for (const q of race.QualifyingResults.slice(0, 5)) {
+          const best = q.Q3 ?? q.Q2 ?? q.Q1 ?? '?';
+          lines.push(`    P${q.position}: ${q.Driver.givenName} ${q.Driver.familyName} (${q.Constructor.name}) ${best}`);
+        }
+      }
+    }
+
+    const circuitCtx = getF1CircuitContext(matchup);
+    if (circuitCtx) lines.push('', circuitCtx);
+
+    return lines.join('\n');
+  } catch { return getF1CircuitContext(matchup); }
+}
+
+// ── UFC Fighter Stats (ufcstats.com — free scrape) ────────────────────────────
+async function fetchUFCFighterStats(matchup: string): Promise<string> {
+  if (!matchup) return "";
+  const parts = matchup.split(/\s+(?:vs\.?|@|-)\s+/i).map(p => p.trim()).filter(Boolean);
+  if (parts.length < 2) return "";
+
+  const scrapeStats = async (name: string): Promise<string | null> => {
+    try {
+      const encoded = encodeURIComponent(name.trim().toLowerCase().replace(/\s+/g, '+'));
+      const res = await fetch(
+        `http://ufcstats.com/statistics/fighters?search=${encoded}&action=search`,
+        { signal: AbortSignal.timeout(6000), headers: { 'User-Agent': 'Mozilla/5.0' } }
+      );
+      if (!res.ok) return null;
+      const html = await res.text();
+      const rowMatch = html.match(/<tr class="b-statistics__table-row"[^>]*>\s*([\s\S]*?)<\/tr>/);
+      if (!rowMatch) return null;
+      const cells = [...rowMatch[1].matchAll(/<td[^>]*>\s*<a[^>]*>([^<]*)<\/a>\s*<\/td>|<td[^>]*>\s*([^<\s][^<]*?)\s*<\/td>/g)]
+        .map(m => (m[1] ?? m[2] ?? '').trim())
+        .filter(Boolean);
+      if (cells.length < 6) return null;
+      const stanceIdx = cells.findIndex(c => /^(Orthodox|Southpaw|Switch|Open)/i.test(c));
+      if (stanceIdx < 0) return null;
+      const height = cells[stanceIdx - 3] ?? '?';
+      const weight = cells[stanceIdx - 2] ?? '?';
+      const reach  = cells[stanceIdx - 1] ?? '?';
+      const stance = cells[stanceIdx];
+      const wins   = cells[stanceIdx + 1] ?? '?';
+      const losses = cells[stanceIdx + 2] ?? '?';
+      const draws  = cells[stanceIdx + 3] ?? '0';
+      return `${name.toUpperCase()}: ${wins}W-${losses}L-${draws}D | ${height} ${weight} | Reach:${reach} | ${stance}`;
+    } catch { return null; }
+  };
+
+  const results = await Promise.all(parts.map(scrapeStats));
+  const valid = results.filter(Boolean) as string[];
+  if (valid.length === 0) return "";
+
+  return ['UFC FIGHTER STATS (ufcstats.com — real data, cite exactly):', ...valid.map(r => `  ${r}`)].join('\n');
+}
+
+// ── NFL Team Stats (ESPN — free, no key) ─────────────────────────────────────
+const NFL_TEAM_IDS: Record<string, number> = {
+  'arizona cardinals':22,'atlanta falcons':1,'baltimore ravens':33,'buffalo bills':2,
+  'carolina panthers':29,'chicago bears':3,'cincinnati bengals':4,'cleveland browns':5,
+  'dallas cowboys':6,'denver broncos':7,'detroit lions':8,'green bay packers':9,
+  'houston texans':34,'indianapolis colts':11,'jacksonville jaguars':30,'kansas city chiefs':12,
+  'las vegas raiders':13,'los angeles chargers':24,'los angeles rams':14,'miami dolphins':15,
+  'minnesota vikings':16,'new england patriots':17,'new orleans saints':18,'new york giants':19,
+  'new york jets':20,'philadelphia eagles':21,'pittsburgh steelers':23,'san francisco 49ers':25,
+  'seattle seahawks':26,'tampa bay buccaneers':27,'tennessee titans':10,'washington commanders':28,
+  'cardinals':22,'falcons':1,'ravens':33,'bills':2,'panthers':29,'bears':3,'bengals':4,
+  'browns':5,'cowboys':6,'broncos':7,'lions':8,'packers':9,'texans':34,'colts':11,
+  'jaguars':30,'jags':30,'chiefs':12,'raiders':13,'chargers':24,'rams':14,'dolphins':15,
+  'vikings':16,'patriots':17,'saints':18,'giants':19,'jets':20,'eagles':21,'steelers':23,
+  '49ers':25,'niners':25,'seahawks':26,'buccaneers':27,'bucs':27,'titans':10,'commanders':28,
+};
+
+function resolveNFLTeamId(name: string): number | null {
+  const k = name.toLowerCase().trim();
+  if (NFL_TEAM_IDS[k]) return NFL_TEAM_IDS[k];
+  for (const [alias, id] of Object.entries(NFL_TEAM_IDS)) {
+    if (k.includes(alias) || alias.includes(k)) return id;
+  }
+  return null;
+}
+
+async function fetchNFLTeamStats(matchup: string): Promise<string> {
+  if (!matchup) return "";
+  const parts = matchup.split(/\s+(?:vs\.?|@|-)\s+/i).map(p => p.trim()).filter(Boolean);
+  if (parts.length < 2) return "";
+
+  const fetchTeam = async (name: string): Promise<string | null> => {
+    const id = resolveNFLTeamId(name);
+    if (!id) return null;
+    try {
+      const res = await fetch(
+        `https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/${id}/statistics`,
+        { signal: AbortSignal.timeout(5000) }
+      );
+      if (!res.ok) return null;
+      const data = await res.json() as { results: { categories: Array<{ name: string; stats: Array<{ name: string; value: number; displayValue: string }> }> } };
+      const cats: Record<string, Record<string, string>> = {};
+      for (const cat of data.results?.categories ?? []) {
+        cats[cat.name] = {};
+        for (const s of cat.stats) cats[cat.name][s.name] = s.displayValue;
+      }
+      const pts    = cats['scoring']?.['totalPoints'] ?? '?';
+      const ptsPa  = cats['scoring']?.['totalPointsAgainst'] ?? '?';
+      const compPct = cats['passing']?.['completionPct'] ?? '?';
+      const passYpg = cats['passing']?.['yardsPerGame'] ?? '?';
+      const rushYpg = cats['rushing']?.['yardsPerGame'] ?? '?';
+      return `${name.toUpperCase()}: PTS:${pts} PA:${ptsPa} | Pass:${passYpg}ypg (${compPct}%) | Rush:${rushYpg}ypg`;
+    } catch { return null; }
+  };
+
+  const results = await Promise.all(parts.map(fetchTeam));
+  const valid = results.filter(Boolean) as string[];
+  if (valid.length === 0) return "";
+
+  return ['NFL TEAM STATS (ESPN — real data, cite exactly):', ...valid.map(r => `  ${r}`)].join('\n');
+}
+
 // ── Synthetic Sharp Signal (Pinnacle vs soft-book line gap) ───────────────────
 // Pinnacle is the sharpest book. When Pinnacle line diverges from DraftKings/FanDuel,
 // that gap reveals where the sharp money is pointing.
@@ -1387,10 +1762,7 @@ async function fetchSharpSignals(sport: string): Promise<string> {
   if (sportKeys.length === 0) return "";
   const signals: string[] = [];
   try {
-    const url = `${ODDS_API_BASE}/sports/${sportKeys[0]}/odds?apiKey=${ODDS_API_KEY}&regions=us&markets=h2h,spreads&bookmakers=pinnacle,draftkings,fanduel&dateFormat=iso&oddsFormat=american`;
-    const res = await fetch(url, { signal: AbortSignal.timeout(6000) });
-    if (!res.ok) return "";
-    const events = await res.json() as OddsEvent[];
+    const events = await fetchRawOdds(sportKeys[0]);
     for (const ev of events.slice(0, 6)) {
       const pinnacle = ev.bookmakers.find(b => b.key === "pinnacle");
       const dk = ev.bookmakers.find(b => b.key === "draftkings");
@@ -1418,8 +1790,11 @@ async function fetchSharpSignals(sport: string): Promise<string> {
 // ── MYTHOS-STYLE IDENTITY BLOCK (Capybara tier adapted for sports betting) ────
 // Borrowed from FTGMYTHOS/mythos-router: structured IDENTITY + CORE DIRECTIVES
 // forces disciplined, non-hallucinated output — same principle as SWD for files
-const SHARP_IDENTITY = `\
-## IDENTITY
+function getSharpIdentity(): string {
+  const mw = MODEL_WEIGHTS.math_weight * 100;
+  const sw = MODEL_WEIGHTS.sentiment_weight * 100;
+  const dt = MODEL_WEIGHTS.dissonance_threshold;
+  return `## IDENTITY
 Tier: SHARP (CTE LOCKS Engine — Specialized in Sports Betting & EV Analysis)
 Protocol: Strict Odds Discipline (SOD)
 Constraint: NEVER invent odds, lines, or player stats. If not in LIVE ODDS block → UNKNOWN.
@@ -1430,38 +1805,18 @@ Constraint: NEVER invent odds, lines, or player stats. If not in LIVE ODDS block
 3. SHARP SIGNALS: Pinnacle vs DK gap ≥8pts = real sharp money. Follow it.
 4. EV BEFORE NARRATIVE: If a bet feels right but EV is negative → FADE IT.
 5. CAVEMAN OUTPUT: "why" fields max 12 words. Cite numbers. No fluff.
-6. RAW JSON ONLY: Never wrap in markdown. No commentary outside the JSON.`;
+6. RAW JSON ONLY: Never wrap in markdown. No commentary outside the JSON.
+7. SIGNAL WEIGHTING: Weight MATHEMATICAL/STATISTICAL signals at ${mw}% and narrative/sentiment at ${sw}%. Math wins every tie.
+8. DISSONANCE FLAG: If your margin model and market line disagree by >${dt} pts → label [HIGH-EDGE] and explain.`;
+}
+const SHARP_IDENTITY = getSharpIdentity;
 
 // ── Claude (Anthropic) helper with DeepSeek fallback (Mythos multi-provider) ──
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const DEEPSEEK_KEY = process.env.DEEPSEEK_API_KEY || "";
 
-async function ask(prompt: string, model = "claude-sonnet-4-6"): Promise<string> {
-  try {
-    const msg = await anthropic.messages.create({
-      model,
-      max_tokens: 4096,
-      messages: [{ role: "user", content: prompt }],
-    });
-    const text = msg.content[0].type === "text" ? msg.content[0].text : "";
-    return text.replace(/```json|```/g, "").trim();
-  } catch (err: unknown) {
-    // Mythos-router style fallback: if Anthropic 429/500 → try DeepSeek V3
-    const isRateLimit = err instanceof Error && (err.message.includes("529") || err.message.includes("overloaded") || err.message.includes("rate_limit"));
-    if (isRateLimit && DEEPSEEK_KEY) {
-      console.log("Anthropic overloaded → falling back to DeepSeek V3");
-      const res = await fetch("https://api.deepseek.com/v1/chat/completions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${DEEPSEEK_KEY}` },
-        body: JSON.stringify({ model: "deepseek-chat", messages: [{ role: "user", content: prompt }], max_tokens: 4096 }),
-        signal: AbortSignal.timeout(30_000),
-      });
-      const data = await res.json() as { choices?: Array<{ message?: { content?: string } }> };
-      const text = data.choices?.[0]?.message?.content || "";
-      return text.replace(/```json|```/g, "").trim();
-    }
-    throw err;
-  }
+async function ask(prompt: string, model = "claude-3-5-sonnet-20241022"): Promise<string> {
+  return await router.ask(prompt, { model });
 }
 
 // ── Date helper ───────────────────────────────────────────────────────────────
@@ -1494,11 +1849,19 @@ app.get('/api/prophet', async (req: express.Request, res: express.Response) => {
       activeSport === 'NBA' ? fetchNBALeagueSnapshot() : Promise.resolve(''),
       fetchSharpSignals(activeSport),
     ]);
-    const prompt = `
-${SHARP_IDENTITY}
 
-You are a sharp professional sports bettor with 15 years of experience beating closing lines.
-Today is ${today} (Eastern Time). ${sportFilter}
+    // ── Pull model predictions for each game in the odds block ──────────────
+    const parsedGame = parseOddsForTeams(liveOdds);
+    const modelCtx = parsedGame
+      ? await fetchEdgeModel(activeSport, parsedGame.home, parsedGame.away,
+          parsedGame.spread, parsedGame.homeOdds, parsedGame.awayOdds)
+      : '';
+
+    const prompt = `
+${SHARP_IDENTITY()}
+
+You are a sharp professional sports bettor. Today is ${today} (Eastern Time). ${sportFilter}
+Math weight: ${MODEL_WEIGHTS.math_weight * 100}% | Sentiment weight: ${MODEL_WEIGHTS.sentiment_weight * 100}%
 
 ${heuristics}
 
@@ -1509,38 +1872,34 @@ ${injuryData ? `\nINJURY REPORT (ESPN — LIVE):\n${injuryData}` : ''}
 ${pitcherData ? `\nREAL PITCHER STATS (MLB API — cite exact numbers):\n${pitcherData}` : ''}
 ${newsData ? `\nLATEST NEWS (ESPN):\n${newsData}` : ''}
 ${sharpSignals ? `\n${sharpSignals}` : ''}
+${modelCtx ? `\n${modelCtx}` : ''}
 
-IMPORTANT: Lines above are REAL from Pinnacle/DraftKings — use exact lines, do not invent.
-Injuries are LIVE from ESPN — apply Next Man Up logic immediately.
-Sharp signals = Pinnacle vs DK gap ≥8pts — follow the sharp side.
-News = live ESPN headlines — questionable/out tags reprice the market.
-⚠️ win_prob cap: never output >0.82. EV: label "est." — no true prob model exists here.
+RANKING RULES — pick the bet with the highest combination of:
+1. POSITIVE EV (model EV% > 0 beats any narrative)
+2. Cover probability > 54% from the model
+3. Edge strength: STRONG > MODERATE > WEAK > NO_EDGE
+4. Sharp signal confirmation (Pinnacle vs DK gap ≥ 8pts)
+5. Injury-adjusted — if key player out, apply Next Man Up
 
-Your job: apply the above heuristics to identify TODAY's single highest-conviction bet from the real games listed. Run the SHARP CHECK before selecting.
+IMPORTANT: Lines are REAL Pinnacle/DraftKings. Model predictions above are XGBoost trained on real historical games.
+If model says HOME_COVER [STRONG] → that is your primary anchor. Override only if injury changes everything.
+⚠️ Never output win_prob > 0.82. EV in output: cite exact model number.
 
-Reasoning process (think step by step, don't include in output):
-1. Identify 2-3 real games tonight
-2. For each: check CLV opportunity, derivative market value, injury context, contrarian signals
-3. Score by: EV gap, correlation quality, juice filter, fragility
-4. Select the top one — flag [HIGH-RISK] if applicable, provide PIVOT if needed
-5. Output JSON only
-
-Output ONLY a raw JSON object — no markdown, no commentary:
+Output ONLY raw JSON:
 {
-  "selection": "e.g. Anthony Edwards Over 28.5 Points or Celtics -4.5",
-  "odds": "American odds string e.g. -115 or +130",
+  "selection": "e.g. Celtics -4.5 or Over 224.5",
+  "odds": "e.g. -115",
   "game_name": "Team A vs Team B — League — Tonight TIME ET",
-  "value_gap": "+X.X% EV",
+  "value_gap": "+X.X% EV (model)",
+  "win_prob": 0.57,
   "recommended_unit": "1 UNIT or 2 UNITS",
   "logic_bullets": [
-    "Specific stat or trend #1 with numbers",
-    "Specific matchup or situational edge #2 with numbers",
-    "Sharp money / line movement or injury context #3"
+    "Model: predicted margin +X.X vs spread Y — edge +Z.X pts [STRONG/MODERATE]",
+    "Stat or situational edge with exact numbers",
+    "Sharp signal or injury context"
   ],
-  "correlated_insight": "If bet wins, correlated SGP leg or same-game parlay suggestion"
+  "correlated_insight": "SGP or same-game parlay suggestion if this bet wins"
 }
-
-Be specific. Use real player names, real team names, real stats. No filler phrases.
 `.trim();
 
     const prophetCacheKey = `prophet:${prophetSport}`;
@@ -1579,41 +1938,55 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
 
     const [swarmLiveOdds, swarmNbaCtx, swarmInjuries, swarmSharp] = await Promise.all([
       fetchLiveOdds(league, matchup),
-      league === 'NBA' || league === 'WNBA' ? fetchNBAPlayerStats(matchup) : fetchESPNScoreboard(league),
+      league === 'NBA' || league === 'WNBA' ? fetchNBAPlayerStats(matchup, league === 'WNBA' ? 'wnba' : 'nba') : fetchESPNScoreboard(league),
       fetchInjuries(league, matchup),
       fetchSharpSignals(league),
     ]);
+
+    // Parse teams — prefer odds string (Away @ Home) for correct home/away assignment
+    const oddsGame  = parseOddsForTeams(swarmLiveOdds);
+    const teamsMatch = matchup.match(/^(.+?)\s*(?:vs\.?|-)\s*(.+)$/i);
+    const homeTeam = oddsGame?.home ?? (teamsMatch ? teamsMatch[2].trim() : matchup);
+    const awayTeam  = oddsGame?.away ?? (teamsMatch ? teamsMatch[1].trim() : '');
+    const modelCtx  = awayTeam
+      ? await fetchEdgeModel(league, homeTeam, awayTeam,
+          oddsGame?.spread ?? 0, oddsGame?.homeOdds ?? -110, oddsGame?.awayOdds ?? -110)
+      : '';
+
     const liveOddsBlock = [
-      swarmLiveOdds ? `\nLIVE ODDS FOR THIS GAME (use these exact lines):\n${swarmLiveOdds}` : '',
-      swarmNbaCtx ? `\n${swarmNbaCtx}` : '',
+      swarmLiveOdds ? `\nLIVE ODDS (use exact lines):\n${swarmLiveOdds}` : '',
+      swarmNbaCtx   ? `\n${swarmNbaCtx}` : '',
       swarmInjuries ? `\n${swarmInjuries}` : '',
-      swarmSharp ? `\n${swarmSharp}` : '',
+      swarmSharp    ? `\n${swarmSharp}` : '',
+      modelCtx      ? `\n${modelCtx}` : '',
     ].filter(Boolean).join('\n');
 
-    // Single unified prompt — all 3 perspectives in 1 call (Fix #2: 3 calls → 1)
     const unifiedPrompt = `
-You are a sharp sports betting analyst team. Today is ${today}.
+${SHARP_IDENTITY()}
+You are a sharp sports betting analyst. Today is ${today}.
 Analyze: ${matchup} (${league})
+
 ${liveOddsBlock}
 ${swarmHeuristics}
 
-Produce THREE perspectives on this matchup in one response, then synthesize a verdict.
+RANKING PRIORITY: 1) Highest positive EV from model  2) Cover prob > 54%  3) Edge strength STRONG/MODERATE  4) Sharp signal  5) Injury-adjusted.
+Model EV and cover probability above are XGBoost outputs — treat as primary quantitative signal.
 
-Output ONLY this raw JSON (no markdown, no commentary):
+Produce THREE perspectives then synthesize. Output ONLY raw JSON:
 {
   "quant": {
-    "primary_single": "Best bet from pure line-value angle (specific line + odds)",
-    "value_gap": "+X.X% EV",
+    "primary_single": "Best bet pure EV angle — cite model edge + cover prob",
+    "value_gap": "+X.X% EV (model)",
     "confidence_score": 0.75,
     "sgp_blueprint": [
-      { "label": "SGP Leg 1", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "" },
-      { "label": "SGP Leg 2", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "" },
-      { "label": "SGP Leg 3", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "" }
+      { "label": "SGP Leg 1", "value": "Pick + odds", "rationale": "cite stat/model number", "espn_id": "" },
+      { "label": "SGP Leg 2", "value": "Pick + odds", "rationale": "cite stat/model number", "espn_id": "" },
+      { "label": "SGP Leg 3", "value": "Pick + odds", "rationale": "cite stat/model number", "espn_id": "" }
     ],
-    "omni_report": "2 sentence quant view — cite specific numbers and CLV signal."
+    "omni_report": "2 sentences — cite model predicted margin, cover %, EV."
   },
   "simulation": {
-    "primary_single": "Best bet from game-script/situational angle (specific line + odds)",
+    "primary_single": "Best bet situational angle — cite injury, rest, game-script",
     "value_gap": "+X.X% EV",
     "confidence_score": 0.70,
     "sgp_blueprint": [
@@ -1621,17 +1994,17 @@ Output ONLY this raw JSON (no markdown, no commentary):
       { "label": "SGP Leg 2", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "" },
       { "label": "SGP Leg 3", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "" }
     ],
-    "omni_report": "2 sentence situational view — cite game script, fatigue, or contrarian signal."
+    "omni_report": "2 sentences situational view — cite fatigue, contrarian, or injury."
   },
-  "primary_single": "FINAL best bet after synthesizing both views (specific line + odds)",
-  "value_gap": "Final EV estimate",
+  "primary_single": "FINAL pick — highest EV + model confirmation (specific line + odds)",
+  "value_gap": "Final EV — cite model number",
   "confidence_score": 0.80,
   "sgp_blueprint": [
-    { "label": "SGP Leg 1", "value": "Pick + odds", "rationale": "Why this leg", "espn_id": "" },
-    { "label": "SGP Leg 2", "value": "Pick + odds", "rationale": "Why this leg", "espn_id": "" },
-    { "label": "SGP Leg 3", "value": "Pick + odds", "rationale": "Why this leg", "espn_id": "" }
+    { "label": "SGP Leg 1", "value": "Pick + odds", "rationale": "Why", "espn_id": "" },
+    { "label": "SGP Leg 2", "value": "Pick + odds", "rationale": "Why", "espn_id": "" },
+    { "label": "SGP Leg 3", "value": "Pick + odds", "rationale": "Why", "espn_id": "" }
   ],
-  "omni_report": "Final 2-sentence verdict. State conviction and single biggest risk. Flag [HIGH-RISK] if any heuristic violated."
+  "omni_report": "2-sentence verdict citing model edge, cover prob, conviction level, and biggest risk."
 }
 `.trim();
 
@@ -1669,57 +2042,120 @@ Output ONLY this raw JSON (no markdown, no commentary):
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ALPHA SHEETS — today's top props cheat sheet
+// ALPHA SHEETS — today's top props cheat sheet (real data only, no hallucination)
 // ─────────────────────────────────────────────────────────────────────────────
+
+// Extract matchup strings from live odds context (pattern: "Away @ Home —")
+function parseMatchupsFromOdds(oddsCtx: string): string[] {
+  // Match "Team Name @ Other Team —" per line (no newlines, digits allowed for 76ers etc.)
+  const matches = [...oddsCtx.matchAll(/([A-Z][a-zA-Z0-9 '\.]+?)\s+@\s+([A-Z][a-zA-Z0-9 '\.]+?)\s+[—–-]/g)];
+  return matches.map(m => `${m[1].trim()} vs ${m[2].trim()}`);
+}
+
 export async function generateAlphaSheet(sport: string): Promise<AlphaSheetContainer> {
   const today = todayStr();
   const s = sport.toUpperCase();
 
-  const prompt = `
-You are a sharp sports betting analyst building a prop betting cheat sheet.
-Today is ${today}.
+  // ── Step 1: Fetch real data before calling Claude ────────────────────────
+  const [oddsCtx, scheduleCtx] = await Promise.all([
+    fetchLiveOdds(s).catch(() => ''),
+    fetchESPNScoreboard(s).catch(() => ''),
+  ]);
 
-Generate a cheat sheet of the 10 highest-value player prop bets for ${s} games scheduled TODAY.
+  // ── Step 2: Fetch player/pitcher stats for today's games ─────────────────
+  let playerCtx = '';
+  let pitcherCtx = '';
+  let batterCtx  = '';
+  // Parse matchups from both odds AND ESPN schedule (handle whichever has data)
+  const gameMatchups = parseMatchupsFromOdds(`${oddsCtx}\n${scheduleCtx}`).slice(0, 6);
 
-For each player:
-- Pick a real player with a game tonight
-- Identify the most mispriced prop line (points, rebounds, assists, strikeouts, hits, etc.)
-- ai_score = your confidence this is +EV (0-10 scale, be realistic — 6-8 range is good, 9+ is rare)
-- status_color: #22c55e (strong edge), #eab308 (moderate edge), #f97316 (speculative)
-- espn_id: leave as "" — do NOT invent ESPN player IDs, they will be wrong
-
-Output ONLY a raw JSON array of exactly 10 objects:
-[
-  {
-    "rank": 1,
-    "team_logo": "NBA team abbreviation e.g. GSW",
-    "player_name": "Full Player Name",
-    "metric_label": "e.g. POINTS PROP or STRIKEOUTS",
-    "metric_value": "e.g. Over 27.5 -115",
-    "season_stat": "e.g. 29.4 PPG L10 or .312 BA",
-    "ai_score": 7.8,
-    "status_color": "#22c55e",
-    "espn_id": ""
+  if ((s === 'NBA' || s === 'WNBA') && gameMatchups.length) {
+    const blocks = await Promise.all(gameMatchups.map(g => fetchNBAPlayerStats(g).catch(() => '')));
+    playerCtx = blocks.filter(Boolean).join('\n\n');
   }
-]
+  if (s === 'MLB' && gameMatchups.length) {
+    const [pitcherBlocks, batterBlocks] = await Promise.all([
+      Promise.all(gameMatchups.map(g => fetchMLBPitcherStats(g).catch(() => ''))),
+      Promise.all(gameMatchups.map(g => fetchMLBBatterStats(g).catch(() => ''))),
+    ]);
+    pitcherCtx = pitcherBlocks.filter(Boolean).join('\n\n');
+    batterCtx  = batterBlocks.filter(Boolean).join('\n\n');
+  }
 
-Be specific. Real players, real prop lines, real reasoning baked into metric_value.
-`.trim();
+  const hasGames = !!(oddsCtx || scheduleCtx);
+  const hasPlayerData = !!(playerCtx || pitcherCtx || batterCtx);
 
-  const raw = await ask(prompt);
-  const data = parseJSON(raw) as AlphaSheetItem[];
-
+  // Hard gate: no real data = no Claude call = no hallucinations
   const titles: Record<string, string> = {
     NBA: "NBA PROP HEATBOARD", MLB: "DINGER & STRIKEOUT SHEET",
     NFL: "NFL PROP SHEET", NHL: "PUCK LINE PROPS",
     TENNIS: "TENNIS EDGE SHEET", SOCCER: "SOCCER PROP SHEET",
+    WNBA: "WNBA PROP SHEET", UFC: "UFC FIGHT SHEET", F1: "F1 RACE SHEET",
   };
+  const emptyResult = {
+    title: titles[s] || `${s} PROP SHEET`,
+    subtitle: `@cavemanlocks AI Edge — ${today}`,
+    data: [] as AlphaSheetItem[],
+    timestamp: new Date().toLocaleDateString(),
+  };
+
+  // Sports where we have real player-level stat APIs — require data before calling Claude
+  // (without it, Claude hallucinates player names/lines from memory)
+  const requiresPlayerData = ['NBA','WNBA','MLB','NFL','NHL'];
+  if (requiresPlayerData.includes(s) && !hasPlayerData) return emptyResult;
+  // For remaining sports (F1/UFC/Soccer/Tennis): require at minimum a game list from odds
+  if (!oddsCtx && !hasPlayerData) return emptyResult;
+
+  const prompt = `
+You are a sharp sports betting analyst building a ${s} prop cheat sheet.
+Today is ${today}.
+
+⛔ ABSOLUTE RULES — VIOLATION = FAILURE:
+1. ONLY pick players from the REAL PLAYER DATA block below. If a player's name does not appear in that block, they are BANNED.
+2. ONLY reference games from the REAL GAMES TODAY block below. If a game does not appear there, it does not exist today.
+3. If REAL PLAYER DATA is empty → return [] immediately. Do NOT generate props from memory.
+4. Never invent prop lines. Anchor lines to the real season averages in the data block.
+5. espn_id: always "" — never invent IDs.
+
+REAL GAMES TODAY (ONLY pick from these):
+${oddsCtx || scheduleCtx || '⛔ NO GAMES FOUND — return empty array []'}
+
+${playerCtx ? `REAL PLAYER STATS (ESPN box score — cite exactly):\n${playerCtx}` : ''}
+${pitcherCtx ? `REAL PITCHER STATS (MLB API — cite exactly):\n${pitcherCtx}` : ''}
+${batterCtx ? `REAL BATTER STATS (MLB API — cite exactly):\n${batterCtx}` : ''}
+${!hasPlayerData && s !== 'NFL' && s !== 'F1' && s !== 'UFC' ? '⛔ NO PLAYER DATA AVAILABLE — return empty array []' : ''}
+
+${hasPlayerData ? `
+PROP GENERATION RULES BY SPORT:
+- NBA/WNBA: Points (anchor to PPG ±1.5), Rebounds (anchor to RPG ±0.5), Assists (anchor to APG ±0.5). Only players with ≥15 PPG, ≥7 RPG, or ≥6 APG qualify.
+- MLB batters: Hits prop = anchor line to (BA × 3.8 AB average), round to nearest 0.5. HR props for sluggers (≥15 HR pace). RBI for middle of order.
+- MLB pitchers: Strikeout prop = anchor to (K/9 ÷ 9 × expected IP 5.5). Only for starters listed in pitcher block.
+- ai_score: 7-8 = solid edge backed by real mismatch; 6 = marginal; 9+ = extremely rare, only if clear mispricing.
+- status_color: #22c55e if ai_score ≥ 7.5, #eab308 if 6.5-7.4, #f97316 if < 6.5` : ''}
+
+Output ONLY a raw JSON array (up to 10 objects, fewer if data is limited). If no qualifying players exist, return []:
+[
+  {
+    "rank": 1,
+    "team_logo": "${s === 'NBA' ? 'e.g. BOS' : s === 'MLB' ? 'e.g. NYY' : s}",
+    "player_name": "Exact name from REAL PLAYER DATA block",
+    "metric_label": "e.g. POINTS PROP or STRIKEOUTS",
+    "metric_value": "e.g. Over 27.5 -115 (anchored to 28.2 PPG season avg)",
+    "season_stat": "e.g. 28.2 PPG | L5: 29,31,26,28,27",
+    "ai_score": 7.4,
+    "status_color": "#22c55e",
+    "espn_id": ""
+  }
+]`.trim();
+
+  const raw = await ask(prompt);
+  const data = (parseJSON(raw) as AlphaSheetItem[]) ?? [];
 
   return {
     title: titles[s] || `${s} PROP SHEET`,
     subtitle: `@cavemanlocks AI Edge — ${today}`,
-    data,
-    timestamp: new Date().toLocaleDateString()
+    data: Array.isArray(data) ? data : [],
+    timestamp: new Date().toLocaleDateString(),
   };
 }
 
@@ -1795,20 +2231,30 @@ app.get('/api/parlays', async (req: express.Request, res: express.Response) => {
       if (s === 'TENNIS') return true;
       return false;
     };
-    const crossSportKeys = ['NBA', 'WNBA', 'MLB', 'NFL', 'SOCCER'].filter(inSeason);
+    const crossSportKeys = ['NBA', 'WNBA', 'MLB', 'NFL', 'NHL', 'SOCCER'].filter(inSeason);
     const sgpSport = isAllSports ? 'NBA' : sport;
     const [parlayOdds, crossOdds, parlayNba, parlayInjuries, parlaySharp] = await Promise.all([
       fetchLiveOdds(sgpSport, game || undefined),
       isAllSports
         ? Promise.all(crossSportKeys.map(s => fetchLiveOdds(s))).then(r => r.filter(Boolean).join('\n\n'))
         : Promise.all(crossSportKeys.filter(s => s !== sport).map(s => fetchLiveOdds(s))).then(r => r.filter(Boolean).join('\n\n')),
-      (isAllSports || sport === 'NBA' || sport === 'WNBA') ? fetchNBAScheduleToday() : fetchESPNScoreboard(sport),
+      isAllSports ? fetchNBAScheduleToday() : sport === 'NBA' ? fetchNBAScheduleToday('nba') : sport === 'WNBA' ? fetchNBAScheduleToday('wnba') : fetchESPNScoreboard(sport),
       fetchInjuries(sgpSport, game || undefined),
       fetchSharpSignals(sgpSport),
     ]);
 
     const sgpHeuristics = getBettingHeuristics(sgpSport);
     const sgpBetCtx = getSportBetContext(sgpSport);
+
+    // Inject quantitative model — prefer odds string for correct home/away assignment
+    const prlOddsGame = parseOddsForTeams(parlayOdds);
+    const prlTeams = game ? game.match(/^(.+?)\s*(?:vs\.?|-)\s*(.+)$/i) : null;
+    const prlHome = prlOddsGame?.home ?? (prlTeams ? prlTeams[2].trim() : '');
+    const prlAway = prlOddsGame?.away ?? (prlTeams ? prlTeams[1].trim() : '');
+    const prlModelCtx = prlHome && prlAway
+      ? await fetchEdgeModel(sgpSport, prlHome, prlAway,
+          prlOddsGame?.spread ?? 0, prlOddsGame?.homeOdds ?? -110, prlOddsGame?.awayOdds ?? -110)
+      : '';
 
     const gameContext = game
       ? `SPECIFIC GAME TO AUDIT: "${game}". SGP and correlation parlay must be from this exact game. Multi-game and EV parlays can include this game as the anchor with 1-2 other real games tonight from ANY sport.`
@@ -1822,6 +2268,7 @@ ${parlayOdds}
 ${parlayNba}
 ${parlayInjuries ? `\n${parlayInjuries}` : ''}
 ${parlaySharp ? `\n${parlaySharp}` : ''}
+${prlModelCtx ? `\n${prlModelCtx}` : ''}
 
 LIVE ODDS — CROSS-SPORT (for multi-parlay & EV stack legs, mix freely):
 ${crossOdds}
@@ -1950,7 +2397,7 @@ app.post('/api/quantum-mission', async (req: express.Request, res: express.Respo
     const quantSport = (qSport || 'NBA').toUpperCase();
     const quantumHeuristics = getShortHeuristics(quantSport);
     const prompt = `
-${SHARP_IDENTITY}
+${SHARP_IDENTITY()}
 
 You are a sports betting research agent. Today is ${today}.
 Mission goal: "${goal}"
@@ -2029,40 +2476,58 @@ app.post('/api/full-breakdown', async (req: express.Request, res: express.Respon
       if (s === 'WNBA')   return month >= 5 && month <= 9;
       if (s === 'MLB')    return month >= 4 && month <= 10;
       if (s === 'NFL')    return month >= 9 || month <= 2;
+      if (s === 'NHL')    return month >= 10 || month <= 6;
       if (s === 'SOCCER') return true;
       return false;
     };
-    const crossSports = ['NBA', 'MLB', 'NFL', 'SOCCER', 'WNBA'].filter(inSeason);
+    const crossSports = ['NBA', 'MLB', 'NFL', 'NHL', 'SOCCER', 'WNBA'].filter(inSeason);
 
     // Fetch all data in parallel — real stats, news, odds, injuries, sharp signals
-    const [oddsCtx, injuryCtx, playerStatsCtx, advancedCtx, teamStatsCtx, nicheCtx, newsCtx, pitcherCtx, weatherCtx, sharpCtx, crossOdds] = await Promise.all([
+    const [oddsCtx, injuryCtx, playerStatsCtx, advancedCtx, teamStatsCtx, nicheCtx, newsCtx, pitcherCtx, batterCtx, weatherCtx, sharpCtx, crossOdds] = await Promise.all([
       fetchLiveOdds(league, matchup),
       fetchInjuries(league, matchup),
       league === 'NBA' || league === 'WNBA'
-        ? fetchNBAPlayerStats(matchup)
+        ? fetchNBAPlayerStats(matchup, league === 'WNBA' ? 'wnba' : 'nba')
         : Promise.resolve(''),
-      league === 'NBA' || league === 'WNBA'
+      league === 'NBA'
         ? fetchNBAAdvancedStats(matchup)
         : Promise.resolve(''),
       league === 'NBA' || league === 'WNBA'
-        ? fetchNBATeamStats(matchup)
+        ? fetchNBATeamStats(matchup, league === 'WNBA' ? 'wnba' : 'nba')
         : Promise.resolve(''),
       // Sport-specific niche stats
       league === 'NHL'    ? fetchNHLTeamStats(matchup) :
       league === 'SOCCER' ? fetchSoccerContext(matchup) :
-      league === 'F1'     ? Promise.resolve(getF1CircuitContext(matchup)) :
+      league === 'TENNIS' ? fetchTennisContext(matchup) :
+      league === 'F1'     ? fetchF1LiveContext(matchup) :
+      league === 'UFC'    ? fetchUFCFighterStats(matchup) :
+      league === 'NFL'    ? fetchNFLTeamStats(matchup) :
       Promise.resolve(''),
       fetchESPNNews(league, matchup),
       league === 'MLB' ? fetchMLBPitcherStats(matchup) : Promise.resolve(''),
+      league === 'MLB' ? fetchMLBBatterStats(matchup)  : Promise.resolve(''),
       fetchWeather(matchup, league),
       fetchSharpSignals(league),
       Promise.all(crossSports.filter(s => s !== league).map(s => fetchLiveOdds(s))).then(r => r.filter(Boolean).join('\n\n')),
     ]);
 
+    // Playoff series context for NBA (non-blocking, runs after main parallel fetch)
+    const seriesCtx = league === 'NBA' ? await fetchNBASeriesContext(matchup) : '';
+
     const heuristics = getBettingHeuristics(league);
 
+    // Inject quantitative model — prefer odds string for home/away (Away @ Home is correct order)
+    const fbOddsGame = parseOddsForTeams(oddsCtx);
+    const fbTeams = matchup.match(/^(.+?)\s*(?:vs\.?|-)\s*(.+)$/i);
+    const fbHome = fbOddsGame?.home ?? (fbTeams ? fbTeams[2].trim() : matchup);
+    const fbAway = fbOddsGame?.away ?? (fbTeams ? fbTeams[1].trim() : '');
+    const fbModelCtx = fbAway
+      ? await fetchEdgeModel(league, fbHome, fbAway,
+          fbOddsGame?.spread ?? 0, fbOddsGame?.homeOdds ?? -110, fbOddsGame?.awayOdds ?? -110)
+      : '';
+
     const gamePrompt = `
-${SHARP_IDENTITY}
+${SHARP_IDENTITY()}
 
 You are a sharp sports betting analyst. Today is ${today}.
 Game: ${matchup} (${league})
@@ -2077,20 +2542,22 @@ ${injuryCtx || "No injury data available from ESPN right now. Do NOT fabricate a
 
 ${advancedCtx ? `${advancedCtx}\n` : ''}
 ${nicheCtx ? `SPORT-SPECIFIC NICHE DATA (cite these exact numbers, do NOT invent):\n${nicheCtx}\n` : ''}
-${playerStatsCtx ? `REAL PLAYER STATS — BallDontLie API (cite these exact numbers, do NOT invent):\n${playerStatsCtx}\n` : ''}
+${playerStatsCtx ? `REAL PLAYER STATS — ESPN box score (cite these exact numbers, do NOT invent):\n${playerStatsCtx}\n` : ''}
 ${teamStatsCtx ? `REAL TEAM STATS — ESPN API (cite these exact numbers, do NOT invent):\n${teamStatsCtx}\n` : ''}
 ${pitcherCtx ? `REAL PITCHER STATS — MLB Official API (cite these exact numbers, do NOT invent):\n${pitcherCtx}\n` : ''}
+${batterCtx ? `REAL BATTER STATS — MLB Official API (cite these exact numbers, do NOT invent):\n${batterCtx}\n` : ''}
 ${weatherCtx ? `WEATHER DATA — wttr.in real-time:\n${weatherCtx}\n` : ''}
 ${newsCtx ? `LATEST NEWS — ESPN live:\n${newsCtx}\n` : ''}
+${seriesCtx ? `${seriesCtx}\n` : ''}
+${fbModelCtx ? `${fbModelCtx}\n` : ''}
 📐 MATH ENGINE — use these formulas when computing EV and Kelly in your rationale:
 - Implied prob already devigged: see "→ Implied(devigged)" lines in LIVE ODDS above.
 - EV = (your_win_prob × (decimal_odds − 1)) − (1 − your_win_prob)
   decimal_odds: americanOdds ≥ 0 → odds/100+1 | americanOdds < 0 → 100/|odds|+1
 - Half-Kelly units = max(0, (b×p − (1−p)) / b / 2)  where b = decimal_odds − 1, p = win_prob
-- NBA model total/margin: see "Model Expected Total" and "Model Win Prob" above.
 - Edge = your win_prob − devigged market probability. Positive edge = bet has value.
 - Cite: "Model: 54.3% | Market(devigged): 51.8% | Edge: +2.5% | EV: +3.1% | Half-Kelly: 0.6u"
-⚠️ If model stats block is present, your win_prob MUST align with the model within ±15%. Do not wildly deviate without explaining why.
+⚠️ If QUANTITATIVE MODEL block is present, your win_prob MUST align with the model within ±15%. Do not wildly deviate without explaining why.
 SHARP SIGNALS (Pinnacle vs DK line gap — directional signal only):
 ${sharpCtx || "No significant line gap detected."}
 
@@ -2101,8 +2568,15 @@ ${sharpCtx || "No significant line gap detected."}
 - rationale must cite at least one real number from the data blocks above or from the live odds. No narrative-only rationale accepted.
 
 ⚠️ ANTI-HALLUCINATION RULES — MUST FOLLOW:
+0. TOP_PROPS ABSOLUTE RULE:
+   - NBA: top_props players MUST appear by exact full name in the REAL PLAYER STATS block (men's NBA players only). If block is empty → return "top_props": []. Never invent a player. Only use players averaging ≥15 PPG (or ≥7 RPG or ≥6 APG).
+   - WNBA: top_props players MUST appear by exact full name in the REAL PLAYER STATS block (women's WNBA players only — do NOT use NBA player names). If block is empty → return "top_props": []. WNBA thresholds: ≥12 PPG (or ≥6 RPG or ≥5 APG). Never invent a player. Never mix NBA and WNBA players.
+   - MLB: top_props must come from REAL BATTER STATS or REAL PITCHER STATS blocks only. Batter props: Hits Over/Under (anchor to .AVG × 4 AB ≈ expected hits), HR props, RBI props. Pitcher props: Strikeouts (anchor to K/9 × expected IP). Never invent a player not in those blocks.
+   - NFL: top_props must be grounded in NFL TEAM STATS block. QB passing yards (anchor to passYpg), RB rush yards (anchor to rushYpg). If no player stats available → return "top_props": [].
+   - ALL SPORTS: If no stats block available → "top_props": []. Period. No exceptions.
 1. PLAYER STATS: If REAL PLAYER STATS block is present, cite exact numbers (PPG, L5 form). Never round or invent.
    ADVANCED STATS: If NBA ADVANCED STATS block is present, cite OffRtg/DefRtg/NetRtg/Pace. Use "Model Expected Total" to anchor total pick. Use "Model Win Prob" to anchor spread/ML win_prob.
+   NOTE: WNBA does NOT have advanced stats (OffRtg/DefRtg model). Use team stats block instead.
 2. PITCHER STATS: If REAL PITCHER STATS block is present, cite pitcher's ERA, K/9, WHIP directly. Never say "2.80 ERA" if the block shows "3.84 ERA".
 3. WEATHER: If WEATHER block shows wind ≥15mph, it MUST affect your total pick and any passing props. Do not ignore it.
 4. INJURIES: Only cite players from the INJURY REPORT. Empty report = say "no injury data" — never invent.
@@ -2116,13 +2590,11 @@ ${sharpCtx || "No significant line gap detected."}
    - TENNIS: cite the surface annotation from LIVE ODDS header (Clay/Grass/Hard). Surface MUST appear in rationale.
 9. SURFACE (TENNIS): The LIVE ODDS block starts with a surface annotation (🏟️ line). The surface type is NON-NEGOTIABLE context. Do NOT pick a flat-hitter on clay or ignore a big server's grass advantage.
 
-🔍 ALT LINE HUNTING — VERY IMPORTANT:
-The LIVE ODDS block may contain alternate_spreads and alternate_totals alongside standard lines.
-For EACH market (spread, total): scan ALL listed lines (standard + alternate) and pick the one with the best true value.
-- If the standard spread is Lakers +5.5 but you believe the true margin is +9, then Lakers +8.5 alt spread at real odds is far better value — pick the alt.
-- If an alt line exists and gives meaningfully more cushion OR better odds edge, use it and set "is_alt": true.
-- If the standard line is already the best value, leave "is_alt" as false and omit "alt_note".
-- Only use alt lines that appear in the LIVE ODDS block — never fabricate alternate lines.
+📊 LINE SELECTION — IMPORTANT:
+The LIVE ODDS block contains h2h (moneyline), spreads, and totals from Pinnacle and DraftKings.
+For each pick, use the exact lines shown. Set "is_alt": false for all picks (no alt lines available on current feed).
+- If Pinnacle and DraftKings show different lines, flag the gap (sharp vs public disparity).
+- Never fabricate lines. If LIVE ODDS block is empty → label all odds as "est." and say so.
 
 Analyze this specific game. win_prob = true win probability (0.50–0.95). Apply heuristics above to every pick.
 
@@ -2136,16 +2608,16 @@ Output ONLY raw JSON — no markdown:
   "ml_pick": { "pick": "Team ML", "odds": "-180", "win_prob": 0.72, "rationale": "2 sharp sentences", "niche_stat": "Specific ML trend", "is_alt": false },
   "total_pick": { "pick": "Over/Under X.X or alt line", "odds": "-108", "win_prob": 0.64, "rationale": "2 sharp sentences", "niche_stat": "Specific pace/total trend", "is_alt": false },
   "top_props": [
-    { "player": "MUST be a real player on one of these two teams", "market": "Points", "pick": "Over 26.5", "odds": "-115", "win_prob": 0.74, "rationale": "1-2 sentences based on real stats", "niche_stat": "Season average or matchup stat" },
-    { "player": "Real player on these teams only", "market": "Rebounds", "pick": "Over 8.5", "odds": "-110", "win_prob": 0.71, "rationale": "1-2 sentences", "niche_stat": "Real stat" },
-    { "player": "Real player on these teams only", "market": "Assists", "pick": "Over 6.5", "odds": "-115", "win_prob": 0.68, "rationale": "1-2 sentences", "niche_stat": "Real stat" },
-    { "player": "Real player on these teams only", "market": "Points", "pick": "Over 21.5", "odds": "-110", "win_prob": 0.65, "rationale": "1-2 sentences", "niche_stat": "Real stat" },
-    { "player": "Real player on these teams only", "market": "Threes", "pick": "Over 2.5", "odds": "-115", "win_prob": 0.62, "rationale": "1-2 sentences", "niche_stat": "Real stat" }
+    { "player": "EXACT name from REAL PLAYER STATS block — NO others allowed", "market": "Points", "pick": "Over X.X", "odds": "-115", "win_prob": 0.68, "rationale": "cite exact PPG from stats block", "niche_stat": "e.g. 24.6 PPG this season | L5: 26,22,28,25,24" },
+    { "player": "EXACT name from REAL PLAYER STATS block only", "market": "Rebounds", "pick": "Over X.X", "odds": "-110", "win_prob": 0.64, "rationale": "cite exact RPG", "niche_stat": "Real RPG" },
+    { "player": "EXACT name from REAL PLAYER STATS block only", "market": "Assists", "pick": "Over X.X", "odds": "-115", "win_prob": 0.62, "rationale": "cite exact APG", "niche_stat": "Real APG" },
+    { "player": "EXACT name from REAL PLAYER STATS block only", "market": "Points", "pick": "Over X.X", "odds": "-110", "win_prob": 0.61, "rationale": "cite exact PPG", "niche_stat": "Real PPG" },
+    { "player": "EXACT name from REAL PLAYER STATS block only", "market": "Threes", "pick": "Over X.X", "odds": "-115", "win_prob": 0.60, "rationale": "cite exact 3P%", "niche_stat": "Real 3P%" }
   ],
   "sgp": {
     "legs": [
       { "pick": "Team covers or wins", "odds": "-130", "why": "caveman reason max 10 words" },
-      { "pick": "Real player on these teams Over X stat", "odds": "-115", "why": "caveman reason" },
+      { "pick": "Player from REAL PLAYER STATS block Over X stat", "odds": "-115", "why": "caveman reason" },
       { "pick": "Correlated total or prop from this game", "odds": "-110", "why": "caveman reason" }
     ],
     "combined_odds": "+280",
@@ -2191,7 +2663,9 @@ Output ONLY raw JSON — no markdown:
 
     const cacheKey = `fullbreakdown:${league}:${matchup.toLowerCase().replace(/\s+/g, '_')}`;
     const cached = getCached(cacheKey);
-    if (cached) return res.json(cached);
+    // Don't serve cache if it was built with no real odds — stale est. data is worse than fresh
+    const cachedHasRealOdds = cached && JSON.stringify(cached).includes('Pinnacle');
+    if (cachedHasRealOdds) return res.json(cached);
 
     const [gameRaw, dailyRaw] = await Promise.all([
       ask(gamePrompt),
@@ -2219,7 +2693,9 @@ Output ONLY raw JSON — no markdown:
       parlay_of_day: daily.parlay_of_day,
       hash: "FB_" + Math.random().toString(36).substring(7).toUpperCase(),
     };
-    setCache(cacheKey, payload, 20 * 60 * 1000);
+    // 5-min TTL if no real odds; 20-min if odds loaded
+    const hasRealOdds = oddsCtx.includes('Pinnacle');
+    setCache(cacheKey, payload, hasRealOdds ? 20 * 60 * 1000 : 5 * 60 * 1000);
     res.json(payload);
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : String(e);
@@ -2249,7 +2725,7 @@ app.get('/api/sharp-money', async (req: express.Request, res: express.Response) 
     const sharpHeuristics = getShortHeuristics(sport);
     const [sharpOdds, sharpNba, sharpInjuries, sharpSignals] = await Promise.all([
       fetchLiveOdds(sport, game || undefined),
-      sport === 'NBA' || sport === 'WNBA' ? fetchNBAScheduleToday() : fetchESPNScoreboard(sport),
+      sport === 'NBA' ? fetchNBAScheduleToday('nba') : sport === 'WNBA' ? fetchNBAScheduleToday('wnba') : fetchESPNScoreboard(sport),
       fetchInjuries(sport, game || undefined),
       fetchSharpSignals(sport),
     ]);
@@ -2261,7 +2737,7 @@ app.get('/api/sharp-money', async (req: express.Request, res: express.Response) 
     ].filter(Boolean).join('\n');
 
     const prompt = `
-${SHARP_IDENTITY}
+${SHARP_IDENTITY()}
 
 You are a sharp money tracking analyst. Today is ${today}. Sport: ${sport}.
 ${gameCtx}${betCtx}

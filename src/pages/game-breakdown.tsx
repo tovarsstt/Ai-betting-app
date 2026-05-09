@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 
-const SPORTS = ["NBA", "WNBA", "MLB", "NFL", "NHL", "SOCCER", "TENNIS", "UFC"];
+const SPORTS = ["NBA", "WNBA", "MLB", "NFL", "SOCCER", "TENNIS", "F1"];
 
 interface MarketPick { pick: string; odds: string; win_prob: number; rationale: string; niche_stat: string; is_alt?: boolean; }
 interface PropPick { player: string; market: string; pick: string; odds: string; win_prob: number; rationale: string; niche_stat: string; }

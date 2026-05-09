@@ -1,0 +1,4959 @@
+{
+  "NBA": {
+    "1610612737": {
+      "off_rtg": 113.7,
+      "def_rtg": 114.8,
+      "net_rtg": -1.1,
+      "pace": 103.41,
+      "ts_pct": 0.579
+    },
+    "1610612738": {
+      "off_rtg": 119.5,
+      "def_rtg": 110.1,
+      "net_rtg": 9.4,
+      "pace": 96.59,
+      "ts_pct": 0.591
+    },
+    "1610612751": {
+      "off_rtg": 108.1,
+      "def_rtg": 115.4,
+      "net_rtg": -7.3,
+      "pace": 96.73,
+      "ts_pct": 0.552
+    },
+    "1610612766": {
+      "off_rtg": 106.7,
+      "def_rtg": 115.7,
+      "net_rtg": -9.1,
+      "pace": 98.22,
+      "ts_pct": 0.537
+    },
+    "1610612741": {
+      "off_rtg": 113.2,
+      "def_rtg": 114.8,
+      "net_rtg": -1.6,
+      "pace": 103.61,
+      "ts_pct": 0.585
+    },
+    "1610612739": {
+      "off_rtg": 121.0,
+      "def_rtg": 111.8,
+      "net_rtg": 9.2,
+      "pace": 100.31,
+      "ts_pct": 0.607
+    },
+    "1610612742": {
+      "off_rtg": 113.7,
+      "def_rtg": 115.0,
+      "net_rtg": -1.3,
+      "pace": 100.15,
+      "ts_pct": 0.583
+    },
+    "1610612743": {
+      "off_rtg": 118.9,
+      "def_rtg": 115.1,
+      "net_rtg": 3.8,
+      "pace": 100.67,
+      "ts_pct": 0.604
+    },
+    "1610612765": {
+      "off_rtg": 114.6,
+      "def_rtg": 112.5,
+      "net_rtg": 2.1,
+      "pace": 100.27,
+      "ts_pct": 0.58
+    },
+    "1610612744": {
+      "off_rtg": 114.2,
+      "def_rtg": 111.0,
+      "net_rtg": 3.2,
+      "pace": 99.37,
+      "ts_pct": 0.568
+    },
+    "1610612745": {
+      "off_rtg": 114.9,
+      "def_rtg": 110.3,
+      "net_rtg": 4.6,
+      "pace": 99.03,
+      "ts_pct": 0.553
+    },
+    "1610612754": {
+      "off_rtg": 115.4,
+      "def_rtg": 113.3,
+      "net_rtg": 2.1,
+      "pace": 100.76,
+      "ts_pct": 0.594
+    },
+    "1610612746": {
+      "off_rtg": 114.3,
+      "def_rtg": 109.4,
+      "net_rtg": 4.9,
+      "pace": 98.24,
+      "ts_pct": 0.589
+    },
+    "1610612747": {
+      "off_rtg": 115.0,
+      "def_rtg": 113.8,
+      "net_rtg": 1.2,
+      "pace": 98.34,
+      "ts_pct": 0.593
+    },
+    "1610612763": {
+      "off_rtg": 117.2,
+      "def_rtg": 112.6,
+      "net_rtg": 4.7,
+      "pace": 103.69,
+      "ts_pct": 0.588
+    },
+    "1610612748": {
+      "off_rtg": 112.4,
+      "def_rtg": 112.0,
+      "net_rtg": 0.4,
+      "pace": 97.08,
+      "ts_pct": 0.576
+    },
+    "1610612749": {
+      "off_rtg": 115.1,
+      "def_rtg": 112.7,
+      "net_rtg": 2.4,
+      "pace": 99.92,
+      "ts_pct": 0.598
+    },
+    "1610612750": {
+      "off_rtg": 115.7,
+      "def_rtg": 110.8,
+      "net_rtg": 5.0,
+      "pace": 97.95,
+      "ts_pct": 0.588
+    },
+    "1610612740": {
+      "off_rtg": 109.7,
+      "def_rtg": 119.1,
+      "net_rtg": -9.4,
+      "pace": 99.77,
+      "ts_pct": 0.552
+    },
+    "1610612752": {
+      "off_rtg": 117.3,
+      "def_rtg": 113.3,
+      "net_rtg": 4.0,
+      "pace": 97.64,
+      "ts_pct": 0.589
+    },
+    "1610612760": {
+      "off_rtg": 119.2,
+      "def_rtg": 106.6,
+      "net_rtg": 12.7,
+      "pace": 100.9,
+      "ts_pct": 0.593
+    },
+    "1610612753": {
+      "off_rtg": 108.9,
+      "def_rtg": 109.1,
+      "net_rtg": -0.2,
+      "pace": 96.51,
+      "ts_pct": 0.55
+    },
+    "1610612755": {
+      "off_rtg": 111.0,
+      "def_rtg": 117.3,
+      "net_rtg": -6.3,
+      "pace": 98.13,
+      "ts_pct": 0.563
+    },
+    "1610612756": {
+      "off_rtg": 114.7,
+      "def_rtg": 117.7,
+      "net_rtg": -3.0,
+      "pace": 98.31,
+      "ts_pct": 0.595
+    },
+    "1610612757": {
+      "off_rtg": 111.0,
+      "def_rtg": 113.7,
+      "net_rtg": -2.7,
+      "pace": 99.51,
+      "ts_pct": 0.555
+    },
+    "1610612758": {
+      "off_rtg": 115.9,
+      "def_rtg": 115.3,
+      "net_rtg": 0.6,
+      "pace": 98.91,
+      "ts_pct": 0.582
+    },
+    "1610612759": {
+      "off_rtg": 113.5,
+      "def_rtg": 116.3,
+      "net_rtg": -2.8,
+      "pace": 100.08,
+      "ts_pct": 0.575
+    },
+    "1610612761": {
+      "off_rtg": 109.6,
+      "def_rtg": 113.6,
+      "net_rtg": -4.1,
+      "pace": 100.62,
+      "ts_pct": 0.553
+    },
+    "1610612762": {
+      "off_rtg": 110.2,
+      "def_rtg": 119.4,
+      "net_rtg": -9.2,
+      "pace": 100.85,
+      "ts_pct": 0.568
+    },
+    "1610612764": {
+      "off_rtg": 105.8,
+      "def_rtg": 118.0,
+      "net_rtg": -12.2,
+      "pace": 101.82,
+      "ts_pct": 0.546
+    }
+  },
+  "WNBA": {
+    "1611661330": {
+      "off_rtg": 96.6,
+      "def_rtg": 100.1,
+      "net_rtg": -3.6,
+      "pace": 94.75,
+      "ts_pct": 0.501
+    },
+    "1611661329": {
+      "off_rtg": 97.0,
+      "def_rtg": 103.5,
+      "net_rtg": -6.5,
+      "pace": 95.72,
+      "ts_pct": 0.495
+    },
+    "1611661323": {
+      "off_rtg": 102.3,
+      "def_rtg": 94.1,
+      "net_rtg": 8.1,
+      "pace": 93.32,
+      "ts_pct": 0.533
+    },
+    "1611661321": {
+      "off_rtg": 102.1,
+      "def_rtg": 111.7,
+      "net_rtg": -9.5,
+      "pace": 98.05,
+      "ts_pct": 0.531
+    },
+    "1611661325": {
+      "off_rtg": 104.2,
+      "def_rtg": 107.5,
+      "net_rtg": -3.4,
+      "pace": 97.54,
+      "ts_pct": 0.559
+    },
+    "1611661319": {
+      "off_rtg": 106.1,
+      "def_rtg": 99.6,
+      "net_rtg": 6.5,
+      "pace": 97.3,
+      "ts_pct": 0.567
+    },
+    "1611661320": {
+      "off_rtg": 97.0,
+      "def_rtg": 105.7,
+      "net_rtg": -8.6,
+      "pace": 96.79,
+      "ts_pct": 0.523
+    },
+    "1611661324": {
+      "off_rtg": 102.8,
+      "def_rtg": 94.8,
+      "net_rtg": 8.0,
+      "pace": 94.83,
+      "ts_pct": 0.553
+    },
+    "1611661313": {
+      "off_rtg": 107.0,
+      "def_rtg": 95.3,
+      "net_rtg": 11.7,
+      "pace": 96.15,
+      "ts_pct": 0.561
+    },
+    "1611661317": {
+      "off_rtg": 101.3,
+      "def_rtg": 105.4,
+      "net_rtg": -4.1,
+      "pace": 95.88,
+      "ts_pct": 0.547
+    },
+    "1611661328": {
+      "off_rtg": 102.1,
+      "def_rtg": 96.4,
+      "net_rtg": 5.6,
+      "pace": 97.31,
+      "ts_pct": 0.525
+    },
+    "1611661322": {
+      "off_rtg": 98.0,
+      "def_rtg": 101.7,
+      "net_rtg": -3.8,
+      "pace": 96.49,
+      "ts_pct": 0.538
+    }
+  },
+  "NFL": {
+    "Chicago Bears": {
+      "ppg": 19.8,
+      "pag": 22.3,
+      "net": -2.4
+    },
+    "Green Bay Packers": {
+      "ppg": 24.5,
+      "pag": 21.7,
+      "net": 2.8
+    },
+    "Cleveland Browns": {
+      "ppg": 21.9,
+      "pag": 23.7,
+      "net": -1.8
+    },
+    "Tennessee Titans": {
+      "ppg": 22.0,
+      "pag": 22.6,
+      "net": -0.6
+    },
+    "Miami Dolphins": {
+      "ppg": 23.1,
+      "pag": 23.4,
+      "net": -0.4
+    },
+    "Baltimore Ravens": {
+      "ppg": 27.2,
+      "pag": 19.9,
+      "net": 7.3
+    },
+    "Minnesota Vikings": {
+      "ppg": 25.1,
+      "pag": 22.5,
+      "net": 2.6
+    },
+    "Atlanta Falcons": {
+      "ppg": 21.6,
+      "pag": 24.9,
+      "net": -3.3
+    },
+    "New York Jets": {
+      "ppg": 17.5,
+      "pag": 24.0,
+      "net": -6.5
+    },
+    "Buffalo Bills": {
+      "ppg": 26.7,
+      "pag": 18.7,
+      "net": 8.0
+    },
+    "Philadelphia Eagles": {
+      "ppg": 25.4,
+      "pag": 22.1,
+      "net": 3.2
+    },
+    "Washington": {
+      "ppg": 18.9,
+      "pag": 23.5,
+      "net": -4.6
+    },
+    "Carolina Panthers": {
+      "ppg": 19.8,
+      "pag": 25.6,
+      "net": -5.7
+    },
+    "Los Angeles Rams": {
+      "ppg": 22.8,
+      "pag": 21.7,
+      "net": 1.1
+    },
+    "Jacksonville Jaguars": {
+      "ppg": 19.3,
+      "pag": 25.3,
+      "net": -6.0
+    },
+    "Kansas City Chiefs": {
+      "ppg": 27.2,
+      "pag": 20.6,
+      "net": 6.6
+    },
+    "Los Angeles Chargers": {
+      "ppg": 22.8,
+      "pag": 23.0,
+      "net": -0.2
+    },
+    "Indianapolis Colts": {
+      "ppg": 23.0,
+      "pag": 22.9,
+      "net": 0.1
+    },
+    "Seattle Seahawks": {
+      "ppg": 24.7,
+      "pag": 23.9,
+      "net": 0.7
+    },
+    "Cincinnati Bengals": {
+      "ppg": 22.7,
+      "pag": 24.0,
+      "net": -1.3
+    },
+    "Dallas Cowboys": {
+      "ppg": 26.4,
+      "pag": 22.9,
+      "net": 3.5
+    },
+    "New York Giants": {
+      "ppg": 17.3,
+      "pag": 23.5,
+      "net": -6.3
+    },
+    "Arizona Cardinals": {
+      "ppg": 23.2,
+      "pag": 24.2,
+      "net": -1.0
+    },
+    "Detroit Lions": {
+      "ppg": 24.8,
+      "pag": 25.1,
+      "net": -0.3
+    },
+    "Tampa Bay Buccaneers": {
+      "ppg": 25.7,
+      "pag": 22.9,
+      "net": 2.8
+    },
+    "San Francisco 49ers": {
+      "ppg": 25.9,
+      "pag": 20.1,
+      "net": 5.8
+    },
+    "New England Patriots": {
+      "ppg": 20.9,
+      "pag": 18.8,
+      "net": 2.1
+    },
+    "Pittsburgh Steelers": {
+      "ppg": 21.1,
+      "pag": 20.4,
+      "net": 0.7
+    },
+    "New Orleans Saints": {
+      "ppg": 23.8,
+      "pag": 21.7,
+      "net": 2.1
+    },
+    "Houston Texans": {
+      "ppg": 20.5,
+      "pag": 24.1,
+      "net": -3.6
+    },
+    "Oakland Raiders": {
+      "ppg": 19.8,
+      "pag": 27.0,
+      "net": -7.2
+    },
+    "Denver Broncos": {
+      "ppg": 19.3,
+      "pag": 20.8,
+      "net": -1.6
+    },
+    "Las Vegas Raiders": {
+      "ppg": 21.6,
+      "pag": 26.0,
+      "net": -4.4
+    },
+    "Washington Commanders": {
+      "ppg": 22.8,
+      "pag": 24.3,
+      "net": -1.5
+    }
+  },
+  "MLB": {},
+  "Tennis": {
+    "Novak Djokovic": {
+      "rank": 4.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Rafael Nadal": {
+      "rank": 161.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Roberto Bautista Agut": {
+      "rank": 62.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Dusan Lajovic": {
+      "rank": 86.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Daniil Medvedev": {
+      "rank": 4.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Karen Khachanov": {
+      "rank": 21.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Alex De Minaur": {
+      "rank": 10.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Nick Kyrgios": {
+      "rank": 20.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Denis Shapovalov": {
+      "rank": 100.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Felix Auger Aliassime": {
+      "rank": 21.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Diego Schwartzman": {
+      "rank": 113.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Guido Pella": {
+      "rank": 228.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Daniel Evans": {
+      "rank": 178.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Cameron Norrie": {
+      "rank": 57.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "David Goffin": {
+      "rank": 54.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Kimmer Coppejans": {
+      "rank": 186.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Gael Monfils": {
+      "rank": 52.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Benoit Paire": {
+      "rank": 227.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Kevin Anderson": {
+      "rank": NaN,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Lloyd Harris": {
+      "rank": 118.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Cristian Garin": {
+      "rank": 115.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Nicolas Jarry": {
+      "rank": 20.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Gilles Simon": {
+      "rank": 188.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Yoshihito Nishioka": {
+      "rank": 84.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Go Soeda": {
+      "rank": 119.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Nikoloz Basilashvili": {
+      "rank": 87.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Aleksandre Metreveli": {
+      "rank": 678.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Pablo Cuevas": {
+      "rank": 149.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Franco Roncadelli": {
+      "rank": 616.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Martin Cuevas": {
+      "rank": 404.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Steve Darcis": {
+      "rank": 200.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Grigor Dimitrov": {
+      "rank": 9.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Dimitar Kuzmanov": {
+      "rank": 207.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Radu Albot": {
+      "rank": 136.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Alexander Cozbinov": {
+      "rank": 816.0,
+      "surface_wins": {}
+    },
+    "Fabio Fognini": {
+      "rank": 81.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Stefano Travaglia": {
+      "rank": 119.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "John Isner": {
+      "rank": 157.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Taylor Fritz": {
+      "rank": 9.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Casper Ruud": {
+      "rank": 12.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Viktor Durasovic": {
+      "rank": 413.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Borna Coric": {
+      "rank": 96.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Dominic Thiem": {
+      "rank": 90.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Marin Cilic": {
+      "rank": 196.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Dennis Novak": {
+      "rank": 143.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Hubert Hurkacz": {
+      "rank": 8.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Kacper Zuk": {
+      "rank": 232.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Kamil Majchrzak": {
+      "rank": 807.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Stefanos Tsitsipas": {
+      "rank": 10.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Alexander Zverev": {
+      "rank": 2.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Jan Lennard Struff": {
+      "rank": 24.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Michail Pervolarakis": {
+      "rank": 391.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "John Millman": {
+      "rank": 140.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Andrey Rublev": {
+      "rank": 9.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Corentin Moutet": {
+      "rank": 66.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Stan Wawrinka": {
+      "rank": 169.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Miomir Kecmanovic": {
+      "rank": 53.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Aljaz Bedene": {
+      "rank": 330.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Fernando Verdasco": {
+      "rank": 116.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Marton Fucsovics": {
+      "rank": 82.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Pierre Hugues Herbert": {
+      "rank": 127.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Jeremy Chardy": {
+      "rank": NaN,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Alexander Bublik": {
+      "rank": 33.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Milos Raonic": {
+      "rank": 186.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Filip Krajinovic": {
+      "rank": 71.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Cem Ilkel": {
+      "rank": 304.0,
+      "surface_wins": {
+        "nan": 1
+      }
+    },
+    "Jo-Wilfried Tsonga": {
+      "rank": 243.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Laslo Djere": {
+      "rank": 141.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Mikhail Kukushkin": {
+      "rank": 112.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Gregoire Barrere": {
+      "rank": 128.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Mikael Ymer": {
+      "rank": 60.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Adrian Mannarino": {
+      "rank": 17.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Tennys Sandgren": {
+      "rank": 50.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Pablo Andujar": {
+      "rank": 115.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Kyle Edmund": {
+      "rank": 665.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Frances Tiafoe": {
+      "rank": 15.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Ricardas Berankis": {
+      "rank": 248.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Jordan Thompson": {
+      "rank": 28.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Lorenzo Sonego": {
+      "rank": 51.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Marco Cecchinato": {
+      "rank": 96.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Malek Jaziri": {
+      "rank": 329.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Tommy Paul": {
+      "rank": 13.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Albert Ramos": {
+      "rank": 104.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Pablo Carreno Busta": {
+      "rank": 207.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Alex Bolt": {
+      "rank": 210.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Jaume Munar": {
+      "rank": 63.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Sam Querrey": {
+      "rank": 121.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "James Duckworth": {
+      "rank": 80.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Reilly Opelka": {
+      "rank": 309.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Alexei Popyrin": {
+      "rank": 24.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Juan Ignacio Londero": {
+      "rank": 139.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Salvatore Caruso": {
+      "rank": 76.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Stephane Robert": {
+      "rank": 661.0,
+      "surface_wins": {}
+    },
+    "Federico Delbonis": {
+      "rank": 131.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Ugo Humbert": {
+      "rank": 18.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Feliciano Lopez": {
+      "rank": 634.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Thiago Monteiro": {
+      "rank": 119.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Andreas Seppi": {
+      "rank": 123.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Vasek Pospisil": {
+      "rank": 486.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Michael Mmoh": {
+      "rank": 123.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Jannik Sinner": {
+      "rank": 1.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Alejandro Davidovich Fokina": {
+      "rank": 64.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Michael Venus": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Leonardo Mayer": {
+      "rank": 100.0,
+      "surface_wins": {}
+    },
+    "Joao Sousa": {
+      "rank": 289.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Hugo Dellien": {
+      "rank": 106.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Peter Gojowczyk": {
+      "rank": 111.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Christopher Eubanks": {
+      "rank": 32.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Jozef Kovalik": {
+      "rank": 113.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Yasutaka Uchiyama": {
+      "rank": 160.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Mario Vilella Martinez": {
+      "rank": 188.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Yen Hsun Lu": {
+      "rank": 1020.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Ivo Karlovic": {
+      "rank": 148.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Ernests Gulbis": {
+      "rank": 289.0,
+      "surface_wins": {
+        "nan": 1
+      }
+    },
+    "Tallon Griekspoor": {
+      "rank": 29.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Ilya Ivashka": {
+      "rank": 113.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Pedro Martinez": {
+      "rank": 39.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Dominik Koepfer": {
+      "rank": 60.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Hugo Gaston": {
+      "rank": 81.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Alejandro Tabilo": {
+      "rank": 54.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Daniel Elahi Galan": {
+      "rank": 124.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Damir Dzumhur": {
+      "rank": 147.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Yuichi Sugita": {
+      "rank": 104.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Elliot Benchetrit": {
+      "rank": 614.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Christopher Oconnell": {
+      "rank": 71.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Soon Woo Kwon": {
+      "rank": 344.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Evgeny Donskoy": {
+      "rank": 157.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Egor Gerasimov": {
+      "rank": 661.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Matteo Berrettini": {
+      "rank": 35.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Andrew Harris": {
+      "rank": 232.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Marco Trungelliti": {
+      "rank": 136.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Roberto Carballes Baena": {
+      "rank": 54.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "John Patrick Smith": {
+      "rank": 308.0,
+      "surface_wins": {}
+    },
+    "Mohamed Safwat": {
+      "rank": 358.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Max Purcell": {
+      "rank": 97.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Quentin Halys": {
+      "rank": 100.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Roger Federer": {
+      "rank": 8.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Steve Johnson": {
+      "rank": 197.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Philipp Kohlschreiber": {
+      "rank": 134.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Marcos Giron": {
+      "rank": 49.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Lorenzo Giustino": {
+      "rank": 157.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Cedrik Marcel Stebe": {
+      "rank": 231.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Norbert Gombos": {
+      "rank": 117.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Marc Polmans": {
+      "rank": 152.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Mackenzie Mcdonald": {
+      "rank": 149.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Tatsuma Ito": {
+      "rank": 146.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Prajnesh Gunneswaran": {
+      "rank": 342.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Andrej Martin": {
+      "rank": 119.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Pedro Cachin": {
+      "rank": 91.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Gianluca Mager": {
+      "rank": 63.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Attila Balazs": {
+      "rank": 76.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Carlos Taberner": {
+      "rank": 92.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Filip Horansky": {
+      "rank": 203.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Facundo Bagnis": {
+      "rank": 136.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Federico Gaio": {
+      "rank": 138.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Juan Pablo Ficovich": {
+      "rank": 230.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Federico Coria": {
+      "rank": 83.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Richard Gasquet": {
+      "rank": 133.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Emil Ruusuvuori": {
+      "rank": 55.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Enzo Couacaud": {
+      "rank": 191.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Sergiy Stakhovsky": {
+      "rank": 194.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Henri Laaksonen": {
+      "rank": 96.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Jiri Vesely": {
+      "rank": 437.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Roberto Marcora": {
+      "rank": 191.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Taro Daniel": {
+      "rank": 93.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Nikola Milojevic": {
+      "rank": 136.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Viktor Troicki": {
+      "rank": 230.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Lukas Rosol": {
+      "rank": 179.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Sasi Kumar Mukund": {
+      "rank": 263.0,
+      "surface_wins": {}
+    },
+    "Yannick Maden": {
+      "rank": 131.0,
+      "surface_wins": {}
+    },
+    "Antoine Hoang": {
+      "rank": 156.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Paolo Lorenzi": {
+      "rank": 116.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Ramkumar Ramanathan": {
+      "rank": 461.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Arjun Kadhe": {
+      "rank": 612.0,
+      "surface_wins": {}
+    },
+    "Thomas Fabbiano": {
+      "rank": 134.0,
+      "surface_wins": {}
+    },
+    "Sumit Nagal": {
+      "rank": 80.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Pedro Sousa": {
+      "rank": 108.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Facundo Diaz Acosta": {
+      "rank": 64.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Joao Domingues": {
+      "rank": 169.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Francisco Cerundolo": {
+      "rank": 22.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Jason Jung": {
+      "rank": 276.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Brian Shi": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Danilo Petrovic": {
+      "rank": 166.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Jack Sock": {
+      "rank": 154.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Brayden Schnur": {
+      "rank": 121.0,
+      "surface_wins": {}
+    },
+    "Robin Haase": {
+      "rank": 257.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Brandon Nakashima": {
+      "rank": 40.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Noah Rubin": {
+      "rank": 269.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Ryan Harrison": {
+      "rank": 433.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Emilio Gomez": {
+      "rank": 185.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Stefan Kozlov": {
+      "rank": 130.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Bernard Tomic": {
+      "rank": 233.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Denis Istomin": {
+      "rank": 267.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Harold Mayot": {
+      "rank": 122.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Carlos Alcaraz": {
+      "rank": 3.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Thiago Seyboth Wild": {
+      "rank": 80.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Felipe Meligeni Alves": {
+      "rank": 153.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Mischa Zverev": {
+      "rank": 268.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Gerardo Lopez Villasenor": {
+      "rank": 560.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Lorenzo Musetti": {
+      "rank": 17.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Renzo Olivo": {
+      "rank": 297.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Tomas Barrios Vera": {
+      "rank": 111.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Juan Pablo Varillas": {
+      "rank": 162.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Martin Klizan": {
+      "rank": 158.0,
+      "surface_wins": {}
+    },
+    "Andy Murray": {
+      "rank": 129.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "J J Wolf": {
+      "rank": 143.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Sebastian Korda": {
+      "rank": 33.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Mitchell Krueger": {
+      "rank": 179.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Thai Son Kwiatkowski": {
+      "rank": 187.0,
+      "surface_wins": {}
+    },
+    "Maxime Cressy": {
+      "rank": 180.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Ulises Blanch": {
+      "rank": 244.0,
+      "surface_wins": {}
+    },
+    "Ernesto Escobedo": {
+      "rank": 399.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Andrey Kuznetsov": {
+      "rank": NaN,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Denis Kudla": {
+      "rank": 174.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Bradley Klahn": {
+      "rank": 129.0,
+      "surface_wins": {}
+    },
+    "Yannick Hanfmann": {
+      "rank": 96.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Marc Andrea Huesler": {
+      "rank": 171.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Maximilian Marterer": {
+      "rank": 104.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Sebastian Ofner": {
+      "rank": 40.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Kei Nishikori": {
+      "rank": 205.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Liam Broady": {
+      "rank": 108.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Daniel Altmaier": {
+      "rank": 88.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Arthur Rinderknech": {
+      "rank": 60.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Tomas Machac": {
+      "rank": 27.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Jurij Rodionov": {
+      "rank": 170.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Maxime Janvier": {
+      "rank": 204.0,
+      "surface_wins": {}
+    },
+    "Benjamin Bonzi": {
+      "rank": 124.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Aleksandar Vukic": {
+      "rank": 85.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Steven Diez": {
+      "rank": 181.0,
+      "surface_wins": {}
+    },
+    "Oscar Otte": {
+      "rank": 233.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Andrea Pellegrino": {
+      "rank": 292.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Giulio Zeppieri": {
+      "rank": 148.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Roman Safiullin": {
+      "rank": 60.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Aslan Karatsev": {
+      "rank": 139.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Nino Serdarusic": {
+      "rank": 242.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Pavel Kotov": {
+      "rank": 63.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Timofey Skatov": {
+      "rank": 278.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Dmitry Popko": {
+      "rank": 172.0,
+      "surface_wins": {}
+    },
+    "Vitaliy Sachko": {
+      "rank": 529.0,
+      "surface_wins": {}
+    },
+    "Jonas Forejtek": {
+      "rank": 399.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Adrian Andreev": {
+      "rank": 423.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Illya Marchenko": {
+      "rank": 177.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Santiago Giraldo": {
+      "rank": 292.0,
+      "surface_wins": {}
+    },
+    "Ruben Bemelmans": {
+      "rank": 221.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Borna Gojo": {
+      "rank": 439.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Daniil Ostapenkov": {
+      "rank": NaN,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Roberto Quiroz": {
+      "rank": 293.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Elias Ymer": {
+      "rank": 238.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Sanjar Fayziev": {
+      "rank": 510.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Ruan Roelofse": {
+      "rank": 787.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Mirza Basic": {
+      "rank": 579.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Jose Hernandez": {
+      "rank": 289.0,
+      "surface_wins": {}
+    },
+    "Roberto Cid": {
+      "rank": 281.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Federico Zeballos": {
+      "rank": 543.0,
+      "surface_wins": {}
+    },
+    "Benjamin Hassan": {
+      "rank": 195.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Jirat Navasirisomboon": {
+      "rank": 1541.0,
+      "surface_wins": {}
+    },
+    "Wishaya Trongcharoenchaikul": {
+      "rank": 623.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Hasan Ibrahim": {
+      "rank": 1507.0,
+      "surface_wins": {}
+    },
+    "Frederico Ferreira Silva": {
+      "rank": 190.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Laurynas Grigelis": {
+      "rank": 540.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Julius Tverijonas": {
+      "rank": 791.0,
+      "surface_wins": {}
+    },
+    "Patrik Niklas Salminen": {
+      "rank": 418.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Manuel Sanchez": {
+      "rank": 821.0,
+      "surface_wins": {}
+    },
+    "Otto Virtanen": {
+      "rank": 166.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Harri Heliovaara": {
+      "rank": 605.0,
+      "surface_wins": {}
+    },
+    "Darian King": {
+      "rank": 547.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Haydn Lewis": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Lukas Hellum Lilleengen": {
+      "rank": 1564.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Kaipo Marshall": {
+      "rank": NaN,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Aisam Ul Haq Qureshi": {
+      "rank": NaN,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Nik Razborsek": {
+      "rank": 700.0,
+      "surface_wins": {}
+    },
+    "Aqeel Khan": {
+      "rank": NaN,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Blaz Kavcic": {
+      "rank": 285.0,
+      "surface_wins": {}
+    },
+    "Sandro Ehrat": {
+      "rank": 382.0,
+      "surface_wins": {}
+    },
+    "Nicolas Alvarez": {
+      "rank": 372.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Daniel Cukierman": {
+      "rank": 508.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Altug Celikbilek": {
+      "rank": 371.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Ben Patael": {
+      "rank": 562.0,
+      "surface_wins": {}
+    },
+    "Edan Leshem": {
+      "rank": 446.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Chun Hsin Tseng": {
+      "rank": 159.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Tung Lin Wu": {
+      "rank": 318.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Finn Tearney": {
+      "rank": 1018.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Jordi Munoz Abreu": {
+      "rank": 1234.0,
+      "surface_wins": {}
+    },
+    "Luis David Martinez": {
+      "rank": NaN,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Ajeet Rai": {
+      "rank": 915.0,
+      "surface_wins": {}
+    },
+    "Jose Rubin Statham": {
+      "rank": NaN,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Brandon Perez": {
+      "rank": 1671.0,
+      "surface_wins": {}
+    },
+    "Julian Saborio": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Alexandar Lazarov": {
+      "rank": 332.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Jesse Flores": {
+      "rank": 1146.0,
+      "surface_wins": {}
+    },
+    "Alexander Donski": {
+      "rank": 566.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Rodrigo Crespo Piedra": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Mikael Torpegaard": {
+      "rank": 193.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Quinton Vega": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Holger Rune": {
+      "rank": 13.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Ignacio Garcia": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Frederik Nielsen": {
+      "rank": NaN,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Blaise Bicknell": {
+      "rank": 319.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Alberto Emmanuel Alvarado Larin": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Marcelo Arevalo": {
+      "rank": NaN,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Rowland Phillips": {
+      "rank": 1387.0,
+      "surface_wins": {
+        "nan": 1
+      }
+    },
+    "Vladimir Ivanov": {
+      "rank": 732.0,
+      "surface_wins": {}
+    },
+    "Kristjan Tamm": {
+      "rank": 729.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Zura Tkemaladze": {
+      "rank": 681.0,
+      "surface_wins": {
+        "nan": 1
+      }
+    },
+    "Daniil Glinka": {
+      "rank": 961.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Nikoloz Davlianidze": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Wilfredo Gonzalez": {
+      "rank": 1089.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Aziz Dougaz": {
+      "rank": 219.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Franz Luna Lavidalie": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Christopher Rungkat": {
+      "rank": NaN,
+      "surface_wins": {
+        "nan": 1
+      }
+    },
+    "Sheil Kotecha": {
+      "rank": 1385.0,
+      "surface_wins": {}
+    },
+    "David Agung Susanto": {
+      "rank": 1346.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Ismael Changawa Ruwa Mzai": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Gunawan Trismuwantara": {
+      "rank": NaN,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Kevin Cheruiyot": {
+      "rank": 1752.0,
+      "surface_wins": {}
+    },
+    "Karlis Ozolins": {
+      "rank": 1215.0,
+      "surface_wins": {
+        "nan": 1
+      }
+    },
+    "Karim Mohamed Maamoun": {
+      "rank": 721.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Robert Strombachs": {
+      "rank": 385.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Amr Elsayed Abdou Ahmed Mohamed": {
+      "rank": 735.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Lamine Ouahab": {
+      "rank": 664.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Nam Hoang Ly": {
+      "rank": 554.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Adam Moundir": {
+      "rank": 458.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Phuong Van Nguyen": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Aissa Benchakroun": {
+      "rank": 1671.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Linh Giang Trinh": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Adolfo Daniel Vallejo": {
+      "rank": NaN,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Sharmal Dissanayake": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Martin Antonio Vergara Del Puerto": {
+      "rank": NaN,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Yasitha De Silva": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Thehan Sanjaya Wijemanne": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Alberto Lim": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Petros Tsitsipas": {
+      "rank": 808.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Jeson Patrombon": {
+      "rank": 1421.0,
+      "surface_wins": {}
+    },
+    "Eric Jr. Olivarez": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Ching Lam": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Jerzy Janowicz": {
+      "rank": 461.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Pak Long Yeung": {
+      "rank": 960.0,
+      "surface_wins": {}
+    },
+    "Maks Kasnikowski": {
+      "rank": 271.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Wai Yu Kai": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Hazem Naw": {
+      "rank": NaN,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Mehluli Don Ayanda Sibanda": {
+      "rank": 813.0,
+      "surface_wins": {}
+    },
+    "Benjamin Lock": {
+      "rank": 430.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Amer Naow": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Zizou Bergs": {
+      "rank": 131.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Luca Nardi": {
+      "rank": 73.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Lukas Klein": {
+      "rank": 142.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Joao Menezes": {
+      "rank": 217.0,
+      "surface_wins": {}
+    },
+    "Luke Saville": {
+      "rank": 417.0,
+      "surface_wins": {}
+    },
+    "Jack Draper": {
+      "rank": 15.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Dominic Stricker": {
+      "rank": 258.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Juan Manuel Cerundolo": {
+      "rank": 161.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Leandro Riedi": {
+      "rank": 175.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Vit Kopriva": {
+      "rank": 115.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Johan Nikles": {
+      "rank": 317.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Jenson Brooksby": {
+      "rank": 39.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Bernabe Zapata Miralles": {
+      "rank": 79.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Lucas Pouille": {
+      "rank": 212.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Alexander Erler": {
+      "rank": 337.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Lukas Neumayer": {
+      "rank": 262.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Dustin Brown": {
+      "rank": 303.0,
+      "surface_wins": {}
+    },
+    "Rudolf Molleker": {
+      "rank": 179.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Arthur Cazaux": {
+      "rank": 85.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Alexandre Muller": {
+      "rank": 70.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Bjorn Fratangelo": {
+      "rank": 190.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Thanasi Kokkinakis": {
+      "rank": 77.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Shintaro Mochizuki": {
+      "rank": 215.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Emilio Nava": {
+      "rank": 146.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Zachary Svajda": {
+      "rank": 131.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Botic Van De Zandschulp": {
+      "rank": 63.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Lucas Catarina": {
+      "rank": 452.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Alex Molcan": {
+      "rank": 122.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Zhizhen Zhang": {
+      "rank": 50.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Nicola Kuhn": {
+      "rank": 253.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Sebastian Baez": {
+      "rank": 25.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Andrea Vavassori": {
+      "rank": 206.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Leo Borg": {
+      "rank": 603.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Alibek Kachmazov": {
+      "rank": 252.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Alessandro Giannessi": {
+      "rank": 177.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Duje Ajdukovic": {
+      "rank": 105.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Andrea Collarini": {
+      "rank": 210.0,
+      "surface_wins": {}
+    },
+    "Blaz Rola": {
+      "rank": 457.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Mubarak Shannan Zayid": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Yuki Bhambri": {
+      "rank": 590.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Matthew Ebden": {
+      "rank": 316.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Constant Lestienne": {
+      "rank": 100.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Thomaz Bellucci": {
+      "rank": 281.0,
+      "surface_wins": {}
+    },
+    "Ji Sung Nam": {
+      "rank": 341.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Jc Aragone": {
+      "rank": 299.0,
+      "surface_wins": {}
+    },
+    "Kevin King": {
+      "rank": 304.0,
+      "surface_wins": {}
+    },
+    "Donald Young": {
+      "rank": 327.0,
+      "surface_wins": {}
+    },
+    "Christian Harrison": {
+      "rank": 251.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Tomas Martin Etcheverry": {
+      "rank": 34.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Lukas Lacko": {
+      "rank": 214.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Thiago Agustin Tirante": {
+      "rank": 101.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Evgenii Tiurnev": {
+      "rank": 304.0,
+      "surface_wins": {}
+    },
+    "Yshai Oliel": {
+      "rank": 463.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "James Ward": {
+      "rank": 340.0,
+      "surface_wins": {}
+    },
+    "Alastair Gray": {
+      "rank": 288.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Jay Clarke": {
+      "rank": 230.0,
+      "surface_wins": {}
+    },
+    "Mathias Bourgue": {
+      "rank": 197.0,
+      "surface_wins": {}
+    },
+    "Daniel Masur": {
+      "rank": 222.0,
+      "surface_wins": {}
+    },
+    "Sam Riffice": {
+      "rank": 542.0,
+      "surface_wins": {}
+    },
+    "Li Tu": {
+      "rank": 252.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Trent Bryde": {
+      "rank": 1164.0,
+      "surface_wins": {}
+    },
+    "Yosuke Watanuki": {
+      "rank": 336.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Eduardo Nava": {
+      "rank": 1761.0,
+      "surface_wins": {}
+    },
+    "Nuno Borges": {
+      "rank": 34.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Nicolas Mejia": {
+      "rank": 411.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Alexander Sarkissian": {
+      "rank": 478.0,
+      "surface_wins": {}
+    },
+    "Nicolas Mahut": {
+      "rank": 239.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Gonzalo Lama": {
+      "rank": 657.0,
+      "surface_wins": {}
+    },
+    "Tristan Schoolkate": {
+      "rank": 193.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Dane Sweeny": {
+      "rank": 273.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Thomas Fancutt": {
+      "rank": 562.0,
+      "surface_wins": {}
+    },
+    "Nicolas Kicker": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Matthias Bachinger": {
+      "rank": 279.0,
+      "surface_wins": {}
+    },
+    "Marsel Ilhan": {
+      "rank": 571.0,
+      "surface_wins": {}
+    },
+    "Andrea Arnaboldi": {
+      "rank": 267.0,
+      "surface_wins": {}
+    },
+    "Hugo Grenier": {
+      "rank": 151.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Michael Vrbensky": {
+      "rank": 311.0,
+      "surface_wins": {}
+    },
+    "Tristan Lamasine": {
+      "rank": 271.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Ergi Kirkin": {
+      "rank": 378.0,
+      "surface_wins": {
+        "nan": 1
+      }
+    },
+    "Blake Mott": {
+      "rank": 481.0,
+      "surface_wins": {}
+    },
+    "Jason Kubler": {
+      "rank": 102.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Harry Bourchier": {
+      "rank": 324.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Raul Brancaccio": {
+      "rank": 336.0,
+      "surface_wins": {}
+    },
+    "Flavio Cobolli": {
+      "rank": 32.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Pedja Krstin": {
+      "rank": 285.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Hamad Medjedovic": {
+      "rank": 156.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Marko Topo": {
+      "rank": 1512.0,
+      "surface_wins": {}
+    },
+    "Mats Moraing": {
+      "rank": 253.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "August Holmgren": {
+      "rank": 292.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Jiri Lehecka": {
+      "rank": 31.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Zsombor Piros": {
+      "rank": 222.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Fabian Marozsan": {
+      "rank": 59.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Gerald Melzer": {
+      "rank": 287.0,
+      "surface_wins": {}
+    },
+    "Erik Arutiunian": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Alexander Zgirovsky": {
+      "rank": 1233.0,
+      "surface_wins": {}
+    },
+    "Murkel Alejandro Dellien Velasco": {
+      "rank": 288.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Michael Geerts": {
+      "rank": 289.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Nerman Fatic": {
+      "rank": 204.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Orlando Luz": {
+      "rank": 278.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Hady Habib": {
+      "rank": 268.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Matheus Pucinelli De Almeida": {
+      "rank": 212.0,
+      "surface_wins": {
+        "nan": 1
+      }
+    },
+    "Roey Tabet": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Kaichi Uchida": {
+      "rank": 163.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Yuta Shimizu": {
+      "rank": 340.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Muzammil Murtaza": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Finn Reynolds": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Francisco Llanes": {
+      "rank": 1262.0,
+      "surface_wins": {}
+    },
+    "Ignacio Carou": {
+      "rank": 867.0,
+      "surface_wins": {}
+    },
+    "Filip Cristian Jianu": {
+      "rank": 267.0,
+      "surface_wins": {
+        "nan": 1
+      }
+    },
+    "Marius Copil": {
+      "rank": 250.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Gastao Elias": {
+      "rank": 215.0,
+      "surface_wins": {}
+    },
+    "Khumoun Sultanov": {
+      "rank": 236.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Aziz Ouakaa": {
+      "rank": 884.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Thabo Ncube": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Justin Barki": {
+      "rank": NaN,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Nick Hardt": {
+      "rank": 229.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Alexandros Skorilas": {
+      "rank": 1199.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Vilius Gaubas": {
+      "rank": 366.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Luis Patino": {
+      "rank": 983.0,
+      "surface_wins": {}
+    },
+    "Lluis Miralles": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Wojciech Marek": {
+      "rank": 632.0,
+      "surface_wins": {}
+    },
+    "Philip Henning": {
+      "rank": 748.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Ricardo Rodriguez": {
+      "rank": 591.0,
+      "surface_wins": {}
+    },
+    "Dimitri Badra": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Tom Kocevar Desman": {
+      "rank": 688.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Bor Artnak": {
+      "rank": 783.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Hernando Jose Escurra Isnardi": {
+      "rank": NaN,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Sebastian Dominko": {
+      "rank": 1107.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Mattias Siimar": {
+      "rank": 1041.0,
+      "surface_wins": {}
+    },
+    "Jerome Kym": {
+      "rank": 151.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Siim Troost": {
+      "rank": 1580.0,
+      "surface_wins": {}
+    },
+    "Christian Sigsgaard": {
+      "rank": 1083.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Kasidit Samrej": {
+      "rank": 575.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Johannes Ingildsen": {
+      "rank": 638.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Edgars Manusis": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Jan Zielinski": {
+      "rank": 860.0,
+      "surface_wins": {}
+    },
+    "Aristotelis Thanos": {
+      "rank": 1433.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Aleksandre Bakshi": {
+      "rank": 512.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Rinky Hijikata": {
+      "rank": 81.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Gian Marco Moroni": {
+      "rank": 202.0,
+      "surface_wins": {}
+    },
+    "Juan Martin del Potro": {
+      "rank": 753.0,
+      "surface_wins": {}
+    },
+    "Caleb Chakravarthi": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Juncheng Shang": {
+      "rank": 51.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Juan Alejandro Hernandez Serrano": {
+      "rank": 521.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Gijs Brouwer": {
+      "rank": 232.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Manuel Guinard": {
+      "rank": 148.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Tommy Robredo": {
+      "rank": 362.0,
+      "surface_wins": {}
+    },
+    "Nicolas Alvarez Varona": {
+      "rank": 231.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Max Hans Rehberg": {
+      "rank": 1067.0,
+      "surface_wins": {}
+    },
+    "Carlos Gimeno Valero": {
+      "rank": 369.0,
+      "surface_wins": {}
+    },
+    "Francesco Passaro": {
+      "rank": 240.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Matteo Arnaldi": {
+      "rank": 33.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Camilo Ugo Carabelli": {
+      "rank": 96.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Santiago Fa Rodriguez Taverna": {
+      "rank": 201.0,
+      "surface_wins": {}
+    },
+    "Zdenek Kolar": {
+      "rank": 134.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Franco Agamenone": {
+      "rank": 136.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Geoffrey Blancaneaux": {
+      "rank": 191.0,
+      "surface_wins": {}
+    },
+    "Tim Van Rijthoven": {
+      "rank": 107.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Jesper De Jong": {
+      "rank": 176.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Henri Squire": {
+      "rank": 221.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Ryan Peniston": {
+      "rank": 265.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Paul Jubb": {
+      "rank": 289.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Antoine Bellier": {
+      "rank": 192.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Alexander Ritschard": {
+      "rank": 209.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "William Blumberg": {
+      "rank": 773.0,
+      "surface_wins": {}
+    },
+    "Andres Martin": {
+      "rank": 736.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Ben Shelton": {
+      "rank": 19.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Filip Misolic": {
+      "rank": 243.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Ivan Gakhov": {
+      "rank": 198.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Hernan Casanova": {
+      "rank": 321.0,
+      "surface_wins": {}
+    },
+    "Daniel Dutra Da Silva": {
+      "rank": 215.0,
+      "surface_wins": {}
+    },
+    "Alexander Shevchenko": {
+      "rank": 61.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Dino Prizmic": {
+      "rank": 165.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Mili Poljicak": {
+      "rank": 537.0,
+      "surface_wins": {}
+    },
+    "Rodrigo Pacheco Mendez": {
+      "rank": 444.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Nick Chappell": {
+      "rank": 500.0,
+      "surface_wins": {}
+    },
+    "Gonzalo Villanueva": {
+      "rank": 279.0,
+      "surface_wins": {}
+    },
+    "Nicolas Barrientos": {
+      "rank": 349.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Alexis Galarneau": {
+      "rank": 200.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Yibing Wu": {
+      "rank": 560.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Brandon Holt": {
+      "rank": 215.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Learner Tien": {
+      "rank": 122.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Facundo Mena": {
+      "rank": 151.0,
+      "surface_wins": {}
+    },
+    "Evan Furness": {
+      "rank": 208.0,
+      "surface_wins": {}
+    },
+    "Aleksandar Kovacevic": {
+      "rank": 101.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Hiroki Moriya": {
+      "rank": 253.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Yunseong Chung": {
+      "rank": 426.0,
+      "surface_wins": {}
+    },
+    "Seong Chan Hong": {
+      "rank": 141.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Dragos Nicolae Madaras": {
+      "rank": 314.0,
+      "surface_wins": {}
+    },
+    "Beibit Zhukayev": {
+      "rank": 200.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Rio Noguchi": {
+      "rank": 291.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Sho Shimabukuro": {
+      "rank": 146.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Francesco Maestrelli": {
+      "rank": 186.0,
+      "surface_wins": {}
+    },
+    "Alexey Vatutin": {
+      "rank": 279.0,
+      "surface_wins": {}
+    },
+    "Martin Landaluce": {
+      "rank": 360.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Luca Van Assche": {
+      "rank": 68.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Gilles Arnaud Bailly": {
+      "rank": 1185.0,
+      "surface_wins": {}
+    },
+    "Arthur Fils": {
+      "rank": 25.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Gabriel Diallo": {
+      "rank": 132.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Gabi Adrian Boitan": {
+      "rank": 364.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Cayetano March": {
+      "rank": 700.0,
+      "surface_wins": {}
+    },
+    "Alejandro Gonzalez": {
+      "rank": 453.0,
+      "surface_wins": {}
+    },
+    "Muhammad Shoaib": {
+      "rank": NaN,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Alan Fernando Rubio Fierros": {
+      "rank": 707.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Luis Carlos Alvarez Valdes": {
+      "rank": NaN,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Andrej Nedic": {
+      "rank": 1194.0,
+      "surface_wins": {}
+    },
+    "Yanki Erel": {
+      "rank": 325.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Kiranpal Pannu": {
+      "rank": 716.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Isaac Becroft": {
+      "rank": 1016.0,
+      "surface_wins": {}
+    },
+    "Eero Vasa": {
+      "rank": 1066.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Viacheslav Bielinskyi": {
+      "rank": 622.0,
+      "surface_wins": {
+        "nan": 1
+      }
+    },
+    "Vladyslav Orlov": {
+      "rank": 385.0,
+      "surface_wins": {
+        "nan": 1
+      }
+    },
+    "Illia Biloborodko": {
+      "rank": 747.0,
+      "surface_wins": {}
+    },
+    "Sergey Fomin": {
+      "rank": 363.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Nicholas David Ionel": {
+      "rank": 225.0,
+      "surface_wins": {
+        "nan": 1
+      }
+    },
+    "Diego Fernandez Flores": {
+      "rank": 832.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Edas Butvilas": {
+      "rank": 784.0,
+      "surface_wins": {
+        "nan": 1
+      }
+    },
+    "Simon Carr": {
+      "rank": 767.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Matthew Foster Estwick": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Osgar Ohoisin": {
+      "rank": 859.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Yuttana Charoenphon": {
+      "rank": 976.0,
+      "surface_wins": {
+        "nan": 1
+      }
+    },
+    "Elmer Moller": {
+      "rank": 361.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Cesar Cruz": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Peter Bertran": {
+      "rank": 552.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Daniels Tens": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Valentin Vacherot": {
+      "rank": 171.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Hugo Nys": {
+      "rank": NaN,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Ainius Sabaliauskas": {
+      "rank": 1783.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Michael Bassem Sobhy": {
+      "rank": 1561.0,
+      "surface_wins": {}
+    },
+    "Nathan Anthony Barki": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Olaf Pieczkowski": {
+      "rank": 910.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Fitriadi M Rifqi": {
+      "rank": 569.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Tegar Abdi Satrio Wibowo": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Lucky Candra Kurniawan": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Lleyton Cronje": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Mark Lajal": {
+      "rank": 224.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Matic Kriznik": {
+      "rank": NaN,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Coleman Wong": {
+      "rank": 247.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Hong Kit Jack Wong": {
+      "rank": 1643.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Skander Mansouri": {
+      "rank": 681.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Bu Yunchaokete": {
+      "rank": 112.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Rigele Te": {
+      "rank": 492.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Menelaos Efstathiou": {
+      "rank": 894.0,
+      "surface_wins": {
+        "nan": 1
+      }
+    },
+    "Petros Chrysochos": {
+      "rank": 990.0,
+      "surface_wins": {
+        "nan": 1
+      }
+    },
+    "Stylianos Christodoulou": {
+      "rank": 1114.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Alexis Klegou": {
+      "rank": 1881.0,
+      "surface_wins": {}
+    },
+    "Delmas Ntcha": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Sylvestre Monnou": {
+      "rank": NaN,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Ki Lung Ng": {
+      "rank": NaN,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Stefanos Sakellaridis": {
+      "rank": 803.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Daniel Michalski": {
+      "rank": 260.0,
+      "surface_wins": {}
+    },
+    "Dalibor Svrcina": {
+      "rank": 167.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Manas Dhamne": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Mattia Bellucci": {
+      "rank": 101.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Yu Hsiou Hsu": {
+      "rank": 184.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Oleksii Krutykh": {
+      "rank": 253.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Laurent Lokoli": {
+      "rank": 175.0,
+      "surface_wins": {}
+    },
+    "Luciano Darderi": {
+      "rank": 42.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Alex Rybakov": {
+      "rank": 378.0,
+      "surface_wins": {}
+    },
+    "Liam Krall": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Clement Chidekh": {
+      "rank": 434.0,
+      "surface_wins": {}
+    },
+    "Matija Pecotic": {
+      "rank": 784.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Abedallah Shelbayh": {
+      "rank": 185.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Mateus Alves": {
+      "rank": 556.0,
+      "surface_wins": {}
+    },
+    "Joao Fonseca": {
+      "rank": 158.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Jacopo Berrettini": {
+      "rank": 842.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Guido Andreozzi": {
+      "rank": 240.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Riccardo Bonadio": {
+      "rank": 182.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Henrique Rocha": {
+      "rank": 159.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Younes Lalami Laaroussi": {
+      "rank": 937.0,
+      "surface_wins": {}
+    },
+    "Daniel Rincon": {
+      "rank": 300.0,
+      "surface_wins": {}
+    },
+    "Stefano Napolitano": {
+      "rank": 125.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Pablo Llamas Ruiz": {
+      "rank": 152.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Oriol Roca Batalla": {
+      "rank": 310.0,
+      "surface_wins": {}
+    },
+    "Alvaro Lopez San Martin": {
+      "rank": 298.0,
+      "surface_wins": {}
+    },
+    "Patrick Kypson": {
+      "rank": 151.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Genaro Alberto Olivieri": {
+      "rank": 231.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Giovanni Mpetshi Perricard": {
+      "rank": 31.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Louis Wessels": {
+      "rank": 347.0,
+      "surface_wins": {}
+    },
+    "Jan Choinski": {
+      "rank": 188.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Alex Michelsen": {
+      "rank": 41.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "George Loffhagen": {
+      "rank": 367.0,
+      "surface_wins": {}
+    },
+    "Arthur Fery": {
+      "rank": 391.0,
+      "surface_wins": {}
+    },
+    "Ethan Quinn": {
+      "rank": 254.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Eliot Spizzirri": {
+      "rank": 393.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Omni Kumar": {
+      "rank": 385.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Strong Kirchheimer": {
+      "rank": 416.0,
+      "surface_wins": {}
+    },
+    "Nicolas Moreno De Alboran": {
+      "rank": 143.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Titouan Droguet": {
+      "rank": 171.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Jakub Mensik": {
+      "rank": 127.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Philip Sekulic": {
+      "rank": 325.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Tao Mu": {
+      "rank": 573.0,
+      "surface_wins": {}
+    },
+    "Jie Cui": {
+      "rank": 583.0,
+      "surface_wins": {}
+    },
+    "Zhe Li": {
+      "rank": 602.0,
+      "surface_wins": {}
+    },
+    "Terence Atmane": {
+      "rank": 161.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Yi Zhou": {
+      "rank": 877.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Ye Cong Mo": {
+      "rank": 668.0,
+      "surface_wins": {}
+    },
+    "Denis Yevseyev": {
+      "rank": 160.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Karl Friberg": {
+      "rank": 433.0,
+      "surface_wins": {}
+    },
+    "Alexander Blockx": {
+      "rank": 646.0,
+      "surface_wins": {}
+    },
+    "Mate Valkusz": {
+      "rank": 402.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Matteo Martineau": {
+      "rank": 299.0,
+      "surface_wins": {}
+    },
+    "Calvin Hemery": {
+      "rank": 205.0,
+      "surface_wins": {}
+    },
+    "Billy Harris": {
+      "rank": 101.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Patrick Kaukovalta": {
+      "rank": 782.0,
+      "surface_wins": {}
+    },
+    "Matwe Middelkoop": {
+      "rank": NaN,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Andreja Petrovic": {
+      "rank": 1265.0,
+      "surface_wins": {}
+    },
+    "Amir Milushev": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Yanaki Milev": {
+      "rank": 445.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Marcelo Demoliner": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Gonzalo Bueno": {
+      "rank": 544.0,
+      "surface_wins": {
+        "nan": 1
+      }
+    },
+    "Nicolai Budkov Kjaer": {
+      "rank": NaN,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Ignacio Buse": {
+      "rank": 438.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Gustavo Heide": {
+      "rank": 178.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Mahammad Abid": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Arklon Huertas Del Pino": {
+      "rank": 491.0,
+      "surface_wins": {
+        "nan": 1
+      }
+    },
+    "Conner Huertas Del Pino": {
+      "rank": 586.0,
+      "surface_wins": {
+        "nan": 1
+      }
+    },
+    "Michael Agwi": {
+      "rank": 487.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Oleksandr Ovcharenko": {
+      "rank": 379.0,
+      "surface_wins": {}
+    },
+    "Conor Gannon": {
+      "rank": NaN,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Diego Duran": {
+      "rank": NaN,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Freddy Murray": {
+      "rank": NaN,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Jose  Flores": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Martins Rocens": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Yassine Dlimi": {
+      "rank": 604.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Digvijaypratap Singh": {
+      "rank": 544.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Walid Ahouda": {
+      "rank": 1077.0,
+      "surface_wins": {}
+    },
+    "Mustapha El Natour": {
+      "rank": NaN,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Daniel Azar": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Fajing Sun": {
+      "rank": 401.0,
+      "surface_wins": {}
+    },
+    "Alvaro Guillen Meza": {
+      "rank": 387.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Alex Knaff": {
+      "rank": 644.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Chris Rodesch": {
+      "rank": 507.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Joaquin  Aguilar Cardozo ": {
+      "rank": 1109.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Clement Mainguy": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Colin Sinclair": {
+      "rank": 461.0,
+      "surface_wins": {
+        "nan": 1
+      }
+    },
+    "Juan Carlos Prado Angelo": {
+      "rank": 605.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Raul Garcia": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Saba Purtseladze": {
+      "rank": 450.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Daniel Vallejo": {
+      "rank": NaN,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Juan Borba": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Karam Hatamleh": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Mousa Alkotop": {
+      "rank": 1594.0,
+      "surface_wins": {
+        "nan": 1
+      }
+    },
+    "Kenneth Raisma": {
+      "rank": 1640.0,
+      "surface_wins": {}
+    },
+    "Johannes Seeman": {
+      "rank": NaN,
+      "surface_wins": {
+        "nan": 1
+      }
+    },
+    "Jacob Bicknell": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Minhtuan Pham": {
+      "rank": 1578.0,
+      "surface_wins": {}
+    },
+    "Anthony Susanto": {
+      "rank": 1717.0,
+      "surface_wins": {}
+    },
+    "Dac Tien Nguyen": {
+      "rank": 1859.0,
+      "surface_wins": {}
+    },
+    "Alec Beckley": {
+      "rank": 687.0,
+      "surface_wins": {}
+    },
+    "Kris Van Wyk": {
+      "rank": 416.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Raphael Calzi": {
+      "rank": NaN,
+      "surface_wins": {
+        "nan": 1
+      }
+    },
+    "Devin Badenhorst": {
+      "rank": 1717.0,
+      "surface_wins": {}
+    },
+    "Moez Echargui": {
+      "rank": 279.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Chak Lam Coleman Wong": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "James Mccabe": {
+      "rank": 278.0,
+      "surface_wins": {}
+    },
+    "Adam Walton": {
+      "rank": 95.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Omar Jasika": {
+      "rank": 343.0,
+      "surface_wins": {}
+    },
+    "Antoine Escoffier": {
+      "rank": 172.0,
+      "surface_wins": {}
+    },
+    "Ugo Blanchet": {
+      "rank": 161.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Roman Andres Burruchaga": {
+      "rank": 170.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Mariano Navone": {
+      "rank": 43.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Francisco Comesana": {
+      "rank": 108.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Federico Agustin Gomez": {
+      "rank": 174.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Adam Neff": {
+      "rank": 829.0,
+      "surface_wins": {}
+    },
+    "Martin Damm": {
+      "rank": 204.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Darwin Blanch": {
+      "rank": 1034.0,
+      "surface_wins": {}
+    },
+    "David Jorda Sanchis": {
+      "rank": 329.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Jaime Faria": {
+      "rank": 262.0,
+      "surface_wins": {}
+    },
+    "Matteo Gigante": {
+      "rank": 139.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Alejandro Moro Canas": {
+      "rank": 240.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Javier Barranco Cosano": {
+      "rank": 254.0,
+      "surface_wins": {}
+    },
+    "Nikolas Sanchez Izquierdo": {
+      "rank": 260.0,
+      "surface_wins": {}
+    },
+    "Sebastian Fanselow": {
+      "rank": 316.0,
+      "surface_wins": {}
+    },
+    "Giles Hussey": {
+      "rank": 359.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Charles Broom": {
+      "rank": 245.0,
+      "surface_wins": {}
+    },
+    "Jacob Fearnley": {
+      "rank": 99.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Henry Searle": {
+      "rank": 568.0,
+      "surface_wins": {}
+    },
+    "Joel Schwaerzler": {
+      "rank": 392.0,
+      "surface_wins": {}
+    },
+    "Matej Dodig": {
+      "rank": 291.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Luka Mikrut": {
+      "rank": 350.0,
+      "surface_wins": {}
+    },
+    "Francisco Cabral": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Matthew Forbes": {
+      "rank": 1848.0,
+      "surface_wins": {}
+    },
+    "Kyrian Jacquet": {
+      "rank": 209.0,
+      "surface_wins": {}
+    },
+    "Justin Engel": {
+      "rank": 458.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Raphael Collignon": {
+      "rank": 164.0,
+      "surface_wins": {}
+    },
+    "Branko Djuric": {
+      "rank": 781.0,
+      "surface_wins": {}
+    },
+    "Theo Papamalamis": {
+      "rank": 721.0,
+      "surface_wins": {}
+    },
+    "Nishesh Basavareddy": {
+      "rank": 138.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Joris De Loore": {
+      "rank": 192.0,
+      "surface_wins": {}
+    },
+    "Orel Kimhi": {
+      "rank": 456.0,
+      "surface_wins": {}
+    },
+    "Kevin Krawietz": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Lukas Pokorny": {
+      "rank": 589.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Faris Zakaryia": {
+      "rank": 923.0,
+      "surface_wins": {}
+    },
+    "Adria Soriano Barrera": {
+      "rank": 593.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Philip Hjorth": {
+      "rank": 880.0,
+      "surface_wins": {}
+    },
+    "Martyn Pawelski": {
+      "rank": 661.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Min Kyu Song": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Ioannis Xilas": {
+      "rank": 1286.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Demetris Azoides": {
+      "rank": 1054.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Remy Bertola": {
+      "rank": 286.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "N Sriram Balaji": {
+      "rank": NaN,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Siddharth Vishwakarma": {
+      "rank": 588.0,
+      "surface_wins": {}
+    },
+    "Petr Nesterov": {
+      "rank": 564.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Andres Andrade": {
+      "rank": 250.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Luca Preda": {
+      "rank": 1099.0,
+      "surface_wins": {}
+    },
+    "Lucas Miedler": {
+      "rank": 1071.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Davis Rolis": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Niki Kaliyanda Poonacha": {
+      "rank": 795.0,
+      "surface_wins": {
+        "Grass": 1
+      }
+    },
+    "Maxim Shin": {
+      "rank": 1469.0,
+      "surface_wins": {}
+    },
+    "Yousaf Khalil": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Iliyan Radulov": {
+      "rank": 766.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Juan Carlos Fuentes Vasquez": {
+      "rank": NaN,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Jack Cheng": {
+      "rank": 1600.0,
+      "surface_wins": {}
+    },
+    "Marcos Lee Chan Baratau": {
+      "rank": 1320.0,
+      "surface_wins": {}
+    },
+    "Gonzalo Escobar": {
+      "rank": NaN,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Romain Arneodo": {
+      "rank": NaN,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Benjamin Balleret": {
+      "rank": NaN,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Jack Loutit": {
+      "rank": 790.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Cezar Cretu": {
+      "rank": 292.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Thomas Yaka Kofi Setodji": {
+      "rank": 819.0,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Liova Ayite Ajavon": {
+      "rank": NaN,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Maximus Jones": {
+      "rank": 581.0,
+      "surface_wins": {}
+    },
+    "Boris Arias": {
+      "rank": NaN,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Thanapet Chanta": {
+      "rank": 938.0,
+      "surface_wins": {}
+    },
+    "Hamza Karmoussi": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Gillian Osmont": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Heve Kelley": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Matavao Fanguna": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Courtney John Lock": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Benedict Badza": {
+      "rank": NaN,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Kwok Shun Dasson Chan": {
+      "rank": NaN,
+      "surface_wins": {}
+    },
+    "Oliver Ojakaar": {
+      "rank": 939.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Hamid Reza Nadaf": {
+      "rank": 1588.0,
+      "surface_wins": {}
+    },
+    "Sina Moghimi": {
+      "rank": 1086.0,
+      "surface_wins": {
+        "Clay": 1
+      }
+    },
+    "Komlavi Loglo": {
+      "rank": NaN,
+      "surface_wins": {
+        "Hard": 1
+      }
+    },
+    "Ilya Snitari": {
+      "rank": 740.0,
+      "surface_wins": {}
+    }
+  },
+  "Soccer": {
+    "Almer\u00eda": {
+      "attack": 0.95,
+      "defense": 2.15
+    },
+    "Rayo Vallecano": {
+      "attack": 1.025,
+      "defense": 1.225
+    },
+    "Burnley": {
+      "attack": 1.0,
+      "defense": 2.0
+    },
+    "Manchester City": {
+      "attack": 2.075,
+      "defense": 1.2500000000000004
+    },
+    "Sevilla": {
+      "attack": 1.2,
+      "defense": 1.475
+    },
+    "Valencia": {
+      "attack": 1.125,
+      "defense": 1.3249999999999997
+    },
+    "Arsenal": {
+      "attack": 1.9,
+      "defense": 0.95
+    },
+    "Nottingham Forest": {
+      "attack": 1.3250000000000002,
+      "defense": 1.35
+    },
+    "AFC Bournemouth": {
+      "attack": 1.4871794871794872,
+      "defense": 1.4871794871794872
+    },
+    "West Ham United": {
+      "attack": 1.425,
+      "defense": 1.725
+    },
+    "Brighton & Hove Albion": {
+      "attack": 1.7,
+      "defense": 1.55
+    },
+    "Luton Town": {
+      "attack": 1.2,
+      "defense": 1.9
+    },
+    "Everton": {
+      "attack": 0.9999999999999997,
+      "defense": 1.358974358974359
+    },
+    "Fulham": {
+      "attack": 1.4146341463414633,
+      "defense": 1.5365853658536586
+    },
+    "Sheffield United": {
+      "attack": 0.75,
+      "defense": 2.45
+    },
+    "Crystal Palace": {
+      "attack": 1.0750000000000002,
+      "defense": 1.425
+    },
+    "Real Sociedad": {
+      "attack": 1.2,
+      "defense": 0.875
+    },
+    "Girona": {
+      "attack": 1.8500000000000003,
+      "defense": 1.275
+    },
+    "Newcastle United": {
+      "attack": 1.825,
+      "defense": 1.275
+    },
+    "Aston Villa": {
+      "attack": 1.8250000000000004,
+      "defense": 1.475
+    },
+    "Las Palmas": {
+      "attack": 1.1219512195121952,
+      "defense": 1.2195121951219514
+    },
+    "Mallorca": {
+      "attack": 0.926829268292683,
+      "defense": 1.2195121951219512
+    },
+    "Athletic Club": {
+      "attack": 1.725,
+      "defense": 0.9500000000000002
+    },
+    "Real Madrid": {
+      "attack": 2.230769230769231,
+      "defense": 0.7948717948717948
+    },
+    "Brentford": {
+      "attack": 1.65,
+      "defense": 1.7
+    },
+    "Tottenham Hotspur": {
+      "attack": 2.1,
+      "defense": 1.4749999999999996
+    },
+    "Celta Vigo": {
+      "attack": 1.25,
+      "defense": 1.55
+    },
+    "Osasuna": {
+      "attack": 1.1794871794871795,
+      "defense": 1.4871794871794872
+    },
+    "Chelsea": {
+      "attack": 1.8048780487804879,
+      "defense": 1.3414634146341464
+    },
+    "Liverpool": {
+      "attack": 2.3076923076923075,
+      "defense": 0.9487179487179487
+    },
+    "Villarreal": {
+      "attack": 1.6097560975609757,
+      "defense": 1.780487804878049
+    },
+    "Real Betis": {
+      "attack": 1.1,
+      "defense": 1.1499999999999997
+    },
+    "Getafe": {
+      "attack": 0.9743589743589743,
+      "defense": 1.076923076923077
+    },
+    "Barcelona": {
+      "attack": 2.256410256410256,
+      "defense": 1.153846153846154
+    },
+    "C\u00e1diz": {
+      "attack": 0.7142857142857143,
+      "defense": 1.4761904761904763
+    },
+    "Alav\u00e9s": {
+      "attack": 1.0487804878048783,
+      "defense": 1.4390243902439024
+    },
+    "Manchester United": {
+      "attack": 1.1250000000000004,
+      "defense": 1.375
+    },
+    "Wolverhampton Wanderers": {
+      "attack": 1.525,
+      "defense": 1.9
+    },
+    "Atl\u00e9tico Madrid": {
+      "attack": 1.8717948717948718,
+      "defense": 0.9230769230769231
+    },
+    "Granada": {
+      "attack": 1.1,
+      "defense": 2.05
+    },
+    "Werder Bremen": {
+      "attack": 1.4666666666666666,
+      "defense": 1.8
+    },
+    "Bayern Munich": {
+      "attack": 2.8636363636363638,
+      "defense": 1.0
+    },
+    "FC Augsburg": {
+      "attack": 1.2888888888888888,
+      "defense": 1.6666666666666667
+    },
+    "Borussia M\u00f6nchengladbach": {
+      "attack": 1.5777777777777777,
+      "defense": 1.7333333333333334
+    },
+    "TSG Hoffenheim": {
+      "attack": 1.5227272727272727,
+      "defense": 1.9545454545454546
+    },
+    "SC Freiburg": {
+      "attack": 1.4,
+      "defense": 1.6888888888888889
+    },
+    "VfB Stuttgart": {
+      "attack": 2.0681818181818183,
+      "defense": 1.3863636363636362
+    },
+    "VfL Bochum": {
+      "attack": 1.0909090909090908,
+      "defense": 1.9545454545454546
+    },
+    "VfL Wolfsburg": {
+      "attack": 1.6136363636363635,
+      "defense": 1.5909090909090908
+    },
+    "1. FC Heidenheim 1846": {
+      "attack": 1.288888888888889,
+      "defense": 1.8888888888888888
+    },
+    "Bayer Leverkusen": {
+      "attack": 2.4,
+      "defense": 0.9555555555555556
+    },
+    "RB Leipzig": {
+      "attack": 1.9090909090909092,
+      "defense": 1.2954545454545452
+    },
+    "Borussia Dortmund": {
+      "attack": 1.8409090909090913,
+      "defense": 1.4772727272727275
+    },
+    "FC Cologne": {
+      "attack": 0.6818181818181818,
+      "defense": 1.6363636363636365
+    },
+    "1. FC Union Berlin": {
+      "attack": 0.9555555555555556,
+      "defense": 1.488888888888889
+    },
+    "Mainz": {
+      "attack": 1.1777777777777774,
+      "defense": 1.3555555555555556
+    },
+    "Eintracht Frankfurt": {
+      "attack": 1.8863636363636365,
+      "defense": 1.2954545454545456
+    },
+    "SV Darmstadt 98": {
+      "attack": 1.0454545454545454,
+      "defense": 2.3181818181818183
+    },
+    "Ipswich Town": {
+      "attack": 1.0,
+      "defense": 1.75
+    },
+    "Southampton": {
+      "attack": 0.6,
+      "defense": 2.2
+    },
+    "Legan\u00e9s": {
+      "attack": 0.95,
+      "defense": 1.45
+    },
+    "Real Valladolid": {
+      "attack": 0.7,
+      "defense": 1.95
+    },
+    "Espanyol": {
+      "attack": 0.95,
+      "defense": 1.6
+    },
+    "Leicester City": {
+      "attack": 1.15,
+      "defense": 2.2
+    },
+    "Holstein Kiel": {
+      "attack": 1.5454545454545454,
+      "defense": 2.5909090909090913
+    },
+    "St. Pauli": {
+      "attack": 0.8181818181818182,
+      "defense": 1.1363636363636365
+    }
+  }
+}

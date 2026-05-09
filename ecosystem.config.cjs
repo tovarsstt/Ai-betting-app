@@ -5,7 +5,7 @@ module.exports = {
             script: "scripts/math_engine.py",
             interpreter: "/usr/local/bin/python3.12",
             env: {
-                PORT: 8001,
+                PORT: 8002,
                 PYTHONUNBUFFERED: "1"
             }
         },
