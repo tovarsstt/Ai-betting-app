@@ -219,6 +219,7 @@ REGULAR SEASON (September+) reference:
   const common = `
 UNIVERSAL SHARP RULES: (0) RANKING LAW — order every pick list by win probability FIRST, edge second. Favor likely winners over +EV longshots.
 (1) EV over narrative — find mispriced probability, not just winners.
+(1b) SCAN ALL MARKET TYPES — compare ML / spread / total / team total / BTTS / derivative / the sport's niche PLAYER PROPS by win-prob and take the best TYPE; never auto-default to the moneyline. Float a prop only when real player stats are present, else call it a "lean".
 (2) Injury first — missing star = reprice the line. (3) Pinnacle gap ≥8 pts = follow it.
 (4) Juice filter — skip if vig >15%. (5) Caveman output — cite numbers, no fluff.
 

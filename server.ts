@@ -2154,6 +2154,7 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
     const VALUE_DISCIPLINE = `
 💰 MONEY DISCIPLINE (this is how we actually profit — non-negotiable):
 - RANK every candidate by WIN PROBABILITY FIRST, then by value (edge vs price). Favor likely winners over longshots.
+- 🎯 SCAN EVERY MARKET — DO NOT DEFAULT TO THE MONEYLINE. From the LIVE ODDS / MARKET BOARD, enumerate EVERY available market: moneyline (win), draw / double chance / draw-no-bet, spread / handicap (incl. alternates), totals over/under (incl. alternates), team totals, BTTS, sport-specific derivatives (UFC method/round/distance), AND the sport's niche PLAYER PROPS (the heuristics list the menu per sport). From the stats + simulation, estimate EACH market's true win probability, compare it to that market's own devigged implied price, and pick the SINGLE market with the highest win-prob that also clears the value gate. The winner is whatever TYPE wins this comparison — an Over/Under, handicap, double chance, or a player prop can absolutely beat the straight win (e.g. "Brazil ML is a coin-flip but Over 2.5 wins 64% of sims → take Over 2.5"). PROP GUARD: only float a prop when REAL player stats are in context; if the prop line isn't on the live board, mark it a "lean", never invent the number. Name why the chosen market beat the runner-up.
 - A bet only has VALUE when its win probability BEATS the devigged implied price. If a market board / devig prob is shown, the pick prob must exceed the implied prob of its odds. If it does not, it is NOT a bet — say "no value, pass".
 - NEVER lay a price the probability can't justify. A -300 fav at 70% true prob is a LOSS long-term — find the derivative that pays (method/total/handicap) or pass.
 - Prefer the SHARPEST market for the read: in soccer that means the draw-insured market when the favourite is "better but not dominant".
@@ -2196,7 +2197,7 @@ ${ANTI_HALLUCINATION_DIRECTIVE}
 Output ONLY this raw JSON (no markdown):
 {
   "quant": {
-    "primary_single": "Pick from LIVE ODDS / MARKET BOARD — description only, no odds here",
+    "primary_single": "Best market by win-prob from the STATS scan across ALL types (ML / draw / DC / DNB / spread / total / team total / BTTS / derivative / player prop — not auto-ML) — description only, no odds here",
     "primary_odds": "-110",
     "sgp_blueprint": [
       { "label": "SGP Leg 1", "value": "Pick from LIVE ODDS + odds", "rationale": "[SOURCE]: 1 sourced fact", "espn_id": "" },
@@ -2206,18 +2207,18 @@ Output ONLY this raw JSON (no markdown):
     "omni_report": "2 sentences citing SOURCED DATA ONLY. Format: [SOURCE] fact. [SOURCE] fact."
   },
   "simulation": {
-    "primary_single": "Pick from LIVE ODDS / MARKET BOARD — description only",
+    "primary_single": "Simulate the game's score / outcome distribution, then pick the market with the highest win-prob across that distribution (totals & spreads read straight from the sim) — description only",
     "primary_odds": "-180",
     "sgp_blueprint": [
       { "label": "SGP Leg 1", "value": "Pick from LIVE ODDS + odds", "rationale": "[SOURCE]: 1 sourced fact", "espn_id": "" },
       { "label": "SGP Leg 2", "value": "Pick from LIVE ODDS + odds", "rationale": "[SOURCE]: 1 sourced fact", "espn_id": "" },
       { "label": "SGP Leg 3", "value": "Pick from LIVE ODDS + odds", "rationale": "[SOURCE]: 1 sourced fact", "espn_id": "" }
     ],
-    "omni_report": "2 sentences citing SOURCED DATA ONLY."
+    "omni_report": "2 sentences: cite the simulated distribution (e.g. likely score line / total goals) and the market it makes most probable. SOURCED DATA ONLY."
   },
-  "primary_single": "FINAL best pick — highest win-prob +value market (draw-insured for soccer when fav <60%). If nothing clears the value gate, write exactly 'PASS — no value'. Must match the MARKET BOARD pick unless value_check justifies a deviation.",
+  "primary_single": "FINAL best pick — the SINGLE highest win-prob +value market after scanning ALL market types (ML / draw / double chance / DNB / spread / total over-under / team total / BTTS / derivative / player prop). Pick whatever TYPE wins, not the moneyline by default (draw-insured for soccer when fav <60%). If nothing clears the value gate, write exactly 'PASS — no value'. Must match the MARKET BOARD pick unless value_check justifies a deviation.",
   "primary_odds": "-115 (or \"\" if PASS)",
-  "value_check": "State the pick's win prob vs the devigged implied prob of its odds. If prob does NOT beat implied → write 'NO VALUE — PASS'.",
+  "value_check": "State the pick's win prob vs the devigged implied prob of its odds, AND why this market beat the next-best market type. If prob does NOT beat implied → write 'NO VALUE — PASS'.",
   "sgp_blueprint": [
     { "label": "SGP Leg 1", "value": "Pick from LIVE ODDS + odds", "rationale": "[SOURCE]: sourced fact", "espn_id": "" },
     { "label": "SGP Leg 2", "value": "Correlated leg + odds", "rationale": "[SOURCE]: sourced fact", "espn_id": "" },
