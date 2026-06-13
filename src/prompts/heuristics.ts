@@ -47,8 +47,8 @@ Key numbers: 3, 7, 10, 14 — never cross without +EV price at -105 or better.
 Situational edges: bye-week +3.2 pts ATS, divisional dogs cover slightly above 50% long-run (verified ~52-54%, varies by season), Thursday short-week -1.7 pts. Wind >15mph = fade all passing props, lean Under.`,
 
     SOCCER: `WORLD CUP 2026 IS LIVE (June 11 – July 19, 2026). Prioritize WC matches above ALL other leagues.
-DRAW INSURANCE (how we make money on favourites): soccer is 3-way. A "team to WIN" pick LOSES on a draw (cost us Canada). Fav wins ≥60% → straight ML. Fav better but <60% with live draw → DOUBLE CHANCE (gana o empata / 1X). Tight + high draw → DRAW NO BET (apuesta sin empate). VALUE = pick prob must beat the devigged implied price, else PASS.
-Bet types (priority): Double Chance / Draw No Bet (draw insurance) > Asian handicap > goals total > BTTS > shots on target > corners > cards. Straight 3-way ML only for ≥60% favourites.
+DRAW INSURANCE + VALUE (how we make money on favourites): soccer is 3-way. A "team to WIN" pick LOSES on a draw (cost us Canada) — but it must also have VALUE. HEAVY chalk (≈ -250 / 1.40 dec or shorter, e.g. -511): ML and DC pay ~nothing = NO value → take the fav's handicap (-1.5/-2.5) / team total / correct score, else PASS. "Better but not dominant" (~ -110 to -250) with live draw → DOUBLE CHANCE (1X) when it pays ~1.40-2.50. Tight + high draw → DRAW NO BET (apuesta sin empate). Live dog at +value can be the best bet. VALUE = pick prob must beat the devigged implied price, else PASS.
+Bet types (priority): on heavy chalk → fav handicap (-1.5/-2.5) / team total / correct score (where the value is) > on "better but not dominant" → Double Chance / Draw No Bet (when priced ~1.40-2.50) > Asian handicap > goals total > BTTS > shots on target > corners > cards. Straight 3-way ML only when it isn't crushing juice AND beats its devig.
 WC FORMAT: 48 teams, 16 groups of 3. Only 3 group games per team — every game matters.
 ADVANCEMENT SCENARIO TAGS (auto-injected from server):
   QUALIFIED teams with games remaining: ROTATION RISK — fade their ML, fade player props, lean opponent.
@@ -154,7 +154,7 @@ REGULAR SEASON (September+) reference:
 - DVOA gap >10 pts = structural edge. EPA/play differential >0.15 = lean that offense.`,
 
     SOCCER: `WORLD CUP 2026 SHARP RULES (June 11 – July 19, 2026):
-- DRAW INSURANCE FIRST: fav ≥60% → ML; fav <60% but better → Double Chance (gana o empata); tight + high draw → Draw No Bet (apuesta sin empate). A win-only pick dies on a draw.
+- DRAW INSURANCE + VALUE: heavy chalk (≤ ~ -250, e.g. -511) → ML/DC have NO value, take the fav handicap (-1.5/-2.5)/team total/correct score or PASS; "better but not dominant" (~ -110 to -250) + live draw → Double Chance when it pays ~1.40-2.50; tight + high draw → Draw No Bet. A win-only pick dies on a draw — but never lay no-value chalk to avoid it.
 - VALUE GATE: only bet when win prob beats the devigged implied price. Else PASS. Rank win-prob first, value second.
 - AH+0.5 = draw insurance when no DC/DNB price. AH > raw 3-way ML.
 - xG, PPDA, SPI NOT in any API. NEVER invent them. Use devigged implied probability only.

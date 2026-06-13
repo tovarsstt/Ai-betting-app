@@ -62,14 +62,21 @@ ELEVATED/HIGH:
 
 ## DRAW INSURANCE — THE CANADA LESSON (read first)
 Soccer is a **3-way** market. A team can be *better* and still NOT win → a
-straight Win/ML ticket dies on the draw. Before backing any favourite, price
-the draw and pick the market that survives it:
-- **Favourite wins ≥60% in model** → straight **Win / ML**. Dominant enough.
-- **Better but wins <60% AND draw ≥26%** → **Double Chance (gana o empata, 1X)**.
-  Cashes on win OR draw. This is the play we missed on the Canada draw.
+straight Win/ML ticket dies on the draw. But the pick must also have VALUE —
+draw insurance is only worth taking when its PRICE pays for the risk. Price the
+draw, then pick the market that both survives the draw AND clears the value gate:
+- **HEAVY chalk favourite (≈ -250 / 1.40 dec or shorter — e.g. -511)** → ML and
+  DC have NO value (DC pays ~1.05, you lay a fortune for pennies). Do NOT headline
+  them. Take the value in the **derivative the fav wins BY**: handicap -1.5 / -2.5,
+  team total Over, correct score, winning margin. If none clears value, **PASS**.
+- **"Better but not dominant" (~ -110 to -250) AND draw ≥26%** → **Double Chance
+  (gana o empata, 1X)** when it pays ~1.40–2.50 and beats its devig. Cashes on
+  win OR draw — the play we missed on the Canada draw.
 - **Tight match (win≈lose) + high draw** → **Draw No Bet (apuesta sin empate)**.
   Refund on the draw, only loses if the dog actually wins.
-- Still take the straight Win as a **higher-payout value alt** when its price
+- **Underdog with real equity** → the dog ML / DC (X2) at +value can be the best
+  bet outright. A live dog at a fat price beats laying chalk.
+- Straight Win/ML is a candidate ONLY when its price isn't crushing juice AND
   carries real +EV over the draw risk.
 - Engine: `POST /predict-soccer` (edge_api, port 8001) returns the full board
   (1X2 / DC / DNB / O-U / BTTS / corners) + the recommended draw-insured pick.
