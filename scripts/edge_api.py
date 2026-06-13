@@ -377,6 +377,7 @@ def predict_soccer(req: SoccerMarketReq):
     # probabilities — authoritative when ratings are unreliable (WC nat. teams).
     market_3way = None
     market_recommendation = None
+    upset = None
     if None not in (req.home_odds, req.draw_odds, req.away_odds):
         dv = sm.devig_3way(req.home_odds, req.draw_odds, req.away_odds)
         market_3way = {
@@ -392,6 +393,10 @@ def predict_soccer(req: SoccerMarketReq):
             dv["home"], dv["draw"], dv["away"], req.home_team, req.away_team,
             req.home_odds, req.draw_odds, req.away_odds,
         )
+        fav_dec = sm.american_to_decimal(
+            req.home_odds if dv["home"] >= dv["away"] else req.away_odds
+        )
+        upset = sm.upset_risk(dv["home"], dv["draw"], dv["away"], fav_decimal_odds=fav_dec)
 
     return {
         "status": "OK",
@@ -417,6 +422,7 @@ def predict_soccer(req: SoccerMarketReq):
         },
         "market_3way": market_3way,
         "market_recommendation": market_recommendation,
+        "upset_risk": upset,
         "recommendation": rec,
         "home_ratings": h_r, "away_ratings": a_r,
     }

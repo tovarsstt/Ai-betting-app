@@ -46,6 +46,20 @@
 
 ---
 
+## UPSET / PUBLIC-TRAP RADAR (read first)
+A "name" favourite the public backs like an 80% lock (Canada, Brazil–Morocco,
+Panama–Ghana) is rarely that safe. Trust the **market's devigged win %**, never
+the narrative — the public being heavy on a side is a FADE signal, not proof.
+`/predict-soccer` returns `upset_risk` (LOW / ELEVATED / HIGH) from market
+structure: modest favourite + live draw, real underdog equity, high non-win
+probability, and "chalk illusion" (priced shorter than the true prob). When
+ELEVATED/HIGH:
+- Do NOT headline the straight Win. Default to Double Chance / Draw No Bet, or
+  the underdog at +value.
+- If you still back the favourite to win, cut to 0.5u.
+- Tournament one-offs (group deciders, knockouts) raise the base upset rate —
+  motivation and parity are higher than club ball.
+
 ## DRAW INSURANCE — THE CANADA LESSON (read first)
 Soccer is a **3-way** market. A team can be *better* and still NOT win → a
 straight Win/ML ticket dies on the draw. Before backing any favourite, price

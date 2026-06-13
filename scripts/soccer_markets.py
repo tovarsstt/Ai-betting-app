@@ -465,3 +465,89 @@ def recommend_1x2(
         "primary_pick": primary,
     }
 
+
+# ── Upset / public-trap detector ──────────────────────────────────────────────
+# The Canada lesson, generalized: the public backs a "name" favourite like an
+# 80% lock, but the sharp market only has them ~55%, with a live draw and a dog
+# that has real equity (Panama-Ghana, Brazil-Morocco). We already trust the
+# market prob, not the narrative — this makes the gap LOUD and sizes for it.
+UPSET_DRAW_LIVE = 0.24    # draw this likely under a favourite = trap vector
+UPSET_DOG_EQUITY = 0.27   # underdog win prob the public is laying into
+UPSET_NONWIN = 0.42       # P(favourite does NOT win) — the real risk number
+CHALK_ILLUSION_GAP = 0.10  # priced like a bigger lock than the true prob
+
+
+def upset_risk(
+    p_home: float,
+    p_draw: float,
+    p_away: float,
+    fav_decimal_odds: Optional[float] = None,
+    public_pct_on_fav: Optional[float] = None,   # 0-1, when a bet% feed exists
+    line_drifting_against_fav: Optional[bool] = None,  # RLM signal, when known
+) -> dict:
+    """
+    Score how much a consensus favourite is overrated / upset-prone, from the
+    devigged market. Structural signals (draw, dog equity, non-win, chalk) work
+    with no extra feeds; public% and reverse-line-movement strengthen it when
+    available. Returns level (LOW/ELEVATED/HIGH), reasons, and protective action.
+    """
+    home_fav = p_home >= p_away
+    p_fav = p_home if home_fav else p_away
+    p_dog = p_away if home_fav else p_home
+    non_win = round(1.0 - p_fav, 4)  # draw + dog win
+
+    score = 0
+    reasons: list[str] = []
+
+    if p_fav < 0.62 and p_draw >= UPSET_DRAW_LIVE:
+        score += 2
+        reasons.append(
+            f"Favourite only {p_fav:.0%} with a live {p_draw:.0%} draw — the Canada draw pattern."
+        )
+    if p_dog >= UPSET_DOG_EQUITY:
+        score += 1
+        reasons.append(
+            f"Underdog has real {p_dog:.0%} win equity — not the lock the public sees."
+        )
+    if non_win >= UPSET_NONWIN:
+        score += 1
+        reasons.append(
+            f"Favourite FAILS to win {non_win:.0%} of the time (draw {p_draw:.0%} + loss {p_dog:.0%})."
+        )
+    if fav_decimal_odds and fav_decimal_odds > 1.0:
+        raw_implied = 1.0 / fav_decimal_odds
+        if raw_implied - p_fav >= CHALK_ILLUSION_GAP and p_fav < 0.65:
+            score += 1
+            reasons.append(
+                f"Priced like a {raw_implied:.0%} lock but true win is {p_fav:.0%} — overrated chalk."
+            )
+    if public_pct_on_fav is not None and public_pct_on_fav >= 0.70 and p_fav < 0.65:
+        score += 2
+        reasons.append(
+            f"{public_pct_on_fav:.0%} of the public on the favourite vs {p_fav:.0%} true win — public trap."
+        )
+    if line_drifting_against_fav:
+        score += 2
+        reasons.append(
+            "Line drifting AGAINST the favourite despite public money — reverse line movement (sharps fading)."
+        )
+
+    level = "HIGH" if score >= 4 else "ELEVATED" if score >= 2 else "LOW"
+    if level == "LOW":
+        action = "No upset flag — favourite is genuinely strong; back it normally."
+    else:
+        action = (
+            "Do NOT lay the straight Win at full stake. Insure the draw "
+            "(Double Chance / Draw No Bet) or take the dog at +value; if betting "
+            "the favourite to win, cut to 0.5u."
+        )
+
+    return {
+        "level": level,
+        "score": score,
+        "favourite_true_win": round(p_fav, 4),
+        "non_win_prob": non_win,
+        "reasons": reasons,
+        "protective_action": action,
+    }
+

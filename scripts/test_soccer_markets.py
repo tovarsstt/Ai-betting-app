@@ -129,6 +129,32 @@ def test_value_alternative_surfaces_when_win_odds_have_edge():
         assert rec["value_alternative"]["ev_pct"] > 0
 
 
+# ── Upset / public-trap detector ──────────────────────────────────────────────
+def test_upset_high_for_canada_pattern():
+    # Modest favourite, live draw, dog with real equity → should flag
+    u = sm.upset_risk(0.50, 0.27, 0.23, fav_decimal_odds=1.55)
+    assert u["level"] in ("ELEVATED", "HIGH")
+    assert u["reasons"]
+    assert "0.5u" in u["protective_action"] or "Double Chance" in u["protective_action"]
+
+
+def test_upset_low_for_genuine_lock():
+    # Switzerland-style heavy favourite → no upset flag
+    u = sm.upset_risk(0.78, 0.15, 0.07, fav_decimal_odds=1.19)
+    assert u["level"] == "LOW"
+
+
+def test_upset_public_pct_escalates():
+    base = sm.upset_risk(0.58, 0.25, 0.17, fav_decimal_odds=1.7)
+    trap = sm.upset_risk(0.58, 0.25, 0.17, fav_decimal_odds=1.7, public_pct_on_fav=0.82)
+    assert trap["score"] > base["score"]
+
+
+def test_upset_non_win_prob_is_one_minus_fav():
+    u = sm.upset_risk(0.55, 0.26, 0.19)
+    assert abs(u["non_win_prob"] - (1 - 0.55)) < 1e-9
+
+
 def test_ev_pct_positive_when_model_beats_price():
     # Model 60% vs +100 (implied 50%) → strong +EV
     assert sm.ev_pct(0.60, 100) > 0

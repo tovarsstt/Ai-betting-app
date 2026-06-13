@@ -2075,6 +2075,8 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
               expected_total_goals?: number;
             };
             lambda_source?: string;
+            upset_risk?: { level: string; non_win_prob: number; favourite_true_win: number;
+              reasons: string[]; protective_action: string };
             market_recommendation?: { primary_pick?: { market: string; side: string; model_prob: number };
               win_draw_lose?: { win: number; draw: number; lose: number };
               double_chance?: { fav_or_draw: number }; draw_no_bet?: { fav: number }; favorite?: string };
@@ -2089,12 +2091,18 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
             const btts = s.markets?.btts;
             const bttsSide = btts ? (btts.yes >= btts.no ? `BTTS Yes ${(btts.yes*100).toFixed(0)}%` : `BTTS No ${(btts.no*100).toFixed(0)}%`) : 'n/a';
             const xg = s.markets?.expected_total_goals;
+            // Upset / public-trap flag — only surface when ELEVATED or HIGH.
+            const up = s.upset_risk;
+            const upsetLine = (up && up.level !== 'LOW')
+              ? `\n⚠️ UPSET RISK ${up.level} — favourite wins only ${(up.favourite_true_win*100).toFixed(0)}%, does NOT win ${(up.non_win_prob*100).toFixed(0)}%. ${up.reasons.join(' ')} → ${up.protective_action}`
+              : '';
             marketsCtx =
               `━━ SOCCER MARKET BOARD (devigged 3-way + market-calibrated Poisson — sharp, draw priced):\n` +
               `Fav ${mr.favorite}: win ${(w.win*100).toFixed(0)}% / draw ${(w.draw*100).toFixed(0)}% / lose ${(w.lose*100).toFixed(0)}%\n` +
               `Double Chance (gana o empata) ${((mr.double_chance?.fav_or_draw ?? 0)*100).toFixed(0)}% | Draw No Bet (apuesta sin empate) ${((mr.draw_no_bet?.fav ?? 0)*100).toFixed(0)}%\n` +
               `Totals/BTTS (market-calibrated${xg != null ? `, xGoals ${xg.toFixed(2)}` : ''}): ${ouSide} | ${bttsSide}\n` +
-              `>>> DRAW-INSURED PICK: ${mr.primary_pick.side} [${mr.primary_pick.market}] @ ${(mr.primary_pick.model_prob*100).toFixed(0)}%\n` +
+              `>>> DRAW-INSURED PICK: ${mr.primary_pick.side} [${mr.primary_pick.market}] @ ${(mr.primary_pick.model_prob*100).toFixed(0)}%` +
+              upsetLine + `\n` +
               `Rule: back straight Win only if fav ≥60%; else insure the draw with DC/DNB (the Canada lesson). Build correlated SGP from these calibrated legs (e.g. DC + Under/Over + BTTS that agree).`;
           }
         }
@@ -2155,6 +2163,7 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
     const soccerPlaybook = `
 ⚽ WORLD CUP MONEY PLAYBOOK (follow exactly):
 - If a "SOCCER MARKET BOARD" block is present, it is the devigged sharp market with the draw PRICED. Its ">>> DRAW-INSURED PICK" is your default primary_single. Override only with a sourced reason.
+- 🚨 UPSET / PUBLIC-TRAP AWARENESS: a "name" favourite the public hammers (Canada, Brazil-Morocco, Panama-Ghana) is NOT the lock it feels like — trust the market's true win %, never the narrative. If the board shows "UPSET RISK ELEVATED/HIGH": say so plainly in the report, do NOT headline the straight Win, default to Double Chance / Draw No Bet or the +value dog, and cut favourite-Win stake to 0.5u. The public being 80% on a side is a fade signal, not a confirmation.
 - Draw is a real outcome. A "team to WIN" pick LOSES on a draw (this cost us the Canada game). When the favourite wins <60%: use DOUBLE CHANCE (gana o empata / 1X) or DRAW NO BET (apuesta sin empate). When ≥60%: straight ML is fine.
 - Build the SGP from CORRELATED legs that tell ONE story: e.g. [Fav Double Chance] + [Under 2.5 if defensive / Over 2.5 if both must-win] + [team total or corners]. Never pair BTTS Yes with Under 2.5.
 - Totals & corners are live money: cite the model/market totals lean when shown. Corners are a HEURISTIC proxy — present as "lean", not a hard stat.
