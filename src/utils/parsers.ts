@@ -66,3 +66,44 @@ export function parseMatchupsFromOdds(oddsCtx: string): string[] {
   const matches = [...oddsCtx.matchAll(/([A-Z][a-zA-Z0-9 '\.]+?)\s+@\s+([A-Z][a-zA-Z0-9 '\.]+?)\s+[—–-]/g)];
   return matches.map(m => `${m[1].trim()} vs ${m[2].trim()}`);
 }
+
+// ── parseSelectionIdentity — freeform pick → structured market identity ────────
+// Used by the CLV cron to re-find the exact line at kickoff. Returns nulls when it
+// can't map confidently (totals, props, BTTS, double chance, DNB, Asian quarter
+// lines) — better NO clv than a wrong one.
+export function parseSelectionIdentity(
+  selection: string,
+  game: string,
+): { market_key: string | null; outcome: string | null; point: number | null } {
+  const none = { market_key: null, outcome: null, point: null };
+  if (!selection || !game) return none;
+  const sel = selection.trim();
+  const low = sel.toLowerCase();
+
+  // Markets with no clean h2h/spreads feed match → skip.
+  if (/\b(over|under|btts|both teams|draw no bet|dnb|double chance|gana o empata|1x|x2|anytime|to score|scorer|cards?|corners?|shots?|aces?|player|prop)\b/i.test(low)) {
+    return none;
+  }
+
+  // Team names from "A vs B" / "A @ B" (drop the trailing " — context").
+  const head = game.split(/—|–|--/)[0];
+  const teams = head.split(/\s+vs\.?\s+|\s+@\s+/i).map(t => t.trim()).filter(Boolean);
+  if (teams.length < 2) return none;
+  const team = teams.find(t => low.includes(t.toLowerCase()));
+  if (!team) return none;
+
+  // Spread: a signed number in the selection (e.g. "Celtics -4.5", "Qatar +1.5").
+  const m = sel.match(/([+-]\d+(?:\.\d+)?)/);
+  if (m) {
+    const point = parseFloat(m[1]);
+    // Asian quarter lines (x.25 / x.75) rarely match the US spreads feed → skip.
+    if ((Math.abs(point) * 4) % 2 !== 0) return none;
+    return { market_key: 'spreads', outcome: team, point };
+  }
+
+  // Moneyline: explicit ML wording, or the selection is just the team name.
+  if (/\b(ml|money\s?line|to win)\b/i.test(low) || low === team.toLowerCase()) {
+    return { market_key: 'h2h', outcome: team, point: null };
+  }
+  return none;
+}

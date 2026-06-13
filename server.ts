@@ -8,9 +8,11 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { readFileSync } from 'fs';
 import { impliedProb, devig, toDecimal, marginToWinProb, normalCDF } from './src/utils/mathUtils.js';
-import { parseJSON, parseOddsForTeams, parseMatchupsFromOdds } from './src/utils/parsers.js';
+import { parseJSON, parseOddsForTeams, parseMatchupsFromOdds, parseSelectionIdentity } from './src/utils/parsers.js';
 import { getCached, setCache } from './src/utils/cache.js';
-import { loadLedger, addPick, settlePick, computeStats, hasPendingDuplicate } from './src/utils/ledger.js';
+import { loadLedger, addPick, settlePick, stampClosingOdds, computeStats, hasPendingDuplicate } from './src/utils/ledger.js';
+import { findClose, pendingNeedingClose, inCaptureWindow, type CaptureEvent } from './src/utils/clvCapture.js';
+import cron from 'node-cron';
 import { getBettingHeuristics, getSportBetContext, getShortHeuristics } from './src/prompts/heuristics.js';
 import { getSharpIdentity } from './src/prompts/identity.js';
 import { SPORT_KEYS } from './src/services/oddsService.js';
@@ -1927,13 +1929,15 @@ Real player names, real team names. Every logic bullet must have a [SOURCE] tag.
           p.result === 'PENDING' && p.selection === selection && p.created_at.startsWith(today_)
         );
         if (!dupe) {
+          const gameName = String(parsed.game_name ?? '');
           await addPick({
             sport: prophetSport,
-            game: String(parsed.game_name ?? ''),
+            game: gameName,
             selection,
             odds: oddsNum,
             stake_units: /2\s*UNIT/i.test(String(parsed.recommended_unit ?? '')) ? 2 : 1,
             source: 'prophet',
+            ...parseSelectionIdentity(selection, gameName),  // structured identity for CLV capture
           });
         }
       }
@@ -2179,7 +2183,8 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
 - NEVER lay a price the probability can't justify. A -300 fav at 70% true prob is a LOSS long-term — find the derivative that pays (method/total/handicap) or pass.
 - Prefer the SHARPEST market for the read: in soccer that means the draw-insured market when the favourite is "better but not dominant".
 - 🚫 DISCIPLINED PASS: if NO market clears the value gate, set primary_single to "PASS — no value" and primary_odds to "". A skipped bad spot protects the bankroll and the record. Do NOT manufacture a pick to fill the slot. (SGP/TikTok may still describe the lean, but the headline pick is PASS.)
-- 🔒 BOARD-CONSISTENCY LOCK: when a MARKET BOARD block is present (soccer/UFC), the final primary_single MUST be its ">>> recommended pick" unless value_check cites a SPECIFIC sourced reason (injury/lineup/weather/line-move) to deviate. The board is the sharp market — do not drift to a softer narrative pick.`.trim();
+- 🔒 BOARD-CONSISTENCY LOCK: when a MARKET BOARD block is present (soccer/UFC), the final primary_single MUST be its ">>> recommended pick" unless value_check cites a SPECIFIC sourced reason (injury/lineup/weather/line-move) to deviate. The board is the sharp market — do not drift to a softer narrative pick.
+- 📉 LINE-VALUE / CLV: beating the CLOSING line is the long-run proof of edge. Favor the side the devigged SHARP SIGNAL + line movement agree with. If the number has already moved THROUGH your price (you'd be chasing steam past the value), the edge is gone — PASS or pivot to the derivative that still prices value. Never bet into a line that moved AGAINST your read without a sourced reason (that is the market telling you something you missed).`.trim();
 
     const soccerPlaybook = `
 ⚽ WORLD CUP MONEY PLAYBOOK (follow exactly):
@@ -2663,6 +2668,7 @@ Rules:
           odds: bpOddsNum,
           stake_units: /2\s*UNIT/i.test(String(bp?.units ?? '')) ? 2 : 1,
           source: 'parlays',
+          ...parseSelectionIdentity(bpSel, bpGame),  // structured identity for CLV capture
         });
       }
     } catch (e: unknown) {
@@ -3597,12 +3603,16 @@ app.get('/api/upset-radar', async (req: express.Request, res: express.Response) 
 app.post('/api/ledger/pick', async (req: express.Request, res: express.Response) => {
   if (rateLimit(req, 30, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
   try {
-    const { sport, game, selection, odds, stake_units, source } = req.body ?? {};
+    const { sport, game, selection, odds, stake_units, source, market_key, outcome, point } = req.body ?? {};
     const oddsNum = Number(odds);
     if (!sport || !game || !selection || !Number.isFinite(oddsNum) || oddsNum === 0 || (oddsNum > -100 && oddsNum < 100)) {
       return res.status(400).json({ error: 'INVALID_PICK', message: 'sport, game, selection and valid American odds required' });
     }
-    const pick = await addPick({ sport, game, selection, odds: oddsNum, stake_units: Number(stake_units) || 1, source });
+    // Use caller-supplied identity if present, else derive it from the selection for CLV capture.
+    const ident = (market_key && outcome)
+      ? { market_key, outcome, point: point != null ? Number(point) : null }
+      : parseSelectionIdentity(String(selection), String(game));
+    const pick = await addPick({ sport, game, selection, odds: oddsNum, stake_units: Number(stake_units) || 1, source, ...ident });
     res.json({ success: true, pick });
   } catch (e: unknown) {
     res.status(500).json({ error: 'LEDGER_WRITE_FAILED', message: e instanceof Error ? e.message : String(e) });
@@ -3648,11 +3658,68 @@ app.get('/api/ledger/picks', async (req: express.Request, res: express.Response)
   }
 });
 
+// ── CLV capture — stamp the closing line on pending picks just before kickoff ──
+// Reads the structured identity stored on each pick and re-finds the exact line.
+// Only ML/spread picks with a clean identity are captured; AH/props stay manual.
+async function fetchRawEvents(sportKey: string): Promise<OddsEvent[]> {
+  const url = `${ODDS_API_BASE}/sports/${sportKey}/odds?apiKey=${ODDS_API_KEY}&regions=us&markets=h2h,spreads&bookmakers=pinnacle,draftkings,fanduel&dateFormat=iso&oddsFormat=american`;
+  const r = await fetch(url, { signal: AbortSignal.timeout(8000) });
+  if (!r.ok) return [];
+  const events = await r.json();
+  return Array.isArray(events) ? events as OddsEvent[] : [];
+}
+
+async function runClvCapture(): Promise<{ stamped: number; checked: number }> {
+  if (!ODDS_API_KEY) return { stamped: 0, checked: 0 };
+  const ledger = await loadLedger();
+  const pending = pendingNeedingClose(ledger);
+  if (!pending.length) return { stamped: 0, checked: 0 };
+
+  let stamped = 0;
+  // Fetch each relevant sport's league keys once, match every pending pick against it.
+  for (const sport of [...new Set(pending.map(p => p.sport))]) {
+    const events: OddsEvent[] = [];
+    for (const key of (SPORT_KEYS[sport] || [])) events.push(...await fetchRawEvents(key));
+    if (!events.length) continue;
+
+    for (const pick of pending.filter(p => p.sport === sport)) {
+      const hit = findClose(pick, events as unknown as CaptureEvent[]);
+      if (!hit || !inCaptureWindow(hit.commence_time)) continue;  // only stamp the true pre-kickoff close
+      const r = await stampClosingOdds(pick.id, hit.price);
+      if (typeof r !== 'string') stamped++;
+    }
+  }
+  return { stamped, checked: pending.length };
+}
+
+// Manual trigger (the auto-cron is opt-in via ENABLE_CLV_CAPTURE so dev never hits the API).
+app.post('/api/ledger/capture-clv', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 5, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  if (!ODDS_API_KEY) return res.status(503).json({ error: 'ODDS_API_NOT_CONFIGURED' });
+  try {
+    const result = await runClvCapture();
+    res.json({ success: true, ...result });
+  } catch (e: unknown) {
+    res.status(500).json({ error: 'CLV_CAPTURE_FAILED', message: e instanceof Error ? e.message : String(e) });
+  }
+});
+
 const distPath = path.resolve(process.cwd(), 'dist');
 app.use(express.static(distPath));
 app.get('/{*splat}', (_req, res) => {
   res.sendFile(path.join(distPath, 'index.html'));
 });
+
+// Auto-CLV capture — OFF by default so dev/test never call the Odds API (CLAUDE.md).
+// Set ENABLE_CLV_CAPTURE=true in production to stamp closing lines every 15 min.
+if (process.env.ENABLE_CLV_CAPTURE === 'true') {
+  cron.schedule('*/15 * * * *', () => {
+    runClvCapture()
+      .then(r => { if (r.stamped) console.info(`[CLV] stamped ${r.stamped}/${r.checked} closing lines`); })
+      .catch(e => console.error('[CLV] capture failed:', e instanceof Error ? e.message : String(e)));
+  });
+  console.info('[CLV] auto-capture enabled — every 15 min');
+}
 
 app.listen(port, '0.0.0.0', () => {
   console.info(`CTE LOCKS Engine live → http://localhost:${port}`);

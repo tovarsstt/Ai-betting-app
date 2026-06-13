@@ -21,6 +21,11 @@ export interface LedgerPick {
   result: PickResult;
   settled_at: string | null;
   source: string;            // 'prophet' | 'analyze' | 'manual'
+  // Structured market identity — lets the CLV cron re-find the exact line at
+  // kickoff. Nullable: legacy picks and unparseable selections (AH/props) lack it.
+  market_key?: string | null;  // 'h2h' | 'spreads'
+  outcome?: string | null;     // outcome/team name as it appears in the odds feed
+  point?: number | null;       // spread handicap (null for moneyline)
 }
 
 export interface LedgerStats {
@@ -67,6 +72,9 @@ export interface NewPickInput {
   odds: number;
   stake_units?: number;
   source?: string;
+  market_key?: string | null;
+  outcome?: string | null;
+  point?: number | null;
 }
 
 // True if an identical engine pick is already logged and pending — prevents
@@ -94,6 +102,9 @@ export async function addPick(input: NewPickInput): Promise<LedgerPick> {
     result: 'PENDING',
     settled_at: null,
     source: input.source ?? 'manual',
+    market_key: input.market_key ?? null,
+    outcome: input.outcome ?? null,
+    point: input.point ?? null,
   };
   const ledger = await loadLedger();
   await saveLedger([...ledger, pick]);
@@ -122,6 +133,22 @@ export async function settlePick(
   const next = [...ledger.slice(0, idx), settled, ...ledger.slice(idx + 1)];
   await saveLedger(next);
   return settled;
+}
+
+export type StampError = 'NOT_FOUND' | 'ALREADY_SET' | 'SETTLED';
+
+// Stamp the closing line on a still-PENDING pick (CLV capture, pre-settle).
+// Won't touch a settled pick or overwrite a close already recorded — the record
+// stays tamper-evident.
+export async function stampClosingOdds(id: string, closingOdds: number): Promise<LedgerPick | StampError> {
+  const ledger = await loadLedger();
+  const idx = ledger.findIndex(p => p.id === id);
+  if (idx === -1) return 'NOT_FOUND';
+  if (ledger[idx].result !== 'PENDING') return 'SETTLED';
+  if (ledger[idx].closing_odds != null) return 'ALREADY_SET';
+  const updated: LedgerPick = { ...ledger[idx], closing_odds: closingOdds };
+  await saveLedger([...ledger.slice(0, idx), updated, ...ledger.slice(idx + 1)]);
+  return updated;
 }
 
 // CLV%: how much better your odds were than the close. Positive = beat the market.
