@@ -1644,9 +1644,22 @@ DATA INTEGRITY RULE — TENNIS:
   return parts.join('\n');
 }
 
-// ── Synthetic Sharp Signal (Pinnacle vs soft-book line gap) ───────────────────
-// Pinnacle is the sharpest book. When Pinnacle line diverges from DraftKings/FanDuel,
-// that gap reveals where the sharp money is pointing.
+// ── Devig a market → fair (no-vig) probability per outcome ────────────────────
+// Normalizes the book's implied probs to sum to 1. Handles 2-way (ML/spread/total)
+// AND 3-way (soccer 1X2 — Win/Draw/Win). Comparing raw implied probs across books
+// is biased by their different vig levels (Pinnacle ~2-3% vs DK/FD ~5%) — always
+// devig first so a gap reflects a real price disagreement, not juice.
+function fairMarketProbs(outcomes: Array<{ name: string; price: number }>): Map<string, number> | null {
+  if (outcomes.length < 2) return null;
+  const raw = outcomes.map(o => impliedProb(o.price));
+  const sum = raw.reduce((a, b) => a + b, 0);
+  if (sum <= 0) return null;
+  return new Map(outcomes.map((o, i) => [o.name, raw[i] / sum]));
+}
+
+// ── Synthetic Sharp Signal (Pinnacle vs soft-book fair-price gap) ─────────────
+// Pinnacle is the sharpest book. When its DEVIGGED fair price diverges from
+// DraftKings/FanDuel, that gap reveals where the sharp money is pointing.
 async function fetchSharpSignals(sport: string): Promise<string> {
   if (!ODDS_API_KEY) return "";
   const sportKeys = SPORT_KEYS[sport.toUpperCase()] || [];
@@ -1664,21 +1677,28 @@ async function fetchSharpSignals(sport: string): Promise<string> {
       for (const market of pinnacle.markets) {
         const dkMarket = dk.markets.find(m => m.key === market.key);
         if (!dkMarket) continue;
+        const pinFair = fairMarketProbs(market.outcomes);
+        const dkFair = fairMarketProbs(dkMarket.outcomes);
+        if (!pinFair || !dkFair) continue;
         for (const pinOut of market.outcomes) {
-          const dkOut = dkMarket.outcomes.find(o => o.name === pinOut.name);
+          const dkOut = dkMarket.outcomes.find(o =>
+            o.name === pinOut.name && (market.key !== 'spreads' || o.point === pinOut.point));
           if (!dkOut) continue;
-          const diff = pinOut.price - dkOut.price;
-          // If Pinnacle is >8 pts BETTER than DK on one side = sharp action on that side
-          if (Math.abs(diff) >= 8) {
-            const direction = diff > 0 ? "SHARP BACKING" : "SHARP FADING";
-            signals.push(`${ev.away_team} @ ${ev.home_team} | ${market.key.toUpperCase()} ${pinOut.name}: Pinnacle ${pinOut.price > 0 ? "+" : ""}${pinOut.price} vs DK ${dkOut.price > 0 ? "+" : ""}${dkOut.price} → ${direction} ${pinOut.name} (${diff > 0 ? "+" : ""}${diff} pts gap)`);
+          const pf = pinFair.get(pinOut.name), df = dkFair.get(pinOut.name);
+          if (pf == null || df == null) continue;
+          // Devigged fair-prob gap (percentage points) — not biased by either
+          // book's juice. ≥3 pts = a real sharp/soft disagreement on the price.
+          const gap = Math.round((pf - df) * 1000) / 10;
+          if (Math.abs(gap) >= 3) {
+            const direction = gap > 0 ? "SHARP BACKING" : "SHARP FADING";
+            signals.push(`${ev.away_team} @ ${ev.home_team} | ${market.key.toUpperCase()} ${pinOut.name}: Pinnacle ${(pf * 100).toFixed(1)}% vs DK ${(df * 100).toFixed(1)}% fair → ${direction} ${pinOut.name} (${gap > 0 ? "+" : ""}${gap} pts)`);
           }
         }
       }
     }
   } catch { return ""; }
   if (signals.length === 0) return "";
-  return `SYNTHETIC SHARP SIGNALS (Pinnacle vs DraftKings gap ≥8pts):\n${signals.join("\n")}`;
+  return `SYNTHETIC SHARP SIGNALS (Pinnacle vs DraftKings, devigged fair-prob gap ≥3 pts):\n${signals.join("\n")}`;
 }
 
 // ── Bet structure label — pure math from American odds ────────────────────────
@@ -1810,7 +1830,7 @@ ${historicalCtx ? `\n${historicalCtx}` : ''}
 
 IMPORTANT: Lines above are REAL from Pinnacle/DraftKings — use exact lines, do not invent.
 Injuries are LIVE from ESPN — apply Next Man Up logic immediately.
-Sharp signals = Pinnacle vs DK gap ≥8pts — follow the sharp side.
+Sharp signals = Pinnacle vs DK devigged fair-prob gap ≥3 pts — follow the sharp side.
 News = live ESPN headlines — questionable/out tags reprice the market.
 Historical data is REAL from ESPN official API — only cite numbers that appear verbatim in the ESPN RECORDS block.
 
@@ -3223,9 +3243,9 @@ interface LineGap {
   pinnacle_odds: number;
   book: string;
   book_odds: number;
-  pinnacle_implied: number;  // %
-  book_implied: number;      // %
-  gap_pct: number;           // pinnacle_implied − book_implied (positive = sharp on this side)
+  pinnacle_implied: number;  // fair (devigged) win prob %, Pinnacle
+  book_implied: number;      // fair (devigged) win prob %, soft book
+  gap_pct: number;           // pinnacle_implied − book_implied in fair-prob pts (positive = sharp on this side)
   best_line: number;         // odds to bet (at soft book if gap > 0)
   best_book: string;
   signal: string;
@@ -3245,51 +3265,74 @@ app.get('/api/line-gaps', async (req: express.Request, res: express.Response) =>
     const sportKeys = SPORT_KEYS[sport] || SPORT_KEYS.NBA;
     if (!sportKeys.length) return res.json({ gaps: [], scanned: 0 });
 
-    const url = `${ODDS_API_BASE}/sports/${sportKeys[0]}/odds?apiKey=${ODDS_API_KEY}&regions=us&markets=h2h,spreads&bookmakers=pinnacle,draftkings,fanduel&dateFormat=iso&oddsFormat=american`;
-    const r = await fetch(url, { signal: AbortSignal.timeout(8000) });
-    if (!r.ok) return res.json({ gaps: [], scanned: 0 });
-
-    const events = await r.json() as OddsEvent[];
     const gaps: LineGap[] = [];
+    const comparedGames = new Set<string>();  // games where Pinnacle + a soft book both priced ≥1 shared market
+    let scanned = 0;
+    let bestGap = 0;                            // largest fair-prob gap found, even below the 3pt bar
 
-    for (const ev of events.slice(0, 10)) {
-      const pinnacle = ev.bookmakers.find(b => b.key === 'pinnacle');
-      if (!pinnacle) continue;
-      const softBooks = ev.bookmakers.filter(b => ['draftkings', 'fanduel'].includes(b.key));
-      if (!softBooks.length) continue;
+    // Scan EVERY league key for the sport (was just sportKeys[0] — that missed
+    // Wimbledon/US Open for tennis, every non-WC league for soccer, etc.).
+    for (const key of sportKeys) {
+      const url = `${ODDS_API_BASE}/sports/${key}/odds?apiKey=${ODDS_API_KEY}&regions=us&markets=h2h,spreads&bookmakers=pinnacle,draftkings,fanduel&dateFormat=iso&oddsFormat=american`;
+      const r = await fetch(url, { signal: AbortSignal.timeout(8000) });
+      if (!r.ok) continue;                      // out-of-season key → skip, don't abort the scan
+      const events = await r.json() as OddsEvent[];
+      if (!Array.isArray(events)) continue;
+      scanned += events.length;
 
-      for (const market of pinnacle.markets) {
-        for (const pinOut of market.outcomes) {
-          const pinImplied = impliedProb(pinOut.price) * 100;
+      for (const ev of events.slice(0, 15)) {
+        const pinnacle = ev.bookmakers.find(b => b.key === 'pinnacle');
+        if (!pinnacle) continue;
+        const softBooks = ev.bookmakers.filter(b => ['draftkings', 'fanduel'].includes(b.key));
+        if (!softBooks.length) continue;
 
-          for (const soft of softBooks) {
-            const sm = soft.markets.find(m => m.key === market.key);
-            if (!sm) continue;
-            const so = sm.outcomes.find(o => o.name === pinOut.name);
-            if (!so) continue;
+        for (const market of pinnacle.markets) {
+          // Devig Pinnacle's two-way market to FAIR (no-vig) probabilities.
+          const pinFair = fairMarketProbs(market.outcomes);
+          if (!pinFair) continue;
 
-            const bookImplied = impliedProb(so.price) * 100;
-            const gap = Math.round((pinImplied - bookImplied) * 10) / 10;
+          for (const pinOut of market.outcomes) {
+            const pinFairProb = pinFair.get(pinOut.name);
+            if (pinFairProb == null) continue;
 
-            // Only flag when Pinnacle says this side is 3%+ more likely than soft book
-            // = sharp money drove Pinnacle higher; soft book hasn't moved yet → value at soft book
-            if (gap >= 3) {
-              gaps.push({
-                game:             `${ev.away_team} @ ${ev.home_team}`,
-                market:           market.key,
-                outcome:          pinOut.name,
-                pinnacle_odds:    pinOut.price,
-                book:             soft.title,
-                book_odds:        so.price,
-                pinnacle_implied: Math.round(pinImplied * 10) / 10,
-                book_implied:     Math.round(bookImplied * 10) / 10,
-                gap_pct:          gap,
-                // Bet the sharp side at the soft book (better price, sharp direction)
-                best_line:        so.price,
-                best_book:        soft.title,
-                signal:           gap >= 6 ? 'STRONG_SHARP' : 'SOFT_SHARP',
-                commence_time:    ev.commence_time,
-              });
+            for (const soft of softBooks) {
+              const sm = soft.markets.find(m => m.key === market.key);
+              if (!sm) continue;
+              // For spreads, only compare the SAME handicap — a price gap across
+              // different points (-6.5 vs -7) is a line difference, not a price edge.
+              const so = sm.outcomes.find(o =>
+                o.name === pinOut.name && (market.key !== 'spreads' || o.point === pinOut.point));
+              if (!so) continue;
+              const softFair = fairMarketProbs(sm.outcomes);
+              if (!softFair) continue;
+              const softFairProb = softFair.get(pinOut.name);
+              if (softFairProb == null) continue;
+
+              // Gap in FAIR probability points. Comparing raw implied probs was
+              // biased: Pinnacle runs ~2-3% vig vs DK/FD ~5%, so the soft book's
+              // extra juice inflated every side and the old gap almost never cleared
+              // +3. Devigging both books first makes the gap a real disagreement.
+              const gap = Math.round((pinFairProb - softFairProb) * 1000) / 10;
+              comparedGames.add(`${ev.away_team} @ ${ev.home_team}`);
+              if (gap > bestGap) bestGap = gap;
+              if (gap >= 3) {
+                gaps.push({
+                  game:             `${ev.away_team} @ ${ev.home_team}`,
+                  market:           market.key,
+                  outcome:          pinOut.name,
+                  pinnacle_odds:    pinOut.price,
+                  book:             soft.title,
+                  book_odds:        so.price,
+                  pinnacle_implied: Math.round(pinFairProb * 1000) / 10,
+                  book_implied:     Math.round(softFairProb * 1000) / 10,
+                  gap_pct:          gap,
+                  // Bet the sharp side at the soft book (better price, sharp direction)
+                  best_line:        so.price,
+                  best_book:        soft.title,
+                  signal:           gap >= 6 ? 'STRONG_SHARP' : 'SOFT_SHARP',
+                  commence_time:    ev.commence_time,
+                });
+              }
             }
           }
         }
@@ -3297,7 +3340,14 @@ app.get('/api/line-gaps', async (req: express.Request, res: express.Response) =>
     }
 
     gaps.sort((a, b) => b.gap_pct - a.gap_pct);
-    const result = { gaps: gaps.slice(0, 12), scanned: events.length, sport, computed_at: new Date().toISOString() };
+    const result = {
+      gaps: gaps.slice(0, 12),
+      scanned,                                   // events fetched across all league keys
+      compared: comparedGames.size,              // events actually priced by Pinnacle AND a soft book
+      best_gap: Math.round(bestGap * 10) / 10,   // tightest = largest fair-prob gap found
+      sport,
+      computed_at: new Date().toISOString(),
+    };
     setCache(cacheKey, result);
     res.json(result);
   } catch (e: unknown) {

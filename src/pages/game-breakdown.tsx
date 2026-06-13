@@ -91,6 +91,8 @@ interface LineGap {
 interface LineGapsResult {
   gaps: LineGap[];
   scanned: number;
+  compared?: number;   // games actually priced by Pinnacle AND a soft book
+  best_gap?: number;   // tightest = largest fair-prob gap found (even below the 3pt bar)
   sport: string;
   computed_at: string;
 }
@@ -304,7 +306,7 @@ function SharpPanel({ sport }: { sport: string }) {
           <div className="flex items-center gap-2">
             {data && (
               <span className="text-[9px] font-mono text-muted-foreground">
-                {data.scanned} games scanned
+                {data.scanned} scanned · {data.compared ?? 0} priced both books
               </span>
             )}
             <button
@@ -328,7 +330,11 @@ function SharpPanel({ sport }: { sport: string }) {
 
         {!isLoading && (!data?.gaps?.length) && (
           <div className="py-6 text-center text-[11px] text-muted-foreground font-mono">
-            {data ? "No sharp gaps detected — market efficient right now" : "Odds API key required"}
+            {data
+              ? (data.compared
+                  ? `No ≥3pt edge across ${data.compared} games priced by both books — tightest gap ${data.best_gap ?? 0}pts. Market efficient right now.`
+                  : "No games priced by both Pinnacle and a soft book right now.")
+              : "Odds API key required"}
           </div>
         )}
 
@@ -397,7 +403,7 @@ function SharpPanel({ sport }: { sport: string }) {
                     {gap.outcome} @ {gap.best_book}
                   </div>
                   <div className="text-[9px] font-mono text-muted-foreground">
-                    {formatOdds(gap.best_line)} · implied {gap.book_implied}%
+                    {formatOdds(gap.best_line)} · fair {gap.book_implied}%
                   </div>
                 </div>
               </div>
@@ -407,7 +413,7 @@ function SharpPanel({ sport }: { sport: string }) {
 
         {data?.computed_at && (
           <div className="px-5 py-2 text-[9px] font-mono text-muted-foreground/50 border-t border-white/[0.03]">
-            Updated {new Date(data.computed_at).toLocaleTimeString()} · Pinnacle gap ≥3% implied prob
+            Updated {new Date(data.computed_at).toLocaleTimeString()} · Pinnacle vs soft fair-prob gap ≥3 pts (devigged)
           </div>
         )}
       </CardContent>
