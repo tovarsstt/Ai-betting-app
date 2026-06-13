@@ -1,6 +1,7 @@
 # GLOBAL HEURISTICS (apply to every pick)
 
-1. **EV OVER NARRATIVE**: Never pick "who will win." Find where the bookmaker's implied probability is LOWER than the true statistical probability. That gap is the edge.
+0. **WIN-PROBABILITY FIRST, EDGE SECOND** (overrides ties): among bets that clear the value gate, rank by WIN PROBABILITY first, then by edge. Favor likely winners over +EV longshots. A 65%-to-win pick at small +EV beats a 30% longshot at fat +EV — we are building a hit-rate record, not chasing variance. Only take a longshot when the edge is large AND the safer markets have no value.
+1. **VALUE GATE (not narrative)**: a bet only qualifies if its true win probability BEATS the bookmaker's devigged implied probability. No edge → PASS, do not force a pick. Never bet purely on "who will win" without that gap. (Then apply rule 0 to rank what's left.)
 2. **CORRELATION STRESS TEST (SGPs)**: Only pair legs with MATHEMATICAL multiplier effect. If Leg A hits, does it make Leg B statistically more likely — or just emotionally more likely? Reject emotional correlation.
 3. **JUICE FILTER**: Reject any parlay where cumulative vig exceeds 15%.
 4. **CLV (CLOSING LINE VALUE)**: Evaluate whether the current line is better or worse than it was 4-8 hours ago. If line moved heavily toward a team, ask: "Is value still here or did sharps already close the window?" If line moves AGAINST your logic without obvious reason, flag as SHARP_OPPOSITION — possible injury news missed.

@@ -7,7 +7,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, '../../.env'), override: true });
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+// 9Router proxy — routes across 40+ providers with RTK compression.
+// Set NINE_ROUTER_URL=http://localhost:20128 in .env to enable.
+// Falls back to direct Anthropic if proxy is unreachable.
+const NINE_ROUTER_URL = process.env.NINE_ROUTER_URL || "";
+
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+  ...(NINE_ROUTER_URL ? { baseURL: `${NINE_ROUTER_URL}/api/v1` } : {}),
+});
+
 const DEEPSEEK_KEY = process.env.DEEPSEEK_API_KEY || "";
 const GEMINI_KEY = process.env.GEMINI_API_KEY || "";
 
@@ -29,7 +38,7 @@ export class ModelRouter {
    * Primary prompt execution with automated failover
    */
   async ask(prompt: string, options: { model?: string; provider?: ModelProvider } = {}): Promise<string> {
-    const { provider = 'anthropic', model = 'claude-3-5-sonnet-20241022' } = options;
+    const { provider = 'anthropic', model = 'claude-sonnet-4-6' } = options;
 
     try {
       if (provider === 'anthropic') {
@@ -39,16 +48,16 @@ export class ModelRouter {
       } else {
         return await this.callGemini(prompt);
       }
-    } catch (err: any) {
-      console.warn(`[ModelRouter] ${provider} failed. Attempting failover...`);
-      
+    } catch (err: unknown) {
+      console.error(`[ModelRouter] ${provider} failed. Attempting failover...`);
+
       // Automatic Fallback Sequence: Anthropic -> DeepSeek -> Gemini
       if (provider === 'anthropic' && DEEPSEEK_KEY) {
         return await this.callDeepSeek(prompt);
       } else if (provider === 'deepseek' && GEMINI_KEY) {
         return await this.callGemini(prompt);
       }
-      
+
       throw err;
     }
   }
@@ -79,7 +88,7 @@ export class ModelRouter {
       }),
     });
     
-    const data = await res.json() as any;
+    const data = await res.json() as { choices?: Array<{ message?: { content?: string } }> };
     return (data.choices?.[0]?.message?.content || "").replace(/```json|```/g, "").trim();
   }
 
@@ -87,7 +96,7 @@ export class ModelRouter {
     if (!GEMINI_KEY) throw new Error("Gemini key missing");
     
     // Using standard fetch for Google AI API
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${GEMINI_KEY}`, {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -96,7 +105,7 @@ export class ModelRouter {
       }),
     });
     
-    const data = await res.json() as any;
+    const data = await res.json() as { candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }> };
     return (data.candidates?.[0]?.content?.parts?.[0]?.text || "").replace(/```json|```/g, "").trim();
   }
 }

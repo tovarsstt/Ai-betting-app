@@ -51,3 +51,14 @@ v13_omni_engine.py
 .data/
 memory_matrix.sqlite
 *.db
+
+# CodeGraph — commit DB, exclude cache
+.codegraph/cache/
+# Understand-Anything
+.understand-anything/intermediate/
+.understand-anything/diff-overlay.json
+
+# Agent worktrees, vendored model clone, backups — local only
+.claude/worktrees/
+scripts/kronos/
+*.bak

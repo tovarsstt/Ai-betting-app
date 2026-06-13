@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 460">
+  <!-- Caveman Locks v2 — clean horizontal lockup -->
+  <defs>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.045 0"/>
+      <feComposite operator="over" in2="SourceGraphic"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="460" rx="40" fill="#1A1A1A" filter="url(#grain)"/>
+
+  <!-- icon mark, clean -->
+  <g transform="translate(70,55) scale(0.68)">
+    <path d="M168 250 C150 168, 190 104, 256 104 C322 104, 362 168, 344 250"
+          fill="none" stroke="#C8860A" stroke-width="30" stroke-linecap="round"/>
+    <path d="M196 116 C176 100, 162 84, 156 64" fill="none" stroke="#C8860A" stroke-width="26" stroke-linecap="round"/>
+    <path d="M316 116 C336 100, 350 84, 356 64" fill="none" stroke="#C8860A" stroke-width="26" stroke-linecap="round"/>
+    <path d="M140 252 L372 246 L380 428 Q380 444 364 444 L148 444 Q132 444 132 428 Z" fill="#C8860A"/>
+    <circle cx="256" cy="324" r="28" fill="#1A1A1A"/>
+    <path d="M244 340 L238 404 L274 404 L268 340 Z" fill="#1A1A1A"/>
+  </g>
+
+  <!-- thin ochre divider between mark and wordmark -->
+  <rect x="490" y="100" width="4" height="260" fill="#C8860A" opacity="0.35"/>
+
+  <!-- wordmark: stacked, aligned left edge, consistent tracking -->
+  <g font-family="'Archivo Black', Impact, 'Arial Black', sans-serif">
+    <text x="560" y="218" font-size="124" letter-spacing="8" fill="#F5F0E8">CAVEMAN</text>
+    <text x="560" y="358" font-size="124" letter-spacing="46" fill="#C8860A">LOCKS</text>
+  </g>
+</svg>
