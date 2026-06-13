@@ -2148,7 +2148,9 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
 - RANK every candidate by WIN PROBABILITY FIRST, then by value (edge vs price). Favor likely winners over longshots.
 - A bet only has VALUE when its win probability BEATS the devigged implied price. If a market board / devig prob is shown, the pick prob must exceed the implied prob of its odds. If it does not, it is NOT a bet — say "no value, pass".
 - NEVER lay a price the probability can't justify. A -300 fav at 70% true prob is a LOSS long-term — find the derivative that pays (method/total/handicap) or pass.
-- Prefer the SHARPEST market for the read: in soccer that means the draw-insured market when the favourite is "better but not dominant".`.trim();
+- Prefer the SHARPEST market for the read: in soccer that means the draw-insured market when the favourite is "better but not dominant".
+- 🚫 DISCIPLINED PASS: if NO market clears the value gate, set primary_single to "PASS — no value" and primary_odds to "". A skipped bad spot protects the bankroll and the record. Do NOT manufacture a pick to fill the slot. (SGP/TikTok may still describe the lean, but the headline pick is PASS.)
+- 🔒 BOARD-CONSISTENCY LOCK: when a MARKET BOARD block is present (soccer/UFC), the final primary_single MUST be its ">>> recommended pick" unless value_check cites a SPECIFIC sourced reason (injury/lineup/weather/line-move) to deviate. The board is the sharp market — do not drift to a softer narrative pick.`.trim();
 
     const soccerPlaybook = `
 ⚽ WORLD CUP MONEY PLAYBOOK (follow exactly):
@@ -2204,8 +2206,8 @@ Output ONLY this raw JSON (no markdown):
     ],
     "omni_report": "2 sentences citing SOURCED DATA ONLY."
   },
-  "primary_single": "FINAL best pick — highest win-prob +value market (draw-insured for soccer when fav <60%)",
-  "primary_odds": "-115",
+  "primary_single": "FINAL best pick — highest win-prob +value market (draw-insured for soccer when fav <60%). If nothing clears the value gate, write exactly 'PASS — no value'. Must match the MARKET BOARD pick unless value_check justifies a deviation.",
+  "primary_odds": "-115 (or \"\" if PASS)",
   "value_check": "State the pick's win prob vs the devigged implied prob of its odds. If prob does NOT beat implied → write 'NO VALUE — PASS'.",
   "sgp_blueprint": [
     { "label": "SGP Leg 1", "value": "Pick from LIVE ODDS + odds", "rationale": "[SOURCE]: sourced fact", "espn_id": "" },
