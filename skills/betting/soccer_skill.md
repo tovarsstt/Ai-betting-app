@@ -135,4 +135,23 @@ draw, then pick the market that both survives the draw AND clears the value gate
 - **Never**: Exact score in knockouts. BTTS Yes + Under 2.5. Total vig >15%.
 
 ---
+
+## CHAOS DETECTOR + DRAW SCORE (deterministic — chaos_engine.py)
+Runs on every WC match with a favourite. The DRAW SCORE (0-1) is built only from
+real data, renormalized over whatever is present (never invented):
+- **Parity** — small gap in the devigged 1X2 + title-strength prior.
+- **Low-scoring** — both teams low GF/game (goals scarce → draw/under).
+- **Motivation** — CAN_DRAW / QUALIFIED (rotation) advancement tag.
+- **Model gap** — Dixon-Coles draw% > market devigged draw% = underpriced draw.
+- **Injury/news nudge** — key attacker out → +draw/under, ±5% cap, cited; skipped when no data.
+
+CHAOS grades: **LITE** (mid fav 1.50–1.90, underpriced draw → X / Double Chance),
+**FULL** (heavy fav ≤1.50 overpriced + live dog → dog / X2, Wild tier only).
+The draw is a PICK only when model draw% > market draw% AND the draw price clears
+the value gate — else it's a note. This is the Canada-draw fix, grounded in stats.
+Lineups/injuries: use ESPN injuries + news when present (cited soft nudge); no
+predicted-XI feed exists, so never fabricate one. Club-vs-country form is not
+modelled (no clean data) — soft cited nudge only.
+
+---
 *Soccer v3.0 — Caveman Locks. World Cup 2026.*

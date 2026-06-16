@@ -2,7 +2,7 @@
 
 **Date:** 2026-06-16
 **Project:** Caveman Locks
-**Status:** Approved shape, pending spec review
+**Status:** Implemented (2026-06-16) — see `docs/superpowers/plans/2026-06-16-chaos-engine-tiered-card.md`
 
 ---
 

@@ -14,3 +14,9 @@
     - (c) Derivative: Is there a softer market with cleaner EV? 
     - (d) Fragility: If one player gets hurt/foul trouble early, does the whole thesis collapse? If yes, reduce unit size to 0.5u.
 9. **FLAG HIGH-RISK**: If a bet violates any rule above, label it [HIGH-RISK] and provide a PIVOT that aligns with statistical reality.
+10. **CHAOS PASS + TIERED CARD (deterministic, no hallucination)**: The chaos engine (`scripts/chaos_engine.py`) runs on EVERY match with a favourite and returns a graded flag + DRAW SCORE, each carrying an `evidence[]` trail. Consume those numbers — never invent them.
+    - **CHAOS-FULL** = heavy fav (≤1.50) the model says is overpriced + live dog → back the dog / X2 (Wild tier only, tiny stake).
+    - **CHAOS-LITE** = mid fav (1.50–1.90) with an underpriced draw (model draw% > market draw%) → the draw (X) / Double Chance (Mild or Wild).
+    - A chaos pick is only a PICK when it clears the value gate (Rule 1); otherwise it is a NOTE.
+    - **DATA CONTRACT**: every probability cites a real input or the devigged price. Narrative (news/motivation) may nudge ±5% max and MUST name its source. Missing data → "unavailable", widen uncertainty, never fill with a guess.
+    - **TIERED OUTPUT**: render the card in three sections sized by `scripts/staking.py` (70% Normal / 20% Mild / 10% Wild of bankroll). Each pick: market + price + one-line evidence + stake (units & $). Empty tier prints "PASS — no value today." `slate_weather` (CAGEY/OPEN/NORMAL) is a soft totals modifier only — NOT chaos.

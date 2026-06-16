@@ -18,6 +18,9 @@ import uvicorn
 
 import soccer_markets as sm
 import ufc_markets as um
+import chaos_engine as ce
+import staking as stk
+from typing import List
 
 BASE = Path(__file__).parent.parent / "data"
 app = FastAPI(title="Caveman Edge API", version="2.0")
@@ -425,6 +428,93 @@ def predict_soccer(req: SoccerMarketReq):
         "upset_risk": upset,
         "recommendation": rec,
         "home_ratings": h_r, "away_ratings": a_r,
+    }
+
+
+# ── Chaos slate: per-match chaos grades + slate weather + tiered card ──────────
+class ChaosTeam(BaseModel):
+    name: str
+    gf: float
+    ga: float
+    gp: int
+    strength: Optional[float] = None
+
+
+class ChaosMatch(BaseModel):
+    home: ChaosTeam
+    away: ChaosTeam
+    market_home: float
+    market_draw: float
+    market_away: float
+    fav_decimal_odds: float
+    draw_decimal_odds: Optional[float] = None
+    model_home: Optional[float] = None
+    model_draw: Optional[float] = None
+    model_away: Optional[float] = None
+    home_tag: Optional[str] = None
+    away_tag: Optional[str] = None
+    injury_draw_nudge: Optional[float] = None
+    injury_note: Optional[str] = None
+    # candidate fields for staking (the pick the engine wants to size)
+    win_prob: Optional[float] = None
+    decimal_odds: Optional[float] = None
+    market: Optional[str] = None
+    side: Optional[str] = None
+
+
+class ChaosSlateReq(BaseModel):
+    matches: List[ChaosMatch]
+    bankroll: float = 200.0
+
+
+@app.post("/chaos-slate")
+def chaos_slate(req: ChaosSlateReq):
+    """
+    Deterministic chaos pass over a whole slate: per-match chaos grade + DRAW
+    SCORE (cited evidence), the soft slate-weather tilt, and a bankroll-tiered
+    card (Normal/Mild/Wild) for the candidates supplied. No invented numbers —
+    every score derives from the real inputs passed in.
+    """
+    results = []
+    candidates = []
+    for mm in req.matches:
+        match = ce.MatchInput(
+            home=ce.TeamForm(**mm.home.model_dump()),
+            away=ce.TeamForm(**mm.away.model_dump()),
+            market_home=mm.market_home, market_draw=mm.market_draw,
+            market_away=mm.market_away, fav_decimal_odds=mm.fav_decimal_odds,
+            draw_decimal_odds=mm.draw_decimal_odds,
+            model_home=mm.model_home, model_draw=mm.model_draw, model_away=mm.model_away,
+            home_tag=mm.home_tag, away_tag=mm.away_tag,
+            injury_draw_nudge=mm.injury_draw_nudge, injury_note=mm.injury_note,
+        )
+        res = ce.assess_match(match)
+        results.append(res)
+        if mm.win_prob is not None and mm.market and mm.side:
+            candidates.append(stk.Candidate(
+                market=mm.market, side=mm.side, win_prob=mm.win_prob,
+                decimal_odds=mm.decimal_odds, chaos_grade=res.grade,
+                evidence="; ".join(res.evidence),
+            ))
+
+    weather = ce.slate_weather(results)
+    card = stk.size_card(candidates, stk.TierConfig(bankroll=req.bankroll))
+    return {
+        "status": "OK",
+        "weather": weather,
+        "chaos": [
+            {"favourite": r.favourite, "underdog": r.underdog, "grade": r.grade,
+             "draw_score": r.draw_score, "side": r.side, "market": r.market,
+             "value_ok": r.value_ok, "upset_level": r.upset_level,
+             "evidence": r.evidence}
+            for r in results
+        ],
+        "card": [
+            {"tier": p.tier, "market": p.candidate.market, "side": p.candidate.side,
+             "win_prob": p.candidate.win_prob, "stake_units": p.stake_units,
+             "stake_usd": p.stake_usd, "evidence": p.candidate.evidence}
+            for p in card
+        ],
     }
 
 
