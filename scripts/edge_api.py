@@ -381,6 +381,7 @@ def predict_soccer(req: SoccerMarketReq):
     market_3way = None
     market_recommendation = None
     upset = None
+    chaos = None
     if None not in (req.home_odds, req.draw_odds, req.away_odds):
         dv = sm.devig_3way(req.home_odds, req.draw_odds, req.away_odds)
         market_3way = {
@@ -400,6 +401,24 @@ def predict_soccer(req: SoccerMarketReq):
             req.home_odds if dv["home"] >= dv["away"] else req.away_odds
         )
         upset = sm.upset_risk(dv["home"], dv["draw"], dv["away"], fav_decimal_odds=fav_dec)
+        # Chaos engine read (per-match draw/upset grade + DRAW SCORE) on the
+        # devigged market vs the Dixon-Coles model — wires the chaos engine into
+        # the live soccer pick. Form (GF/GA) is omitted in this call, so those
+        # components are skipped and the score renormalizes; nothing is invented.
+        _draw_dec = sm.american_to_decimal(req.draw_odds)
+        _ci = ce.MatchInput(
+            home=ce.TeamForm(req.home_team, 0, 0, 0),
+            away=ce.TeamForm(req.away_team, 0, 0, 0),
+            market_home=dv["home"], market_draw=dv["draw"], market_away=dv["away"],
+            fav_decimal_odds=fav_dec, draw_decimal_odds=_draw_dec,
+            model_home=book.home_win, model_draw=book.draw, model_away=book.away_win,
+        )
+        _cr = ce.assess_match(_ci)
+        chaos = {
+            "grade": _cr.grade, "draw_score": _cr.draw_score,
+            "favourite": _cr.favourite, "side": _cr.side, "market": _cr.market,
+            "value_ok": _cr.value_ok, "evidence": _cr.evidence,
+        }
 
     return {
         "status": "OK",
@@ -426,6 +445,7 @@ def predict_soccer(req: SoccerMarketReq):
         "market_3way": market_3way,
         "market_recommendation": market_recommendation,
         "upset_risk": upset,
+        "chaos": chaos,
         "recommendation": rec,
         "home_ratings": h_r, "away_ratings": a_r,
     }

@@ -2101,6 +2101,8 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
             lambda_source?: string;
             upset_risk?: { level: string; non_win_prob: number; favourite_true_win: number;
               reasons: string[]; protective_action: string };
+            chaos?: { grade: string; draw_score: number; favourite: string;
+              side: string | null; market: string | null; value_ok: boolean | null; evidence: string[] };
             market_recommendation?: { primary_pick?: { market: string; side: string; model_prob: number };
               win_draw_lose?: { win: number; draw: number; lose: number };
               double_chance?: { fav_or_draw: number }; draw_no_bet?: { fav: number }; favorite?: string };
@@ -2120,13 +2122,18 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
             const upsetLine = (up && up.level !== 'LOW')
               ? `\n⚠️ UPSET RISK ${up.level} — favourite wins only ${(up.favourite_true_win*100).toFixed(0)}%, does NOT win ${(up.non_win_prob*100).toFixed(0)}%. ${up.reasons.join(' ')} → ${up.protective_action}`
               : '';
+            // Chaos engine read — only surface when a graded flag fires (LITE/FULL).
+            const ch = s.chaos;
+            const chaosLine = (ch && ch.grade !== 'NONE')
+              ? `\n🌀 CHAOS ${ch.grade} — back ${ch.side} [${ch.market}], draw_score ${ch.draw_score}${ch.value_ok === true ? ' (clears value)' : ch.value_ok === false ? ' (fails value gate)' : ''}. ${(ch.evidence || []).slice(-2).join(' ')}`
+              : '';
             marketsCtx =
               `━━ SOCCER MARKET BOARD (devigged 3-way + market-calibrated Poisson — sharp, draw priced):\n` +
               `Fav ${mr.favorite}: win ${(w.win*100).toFixed(0)}% / draw ${(w.draw*100).toFixed(0)}% / lose ${(w.lose*100).toFixed(0)}%\n` +
               `Double Chance (gana o empata) ${((mr.double_chance?.fav_or_draw ?? 0)*100).toFixed(0)}% | Draw No Bet (apuesta sin empate) ${((mr.draw_no_bet?.fav ?? 0)*100).toFixed(0)}%\n` +
               `Totals/BTTS (market-calibrated${xg != null ? `, xGoals ${xg.toFixed(2)}` : ''}): ${ouSide} | ${bttsSide}\n` +
               `>>> DRAW-INSURED PICK: ${mr.primary_pick.side} [${mr.primary_pick.market}] @ ${(mr.primary_pick.model_prob*100).toFixed(0)}%` +
-              upsetLine + `\n` +
+              upsetLine + chaosLine + `\n` +
               `Rule: straight Win only when the price isn't heavy chalk (≳ -250) AND beats its devig; if "better but not dominant", insure the draw with DC/DNB when DC pays ~1.40-2.50; if the fav is HEAVY chalk (e.g. -511) the ML/DC have NO value — take the handicap (-1.5/-2.5), team total or correct score, else PASS. Build correlated SGP from calibrated legs (e.g. fav handicap + Over + BTTS that agree).`;
           }
         }
