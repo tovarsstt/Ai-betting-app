@@ -154,4 +154,35 @@ predicted-XI feed exists, so never fabricate one. Club-vs-country form is not
 modelled (no clean data) — soft cited nudge only.
 
 ---
-*Soccer v3.0 — Caveman Locks. World Cup 2026.*
+
+## LIVE / IN-PLAY DISCIPLINE (from the Argentina–Algeria 0-0 case)
+The pre-match model EXPIRES at kickoff. In-play, re-price from scratch — never
+bet a live number off the kickoff read.
+- **Live model = time-decayed Poisson.** Remaining λ = pre-match λ × (minutes
+  left ÷ 90); rebuild the score matrix and OFFSET by the current score. That is
+  the only honest live fair price — no invented in-play numbers.
+- **In-play vig is wider (~7%+ vs ~5% pre-match).** The book reprices in
+  milliseconds off the same events you see — you are a step behind. A live
+  favourite ML is usually the WORST spot on the board.
+- **The scoreless clock hurts the favourite.** Every 0-0 minute pushes the draw
+  UP and drifts the favourite's fair price OUT (ARG fair 1.62 → 1.77 by min 15)
+  while the book still dangles the short pre-match-ish price. Laying a live
+  favourite at a "good" number gets worse, not better, as time burns.
+- **Don't tap during VAR / celebrations.** Markets suspend and reprice garbage;
+  goals get chalked off. This game had BOTH sides' goals ruled offside back to
+  0-0 — anyone who chased a swing got whipsawed for nothing.
+- **Down a goal ≠ value just because the team is better.** From 0-1 at ~min 13
+  the stronger side is only ~31% to win and FALLING — a deficit needs net +2,
+  which class does not refund cheaply. Comeback-chasing is the trap's 2nd costume.
+- **Discount one-directional model edges in-play — the model runs HOT on the
+  leading favourite.** Static λ-decay ignores game-management (favs protect
+  leads) and chasing variance (dogs throw bodies forward). At ARG 1-0 / min 20
+  the model had ARG win 86% vs market devig 77%, and *every* model "edge" pointed
+  the same way (Unders, BTTS-No, ARG handicaps). When all edges align with the
+  model's known bias, that's bias, not value — trust the sharp live market.
+- **Act only on a quantified +EV across the FULL board (global rule 5), never
+  the ML by default.** Nothing clears the value gate → the live play is PASS.
+  Patience through chaos IS the edge.
+
+---
+*Soccer v3.1 — Caveman Locks. World Cup 2026.*

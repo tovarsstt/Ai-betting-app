@@ -609,6 +609,86 @@ def predict_ufc(req: UFCReq):
     }
 
 
+# ── Full board (every priceable market) + slate auto-scan ─────────────────────
+import scan_slate as ss
+
+
+def _d2a(d: float) -> float:
+    return (d - 1) * 100 if d >= 2 else -100 / (d - 1)
+
+
+class FullBoardReq(BaseModel):
+    home_team: str = "Home"
+    away_team: str = "Away"
+    home_odds: float           # decimal 1X2
+    draw_odds: float
+    away_odds: float
+    rho: float = sm.DEFAULT_RHO
+
+
+@app.post("/full-board")
+def full_board(req: FullBoardReq):
+    """Every market the engine can HONESTLY price from the 1X2, plus a flagged
+    corners proxy and explicit NO-DATA markers for cards/props (no invention)."""
+    dv = sm.devig_3way(_d2a(req.home_odds), _d2a(req.draw_odds), _d2a(req.away_odds))
+    lh, la, _ = sm.solve_lambdas_from_1x2(dv["home"], dv["draw"], dv["away"])
+    mat = sm.score_matrix(lh, la, rho=req.rho)
+    N, M = len(mat), len(mat[0])
+    b = sm.derive_markets(mat)
+    P = lambda c: round(sum(mat[h][a] for h in range(N) for a in range(M) if c(h, a)), 4)
+    return {
+        "status": "OK", "home": req.home_team, "away": req.away_team,
+        "expected_total_goals": round(b.expected_total_goals, 3),
+        "markets_priced": {
+            "1x2": {"home": round(b.home_win, 4), "draw": round(b.draw, 4), "away": round(b.away_win, 4)},
+            "double_chance": {"1X": round(b.dc_home_draw, 4), "X2": round(b.dc_away_draw, 4), "12": round(b.dc_home_away, 4)},
+            "draw_no_bet": {"home": round(b.dnb_home, 4), "away": round(b.dnb_away, 4)},
+            "btts": {"yes": round(b.btts_yes, 4), "no": round(b.btts_no, 4)},
+            "totals": {str(ln): v for ln, v in b.over_under.items()},
+            "team_goals": {"home_1plus": P(lambda h, a: h >= 1), "home_2plus": P(lambda h, a: h >= 2),
+                           "away_1plus": P(lambda h, a: a >= 1), "away_2plus": P(lambda h, a: a >= 2)},
+            "handicap": {"home_-1": P(lambda h, a: h - a > 1), "home_+1": P(lambda h, a: h - a > -1),
+                         "away_-1": P(lambda h, a: a - h > 1), "away_+1": P(lambda h, a: a - h > -1)},
+        },
+        "corners_proxy": sm.estimate_corners(lh, la),
+        "needs_data": {
+            "cards_bookings": "no per-team card-rate feed — Phase 2 (never invented)",
+            "player_props": "no per-90 player feed — Phase 2 (never invented)",
+        },
+    }
+
+
+class SlateGameReq(BaseModel):
+    name: str
+    h2h: List[float]
+    totals: Optional[List[List[float]]] = None
+    btts: Optional[List[float]] = None
+    dc_x2: Optional[float] = None
+    dc_1x: Optional[float] = None
+
+
+class SlateReq(BaseModel):
+    games: List[SlateGameReq]
+
+
+@app.post("/scan-slate")
+def scan_slate_endpoint(req: SlateReq):
+    """Rank the best +EV edge per game across a whole slate (same engine)."""
+    out = []
+    for g in req.games:
+        r = ss.scan_game(g.model_dump())
+        out.append({
+            "name": r["name"], "xg_total": r["xg_total"], "vig_pct": r["devig"]["vig_pct"],
+            "edges": [{"market": m, "ev": round(ev, 4), "model_prob": round(p, 4)}
+                      for m, ev, p in r["edges"]],
+        })
+    plays = sorted(
+        ({"name": o["name"], **o["edges"][0]} for o in out),
+        key=lambda x: x["ev"], reverse=True)
+    return {"status": "OK", "value_gate": ss.VALUE_GATE,
+            "games": out, "plays": [p for p in plays if p["ev"] >= ss.VALUE_GATE]}
+
+
 @app.get("/health")
 def health():
     return {"status":"ok","models":list(BUNDLES.keys()),"ratings":list(ALL_RATINGS.keys())}
