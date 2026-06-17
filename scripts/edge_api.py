@@ -229,21 +229,29 @@ def predict(req: PredictReq):
             "model_note": "teams not in training data — only market-implied probs returned, no model opinion",
         }
 
-    # ── Tennis: logistic win-probability model (rank-difference based) ─────────
-    # The trained XGBoost tennis model is degenerate (it predicts rank_diff → rank_diff
-    # which is circular and produces MAE=0 on training but zero real signal).
-    # Use a calibrated logistic curve on rank difference instead.
+    # ── Tennis: points-based logistic win-probability model ────────────────────
+    # Ranking POINTS carry far more signal than the rank NUMBER (rank-diff was too
+    # flat — a 67-spot gap barely moved the line). Use a logistic on the log-points
+    # gap; fall back to rank only when a player has no points (off-tour / stale).
     if sport == "TENNIS":
-        h_rank = float(h_r.get("rank", 100))
-        a_rank = float(a_r.get("rank", 100))
-        # Positive rank_diff → home player has a better (lower) rank number
-        rank_diff = a_rank - h_rank
         import math
-        # k=0.010 calibrated to ATP data: rank gap of 100 → ~73% favorite win prob
-        hcp = 1.0 / (1.0 + math.exp(-rank_diff * 0.010))
+        h_pts = float(h_r.get("points") or 0)
+        a_pts = float(a_r.get("points") or 0)
+        if h_pts > 0 and a_pts > 0:
+            # SCALE 0.9 on log-points: ~2x points -> 65%, 5x -> 80%, 10x -> 86%.
+            log_diff = math.log(h_pts) - math.log(a_pts)
+            hcp = 1.0 / (1.0 + math.exp(-log_diff * 0.9))
+            extra = {"method": "LogisticPoints", "h_points": h_pts, "a_points": a_pts,
+                     "log_pts_diff": round(log_diff, 2)}
+        else:
+            h_rank = float(h_r.get("rank", 100))
+            a_rank = float(a_r.get("rank", 100))
+            rank_diff = a_rank - h_rank
+            hcp = 1.0 / (1.0 + math.exp(-rank_diff * 0.010))
+            extra = {"method": "LogisticRank_fallback", "rank_diff": round(rank_diff, 1),
+                     "note": "no points for one player — rank fallback"}
         acp = 1.0 - hcp
-        pred_margin = rank_diff * 0.1  # proxy for display
-        extra = {"method": "LogisticRank", "rank_diff": round(rank_diff, 1)}
+        pred_margin = (hcp - 0.5) * 10  # proxy for display/edge
         model_used = False
     else:
         # ── Run model only when it adds real signal (MAE < 95% of sigma) ──────
