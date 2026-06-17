@@ -617,6 +617,17 @@ def _d2a(d: float) -> float:
     return (d - 1) * 100 if d >= 2 else -100 / (d - 1)
 
 
+def _to_fair(obj):
+    """Turn every model probability in a board into its fair decimal price, so
+    the user can compare to the book and fire when the book is >= fair. Only
+    real probabilities get a number — nothing is invented."""
+    if isinstance(obj, dict):
+        return {k: _to_fair(v) for k, v in obj.items()}
+    if isinstance(obj, (int, float)) and 0 < obj <= 1:
+        return round(1.0 / obj, 2)
+    return obj
+
+
 class FullBoardReq(BaseModel):
     home_team: str = "Home"
     away_team: str = "Away"
@@ -651,9 +662,24 @@ def full_board(req: FullBoardReq):
                          "away_-1": P(lambda h, a: a - h > 1), "away_+1": P(lambda h, a: a - h > -1)},
         },
         "corners_proxy": sm.estimate_corners(lh, la),
+        "fair_odds": _to_fair({
+            "1x2": {"home": b.home_win, "draw": b.draw, "away": b.away_win},
+            "double_chance": {"1X": b.dc_home_draw, "X2": b.dc_away_draw, "12": b.dc_home_away},
+            "draw_no_bet": {"home": b.dnb_home, "away": b.dnb_away},
+            "btts": {"yes": b.btts_yes, "no": b.btts_no},
+            "totals": {str(ln): v for ln, v in b.over_under.items()},
+            "team_goals": {"home_1plus": P(lambda h, a: h >= 1), "home_2plus": P(lambda h, a: h >= 2),
+                           "away_1plus": P(lambda h, a: a >= 1), "away_2plus": P(lambda h, a: a >= 2)},
+            "handicap": {"home_-1": P(lambda h, a: h - a > 1), "home_+1": P(lambda h, a: h - a > -1),
+                         "away_-1": P(lambda h, a: a - h > 1), "away_+1": P(lambda h, a: a - h > -1)},
+        }),
+        "how_to_fire": ("book decimal >= fair_odds = +EV, fire it. within ~3% of "
+                        "fair = roughly fair, your call. corners are a PROXY fair "
+                        "(wide error). cards/props have NO fair number — never fire "
+                        "off an invented one."),
         "needs_data": {
-            "cards_bookings": "no per-team card-rate feed — Phase 2 (never invented)",
-            "player_props": "no per-90 player feed — Phase 2 (never invented)",
+            "cards_bookings": "no per-team card-rate feed — Phase 2 (no fair odds, never invented)",
+            "player_props": "no per-90 player feed — Phase 2 (no fair odds, never invented)",
         },
     }
 
