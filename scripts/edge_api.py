@@ -176,6 +176,7 @@ class PredictReq(BaseModel):
     away_odds: float = -110.0
     bankroll: float = 1000.0
     neutral: bool = False  # neutral venue (World Cup) — no home boost
+    surface: Optional[str] = None  # tennis: Hard | Clay | Grass (for surface affinity)
 
 def _formula_margin(sport: str, h_r: dict, a_r: dict) -> float:
     """Pure-formula margin prediction — used when model is missing or degenerate."""
@@ -239,19 +240,27 @@ def predict(req: PredictReq):
         a_pts = float(a_r.get("points") or 0)
         if h_pts > 0 and a_pts > 0:
             # SCALE 0.9 on log-points: ~2x points -> 65%, 5x -> 80%, 10x -> 86%.
-            log_diff = math.log(h_pts) - math.log(a_pts)
-            hcp = 1.0 / (1.0 + math.exp(-log_diff * 0.9))
-            extra = {"method": "LogisticPoints", "h_points": h_pts, "a_points": a_pts,
-                     "log_pts_diff": round(log_diff, 2)}
+            logit = (math.log(h_pts) - math.log(a_pts)) * 0.9
+            base = "LogisticPoints"
         else:
             h_rank = float(h_r.get("rank", 100))
             a_rank = float(a_r.get("rank", 100))
-            rank_diff = a_rank - h_rank
-            hcp = 1.0 / (1.0 + math.exp(-rank_diff * 0.010))
-            extra = {"method": "LogisticRank_fallback", "rank_diff": round(rank_diff, 1),
-                     "note": "no points for one player — rank fallback"}
+            logit = (a_rank - h_rank) * 0.010
+            base = "LogisticRank_fallback"
+        # ── Surface affinity (niche stat — fixes "blind to where it's played") ──
+        # surface_aff[surface] is a per-player logit nudge: how much better/worse
+        # the player is on THIS surface vs baseline (built by fetch_tennis_surface.py).
+        # Grass specialists (e.g. Maria) get a +Grass nudge so the model stops
+        # misreading them. No surface data -> nudge 0 (degrades to points-only).
+        surf = (req.surface or "Hard").title()
+        sb_h = float((h_r.get("surface_aff") or {}).get(surf, 0.0))
+        sb_a = float((a_r.get("surface_aff") or {}).get(surf, 0.0))
+        surf_adj = sb_h - sb_a
+        hcp = 1.0 / (1.0 + math.exp(-(logit + surf_adj)))
         acp = 1.0 - hcp
         pred_margin = (hcp - 0.5) * 10  # proxy for display/edge
+        extra = {"method": base + ("+Surface" if surf_adj else ""),
+                 "surface": surf, "surface_adj_logit": round(surf_adj, 3)}
         model_used = False
     else:
         # ── Run model only when it adds real signal (MAE < 95% of sigma) ──────
