@@ -3711,6 +3711,29 @@ app.post('/api/ledger/capture-clv', async (req: express.Request, res: express.Re
   }
 });
 
+// Full board — every priceable market + fair odds (fire if book >= fair).
+// Proxies the edge_api /full-board endpoint so the front-end Game Breakdown can
+// render all markets. No external API: pure model math off the supplied 1X2.
+app.post('/api/full-board', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 20, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  const { home_team, away_team, home_odds, draw_odds, away_odds } = req.body ?? {};
+  if (home_odds == null || draw_odds == null || away_odds == null) {
+    return res.status(400).json({ error: 'NEED_1X2_DECIMAL_ODDS' });
+  }
+  try {
+    const r = await fetch('http://127.0.0.1:8001/full-board', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ home_team, away_team, home_odds, draw_odds, away_odds }),
+      signal: AbortSignal.timeout(4000),
+    });
+    if (!r.ok) return res.status(502).json({ error: 'EDGE_API_ERROR', status: r.status });
+    res.json({ success: true, data: await r.json() });
+  } catch (e: unknown) {
+    res.status(503).json({ error: 'EDGE_API_UNAVAILABLE', message: e instanceof Error ? e.message : String(e) });
+  }
+});
+
 const distPath = path.resolve(process.cwd(), 'dist');
 app.use(express.static(distPath));
 app.get('/{*splat}', (_req, res) => {
