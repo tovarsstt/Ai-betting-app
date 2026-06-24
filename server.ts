@@ -1497,6 +1497,15 @@ const TENNIS_TOURNAMENT_CONTEXT: Record<string, string> = {
   'tennis_atp_halle':        'HALLE OPEN (GRASS) — TRANSITION WEEK | ⚡ MAXIMUM INEFFICIENCY: Mirror Queen\'s Club edge. Serve-dominant Germans/Europeans at home venue with crowd edge. Books still clay-lagged. Under total games, Under breaks, Big server ML.',
 };
 
+// Active tennis surface (Clay|Grass|Hard) from the priority tournament key.
+// Title-case so it matches the surface keys the edge_api model expects.
+function tennisActiveSurface(): 'Clay' | 'Grass' | 'Hard' {
+  const key = SPORT_KEYS.TENNIS?.[0] ?? '';
+  if (key.includes('french')) return 'Clay';
+  if (key.includes('wimbledon') || key.includes('queens') || key.includes('halle')) return 'Grass';
+  return 'Hard';
+}
+
 async function fetchTennisContext(matchup: string): Promise<string> {
   // Identify active tournament — first key in TENNIS list is the current priority
   const activeTournamentKey = SPORT_KEYS.TENNIS?.[0] ?? '';
@@ -1707,7 +1716,8 @@ async function fetchSharpSignals(sport: string): Promise<string> {
 // Heavy favorites = bad single value (juice destroys ROI). Good parlay legs.
 // Props / moderate lines = good both ways. Plus-money dogs = take standalone.
 function getBetStructure(oddsNum: number): string {
-  if (isNaN(oddsNum) || oddsNum === 0) return 'SINGLE + PARLAY';
+  // No odds = no bet (PASS / fake game). Never label a non-pick as a good bet.
+  if (isNaN(oddsNum) || oddsNum === 0) return 'PASS';
   if (oddsNum <= -220) return 'PARLAY ONLY';
   if (oddsNum <= -165) return 'PARLAY PREFERRED';
   if (oddsNum <  200)  return 'SINGLE + PARLAY';
@@ -2036,7 +2046,52 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
       // SOCCER is owned by the market board (/predict-soccer) — the XGBoost margin
       // model runs on club-based ratings that are unreliable for WC national teams
       // (Haiti rated above Brazil), so feeding its goal-margin here only misleads.
-      if (oddsGame && league !== 'SOCCER') {
+      if (oddsGame && league === 'TENNIS') {
+        // Tennis uses the logistic WIN-PROB model (points + surface + comparative
+        // profile: H2H / form / psych / clutch), NOT the XGBoost margin path. Pass
+        // the match surface so surface affinity AND surface-aware H2H engage.
+        const surface = tennisActiveSurface();
+        const tRes = await fetch('http://127.0.0.1:8001/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sport: 'TENNIS',
+            home_team: oddsGame.home, away_team: oddsGame.away,
+            spread: oddsGame.spread, home_odds: oddsGame.homeOdds, away_odds: oddsGame.awayOdds,
+            surface,
+          }),
+          signal: AbortSignal.timeout(4000),
+        });
+        if (tRes.ok) {
+          const t = await tRes.json() as {
+            home_cover_prob: number | null; away_cover_prob: number | null;
+            home_true_prob: number | null; bet_signal?: string;
+            method?: string; surface?: string; profile?: Record<string, number>;
+          };
+          if (t.bet_signal === 'NO_DATA' || t.home_cover_prob == null) {
+            quantCtx = `━━ TENNIS MODEL: no ranking data for one/both players — model offers NO opinion. Rely on market devig + surface heuristics only.`;
+          } else {
+            const winH = (t.home_cover_prob * 100).toFixed(1);
+            const winA = ((t.away_cover_prob ?? 1 - t.home_cover_prob) * 100).toFixed(1);
+            const mktH = t.home_true_prob != null ? (t.home_true_prob * 100).toFixed(1) : '?';
+            const edgeH = t.home_true_prob != null ? (t.home_cover_prob - t.home_true_prob) * 100 : null;
+            const p = t.profile ?? {};
+            const dim = (label: string, v?: number) =>
+              v == null ? '' : ` ${label} ${v > 0 ? '+' : ''}${v}`;
+            const profileLine = [
+              dim('H2H', p.h2h), dim('form', p.form_diff), dim('psych', p.psych_diff),
+              dim('clutch', p.clutch_diff), dim('streak', p.streak_diff),
+            ].filter(Boolean).join(' |') || ' (no profile data for this pair)';
+            quantCtx =
+              `━━ TENNIS WIN-PROB MODEL (${t.method ?? 'logistic'} on ${t.surface ?? surface}):\n` +
+              `Model: ${oddsGame.home} ${winH}% vs ${oddsGame.away} ${winA}% | Market devig: ${oddsGame.home} ${mktH}%` +
+              (edgeH != null ? ` | Edge ${edgeH > 0 ? '+' : ''}${edgeH.toFixed(1)}pp ${oddsGame.home}` : '') + `\n` +
+              `Comparative profile (home − away, surface-aware):${profileLine}\n` +
+              `Signal: ${t.bet_signal ?? 'NO_EDGE'}. Tennis is noisy — trust the bet_signal over raw EV%.\n` +
+              `⚠️ OVERRIDE: confirmed day-of data (injury, withdrawal, conditions) beats this historical model. If a player is hurt or just withdrew, ignore the model edge.`;
+          }
+        }
+      } else if (oddsGame && league !== 'SOCCER') {
         const qRes = await fetch('http://127.0.0.1:8001/predict', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

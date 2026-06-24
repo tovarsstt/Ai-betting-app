@@ -1,5 +1,42 @@
-# TENNIS — NICHE HEURISTICS v3.0
+# TENNIS — NICHE HEURISTICS v3.1
 # 🎾 PIPELINE: Roland Garros (CLAY) → Wimbledon (GRASS) late June → US Open (HARD) Aug
+
+---
+
+## MODEL OUTPUT — COMPARATIVE PROFILE (now real, not estimated)
+The win-prob model returns a `profile` block (home − away, surface-aware) built from
+REAL results. Cite these — they are data, not guesses:
+- **H2H** — recency-weighted, SAME-SURFACE when available (clay H2H ≠ grass H2H).
+- **form** — recency-weighted recent win-rate edge.
+- **psych** — win-rate after dropping the first set (fighter vs folder).
+- **clutch** — deciding-set + tiebreak-set win-rate (NO break-point %/aces yet — not in our data).
+- **streak** — current W/L run.
+
+The model blends points + surface + this profile, **capped** so profile refines but never
+flips a clear points favorite (winning-priority rule). Read the model's win% first.
+
+### ⚠️ DAY-OF OVERRIDE (non-negotiable)
+Confirmed day-of data — injury, withdrawal, illness, weather/conditions, late lineup —
+ALWAYS beats this historical model when they conflict. Player hurt or just withdrew →
+ignore the model edge. Never bet a player whose fitness is in question pre-warmup.
+
+### ⚠️ SCHEDULE / TANK RISK (non-negotiable)
+A player entered in a SMALLER event who is CONFIRMED in the main draw of a BIG event
+(Slam / Masters / WTA 1000) starting **less than 5 days later** is more likely to
+underperform or lose — they manage load and avoid injury risk on the small stage.
+- FADE that player (especially their short-priced ML); favor the fully-committed opponent.
+- Strongest signal: a seed in a 250 / WTA 250 / challenger the week before a Slam.
+- This is a SCHEDULE read — requires the real upcoming draw. Confirm the big-event entry
+  before applying. No confirmed entry → do not assume.
+
+### 🔎 PROFILE ON DEMAND (never hallucinate)
+Every match analysis needs a comparative profile for BOTH players. If one player has a
+model profile and the other does NOT (qualifier / challenger not in our data):
+1. Look up the missing player's **REAL** recent results (ESPN, official tour, results
+   sites) — surface record, recent form, any H2H, deciding-set/tiebreak record.
+2. Build their profile from ACTUAL matches only. Cite where the numbers came from.
+3. NEVER invent or estimate stats. If real data cannot be found, state plainly
+   "no profile data — not estimating" and lean on market devig + surface only.
 
 ---
 

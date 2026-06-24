@@ -28,6 +28,7 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], all
 
 BUNDLES: dict = {}
 ALL_RATINGS: dict = {}
+TENNIS_FORM: dict = {}   # H2H / form / psych / clutch — built by fetch_tennis_form.py
 SIGMA = {"NBA": 11.5, "WNBA": 9.5, "NFL": 13.5, "MLB": 3.0, "TENNIS": 30.0, "SOCCER": 2.0, "Tennis": 30.0, "Soccer": 2.0}
 
 @app.on_event("startup")
@@ -52,7 +53,11 @@ def load_all():
     if (BASE / "mlb_ratings.json").exists():
         with open(BASE / "mlb_ratings.json") as f:
             ALL_RATINGS["MLB"] = json.load(f)
-    print(f"[EdgeAPI] {len(BUNDLES)} models: {list(BUNDLES.keys())}")
+    if (BASE / "tennis_form.json").exists():
+        with open(BASE / "tennis_form.json") as f:
+            TENNIS_FORM.update(json.load(f))
+    nfp = len((TENNIS_FORM.get("players") or {}))
+    print(f"[EdgeAPI] {len(BUNDLES)} models: {list(BUNDLES.keys())} | tennis form: {nfp} players")
 
 # ── Team resolution ───────────────────────────────────────────────────────────
 NBA_IDS = {
@@ -200,6 +205,68 @@ def _model_is_usable(bundle: dict, sigma: float) -> bool:
     # Must beat sigma by at least 5% to be considered useful
     return mae < sigma * 0.95
 
+# ── Tennis comparative-profile nudges (H2H / form / psych / clutch) ───────────
+# Built by fetch_tennis_form.py from real results. Each signal is centered, so we
+# difference home-away and add ONE small, capped logit nudge. The cap means these
+# REFINE the points+surface line — they cannot flip a clear favorite (the
+# winning-priority rule: don't let noisy form overrule a strong points edge).
+TENNIS_AUX_CAP = 0.8
+W_H2H, W_FORM, W_PSYCH, W_CLUTCH, W_STREAK = 0.7, 0.6, 0.4, 0.4, 0.02
+
+def _tennis_key(name: str) -> Optional[str]:
+    """(last surname, first initial) key — mirrors fetch_tennis_form.name_key."""
+    toks = str(name).replace(".", "").split()
+    if len(toks) < 2:
+        return None
+    if len(toks[-1]) == 1:
+        return f"{toks[-2].lower()}|{toks[-1][0].lower()}"
+    return f"{toks[-1].lower()}|{toks[0][0].lower()}"
+
+def _tennis_aux_logit(home: str, away: str, surf: str):
+    """H2H + form + psych + clutch folded into one capped, home-positive logit nudge."""
+    players = TENNIS_FORM.get("players") or {}
+    h2h = TENNIS_FORM.get("h2h") or {}
+    hk, ak = _tennis_key(home), _tennis_key(away)
+    if not hk or not ak:
+        return 0.0, {}
+    h, a = players.get(hk) or {}, players.get(ak) or {}
+    detail: dict = {}
+    nudge = 0.0
+
+    # H2H — surface-specific share if we have it, else overall. Already home-relative.
+    pair = (h2h.get(hk) or {}).get(ak)
+    if pair:
+        share = pair.get(surf, pair.get("all"))
+        if share is not None:
+            nudge += W_H2H * float(share)
+            detail["h2h"] = round(float(share), 3)
+
+    # Differential dims — applied only when BOTH players carry the field.
+    def diff(field: str) -> Optional[float]:
+        if field in h and field in a:
+            return float(h[field]) - float(a[field])
+        return None
+
+    d = diff("form")
+    if d is not None:
+        nudge += W_FORM * d; detail["form_diff"] = round(d, 3)
+    d = diff("comeback")
+    if d is not None:
+        nudge += W_PSYCH * d; detail["psych_diff"] = round(d, 3)
+    clutch = [x for x in (diff("decider"), diff("tb")) if x is not None]
+    if clutch:
+        cd = sum(clutch) / len(clutch)
+        nudge += W_CLUTCH * cd; detail["clutch_diff"] = round(cd, 3)
+    if "streak" in h and "streak" in a:
+        sd = int(h["streak"]) - int(a["streak"])
+        nudge += W_STREAK * sd; detail["streak_diff"] = sd
+
+    if not detail:                      # both known but no profile signal → neutral
+        return 0.0, {}
+    nudge = max(-TENNIS_AUX_CAP, min(TENNIS_AUX_CAP, nudge))
+    detail["aux_logit"] = round(nudge, 3)
+    return nudge, detail
+
 @app.post("/predict")
 def predict(req: PredictReq):
     sport = req.sport.upper()
@@ -256,11 +323,17 @@ def predict(req: PredictReq):
         sb_h = float((h_r.get("surface_aff") or {}).get(surf, 0.0))
         sb_a = float((a_r.get("surface_aff") or {}).get(surf, 0.0))
         surf_adj = sb_h - sb_a
-        hcp = 1.0 / (1.0 + math.exp(-(logit + surf_adj)))
+        # ── Comparative profile: H2H + recent form + psych + partial clutch ──────
+        aux, aux_detail = _tennis_aux_logit(req.home_team, req.away_team, surf)
+        hcp = 1.0 / (1.0 + math.exp(-(logit + surf_adj + aux)))
         acp = 1.0 - hcp
         pred_margin = (hcp - 0.5) * 10  # proxy for display/edge
-        extra = {"method": base + ("+Surface" if surf_adj else ""),
-                 "surface": surf, "surface_adj_logit": round(surf_adj, 3)}
+        method = base + ("+Surface" if surf_adj else "") + ("+Profile" if aux else "")
+        extra = {"method": method, "surface": surf,
+                 "surface_adj_logit": round(surf_adj, 3),
+                 "profile_adj_logit": round(aux, 3)}
+        if aux_detail:
+            extra["profile"] = aux_detail
         model_used = False
     else:
         # ── Run model only when it adds real signal (MAE < 95% of sigma) ──────
