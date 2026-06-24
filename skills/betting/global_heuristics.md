@@ -20,3 +20,7 @@
     - A chaos pick is only a PICK when it clears the value gate (Rule 1); otherwise it is a NOTE.
     - **DATA CONTRACT**: every probability cites a real input or the devigged price. Narrative (news/motivation) may nudge ±5% max and MUST name its source. Missing data → "unavailable", widen uncertainty, never fill with a guess.
     - **TIERED OUTPUT**: render the card in three sections sized by `scripts/staking.py` (70% Normal / 20% Mild / 10% Wild of bankroll). Each pick: market + price + one-line evidence + stake (units & $). Empty tier prints "PASS — no value today." `slate_weather` (CAGEY/OPEN/NORMAL) is a soft totals modifier only — NOT chaos.
+11. **PARLAY DISCIPLINE — DATA-BACKED (from the user's settled results, OBEY)**: real ROI by ticket shape — **2–3 legs +83%**, 4–6 legs +25%, **7+ legs −100% (0 wins)**; by leg price — **decimal 1.50–5.0 wins** (value/longshot), **<1.50 heavy chalk −33%**, **5.0+ lottery −18%**.
+    - **Default ticket = 2–3 legs. HARD CAP at 4. NEVER build 5+.** Fewer correlated +EV legs beat long stacks every time.
+    - **Every leg priced decimal 1.50–5.0 (≈ American −200 to +400).** Drop any leg < 1.50 (chalk, no value — see rule 1) or > 5.0 (lottery). A heavy-chalk leg you "need" → take its handicap/total to push the price into band, or cut it.
+    - Combined ticket target ~ 2.5–8.0 decimal. This is the bankroll-growth lane the user actually profits in — keep it there; longshot stacks and chalk are where the money leaks.

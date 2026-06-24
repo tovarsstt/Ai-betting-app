@@ -30,6 +30,7 @@ BUNDLES: dict = {}
 ALL_RATINGS: dict = {}
 TENNIS_FORM: dict = {}   # H2H / form / psych / clutch — built by fetch_tennis_form.py
 SOCCER_FORM: dict = {}   # national-team form / goals / H2H — built by fetch_soccer_form.py
+WNBA_FORM: dict = {}     # form / rest / B2B / H2H — built by fetch_wnba_form.py
 SIGMA = {"NBA": 11.5, "WNBA": 9.5, "NFL": 13.5, "MLB": 3.0, "TENNIS": 30.0, "SOCCER": 2.0, "Tennis": 30.0, "Soccer": 2.0}
 
 @app.on_event("startup")
@@ -60,10 +61,14 @@ def load_all():
     if (BASE / "soccer_form.json").exists():
         with open(BASE / "soccer_form.json") as f:
             SOCCER_FORM.update(json.load(f))
+    if (BASE / "wnba_form.json").exists():
+        with open(BASE / "wnba_form.json") as f:
+            WNBA_FORM.update(json.load(f))
     nfp = len((TENNIS_FORM.get("players") or {}))
     nsf = len((SOCCER_FORM.get("teams") or {}))
+    nwf = len((WNBA_FORM.get("teams") or {}))
     print(f"[EdgeAPI] {len(BUNDLES)} models: {list(BUNDLES.keys())} | "
-          f"tennis form: {nfp} players | soccer form: {nsf} teams")
+          f"tennis {nfp} | soccer {nsf} | wnba {nwf}")
 
 # ── Team resolution ───────────────────────────────────────────────────────────
 NBA_IDS = {
@@ -314,6 +319,34 @@ def _soccer_profile(home: str, away: str):
             out["h2h"] = rec
     return out or None
 
+# ── WNBA comparative profile (form / rest / B2B / H2H — real game results) ──────
+def _wnba_team_key(name: str, teams: dict) -> Optional[str]:
+    if name in teams:
+        return name
+    nl = name.strip().lower()
+    for t in teams:
+        if t.lower() == nl:
+            return t
+    for t in teams:                       # match on nickname (last word), e.g. "Aces"
+        if nl in t.lower() or t.lower().split()[-1] == nl.split()[-1]:
+            return t
+    return None
+
+def _wnba_profile(home: str, away: str):
+    teams = WNBA_FORM.get("teams") or {}
+    h2h = WNBA_FORM.get("h2h") or {}
+    hk, ak = _wnba_team_key(home, teams), _wnba_team_key(away, teams)
+    out: dict = {}
+    if hk:
+        out["home"] = {"team": hk, **teams[hk]}
+    if ak:
+        out["away"] = {"team": ak, **teams[ak]}
+    if hk and ak:
+        rec = (h2h.get(hk) or {}).get(ak)
+        if rec:
+            out["h2h"] = rec
+    return out or None
+
 @app.post("/predict")
 def predict(req: PredictReq):
     sport = req.sport.upper()
@@ -447,6 +480,7 @@ def predict(req: PredictReq):
         "model_mae": round(bundle["avg_mae"] if (bundle and model_used) else sigma, 2),
         "trained_on": bundle["trained_on"] if bundle else 0,
         "model_loaded": model_used,
+        "profile": _wnba_profile(req.home_team, req.away_team) if sport == "WNBA" else None,
         **extra,
     }
 

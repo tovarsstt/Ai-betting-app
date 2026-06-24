@@ -1505,6 +1505,14 @@ interface SoccerTeamForm {
   streak: string; last5: string;
 }
 
+// WNBA form profile returned by /predict (built from real ESPN game results
+// by fetch_wnba_form.py). Used only as analysis context.
+interface WnbaTeamForm {
+  team: string; gp: number; win_rate: number; last10: string; avg_margin: number;
+  recent_margin: number; streak: string; rest_days: number | null; b2b: boolean;
+  home: string; road: string;
+}
+
 // Active tennis surface (Clay|Grass|Hard) from the priority tournament key.
 // Title-case so it matches the surface keys the edge_api model expects.
 function tennisActiveSurface(): 'Clay' | 'Grass' | 'Hard' {
@@ -2116,10 +2124,21 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
             predicted_margin: number | null; model_edge: number | null; model_mae: number | null;
             trained_on: number; bet_signal?: string;
             home_ratings?: { net_rtg?: number }; away_ratings?: { net_rtg?: number };
+            profile?: { home?: WnbaTeamForm; away?: WnbaTeamForm;
+              h2h?: { n: number; w: number; l: number; margin: number; last: string } } | null;
           };
+          // Real WNBA form/rest/H2H block (built from ESPN results). B2B fatigue
+          // is the biggest WNBA edge — surface it loudly.
+          const wp = q.profile;
+          const wForm = (t?: WnbaTeamForm): string | null =>
+            t ? `${t.team}: ${t.win_rate ? (t.win_rate*100).toFixed(0) : '?'}% (L10 ${t.last10}), margin ${t.avg_margin >= 0 ? '+' : ''}${t.avg_margin}, ${t.streak}, ${t.b2b ? '⚠️ ON B2B (tired legs)' : `${t.rest_days ?? '?'}d rest`}, home ${t.home}/road ${t.road}` : null;
+          const wnbaBlock = wp ? '\n━━ WNBA FORM & REST (real ESPN results): ' + [
+            wForm(wp.home), wForm(wp.away),
+            wp.h2h ? `H2H ${wp.h2h.w}-${wp.h2h.l} (avg margin ${wp.h2h.margin >= 0 ? '+' : ''}${wp.h2h.margin}, last ${wp.h2h.last})` : null,
+          ].filter(Boolean).join(' | ') : '';
           if (q.bet_signal === 'NO_DATA' || q.model_edge == null || q.model_mae == null) {
             // Model honestly refuses on unknown teams (e.g. WC national squads)
-            quantCtx = `━━ QUANT MODEL: no training data for these teams — model offers NO opinion. Rely on market devig + heuristics only.`;
+            quantCtx = `━━ QUANT MODEL: no training data for these teams — model offers NO opinion. Rely on market devig + heuristics only.${wnbaBlock}`;
           } else {
             const GAME_SIGMA: Record<string, number> = { NBA: 11.5, WNBA: 9.5, NFL: 13.5, MLB: 3.0, TENNIS: 30.0, SOCCER: 2.0 };
             const sigma = GAME_SIGMA[league] ?? 11.5;
@@ -2130,7 +2149,7 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
               `━━ QUANT MODEL (XGBoost margin predictor — trained on ${q.trained_on} games, MAE ${q.model_mae} pts, ratings frozen at last training):\n` +
               `Predicted margin: ${oddsGame.home} by ${q.predicted_margin} | Market spread: ${oddsGame.spread}\n` +
               `Cover prob WITH model error included: ${(coverProb * 100).toFixed(1)}% ${oddsGame.home} | NetRtg: ${q.home_ratings?.net_rtg ?? '?'} vs ${q.away_ratings?.net_rtg ?? '?'}\n` +
-              `⚠️ Model edge ${q.model_edge} pts vs market. If >7 pts, treat as STALE-DATA WARNING — the market knows something the training data doesn't. Weigh market over model on big disagreements.`;
+              `⚠️ Model edge ${q.model_edge} pts vs market. If >7 pts, treat as STALE-DATA WARNING — the market knows something the training data doesn't. Weigh market over model on big disagreements.${wnbaBlock}`;
           }
         }
       }
@@ -2615,12 +2634,14 @@ ${gameContext}
 
 Apply all heuristics above to every leg. Use the INJURY REPORT — if a key player is OUT or DOUBTFUL, apply Next Man Up logic (backup's props are often highest EV). Use the SHARP SIGNALS — follow the Pinnacle-vs-DK gap where sharp money is detected. Run the SHARP CHECK. Flag [HIGH-RISK] legs. Apply the JUICE FILTER (reject if cumulative vig >15%). For SGP: run CORRELATION STRESS TEST on every leg pair.
 
+📊 PARLAY DISCIPLINE (data-backed — see heuristic rule 11, OBEY): the user's settled results prove 2–3-leg tickets win (+83% ROI) and 4+ leg stacks bleed (7+ = total loss). Build 2–3 legs, HARD CAP 4, NEVER 5+. Every leg priced decimal 1.50–5.0 (American −200 to +400) — drop heavy chalk (<1.50) and lottery (5.0+) legs.
+
 CRITICAL RULES FOR EACH PARLAY TYPE:
-- best_pick: Best single bet from ANY sport available tonight
-- sgp (Same-Game Parlay): ALL legs MUST be from ONE single game in ${sgpSport}. Apply ${sgpBetCtx}
-- multi_parlay: Legs from DIFFERENT games — can mix NBA, MLB, NFL, SOCCER. Pick 3-4 best cross-sport legs tonight
-- ev_parlay: ONLY legs with >4% EV individually. Can be from ANY sport. Mix sports for max edge
-- correlation_parlay: Legs that POSITIVELY correlate — team score high + player Over props, or same-game correlated outcomes. Use ${sgpSport} for strongest correlation
+- best_pick: Best single bet from ANY sport available tonight (leg priced 1.50–5.0)
+- sgp (Same-Game Parlay): 2–3 legs, ALL from ONE single game in ${sgpSport}. Apply ${sgpBetCtx}
+- multi_parlay: 2–3 best cross-sport legs from DIFFERENT games (mix NBA, WNBA, MLB, NFL, SOCCER). Quality over quantity — 2 strong legs beat 4 weak ones
+- ev_parlay: 2–3 legs, ONLY legs with >4% EV individually, each priced 1.50–5.0. Any sport
+- correlation_parlay: 2–3 legs that POSITIVELY correlate — team score high + player Over props, or same-game correlated outcomes. Use ${sgpSport} for strongest correlation
 
 ⛔ DO NOT output ev, win_prob, or any invented percentage. Math engine computes those server-side.
 ⛔ All picks must be from the LIVE ODDS blocks above. Never invent lines.
