@@ -1,0 +1,111 @@
+#!/usr/bin/env python3
+"""
+analyze_slips.py — turn a pasted Stake bet history into P/L, ROI, and the
+breakdowns that actually improve pick quality.
+
+Why: the user's results are the ground truth the models get calibrated against.
+This reads data/slips_raw.txt (raw Stake slip text), extracts every settled
+ticket's (odds, stake, payout), and reports:
+  - bankroll P/L + ROI (raw AND deduped — pasted history often double-counts)
+  - win rate, and a profit/loss split by leg-count (parlay size) and odds band
+
+Outcome is INFERRED from payout, not the status label (leg labels say "Ganador"
+too, so the label is unreliable): payout 0 = lost; payout >= stake = won;
+0 < payout < stake = cashout/partial (net loss, some recovered).
+
+Stake/Pago use dot decimals (10.00000000); Cuotas uses comma (2,77).
+Re-run after pasting fresh history. Never fabricates a number.
+"""
+import re
+from collections import defaultdict
+from pathlib import Path
+
+RAW = Path(__file__).parent.parent / "data" / "slips_raw.txt"
+
+# Each ticket ends: Cuotas <c> Apuesta <stake> [Multi Boost +N% <x>] Pago <payout>
+TICKET = re.compile(
+    r"Cuotas\s+([\d.,]+)\s+Apuesta\s+([\d.]+).*?Pago\s+([\d.]+)", re.S)
+# Leg count: "<n> Multi tramo" or "Multi apuesta del mismo partido (<n>"; else 1 (single).
+LEGS = re.compile(r"(\d+)\s+Multi tramo|Multi apuesta del mismo partido\s*\((\d+)")
+
+
+def odds_band(dec: float) -> str:
+    if dec < 1.5:
+        return "heavy chalk (<1.50)"
+    if dec < 2.5:
+        return "value band (1.50-2.50)"
+    if dec < 5.0:
+        return "longshot (2.50-5.0)"
+    return "lottery (5.0+)"
+
+
+def parse() -> list:
+    text = RAW.read_text()
+    out = []
+    prev_end = 0
+    for m in TICKET.finditer(text):
+        dec = float(m.group(1).replace(".", "").replace(",", "."))
+        stake, payout = float(m.group(2)), float(m.group(3))
+        # leg count from THIS ticket's own block only (since the previous ticket end),
+        # so singles aren't tagged with a neighbouring parlay's leg count.
+        head = text[prev_end:m.start()]
+        legs_found = LEGS.findall(head)
+        legs = int(next((a or b for a, b in reversed(legs_found)), 1)) if legs_found else 1
+        out.append({"dec": dec, "stake": stake, "payout": payout, "legs": legs})
+        prev_end = m.end()
+    return out
+
+
+def summarize(items: list, label: str) -> None:
+    staked = sum(i["stake"] for i in items)
+    returned = sum(i["payout"] for i in items)
+    net = returned - staked
+    roi = net / staked * 100 if staked else 0.0
+    won = [i for i in items if i["payout"] >= i["stake"] and i["payout"] > 0]
+    cashout = [i for i in items if 0 < i["payout"] < i["stake"]]
+    lost = [i for i in items if i["payout"] == 0]
+    print(f"\n== {label}: {len(items)} tickets ==")
+    print(f"  staked   ${staked:,.2f}")
+    print(f"  returned ${returned:,.2f}")
+    print(f"  net      ${net:+,.2f}   ROI {roi:+.1f}%")
+    print(f"  won {len(won)} | cashout/partial {len(cashout)} | lost {len(lost)}"
+          f"  (hit rate {len(won)/len(items)*100:.0f}%)")
+
+
+def breakdown(items: list, key, title: str) -> None:
+    buckets = defaultdict(lambda: {"n": 0, "stake": 0.0, "ret": 0.0, "won": 0})
+    for i in items:
+        b = buckets[key(i)]
+        b["n"] += 1; b["stake"] += i["stake"]; b["ret"] += i["payout"]
+        b["won"] += 1 if i["payout"] >= i["stake"] and i["payout"] > 0 else 0
+    print(f"\n-- {title} --")
+    for k in sorted(buckets):
+        b = buckets[k]
+        net = b["ret"] - b["stake"]
+        roi = net / b["stake"] * 100 if b["stake"] else 0
+        print(f"  {str(k):22} n={b['n']:3} | staked ${b['stake']:7.2f} | "
+              f"net ${net:+8.2f} | ROI {roi:+6.1f}% | won {b['won']}/{b['n']}")
+
+
+def main() -> None:
+    rows = parse()
+    if not rows:
+        raise SystemExit("no tickets parsed — is data/slips_raw.txt populated?")
+    # Dedup: a (odds, stake, payout) tuple repeated = same ticket pasted twice.
+    seen = set(); uniq = []
+    for r in rows:
+        kkey = (r["dec"], r["stake"], r["payout"])
+        if kkey in seen:
+            continue
+        seen.add(kkey); uniq.append(r)
+    summarize(rows, "RAW (paste as-is — may double-count duplicated sections)")
+    summarize(uniq, "DEDUPED (unique odds+stake+payout — best estimate)")
+    breakdown(uniq, lambda i: ("single" if i["legs"] == 1 else
+                               "2-3 legs" if i["legs"] <= 3 else
+                               "4-6 legs" if i["legs"] <= 6 else "7+ legs"),
+              "By parlay size (deduped)")
+    breakdown(uniq, lambda i: odds_band(i["dec"]), "By odds band (deduped)")
+
+
+if __name__ == "__main__":
+    main()
