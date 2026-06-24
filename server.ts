@@ -1497,6 +1497,14 @@ const TENNIS_TOURNAMENT_CONTEXT: Record<string, string> = {
   'tennis_atp_halle':        'HALLE OPEN (GRASS) — TRANSITION WEEK | ⚡ MAXIMUM INEFFICIENCY: Mirror Queen\'s Club edge. Serve-dominant Germans/Europeans at home venue with crowd edge. Books still clay-lagged. Under total games, Under breaks, Big server ML.',
 };
 
+// National-team form profile returned by /predict-soccer (built from real
+// internationals by fetch_soccer_form.py). Used only as analysis context.
+interface SoccerTeamForm {
+  team: string; form_ppg: number; win_rate: number; gf: number; ga: number;
+  over25: number; btts: number; clean_sheet: number; failed_to_score: number;
+  streak: string; last5: string;
+}
+
 // Active tennis surface (Clay|Grass|Hard) from the priority tournament key.
 // Title-case so it matches the surface keys the edge_api model expects.
 function tennisActiveSurface(): 'Clay' | 'Grass' | 'Hard' {
@@ -2161,6 +2169,10 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
             market_recommendation?: { primary_pick?: { market: string; side: string; model_prob: number };
               win_draw_lose?: { win: number; draw: number; lose: number };
               double_chance?: { fav_or_draw: number }; draw_no_bet?: { fav: number }; favorite?: string };
+            profile?: {
+              home?: SoccerTeamForm; away?: SoccerTeamForm;
+              h2h?: { n: number; w: number; d: number; l: number; gf: number; ga: number; last: string };
+            };
           };
           const mr = s.market_recommendation;
           if (mr?.primary_pick && mr.win_draw_lose) {
@@ -2182,13 +2194,24 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
             const chaosLine = (ch && ch.grade !== 'NONE')
               ? `\n🌀 CHAOS ${ch.grade} — back ${ch.side} [${ch.market}], draw_score ${ch.draw_score}${ch.value_ok === true ? ' (clears value)' : ch.value_ok === false ? ' (fails value gate)' : ''}. ${(ch.evidence || []).slice(-2).join(' ')}`
               : '';
+            // Real form + H2H (recency × competitiveness weighted internationals).
+            const pf = s.profile;
+            const teamForm = (t?: SoccerTeamForm): string | null =>
+              t ? `${t.team}: ${t.form_ppg}ppg, GF ${t.gf}/GA ${t.ga}, O2.5 ${(t.over25*100).toFixed(0)}%, BTTS ${(t.btts*100).toFixed(0)}%, CS ${(t.clean_sheet*100).toFixed(0)}%, ${t.streak} [${t.last5}]` : null;
+            const profLines = pf ? [
+              teamForm(pf.home), teamForm(pf.away),
+              pf.h2h ? `H2H ${pf.home?.team ?? 'home'} ${pf.h2h.w}-${pf.h2h.d}-${pf.h2h.l} (avg ${pf.h2h.gf}-${pf.h2h.ga}, last ${pf.h2h.last})` : null,
+            ].filter(Boolean) : [];
+            const profileBlock = profLines.length
+              ? `\n━━ FORM & H2H (real internationals): ${profLines.join(' | ')}\n⚠️ Confirmed day-of data (injuries, lineups, rest days, weather) overrides this historical form. Group-stage rest gap (a team with fewer days since last match) = fatigue edge — check the real schedule.`
+              : '';
             marketsCtx =
               `━━ SOCCER MARKET BOARD (devigged 3-way + market-calibrated Poisson — sharp, draw priced):\n` +
               `Fav ${mr.favorite}: win ${(w.win*100).toFixed(0)}% / draw ${(w.draw*100).toFixed(0)}% / lose ${(w.lose*100).toFixed(0)}%\n` +
               `Double Chance (gana o empata) ${((mr.double_chance?.fav_or_draw ?? 0)*100).toFixed(0)}% | Draw No Bet (apuesta sin empate) ${((mr.draw_no_bet?.fav ?? 0)*100).toFixed(0)}%\n` +
               `Totals/BTTS (market-calibrated${xg != null ? `, xGoals ${xg.toFixed(2)}` : ''}): ${ouSide} | ${bttsSide}\n` +
               `>>> DRAW-INSURED PICK: ${mr.primary_pick.side} [${mr.primary_pick.market}] @ ${(mr.primary_pick.model_prob*100).toFixed(0)}%` +
-              upsetLine + chaosLine + `\n` +
+              upsetLine + chaosLine + profileBlock + `\n` +
               `Rule: straight Win only when the price isn't heavy chalk (≳ -250) AND beats its devig; if "better but not dominant", insure the draw with DC/DNB when DC pays ~1.40-2.50; if the fav is HEAVY chalk (e.g. -511) the ML/DC have NO value — take the handicap (-1.5/-2.5), team total or correct score, else PASS. Build correlated SGP from calibrated legs (e.g. fav handicap + Over + BTTS that agree).`;
           }
         }

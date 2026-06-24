@@ -29,6 +29,7 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], all
 BUNDLES: dict = {}
 ALL_RATINGS: dict = {}
 TENNIS_FORM: dict = {}   # H2H / form / psych / clutch — built by fetch_tennis_form.py
+SOCCER_FORM: dict = {}   # national-team form / goals / H2H — built by fetch_soccer_form.py
 SIGMA = {"NBA": 11.5, "WNBA": 9.5, "NFL": 13.5, "MLB": 3.0, "TENNIS": 30.0, "SOCCER": 2.0, "Tennis": 30.0, "Soccer": 2.0}
 
 @app.on_event("startup")
@@ -56,8 +57,13 @@ def load_all():
     if (BASE / "tennis_form.json").exists():
         with open(BASE / "tennis_form.json") as f:
             TENNIS_FORM.update(json.load(f))
+    if (BASE / "soccer_form.json").exists():
+        with open(BASE / "soccer_form.json") as f:
+            SOCCER_FORM.update(json.load(f))
     nfp = len((TENNIS_FORM.get("players") or {}))
-    print(f"[EdgeAPI] {len(BUNDLES)} models: {list(BUNDLES.keys())} | tennis form: {nfp} players")
+    nsf = len((SOCCER_FORM.get("teams") or {}))
+    print(f"[EdgeAPI] {len(BUNDLES)} models: {list(BUNDLES.keys())} | "
+          f"tennis form: {nfp} players | soccer form: {nsf} teams")
 
 # ── Team resolution ───────────────────────────────────────────────────────────
 NBA_IDS = {
@@ -267,6 +273,47 @@ def _tennis_aux_logit(home: str, away: str, surf: str):
     detail["aux_logit"] = round(nudge, 3)
     return nudge, detail
 
+# ── Soccer / WC national-team comparative profile (real results, no math change) ─
+# The Poisson markets stay market-calibrated; this only ATTACHES the sharp read
+# (form, goals trend, H2H) so the analysis layer can use real numbers, not vibes.
+SOCCER_ALIASES = {
+    "usa": "United States", "united states of america": "United States",
+    "korea republic": "South Korea", "korea dpr": "North Korea",
+    "cote d'ivoire": "Ivory Coast", "côte d'ivoire": "Ivory Coast",
+    "dr congo": "DR Congo", "congo dr": "DR Congo", "czechia": "Czech Republic",
+    "türkiye": "Turkey", "turkiye": "Turkey", "china pr": "China",
+}
+
+def _soccer_team_key(name: str, teams: dict) -> Optional[str]:
+    if name in teams:
+        return name
+    nl = name.strip().lower()
+    al = SOCCER_ALIASES.get(nl)
+    if al and al in teams:
+        return al
+    for t in teams:
+        if t.lower() == nl:
+            return t
+    for t in teams:                       # last resort: substring either direction
+        if len(nl) >= 4 and (nl in t.lower() or t.lower() in nl):
+            return t
+    return None
+
+def _soccer_profile(home: str, away: str):
+    teams = SOCCER_FORM.get("teams") or {}
+    h2h = SOCCER_FORM.get("h2h") or {}
+    hk, ak = _soccer_team_key(home, teams), _soccer_team_key(away, teams)
+    out: dict = {}
+    if hk:
+        out["home"] = {"team": hk, **teams[hk]}
+    if ak:
+        out["away"] = {"team": ak, **teams[ak]}
+    if hk and ak:
+        rec = (h2h.get(hk) or {}).get(ak)
+        if rec:
+            out["h2h"] = rec
+    return out or None
+
 @app.post("/predict")
 def predict(req: PredictReq):
     sport = req.sport.upper()
@@ -434,9 +481,15 @@ def predict_soccer(req: SoccerMarketReq):
     """
     h_r = get_ratings("Soccer", req.home_team)
     a_r = get_ratings("Soccer", req.away_team)
-    if not h_r or not a_r:
+    have_odds = None not in (req.home_odds, req.draw_odds, req.away_odds)
+    # Ratings are ONLY needed for the no-odds fallback. With full 1X2 odds we
+    # market-calibrate the lambdas (the sharp price beats our club-based national
+    # ratings), so a name mismatch must NOT kill the board — common for WC nations
+    # (e.g. odds feed "USA" vs ratings' "United States"). Refuse only when we have
+    # neither odds nor ratings to work from.
+    if not have_odds and (not h_r or not a_r):
         return {"status": "NO_DATA",
-                "note": "team(s) not in soccer ratings — no model opinion",
+                "note": "no odds and team(s) not in soccer ratings — no model opinion",
                 "home_ratings": h_r, "away_ratings": a_r}
 
     # Goal rates: prefer MARKET-CALIBRATED lambdas (fit to the devigged 1X2) when
@@ -444,7 +497,7 @@ def predict_soccer(req: SoccerMarketReq):
     # ratings. Fall back to ratings only when odds are missing.
     calibrated = False
     lambda_source = "ratings"
-    if None not in (req.home_odds, req.draw_odds, req.away_odds):
+    if have_odds:
         dv0 = sm.devig_3way(req.home_odds, req.draw_odds, req.away_odds)
         lh, la, _resid = sm.solve_lambdas_from_1x2(dv0["home"], dv0["draw"], dv0["away"])
         calibrated = True
@@ -537,6 +590,7 @@ def predict_soccer(req: SoccerMarketReq):
         "upset_risk": upset,
         "chaos": chaos,
         "recommendation": rec,
+        "profile": _soccer_profile(req.home_team, req.away_team),
         "home_ratings": h_r, "away_ratings": a_r,
     }
 
