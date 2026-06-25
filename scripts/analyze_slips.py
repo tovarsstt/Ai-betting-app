@@ -30,10 +30,19 @@ LEGS = re.compile(r"(\d+)\s+Multi tramo|Multi apuesta del mismo partido\s*\((\d+
 
 
 def odds_band(dec: float) -> str:
-    if dec < 1.5:
-        return "heavy chalk (<1.50)"
-    if dec < 2.5:
-        return "value band (1.50-2.50)"
+    # Banded by WIN PROBABILITY, not just price (win-prob-first directive):
+    #   <1.50  ~67%+  the safe, high-prob anchor — the leg that carries a parlay.
+    #   1.50-1.90 ~53-67%  a SOFT FAVOURITE — wins more than it loses but NOT a lock
+    #                      (a 1.64 at 61% misses ~2 in 5). Not a "coin-flip" (=2.00/50%);
+    #                      the trap is treating it like a lock. Cap one per ticket.
+    #   1.90-2.50 ~40-53%  genuine pick-em/value.
+    #   2.50-5.0  longshot.   5.0+  lottery.
+    if dec < 1.50:
+        return "chalk anchor (<1.50)"
+    if dec < 1.90:
+        return "soft favorite (1.50-1.90)"
+    if dec < 2.50:
+        return "value band (1.90-2.50)"
     if dec < 5.0:
         return "longshot (2.50-5.0)"
     return "lottery (5.0+)"
@@ -53,6 +62,18 @@ def parse() -> list:
         legs = int(next((a or b for a, b in reversed(legs_found)), 1)) if legs_found else 1
         out.append({"dec": dec, "stake": stake, "payout": payout, "legs": legs})
         prev_end = m.end()
+    return out
+
+
+def dedupe(items: list) -> list:
+    """Drop repeated (odds, stake, payout) tuples — pasted history often double-counts.
+    Single source of truth so the analyzer and the linter bucket identical data."""
+    seen = set(); out = []
+    for r in items:
+        k = (r["dec"], r["stake"], r["payout"])
+        if k in seen:
+            continue
+        seen.add(k); out.append(r)
     return out
 
 
@@ -91,20 +112,22 @@ def main() -> None:
     rows = parse()
     if not rows:
         raise SystemExit("no tickets parsed — is data/slips_raw.txt populated?")
-    # Dedup: a (odds, stake, payout) tuple repeated = same ticket pasted twice.
-    seen = set(); uniq = []
-    for r in rows:
-        kkey = (r["dec"], r["stake"], r["payout"])
-        if kkey in seen:
-            continue
-        seen.add(kkey); uniq.append(r)
+    uniq = dedupe(rows)
     summarize(rows, "RAW (paste as-is — may double-count duplicated sections)")
     summarize(uniq, "DEDUPED (unique odds+stake+payout — best estimate)")
     breakdown(uniq, lambda i: ("single" if i["legs"] == 1 else
                                "2-3 legs" if i["legs"] <= 3 else
                                "4-6 legs" if i["legs"] <= 6 else "7+ legs"),
               "By parlay size (deduped)")
-    breakdown(uniq, lambda i: odds_band(i["dec"]), "By odds band (deduped)")
+    # TICKET-combined band: a parlay's odds are its whole ticket, NOT one leg.
+    breakdown(uniq, lambda i: odds_band(i["dec"]),
+              "By TICKET combined odds (parlays settle as a unit — not per-leg)")
+    # LEG band: a single bet IS one leg, so its ROI is a TRUE per-leg ROI. This is
+    # the table the linter gates each proposed leg against (see slip_linter._history_rois).
+    singles = [i for i in uniq if i["legs"] == 1]
+    if singles:
+        breakdown(singles, lambda i: odds_band(i["dec"]),
+                  "By LEG odds — singles only (true per-leg ROI; what the linter gates on)")
 
 
 if __name__ == "__main__":

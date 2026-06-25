@@ -2110,6 +2110,7 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
           const t = await tRes.json() as {
             home_cover_prob: number | null; away_cover_prob: number | null;
             home_true_prob: number | null; bet_signal?: string;
+            pick_quality?: string; quality_note?: string;
             method?: string; surface?: string; profile?: Record<string, number>;
           };
           if (t.bet_signal === 'NO_DATA' || t.home_cover_prob == null) {
@@ -2132,6 +2133,7 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
               (edgeH != null ? ` | Edge ${edgeH > 0 ? '+' : ''}${edgeH.toFixed(1)}pp ${oddsGame.home}` : '') + `\n` +
               `Comparative profile (home − away, surface-aware):${profileLine}\n` +
               `Signal: ${t.bet_signal ?? 'NO_EDGE'}. Tennis is noisy — trust the bet_signal over raw EV%.\n` +
+              `Pick quality: ${t.pick_quality ?? 'n/a'} — ${t.quality_note ?? ''} (LOCK=anchor · PICK=parlay-ok · LEAN=single/small, NEVER a parlay anchor)\n` +
               `⚠️ OVERRIDE: confirmed day-of data (injury, withdrawal, conditions) beats this historical model. If a player is hurt or just withdrew, ignore the model edge.`;
           }
         }
@@ -2151,6 +2153,7 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
           const q = await qRes.json() as {
             predicted_margin: number | null; model_edge: number | null; model_mae: number | null;
             trained_on: number; bet_signal?: string;
+            pick_quality?: string; quality_note?: string;
             home_ratings?: { net_rtg?: number }; away_ratings?: { net_rtg?: number };
             profile?: { home?: WnbaTeamForm; away?: WnbaTeamForm;
               h2h?: { n: number; w: number; l: number; margin: number; last: string } } | null;
@@ -2177,7 +2180,8 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
               `━━ QUANT MODEL (XGBoost margin predictor — trained on ${q.trained_on} games, MAE ${q.model_mae} pts, ratings frozen at last training):\n` +
               `Predicted margin: ${oddsGame.home} by ${q.predicted_margin} | Market spread: ${oddsGame.spread}\n` +
               `Cover prob WITH model error included: ${(coverProb * 100).toFixed(1)}% ${oddsGame.home} | NetRtg: ${q.home_ratings?.net_rtg ?? '?'} vs ${q.away_ratings?.net_rtg ?? '?'}\n` +
-              `⚠️ Model edge ${q.model_edge} pts vs market. If >7 pts, treat as STALE-DATA WARNING — the market knows something the training data doesn't. Weigh market over model on big disagreements.${wnbaBlock}`;
+              `⚠️ Model edge ${q.model_edge} pts vs market. If >7 pts, treat as STALE-DATA WARNING — the market knows something the training data doesn't. Weigh market over model on big disagreements.\n` +
+              `Pick quality: ${q.pick_quality ?? 'n/a'} — ${q.quality_note ?? ''} (LOCK=anchor · PICK=parlay-ok · LEAN=single/small, NEVER a parlay anchor)${wnbaBlock}`;
           }
         }
       }

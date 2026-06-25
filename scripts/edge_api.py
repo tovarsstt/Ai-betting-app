@@ -186,6 +186,28 @@ def kelly(mp: float, o: float, br: float) -> float:
     f = (b*mp-(1-mp))/b
     return round(max(0,min(f/2,0.25))*br, 2)
 
+# ── Pick-quality grade — WIN-PROBABILITY FIRST ────────────────────────────────
+# edge_strength (below) scores the EDGE only; it has no win-prob lens, so a thin-edge
+# soft favourite reads the same as a lock. This folds in the picked side's WIN
+# PROBABILITY (the priority directive) so the two can't be confused. Calibrated from
+# the user's settled tennis legs (2026-06-25): <1.50 locks went 6/6, 1.50-1.90 soft
+# favs 6/8 — and BOTH misses (Kecmanovic 1.78 ≈56%, Navarro 1.66 ≈60%) were sub-62%
+# soft favourites the engine had called safe. A LEAN is never a parlay anchor.
+LOCK_PROB = 0.70   # high enough to carry a parlay
+PICK_PROB = 0.62   # solid favourite with a real edge
+
+def pick_quality(win_prob: Optional[float], best_ev: float, has_edge: bool) -> tuple:
+    """Grade a pick by win-prob first, then value. Returns (grade, note).
+    LOCK = anchor-grade · PICK = parlay-eligible · LEAN = single/small only · PASS."""
+    if not has_edge or win_prob is None:
+        return "PASS", "no edge vs the devigged price — force nothing"
+    if win_prob >= LOCK_PROB and best_ev > 0:
+        return "LOCK", f"~{win_prob*100:.0f}% to win + value — anchor-grade"
+    if win_prob >= PICK_PROB and best_ev > 0:
+        return "PICK", f"~{win_prob*100:.0f}% favourite with real edge — parlay-eligible"
+    return "LEAN", (f"only ~{win_prob*100:.0f}% to win — soft favourite, NOT a lock; "
+                    f"single/small stake, never a parlay anchor")
+
 # ── Predict endpoint ──────────────────────────────────────────────────────────
 class PredictReq(BaseModel):
     sport: str = "NBA"
@@ -502,6 +524,12 @@ def predict(req: PredictReq):
                     else "AWAY_COVER" if edge<-1.5 and aev>0 and aev>=hev
                     else "NO_EDGE")
 
+    # ── Pick-quality grade (win-probability first) ───────────────────────────────
+    # picked_prob = the model's win/cover prob for the side we're actually backing.
+    picked_prob = (hcp if signal in ("HOME_WIN", "HOME_COVER")
+                   else acp if signal in ("AWAY_WIN", "AWAY_COVER") else None)
+    quality, quality_note = pick_quality(picked_prob, best_ev, signal != "NO_EDGE")
+
     return {
         "sport": sport, "home_team": req.home_team, "away_team": req.away_team,
         "predicted_margin": round(pred_margin,2), "spread": req.spread,
@@ -512,6 +540,7 @@ def predict(req: PredictReq):
         "home_true_prob": round(ht,4), "away_true_prob": round(at,4),
         "vig_pct": vig,
         "bet_signal": signal, "edge_strength": strength,
+        "pick_quality": quality, "quality_note": quality_note,
         "home_ratings": h_r, "away_ratings": a_r,
         "model_mae": round(bundle["avg_mae"] if (bundle and model_used) else sigma, 2),
         "trained_on": bundle["trained_on"] if bundle else 0,

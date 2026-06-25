@@ -3,9 +3,13 @@
 slip_linter.py — pre-bet gate that scores a PROPOSED ticket against the user's
 OWN settled record before any money goes down.
 
-Why: heuristic rule 11 ("2-3 legs, legs 1.50-5.0, never 5+") is the user's proven
-edge, but prose isn't enforced — the linter turns it into a deterministic gate.
-The thresholds are NOT invented: they're computed live from data/slips_raw.txt via
+Why: heuristic rule 11 ("2-3 legs, never 5+") is the user's proven edge, but prose
+isn't enforced — the linter turns it into a deterministic gate. WIN-PROB FIRST is
+the directive (winning money is the focus): the high-prob chalk anchor (<1.50) is
+KEPT as the leg that carries a ticket, while the 1.50-1.90 soft favourite (a
+favourite, NOT a lock — and a /predict LEAN grade counts too) is flagged and capped
+at one per ticket — that band is where parlays die. The ROI
+thresholds are NOT invented: they're computed live from data/slips_raw.txt via
 analyze_slips, so the gate adapts as fresh history is pasted. A shape the user
 actually loses money in gets REJECTED with its real ROI as the reason.
 
@@ -25,12 +29,15 @@ from dataclasses import dataclass
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from analyze_slips import parse, odds_band  # reuse the single source of truth
+from analyze_slips import parse, dedupe, odds_band  # reuse the single source of truth
 
 MAX_LEGS = 4          # hard cap (rule 11); 2-3 is the target
 TARGET_LEGS = (2, 3)
-COMBINED_MIN = 2.5    # combined-decimal bankroll-growth lane
+COMBINED_MIN = 1.8    # lowered: a safe all-chalk combo pays thin but WINS — that's the focus
 COMBINED_MAX = 8.0
+SOFT_FAV_BAND = "soft favorite (1.50-1.90)"  # favourite but NOT a lock — the trap zone
+MAX_SOFT_FAV = 1      # win-prob-first: at most one soft favourite per ticket
+MIN_BAND_SAMPLE = 5   # min singles before a band's per-leg ROI is trusted as a cut signal
 
 
 def leg_bucket(n: int) -> str:
@@ -62,16 +69,99 @@ class Verdict:
 
 
 def _history_rois() -> tuple[dict, dict]:
-    """(band_roi, shape_roi) from the user's settled slips. Empty if no file."""
+    """(band_roi, shape_roi) from the user's settled slips. Empty if no file.
+
+    band_roi is computed from SINGLES ONLY — a single bet is exactly one leg, so its
+    ROI is a TRUE per-leg ROI for that price band. Parlays settle as a unit and store
+    only their COMBINED odds, so bucketing them by band would mis-attribute a leg's
+    record (a 4-leg @ 6.99 is not a "lottery leg"). They're excluded from band_roi;
+    their SHAPE (leg count), not their leg prices, is what shape_roi captures from all.
+    """
     try:
-        items = parse()
+        items = dedupe(parse())
     except (FileNotFoundError, OSError):
         return {}, {}
-    band = roi_by(items, lambda i: odds_band(i["dec"]))
+    singles = [i for i in items if i["legs"] == 1]
+    # Only trust a band's per-leg ROI as a CUT signal when it has enough singles —
+    # a 1/4 fluke shouldn't nuke a whole band. Thin bands read as None → structural
+    # rules only (chalk kept, soft-fav capped, lottery cut regardless).
+    counts: dict = {}
+    for s in singles:
+        counts[odds_band(s["dec"])] = counts.get(odds_band(s["dec"]), 0) + 1
+    band = {b: roi for b, roi in roi_by(singles, lambda i: odds_band(i["dec"])).items()
+            if counts.get(b, 0) >= MIN_BAND_SAMPLE}
 
     def legs_of(i):  # analyze_slips already tagged leg count
         return leg_bucket(i["legs"])
     return band, roi_by(items, legs_of)
+
+
+def _grade(leg: dict) -> str:
+    """Optional pick_quality from /predict on a leg: LOCK | PICK | LEAN | PASS (or '')."""
+    return str(leg.get("quality", "")).upper()
+
+
+def _tag(leg: dict, idx: int) -> str:
+    base = leg.get("selection", f"leg {idx+1}")
+    g = _grade(leg)
+    return f"{base} [{g}]" if g else base   # surface LOCK/PICK/LEAN on the leg
+
+
+def _is_soft(leg: dict) -> bool:
+    """Soft favourite = priced 1.50-1.90, OR graded LEAN by the model — a sub-62%
+    pick is a soft favourite even if its price says otherwise. Never a parlay anchor."""
+    return odds_band(float(leg["decimal"])) == SOFT_FAV_BAND or _grade(leg) == "LEAN"
+
+
+def _gate_legs(legs: list[dict], band_roi: dict) -> tuple[list, list]:
+    """Leg-level gate (win-prob-first). Returns (cut indices, reason lines).
+
+    - The high-prob CHALK ANCHOR (<1.50) is the safest leg in a parlay — never cut
+      it for being chalk; it carries the ticket. (If it bled historically, NOTE it.)
+    - A SOFT FAVOURITE (1.50-1.90 price, or a LEAN grade from /predict) is a favourite
+      but NOT a lock (~53-67%). Keep at most MAX_SOFT_FAV per ticket — two of them is
+      where parlays die. Cut the highest-priced = lowest-win-prob ones first.
+    - Auto-cut the lottery (≥5.0) and any non-chalk band the user actually loses in.
+    - If legs carry a pick_quality grade, surface it on each leg (LOCK/PICK/LEAN).
+    """
+    cut: list[int] = []
+    reasons: list[str] = []
+    for idx, leg in enumerate(legs):
+        dec = float(leg["decimal"])
+        band = odds_band(dec)
+        roi = band_roi.get(band)
+        if dec >= 5.0:                                      # lottery is never a safe leg
+            cut.append(idx)
+            reasons.append(f"CUT {_tag(leg, idx)} @ {dec:.2f} — lottery (5.0+), never a safe leg")
+        elif roi is not None and roi < 0 and dec >= 1.50:   # data-backed losing band (enough samples)
+            cut.append(idx)
+            reasons.append(f"CUT {_tag(leg, idx)} @ {dec:.2f} — {band} is {roi:+.0f}% per-leg ROI in your singles")
+
+    # Soft-favourite cap: keep the strongest (lowest price), cut the rest.
+    soft = [i for i in range(len(legs)) if _is_soft(legs[i]) and i not in cut]
+    for i in sorted(soft, key=lambda j: float(legs[j]["decimal"]), reverse=True):
+        if len([k for k in soft if k not in cut]) <= MAX_SOFT_FAV:
+            break
+        cut.append(i)
+        dec = float(legs[i]["decimal"])
+        reasons.append(f"CUT {_tag(legs[i], i)} @ {dec:.2f} — 2nd+ soft favourite; max "
+                       f"{MAX_SOFT_FAV}/ticket (~{100/dec:.0f}% each, NOT a lock)")
+
+    # Surface the surviving soft-favourite risk, and any kept-but-historically-weak chalk.
+    for i in range(len(legs)):
+        if _is_soft(legs[i]) and i not in cut:
+            dec = float(legs[i]["decimal"])
+            reasons.append(f"WARN {_tag(legs[i], i)} @ {dec:.2f} — soft favourite (~{100/dec:.0f}% "
+                           f"implied), NOT a lock; anchor the ticket on chalk, not 1.5-1.9 favs")
+    for idx, leg in enumerate(legs):
+        dec = float(leg["decimal"])
+        if idx in cut or dec >= 1.50:
+            continue
+        roi = band_roi.get(odds_band(dec))
+        if roi is not None and roi < 0:
+            reasons.append(f"NOTE {_tag(leg, idx)} @ {dec:.2f} — chalk bled {roi:+.0f}% "
+                           f"historically, but it's your highest win-prob leg; kept as anchor")
+    return cut, reasons
 
 
 def lint(legs: list[dict], band_roi: dict | None = None,
@@ -79,24 +169,10 @@ def lint(legs: list[dict], band_roi: dict | None = None,
     """Score a ticket. `legs` = [{'decimal': float, 'selection': str}]."""
     if band_roi is None or shape_roi is None:
         band_roi, shape_roi = _history_rois()
-    reasons: list[str] = []
-    cut: list[int] = []
 
-    # 1. Leg-level: drop any leg sitting in a band the user LOSES in.
-    for idx, leg in enumerate(legs):
-        dec = float(leg["decimal"])
-        band = odds_band(dec)
-        roi = band_roi.get(band)
-        tag = leg.get("selection", f"leg {idx+1}")
-        if roi is not None and roi < 0:
-            cut.append(idx)
-            reasons.append(f"CUT {tag} @ {dec:.2f} — {band} is {roi:+.0f}% ROI in your record")
-        elif roi is None and (dec < 1.50 or dec >= 5.0):
-            cut.append(idx)
-            reasons.append(f"CUT {tag} @ {dec:.2f} — {band}, outside the 1.50-5.0 edge")
-
-    kept = [l for i, l in enumerate(legs) if i not in cut]
-    keep_n = len(kept)
+    # 1. Leg-level gate (win-prob-first): keep chalk anchors, cap soft favourites, cut lottery.
+    cut, reasons = _gate_legs(legs, band_roi)
+    keep_n = len(legs) - len(set(cut))
 
     # 2. Over the hard cap — trim weakest (highest-priced = riskiest) down to 4.
     if keep_n > MAX_LEGS:
@@ -115,7 +191,8 @@ def lint(legs: list[dict], band_roi: dict | None = None,
 
     # 3. Nothing left, or shape itself is a money-loser that trimming can't fix.
     if keep_n == 0:
-        return Verdict("REJECT", ("every leg is in a losing band — PASS, force nothing",),
+        return Verdict("REJECT", ("every leg is a soft favourite / lottery / losing band — "
+                                  "PASS, force nothing",),
                        tuple(cut), 0)
 
     shape = leg_bucket(keep_n)
@@ -130,6 +207,7 @@ def lint(legs: list[dict], band_roi: dict | None = None,
                        tuple(cut), keep_n)
 
     # 4. Combined-odds lane check (warn only — doesn't block).
+    kept = [l for i, l in enumerate(legs) if i not in cut]
     combined = 1.0
     for l in kept:
         combined *= float(l["decimal"])
@@ -142,7 +220,7 @@ def lint(legs: list[dict], band_roi: dict | None = None,
 
     status = "ACCEPT" if not cut else "TRIM"
     if status == "ACCEPT" and not reasons:
-        reasons.append(f"clean — {shape}, all legs in the 1.50-5.0 edge")
+        reasons.append(f"clean — {shape}, chalk/value legs, win-prob first")
     return Verdict(status, tuple(reasons), tuple(cut), keep_n)
 
 

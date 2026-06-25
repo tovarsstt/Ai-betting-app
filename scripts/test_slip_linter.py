@@ -6,10 +6,11 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from slip_linter import lint, leg_bucket, roi_by
 
-# Mirrors the user's settled record: longshot wins, lottery/chalk/single bleed.
+# Mirrors the user's settled record: longshot wins, lottery/soft-fav bleed.
 BAND = {
-    "heavy chalk (<1.50)": -33.0,
-    "value band (1.50-2.50)": 10.0,
+    "chalk anchor (<1.50)": -33.0,
+    "soft favorite (1.50-1.90)": -40.0,
+    "value band (1.90-2.50)": 10.0,
     "longshot (2.50-5.0)": 85.0,
     "lottery (5.0+)": -18.0,
 }
@@ -31,11 +32,53 @@ def test_lottery_leg_gets_cut():
     assert v.keep_count == 1
 
 
-def test_chalk_leg_gets_cut_for_losing_band():
+def test_chalk_leg_kept_as_anchor_not_cut():
+    # win-prob-first: chalk is the safest leg — keep it even if its band bled before.
     legs = [{"decimal": 1.30, "selection": "chalk"}, {"decimal": 3.0, "selection": "B"}]
     v = lint(legs, BAND, SHAPE)
-    assert 0 in v.cut_legs
-    assert v.status == "TRIM"
+    assert 0 not in v.cut_legs                 # anchor survives
+    assert v.status == "ACCEPT"
+    assert any("anchor" in r.lower() for r in v.reasons)
+
+
+def test_two_soft_favourites_capped_to_one():
+    # two 1.5-1.9 legs — keep the higher-prob (lower price), cut the rest.
+    band = {**BAND, "soft favorite (1.50-1.90)": 5.0}  # positive band so only the cap bites
+    legs = [{"decimal": 1.65, "selection": "flipA"},
+            {"decimal": 1.80, "selection": "flipB"},
+            {"decimal": 3.0, "selection": "value"}]
+    v = lint(legs, band, SHAPE)
+    assert 1 in v.cut_legs        # 1.80 = lower win-prob, cut first
+    assert 0 not in v.cut_legs    # 1.65 survives
+    assert v.keep_count == 2
+
+
+def test_surviving_soft_favourite_is_flagged_not_safe():
+    band = {**BAND, "soft favorite (1.50-1.90)": 5.0}
+    legs = [{"decimal": 1.70, "selection": "flip"}, {"decimal": 3.0, "selection": "value"}]
+    v = lint(legs, band, SHAPE)
+    assert 0 not in v.cut_legs
+    assert any("soft favourite" in r.lower() for r in v.reasons)
+
+
+def test_pick_quality_grade_surfaces_on_each_leg():
+    # legs carrying a /predict grade show [LOCK]/[LEAN] in the output.
+    legs = [{"decimal": 1.30, "selection": "lock", "quality": "LOCK"},
+            {"decimal": 3.0, "selection": "value", "quality": "PICK"}]
+    v = lint(legs, BAND, SHAPE)
+    assert any("[LOCK]" in r for r in v.reasons) or v.status == "ACCEPT"
+    # nothing cut — both gradeable, neither a soft fav
+    assert v.cut_legs == ()
+
+
+def test_lean_grade_treated_as_soft_favourite_even_when_priced_like_value():
+    # a LEAN at 2.20 (value-price) must still be capped/flagged as a soft favourite.
+    band = {**BAND, "soft favorite (1.50-1.90)": 5.0}
+    legs = [{"decimal": 1.70, "selection": "softA"},
+            {"decimal": 2.20, "selection": "leanB", "quality": "LEAN"}]
+    v = lint(legs, band, SHAPE)
+    assert 1 in v.cut_legs            # 2nd soft (the LEAN) capped out
+    assert any("[LEAN]" in r for r in v.reasons)
 
 
 def test_seven_plus_legs_trimmed_to_cap():
@@ -44,8 +87,9 @@ def test_seven_plus_legs_trimmed_to_cap():
     assert v.keep_count <= 4  # hard cap enforced
 
 
-def test_all_losing_bands_rejects():
-    legs = [{"decimal": 6.0, "selection": "moon"}, {"decimal": 1.2, "selection": "chalk"}]
+def test_all_cut_bands_rejects():
+    # lottery (auto-cut) + a coin-flip in a losing band → nothing left to keep.
+    legs = [{"decimal": 6.0, "selection": "moon"}, {"decimal": 1.75, "selection": "flip"}]
     v = lint(legs, BAND, SHAPE)
     assert v.status == "REJECT"
     assert v.keep_count == 0
