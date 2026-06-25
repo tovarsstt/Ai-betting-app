@@ -3,6 +3,14 @@
 
 ---
 
+## ⚙️ DATA RULES (never hallucinate)
+- **ATP + WTA both supported** — the model is points+surface based, tour-agnostic. Pass the right `surface`; WTA prices exactly like ATP.
+- **Odds come from the live board ONLY.** The app auto-discovers every active `tennis_*` tournament from the Odds API `/sports` endpoint and pulls real prices. NEVER invent a tennis odd — if a price isn't on the board or supplied by the user, say "no line", don't estimate one.
+- **Ranks publish every Monday.** Auto-refreshed weekly (`fetch_tennis_ratings.py` cron, or `POST /api/refresh-rankings`). If `predict` returns `ranks_stale`, say so and refresh before trusting a rank-driven edge.
+- **`bet_signal`/`edge_strength` are live for tennis** (prob-edge based, fixed 2026-06-25). STRONG = ≥10pt model-vs-market prob edge + EV>5%.
+
+---
+
 ## MODEL OUTPUT — COMPARATIVE PROFILE (now real, not estimated)
 The win-prob model returns a `profile` block (home − away, surface-aware) built from
 REAL results. Cite these — they are data, not guesses:

@@ -316,6 +316,34 @@ const ES_TEAM_ALIASES: Record<string, string> = {
   'turquia': 'turkiye', 'austria': 'austria', 'polonia': 'poland',
 };
 
+// Tennis surface from the sport_key — surface is the single biggest betting
+// variable (it drives the model). Keyword-matched so it survives exact-key spelling
+// drift across the ~60 tour stops; returns an honest "unknown" rather than a wrong
+// guess (a fabricated surface would mis-price the whole match).
+function tennisSurface(key: string): string {
+  const MAJORS: Record<string, string> = {
+    'tennis_atp_french_open':  '🏟️ ROLAND GARROS — CLAY (slowest, topspin-dominant, baseline grinders excel, big servers fade)',
+    'tennis_wta_french_open':  '🏟️ ROLAND GARROS — CLAY (slowest, topspin-dominant, physical endurance key)',
+    'tennis_atp_wimbledon':    '🏟️ WIMBLEDON — GRASS (fastest, serve+volley, big servers/net players dominate, clay specialists fade)',
+    'tennis_wta_wimbledon':    '🏟️ WIMBLEDON — GRASS (fastest, serve dominant, low bounce, aggressive baseliners)',
+    'tennis_atp_us_open':      '🏟️ US OPEN — HARD (medium-fast, night sessions faster under lights, loud crowd)',
+    'tennis_wta_us_open':      '🏟️ US OPEN — HARD (medium-fast, night session crowd/momentum factor)',
+    'tennis_atp_aus_open':     '🏟️ AUSTRALIAN OPEN — HARD (medium-slow Plexicushion, January heat policy, long rallies)',
+    'tennis_wta_aus_open':     '🏟️ AUSTRALIAN OPEN — HARD (medium-slow Plexicushion, heat delays possible)',
+  };
+  if (MAJORS[key]) return MAJORS[key];
+  const k = key.toLowerCase();
+  const GRASS = '🌱 GRASS — fast, low bounce; big servers & aggressive returners overperform, clay specialists fade.';
+  const CLAY  = '🟧 CLAY — slowest, high bounce; topspin grinders & stamina win, big servers fade.';
+  const HARD  = '🟦 HARD — medium-fast, true bounce; all-court players & big hitters favored.';
+  const has = (...w: string[]): boolean => w.some(x => k.includes(x));
+  if (k.includes('stuttgart')) return k.includes('wta') ? CLAY : GRASS; // ATP grass, WTA clay
+  if (has('wimbledon', 'queens', 'eastbourne', 'mallorca', 'halle', 'homburg', 'hertog', 'birmingham', 'nottingham', 'berlin', 'newport')) return GRASS;
+  if (has('french', 'roland', 'monte_carlo', 'madrid', 'rome', 'barcelona', 'hamburg', 'bastad', 'gstaad', 'kitzbuhel', 'umag', 'estoril', 'munich', 'geneva', 'cordoba', 'houston', 'rio')) return CLAY;
+  if (has('us_open', 'aus_open', 'australian', 'indian_wells', 'miami', 'cincinnati', 'canada', 'toronto', 'montreal', 'dubai', 'doha', 'acapulco', 'shanghai', 'beijing', 'tokyo', 'vienna', 'basel', 'turin', 'washington', 'adelaide', 'brisbane')) return HARD;
+  return '⚠️ surface not auto-identified for this event — CONFIRM the surface before pricing (it is the model\'s biggest input).';
+}
+
 async function fetchLiveOdds(sport: string, gameQuery?: string): Promise<string> {
   if (!ODDS_API_KEY) return "Odds API key not configured.";
   const configuredKeys = SPORT_KEYS[sport] || SPORT_KEYS.NBA;
@@ -337,20 +365,6 @@ async function fetchLiveOdds(sport: string, gameQuery?: string): Promise<string>
   }
 
   if (sportKeys.length === 0) return `No ${sport} markets in season right now (all configured keys inactive).`;
-
-  // Tennis: surface type from sport_key — critical betting variable
-  const TENNIS_SURFACE: Record<string, string> = {
-    'tennis_atp_queens_club_champ': '🏟️ QUEEN\'S CLUB — Surface: GRASS (fast, serve-dominant, Wimbledon tune-up; clay specialists arriving rusty, grass-court veterans overperform)',
-    'tennis_wta_queens_club_champ': '🏟️ QUEEN\'S CLUB — Surface: GRASS (fast, low bounce, big servers and aggressive returners excel; first grass event after clay swing)',
-    'tennis_atp_french_open':  '🏟️ ROLAND GARROS — Surface: CLAY (slowest, topspin-dominant, baseline grinders excel, big servers fade)',
-    'tennis_wta_french_open':  '🏟️ ROLAND GARROS — Surface: CLAY (slowest, topspin-dominant, physical endurance key)',
-    'tennis_atp_wimbledon':    '🏟️ WIMBLEDON — Surface: GRASS (fastest, serve+volley, big servers/net players dominate, clay specialists fade)',
-    'tennis_wta_wimbledon':    '🏟️ WIMBLEDON — Surface: GRASS (fastest, serve dominant, low bounce, aggressive baseliners)',
-    'tennis_atp_us_open':      '🏟️ US OPEN — Surface: HARD/OUTDOOR (medium-fast, night sessions faster ball under lights, loud crowd)',
-    'tennis_wta_us_open':      '🏟️ US OPEN — Surface: HARD/OUTDOOR (medium-fast, night session crowd/momentum factor)',
-    'tennis_atp_aus_open':     '🏟️ AUSTRALIAN OPEN — Surface: HARD/OUTDOOR (medium-slow Plexicushion, heat policy in January, long rallies)',
-    'tennis_wta_aus_open':     '🏟️ AUSTRALIAN OPEN — Surface: HARD/OUTDOOR (medium-slow Plexicushion, heat delays possible)',
-  };
 
   const results: string[] = [];
   const apiErrors: string[] = [];
@@ -376,7 +390,7 @@ async function fetchLiveOdds(sport: string, gameQuery?: string): Promise<string>
       if (!Array.isArray(events) || events.length === 0) continue;
 
       // Inject tennis surface header before listing events for this tournament
-      if (TENNIS_SURFACE[key]) results.push(TENNIS_SURFACE[key]);
+      if (key.startsWith('tennis_')) results.push(tennisSurface(key));
 
       // Filter by game query if provided.
       // Accent-normalized + Spanish team aliases: "México vs Sudáfrica" must
@@ -1906,6 +1920,7 @@ Real player names, real team names. Every logic bullet must have a [SOURCE] tag.
     let payout_100: number | null = null;
     let edge_pct: number | null = null;
     let devigged_prob: number | null = null;
+    let predictedProb: number | null = null;  // model win prob (0-1) — for calibration
     try {
       const oddsStr = String(parsed.odds ?? '');
       const oddsNum = parseInt(oddsStr.replace(/[^\d-]/g, ''), 10);
@@ -1919,6 +1934,7 @@ Real player names, real team names. Every logic bullet must have a [SOURCE] tag.
         payout_100 = Math.round((dec - 1) * 100 * 10) / 10;                 // net profit on $100 bet
         const aiWinProb = typeof parsed.win_prob === 'number' ? parsed.win_prob as number : null;
         if (aiWinProb !== null) {
+          predictedProb = aiWinProb;
           edge_pct = Math.round((aiWinProb - implied_prob / 100) * 1000) / 10;
         }
       }
@@ -1931,6 +1947,16 @@ Real player names, real team names. Every logic bullet must have a [SOURCE] tag.
       ? `⚠️ MARKET DISAGREES — this pick wins ~${devigged_prob}% of the time; the other side is the real favorite (~${Math.round((100 - devigged_prob) * 10) / 10}%). Quality rule: favor likely winners. Treat as longshot stake or skip.`
       : null;
 
+    // Auto-lint — gate the pick's own price band before it ships (rule 11 enforcement).
+    // Single-leg lint flags chalk (<1.50) / lottery (5.0+) the model shouldn't fire on.
+    let lint: unknown = null;
+    try {
+      const lintOdds = parseInt(String(parsed.odds ?? '').replace(/[^\d-]/g, ''), 10);
+      if (Number.isFinite(lintOdds) && Math.abs(lintOdds) >= 100) {
+        lint = await lintLegs([{ decimal: toDecimal(lintOdds), selection: String(parsed.selection ?? 'pick') }]);
+      }
+    } catch { /* non-blocking */ }
+
     const result = {
       ...parsed,
       implied_prob,    // math only — never hallucinated
@@ -1938,6 +1964,7 @@ Real player names, real team names. Every logic bullet must have a [SOURCE] tag.
       payout_100,      // math only — never hallucinated
       edge_pct,        // math only — never hallucinated
       upset_alert,     // math only — fires when pick's fair win prob < 45%
+      lint,            // pre-bet gate verdict on this pick's price band
       hash: "Σ_" + Math.random().toString(36).substring(7).toUpperCase(),
     };
     // 60 min — slates don't reprice fast; halves repeat LLM cost without pick staleness
@@ -1963,6 +1990,7 @@ Real player names, real team names. Every logic bullet must have a [SOURCE] tag.
             odds: oddsNum,
             stake_units: /2\s*UNIT/i.test(String(parsed.recommended_unit ?? '')) ? 2 : 1,
             source: 'prophet',
+            predicted_prob: predictedProb,  // model win prob — for calibration
             ...parseSelectionIdentity(selection, gameName),  // structured identity for CLV capture
           });
         }
@@ -3709,7 +3737,7 @@ app.get('/api/upset-radar', async (req: express.Request, res: express.Response) 
 app.post('/api/ledger/pick', async (req: express.Request, res: express.Response) => {
   if (rateLimit(req, 30, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
   try {
-    const { sport, game, selection, odds, stake_units, source, market_key, outcome, point } = req.body ?? {};
+    const { sport, game, selection, odds, stake_units, source, predicted_prob, market_key, outcome, point } = req.body ?? {};
     const oddsNum = Number(odds);
     if (!sport || !game || !selection || !Number.isFinite(oddsNum) || oddsNum === 0 || (oddsNum > -100 && oddsNum < 100)) {
       return res.status(400).json({ error: 'INVALID_PICK', message: 'sport, game, selection and valid American odds required' });
@@ -3718,7 +3746,8 @@ app.post('/api/ledger/pick', async (req: express.Request, res: express.Response)
     const ident = (market_key && outcome)
       ? { market_key, outcome, point: point != null ? Number(point) : null }
       : parseSelectionIdentity(String(selection), String(game));
-    const pick = await addPick({ sport, game, selection, odds: oddsNum, stake_units: Number(stake_units) || 1, source, ...ident });
+    const predProb = predicted_prob != null && Number.isFinite(Number(predicted_prob)) ? Number(predicted_prob) : null;
+    const pick = await addPick({ sport, game, selection, odds: oddsNum, stake_units: Number(stake_units) || 1, source, predicted_prob: predProb, ...ident });
     res.json({ success: true, pick });
   } catch (e: unknown) {
     res.status(500).json({ error: 'LEDGER_WRITE_FAILED', message: e instanceof Error ? e.message : String(e) });
@@ -3810,6 +3839,67 @@ app.post('/api/ledger/capture-clv', async (req: express.Request, res: express.Re
   }
 });
 
+// ─────────────────────────────────────────────────────────────────────────────
+// PYTHON REPORT BRIDGE — spawn a script, feed optional stdin, parse its --json.
+// Shared by the slip linter (pre-bet gate) and the ledger CLV/calibration report.
+// Pure local compute — no external API, safe in dev/test.
+// ─────────────────────────────────────────────────────────────────────────────
+const SLIP_LINTER   = path.resolve(process.cwd(), 'scripts/slip_linter.py');
+const LEDGER_REPORT = path.resolve(process.cwd(), 'scripts/ledger_report.py');
+
+function spawnPythonJson(script: string, args: string[], stdin: string | null, timeoutMs = 8_000): Promise<unknown> {
+  return new Promise((resolve, reject) => {
+    const py = spawn('python3', [script, ...args]);
+    let out = '';
+    let err = '';
+    py.stdout.on('data', (c: Buffer) => { out += c.toString(); });
+    py.stderr.on('data', (c: Buffer) => { err += c.toString(); });
+    if (stdin != null) py.stdin.write(stdin);
+    py.stdin.end();
+    const timer = setTimeout(() => { py.kill(); reject(new Error('PY_TIMEOUT')); }, timeoutMs);
+    py.on('close', () => {
+      clearTimeout(timer);
+      try { resolve(JSON.parse(out.trim())); }
+      catch { reject(new Error(err.slice(0, 300) || 'PY_PARSE_FAILED')); }
+    });
+  });
+}
+
+interface LintLeg { decimal: number; selection?: string }
+// Run the slip linter on a set of legs — verdict object, or null on failure (non-blocking).
+async function lintLegs(legs: LintLeg[]): Promise<unknown | null> {
+  try { return await spawnPythonJson(SLIP_LINTER, ['--json'], JSON.stringify({ legs })); }
+  catch { return null; }
+}
+
+// SLIP LINTER — pre-bet gate. Scores a proposed ticket against the user's OWN
+// settled record (data/slips_raw.txt): ACCEPT / TRIM / REJECT with real ROI cited.
+app.post('/api/lint-slip', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 60, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  const { legs } = req.body as { legs?: LintLeg[] };
+  if (!Array.isArray(legs) || legs.length === 0) {
+    return res.status(400).json({ error: 'NEED_LEGS', message: 'body: { legs: [{ decimal, selection }] }' });
+  }
+  if (legs.some(l => typeof l?.decimal !== 'number' || !(l.decimal > 1))) {
+    return res.status(400).json({ error: 'BAD_DECIMAL', message: 'each leg needs decimal odds > 1' });
+  }
+  const data = await lintLegs(legs);
+  if (data == null) return res.status(500).json({ error: 'LINTER_FAILED' });
+  res.json({ success: true, data });
+});
+
+// LEDGER REPORT — CLV grading + model calibration over the booked picks. Reads
+// data/pick_ledger.json only; no Odds API call, safe in dev/test.
+app.get('/api/ledger/report', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 30, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  try {
+    const data = await spawnPythonJson(LEDGER_REPORT, ['--json'], null);
+    res.json({ success: true, data });
+  } catch (e: unknown) {
+    res.status(500).json({ error: 'REPORT_FAILED', message: e instanceof Error ? e.message : String(e) });
+  }
+});
+
 // Full board — every priceable market + fair odds (fire if book >= fair).
 // Proxies the edge_api /full-board endpoint so the front-end Game Breakdown can
 // render all markets. No external API: pure model math off the supplied 1X2.
@@ -3833,6 +3923,30 @@ app.post('/api/full-board', async (req: express.Request, res: express.Response) 
   }
 });
 
+// ── Tennis rankings auto-refresh — ATP/WTA ranks move weekly (publish every Monday).
+// Pulls the OFFICIAL ATP+WTA ranks via ESPN (free, 0 Odds-API quota) into
+// all_ratings.json and stamps data/ratings_meta.json so stale ranks can be flagged.
+const TENNIS_RANKS_FETCH = path.resolve(process.cwd(), 'scripts/fetch_tennis_ratings.py');
+
+function refreshTennisRanks(): Promise<{ ok: boolean; out: string }> {
+  return new Promise((resolve) => {
+    const py = spawn('python3', [TENNIS_RANKS_FETCH]);
+    let out = '';
+    py.stdout.on('data', (c: Buffer) => { out += c.toString(); });
+    py.stderr.on('data', (c: Buffer) => { out += c.toString(); });
+    const timer = setTimeout(() => { py.kill(); resolve({ ok: false, out: 'timeout' }); }, 30_000);
+    py.on('close', (code) => { clearTimeout(timer); resolve({ ok: code === 0, out: out.slice(-400) }); });
+  });
+}
+
+// Manual trigger — the weekly cron handles the routine refresh.
+app.post('/api/refresh-rankings', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 3, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  const r = await refreshTennisRanks();
+  if (!r.ok) return res.status(502).json({ error: 'REFRESH_FAILED', detail: r.out });
+  res.json({ success: true, detail: r.out });
+});
+
 const distPath = path.resolve(process.cwd(), 'dist');
 app.use(express.static(distPath));
 app.get('/{*splat}', (_req, res) => {
@@ -3848,6 +3962,17 @@ if (process.env.ENABLE_CLV_CAPTURE === 'true') {
       .catch(e => console.error('[CLV] capture failed:', e instanceof Error ? e.message : String(e)));
   });
   console.info('[CLV] auto-capture enabled — every 15 min');
+}
+
+// Tennis ranks auto-refresh — ATP/WTA rankings publish every Monday. ESPN is free
+// (0 Odds-API quota), so this runs by default; set DISABLE_RANK_REFRESH=true to skip.
+if (process.env.DISABLE_RANK_REFRESH !== 'true') {
+  cron.schedule('0 6 * * 1', () => {   // Mondays 06:00 — just after ranks publish
+    refreshTennisRanks()
+      .then(r => console.info(`[RANKS] weekly tennis refresh ${r.ok ? 'ok' : 'FAILED'}`))
+      .catch(e => console.error('[RANKS] refresh failed:', e instanceof Error ? e.message : String(e)));
+  });
+  console.info('[RANKS] weekly tennis rank refresh scheduled — Mondays 06:00');
 }
 
 app.listen(port, '0.0.0.0', () => {

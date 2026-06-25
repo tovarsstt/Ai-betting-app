@@ -18,6 +18,7 @@ export interface LedgerPick {
   odds: number;              // American odds at post time
   stake_units: number;
   closing_odds: number | null; // American odds at game start — for CLV
+  predicted_prob: number | null; // model win prob (0-1) at post time — for calibration
   result: PickResult;
   settled_at: string | null;
   source: string;            // 'prophet' | 'analyze' | 'manual'
@@ -72,6 +73,7 @@ export interface NewPickInput {
   odds: number;
   stake_units?: number;
   source?: string;
+  predicted_prob?: number | null;
   market_key?: string | null;
   outcome?: string | null;
   point?: number | null;
@@ -99,6 +101,7 @@ export async function addPick(input: NewPickInput): Promise<LedgerPick> {
     odds: input.odds,
     stake_units: input.stake_units ?? 1,
     closing_odds: null,
+    predicted_prob: input.predicted_prob ?? null,
     result: 'PENDING',
     settled_at: null,
     source: input.source ?? 'manual',

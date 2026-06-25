@@ -28,6 +28,7 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], all
 
 BUNDLES: dict = {}
 ALL_RATINGS: dict = {}
+RATINGS_META: dict = {}   # freshness stamps (ratings_meta.json) — flag stale ranks
 TENNIS_FORM: dict = {}   # H2H / form / psych / clutch — built by fetch_tennis_form.py
 SOCCER_FORM: dict = {}   # national-team form / goals / H2H — built by fetch_soccer_form.py
 WNBA_FORM: dict = {}     # form / rest / B2B / H2H — built by fetch_wnba_form.py
@@ -55,6 +56,9 @@ def load_all():
     if (BASE / "mlb_ratings.json").exists():
         with open(BASE / "mlb_ratings.json") as f:
             ALL_RATINGS["MLB"] = json.load(f)
+    if (BASE / "ratings_meta.json").exists():
+        with open(BASE / "ratings_meta.json") as f:
+            RATINGS_META.update(json.load(f))
     if (BASE / "tennis_form.json").exists():
         with open(BASE / "tennis_form.json") as f:
             TENNIS_FORM.update(json.load(f))
@@ -414,6 +418,20 @@ def predict(req: PredictReq):
                  "profile_adj_logit": round(aux, 3)}
         if aux_detail:
             extra["profile"] = aux_detail
+        # Rank freshness — honest about stale data; ATP/WTA ranks publish weekly.
+        meta = RATINGS_META.get("tennis") or {}
+        if meta.get("updated"):
+            try:
+                from datetime import datetime, timezone
+                age = (datetime.now(timezone.utc)
+                       - datetime.fromisoformat(meta["updated"])).days
+                extra["ranks_updated"] = meta["updated"]
+                extra["ranks_age_days"] = age
+                if age > 8:
+                    extra["ranks_stale"] = (f"ranks {age}d old — refresh "
+                                            "(POST /api/refresh-rankings); ATP/WTA update Mondays")
+            except (ValueError, TypeError):
+                pass
         model_used = False
     else:
         # ── Run model only when it adds real signal (MAE < 95% of sigma) ──────
@@ -454,17 +472,35 @@ def predict(req: PredictReq):
     hk,  ak  = kelly(hcp, req.home_odds, req.bankroll), kelly(acp, req.away_odds, req.bankroll)
 
     # ── Signal ─────────────────────────────────────────────────────────────────
-    # Edge vs market = predicted margin minus market-expected margin (-spread)
-    edge = round(pred_margin + req.spread, 2)
-    ea   = abs(edge)
-    best_ev = max(hev, aev)
-    strength = ("STRONG" if ea>=5.0 and best_ev>0.05
-                else "MODERATE" if ea>=3.0 and best_ev>0.025
-                else "WEAK" if ea>=1.5 and best_ev>0.01
-                else "NO_EDGE")
-    signal   = ("HOME_COVER" if edge>1.5 and hev>0 and hev>=aev
-                else "AWAY_COVER" if edge<-1.5 and aev>0 and aev>=hev
-                else "NO_EDGE")
+    if sport == "TENNIS":
+        # Win-probability sport (ATP + WTA): the margin proxy is too compressed for
+        # the point-spread thresholds (a 61/39 match → edge ~1.1 → false NO_EDGE).
+        # Score off the PROBABILITY edge = model win-prob − devigged market prob,
+        # gated by EV. Winning-side-first: pick the side the model rates higher.
+        home_edge_p = hcp - ht
+        away_edge_p = acp - at
+        best_edge_p = max(home_edge_p, away_edge_p)
+        best_ev = max(hev, aev)
+        edge = round(best_edge_p * 100, 2)  # reported in percentage points
+        strength = ("STRONG"   if best_edge_p>=0.10 and best_ev>0.05
+                    else "MODERATE" if best_edge_p>=0.05 and best_ev>0.02
+                    else "WEAK"     if best_edge_p>=0.02 and best_ev>0
+                    else "NO_EDGE")
+        signal   = ("HOME_WIN" if home_edge_p>=away_edge_p and home_edge_p>=0.02 and hev>0
+                    else "AWAY_WIN" if away_edge_p>home_edge_p and away_edge_p>=0.02 and aev>0
+                    else "NO_EDGE")
+    else:
+        # Edge vs market = predicted margin minus market-expected margin (-spread)
+        edge = round(pred_margin + req.spread, 2)
+        ea   = abs(edge)
+        best_ev = max(hev, aev)
+        strength = ("STRONG" if ea>=5.0 and best_ev>0.05
+                    else "MODERATE" if ea>=3.0 and best_ev>0.025
+                    else "WEAK" if ea>=1.5 and best_ev>0.01
+                    else "NO_EDGE")
+        signal   = ("HOME_COVER" if edge>1.5 and hev>0 and hev>=aev
+                    else "AWAY_COVER" if edge<-1.5 and aev>0 and aev>=hev
+                    else "NO_EDGE")
 
     return {
         "sport": sport, "home_team": req.home_team, "away_team": req.away_team,

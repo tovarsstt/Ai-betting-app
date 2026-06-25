@@ -3,6 +3,14 @@
 # RULE #0: information is power, but REAL data only — never hallucinate a stat.
 # RULE #1: confirmed day-of data (injury, lineup, rest, weather) OVERRIDES history.
 
+## ⭐ MANDATE (non-negotiable, user directive 2026-06-25)
+EVERY match, EVERY sport — ALWAYS output a profile for BOTH sides before the pick. No bare picks.
+Each profile = **(a) way of play** (style read derived from the real numbers, not narrative),
+**(b) standard stats** (rank/rating/record), **(c) NICHE stats** for that sport, **(d) niche trends**
+(surface/rest/pace/situational splits). Pull from the model's `profile` block + ratings; cite each
+number. A stat you don't have → say "n/a (no feed)", NEVER invent. Tennis = surface_aff + form + psych
++ clutch; see the per-sport niche menus below. If a sport has ⛔ no feed, say so and lean market+context.
+
 Every match analysis compares BOTH sides across the sport's dimensions, converts to a
 real probability, and compares to the devigged market. Missing side → build a profile
 from REAL data + cite it; if none exists, say "no data — not estimating" and lean on
