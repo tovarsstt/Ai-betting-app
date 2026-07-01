@@ -21,8 +21,11 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
+from scipy.stats import binomtest
+
 LEDGER = Path(__file__).parent.parent / "data" / "pick_ledger.json"
 OVERCONF_PTS = 7.0  # predicted - actual above this => model is overconfident here
+SIGNIFICANCE_ALPHA = 0.05  # two-sided binomial test threshold
 
 
 def to_decimal(american: float) -> float:
@@ -112,6 +115,20 @@ def _bucket(prob: float) -> str:
     return "?"
 
 
+def _binomial_significance(wins: int, n: int, p0: float) -> dict:
+    """
+    Two-sided binomial test: H0 = the true hit rate equals the model's mean
+    predicted probability p0. The fixed-points OVERCONF_PTS verdict above
+    flags the same gap whether n=4 or n=400 — this accounts for sample size,
+    so a small-n gap isn't flagged as hard evidence of skill decay.
+    """
+    if n == 0 or not (0.0 < p0 < 1.0):
+        return {"p_value": None, "significant": False, "note": "insufficient data"}
+    result = binomtest(wins, n, p0, alternative="two-sided")
+    return {"p_value": round(float(result.pvalue), 4),
+            "significant": bool(result.pvalue < SIGNIFICANCE_ALPHA)}
+
+
 def calibration_report(ledger: list) -> dict:
     settled = [p for p in ledger if p.get("result") in ("W", "L")
                and isinstance(p.get("predicted_prob"), (int, float))]
@@ -127,14 +144,17 @@ def calibration_report(ledger: list) -> dict:
     for b in sorted(buckets):
         items = buckets[b]
         n = len(items)
-        pred = sum(float(p["predicted_prob"]) for p in items) / n * 100
-        actual = sum(1 for p in items if p["result"] == "W") / n * 100
+        wins = sum(1 for p in items if p["result"] == "W")
+        p0 = sum(float(p["predicted_prob"]) for p in items) / n
+        pred = p0 * 100
+        actual = wins / n * 100
         gap = pred - actual
         verdict = ("overconfident" if gap > OVERCONF_PTS else
                    "underconfident" if gap < -OVERCONF_PTS else "calibrated")
         rows.append({"bucket": b, "n": n, "pred_pct": round(pred, 1),
                      "actual_pct": round(actual, 1), "gap": round(gap, 1),
-                     "verdict": verdict})
+                     "verdict": verdict,
+                     "binomial_test": _binomial_significance(wins, n, p0)})
     return {
         "settled_with_prob": len(settled),
         "settled_missing_prob": no_prob,
@@ -161,8 +181,10 @@ def _print(report: dict) -> None:
         print(f"  only {cal['settled_with_prob']} settled picks carry predicted_prob "
               f"(need ~30 for signal; {cal['settled_missing_prob']} settled picks pre-date prob capture)")
     for r in cal["buckets"]:
+        bt = r["binomial_test"]
+        sig = f" [p={bt['p_value']}, STATISTICALLY SIGNIFICANT]" if bt["significant"] else ""
         print(f"  {r['bucket']:8} n={r['n']:3} | pred {r['pred_pct']:5.1f}% vs actual "
-              f"{r['actual_pct']:5.1f}% | gap {r['gap']:+5.1f} → {r['verdict']}")
+              f"{r['actual_pct']:5.1f}% | gap {r['gap']:+5.1f} → {r['verdict']}{sig}")
 
 
 def main() -> None:

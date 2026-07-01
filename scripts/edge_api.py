@@ -18,6 +18,7 @@ import uvicorn
 
 import soccer_markets as sm
 import poisson_model as pm
+import poisson_regression as psreg
 import ufc_markets as um
 import chaos_engine as ce
 import staking as stk
@@ -33,7 +34,25 @@ RATINGS_META: dict = {}   # freshness stamps (ratings_meta.json) — flag stale 
 TENNIS_FORM: dict = {}   # H2H / form / psych / clutch — built by fetch_tennis_form.py
 SOCCER_FORM: dict = {}   # national-team form / goals / H2H — built by fetch_soccer_form.py
 WNBA_FORM: dict = {}     # form / rest / B2B / H2H — built by fetch_wnba_form.py
+INTL_SOCCER_RATINGS: dict = {}  # data-fit national-team attack/defense/eigen — fit_soccer_ratings.py
 SIGMA = {"NBA": 11.5, "WNBA": 9.5, "NFL": 13.5, "MLB": 3.0, "TENNIS": 30.0, "SOCCER": 2.0, "Tennis": 30.0, "Soccer": 2.0}
+
+
+def _intl_lambdas(home: str, away: str, neutral: bool):
+    """
+    (lambda_home, lambda_away) from the Poisson-regression national-team fit
+    (fit_soccer_ratings.py — real match data, not a hand-tuned heuristic).
+    Returns None if either team is missing from the fit (never invents one).
+    """
+    teams = INTL_SOCCER_RATINGS.get("teams", {})
+    h, a = teams.get(home), teams.get(away)
+    if not h or not a or h.get("attack") is None or a.get("attack") is None:
+        return None
+    mu = INTL_SOCCER_RATINGS.get("mu", 0.0)
+    home_adv = 0.0 if neutral else INTL_SOCCER_RATINGS.get("home_advantage", 0.0)
+    lh = float(np.exp(mu + home_adv + h["attack"] - a["defense"]))
+    la = float(np.exp(mu + a["attack"] - h["defense"]))
+    return max(0.15, lh), max(0.15, la)
 
 @app.on_event("startup")
 def load_all():
@@ -60,6 +79,9 @@ def load_all():
     if (BASE / "ratings_meta.json").exists():
         with open(BASE / "ratings_meta.json") as f:
             RATINGS_META.update(json.load(f))
+    if (BASE / "soccer" / "international_ratings.json").exists():
+        with open(BASE / "soccer" / "international_ratings.json") as f:
+            INTL_SOCCER_RATINGS.update(json.load(f))
     if (BASE / "tennis_form.json").exists():
         with open(BASE / "tennis_form.json") as f:
             TENNIS_FORM.update(json.load(f))
@@ -584,26 +606,36 @@ def predict_soccer(req: SoccerMarketReq):
     h_r = get_ratings("Soccer", req.home_team)
     a_r = get_ratings("Soccer", req.away_team)
     have_odds = None not in (req.home_odds, req.draw_odds, req.away_odds)
+    intl = _intl_lambdas(req.home_team, req.away_team, req.neutral) if not have_odds else None
+    intl_teams = INTL_SOCCER_RATINGS.get("teams", {})
     # Ratings are ONLY needed for the no-odds fallback. With full 1X2 odds we
-    # market-calibrate the lambdas (the sharp price beats our club-based national
-    # ratings), so a name mismatch must NOT kill the board — common for WC nations
-    # (e.g. odds feed "USA" vs ratings' "United States"). Refuse only when we have
-    # neither odds nor ratings to work from.
-    if not have_odds and (not h_r or not a_r):
+    # market-calibrate the lambdas (the sharp price beats any model), so a name
+    # mismatch must NOT kill the board — common for WC nations (e.g. odds feed
+    # "USA" vs ratings' "United States"). Refuse only when we have neither odds
+    # nor ANY ratings source (data-fit or heuristic) to work from.
+    if not have_odds and intl is None and (not h_r or not a_r):
         return {"status": "NO_DATA",
                 "note": "no odds and team(s) not in soccer ratings — no model opinion",
                 "home_ratings": h_r, "away_ratings": a_r}
 
-    # Goal rates: prefer MARKET-CALIBRATED lambdas (fit to the devigged 1X2) when
-    # full 3-way odds are supplied — the sharp market beats our national-team
-    # ratings. Fall back to ratings only when odds are missing.
+    # Goal rates, in priority order:
+    #   1. MARKET-CALIBRATED — fit to the devigged 1X2 when full odds exist.
+    #      The sharp market beats any model; nothing below this is used if we have odds.
+    #   2. DATA-FIT POISSON REGRESSION — real match results (fit_soccer_ratings.py),
+    #      not a hand-tuned heuristic. Used when odds are missing but both teams
+    #      are in the fit (~260 national teams as of the last refresh).
+    #   3. HEURISTIC RATINGS — the old {"attack":1.4,"defense":1.2}-style default,
+    #      last resort for a team with no real match history in the fit.
     calibrated = False
-    lambda_source = "ratings"
+    lambda_source = "ratings_heuristic"
     if have_odds:
         dv0 = sm.devig_3way(req.home_odds, req.draw_odds, req.away_odds)
         lh, la, _resid = sm.solve_lambdas_from_1x2(dv0["home"], dv0["draw"], dv0["away"])
         calibrated = True
         lambda_source = "market_calibrated"
+    elif intl is not None:
+        lh, la = intl
+        lambda_source = "data_fit_poisson_regression"
     else:
         home_boost = 1.0 if req.neutral else 1.3
         lh = max(0.3, h_r.get("attack", 1.4) * a_r.get("defense", 1.2) * home_boost)
@@ -672,6 +704,11 @@ def predict_soccer(req: SoccerMarketReq):
         "lambda_home": round(lh, 3), "lambda_away": round(la, 3),
         "lambda_source": lambda_source,
         "method": f"{'MarketCalibrated' if calibrated else 'Ratings'}Poisson+DixonColes(rho={req.rho})",
+        "data_fit_ratings": {
+            "home": intl_teams.get(req.home_team), "away": intl_teams.get(req.away_team),
+            "note": "eigen_rating = Keener eigenvector strength (higher = stronger); "
+                    "attack/defense = Poisson regression coefficients on the log scale",
+        } if (intl_teams.get(req.home_team) or intl_teams.get(req.away_team)) else None,
         "markets": {
             "1x2": {"home": round(book.home_win, 4), "draw": round(book.draw, 4),
                     "away": round(book.away_win, 4)},

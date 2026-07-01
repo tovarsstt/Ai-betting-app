@@ -87,6 +87,23 @@ draw, then pick the market that both survives the draw AND clears the value gate
   also ships alongside it — same matrix, useful for correlated same-game
   markets (e.g. home win AND BTTS) that the closed form can't give jointly.
   Generic version (any sport, caller-supplied lambdas): `POST /simulate-match`.
+- **No-odds fallback is now DATA-FIT, not a hand-tuned heuristic.** When full
+  1X2 odds are missing, lambdas come from `poisson_regression.py` — a
+  multivariate Poisson GLM (log link, ridge-regularized, time-decayed) fit
+  jointly over ~260 national teams from real match results (real dataset:
+  github.com/martj42/international_results, 49k+ verified internationals
+  1872-present, cached at `data/soccer/international_results.csv`). Response
+  field `lambda_source: "data_fit_poisson_regression"` marks when this fired
+  vs `"ratings_heuristic"` (old static default, last-resort only) vs
+  `"market_calibrated"` (odds present — always wins when available).
+  `data_fit_ratings` in the response also carries each team's Keener
+  eigenvector strength rating (`eigen_ratings.py` — real linear algebra:
+  power iteration to the dominant/Perron eigenvector of a goal-share
+  dominance matrix, so beating a strong team counts for more than beating a
+  weak one, self-consistently). Refresh the fit periodically:
+  `python3 scripts/fetch_international_results.py && python3 scripts/fit_soccer_ratings.py`
+  then restart edge_api.py. Never fit on stale-cached data silently — rerun
+  fetch first.
 
 ## MARKET PRIORITY (sharpest → softest)
 

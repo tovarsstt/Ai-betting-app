@@ -51,6 +51,36 @@ def test_calibration_buckets_and_overconfidence():
     assert b["gap"] > 0
 
 
+def test_binomial_test_flags_significant_on_large_sample_gap():
+    # 30 picks at model 80%, only 15 win (50%) -> same-direction gap as the
+    # n=4 case above, but at real volume this is a statistically real miss.
+    ledger = [{"sport": "T", "result": "W" if i < 15 else "L", "predicted_prob": 0.80}
+              for i in range(30)]
+    rep = calibration_report(ledger)
+    b = rep["buckets"][0]
+    assert b["binomial_test"]["significant"] is True
+    assert b["binomial_test"]["p_value"] < 0.05
+
+
+def test_binomial_test_not_significant_on_tiny_sample():
+    # n=5, model 60%, 2 win (40%) -> a real-looking gap, but n=5 is too little
+    # data for a two-sided binomial test to call it significant.
+    ledger = [{"sport": "T", "result": r, "predicted_prob": 0.60}
+              for r in ("W", "W", "L", "L", "L")]
+    rep = calibration_report(ledger)
+    b = rep["buckets"][0]
+    assert b["binomial_test"]["significant"] is False
+
+
+def test_binomial_test_not_significant_when_actual_matches_predicted():
+    ledger = [{"sport": "T", "result": r, "predicted_prob": 0.70}
+              for r in ["W"] * 7 + ["L"] * 3]
+    rep = calibration_report(ledger)
+    b = rep["buckets"][0]
+    assert b["binomial_test"]["significant"] is False
+    assert b["binomial_test"]["p_value"] > 0.5
+
+
 def test_calibration_counts_missing_prob():
     ledger = [{"result": "W", "predicted_prob": 0.6},
               {"result": "L"},  # no predicted_prob
