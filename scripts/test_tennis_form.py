@@ -129,3 +129,55 @@ def test_serve_stats_skipped_when_only_one_player_has_them():
     _, detail = e._tennis_aux_logit(HOME, AWAY, "Hard")
     # Assert: no clutch signal at all — never invent the missing side.
     assert "clutch_diff" not in detail
+
+
+# ── Surname-first names (Zhang Shuai bug) ────────────────────────────────────
+# tennis-data.co.uk always stores "Surname Initial." unambiguously (Zhang S.),
+# so the BUILD side keys her correctly as "zhang|s". But a full display name
+# "Zhang Shuai" is ambiguous — Western-order guessing reads it as "shuai|z"
+# and silently misses her entire H2H/profile record. Real bug found 2026-07-01
+# analyzing Muchova vs Zhang Shuai (real 3-0 H2H, 2-0 on grass, that the model
+# was blind to).
+def test_tennis_key_assumes_western_order_by_default():
+    # Documents the known limitation of the plain (non-resolving) keyer.
+    assert e._tennis_key("Zhang Shuai") == "shuai|z"
+
+
+def test_tennis_key_candidates_includes_surname_first_reading():
+    cands = e._tennis_key_candidates("Zhang Shuai")
+    assert "shuai|z" in cands   # Western-order guess
+    assert "zhang|s" in cands  # surname-first reading — matches the real data
+
+
+def test_tennis_key_candidates_single_candidate_when_orders_coincide():
+    # A name where both readings produce the same key shouldn't duplicate.
+    cands = e._tennis_key_candidates("Madonna Madonna")
+    assert cands == ["madonna|m"]
+
+
+def test_resolve_tennis_key_finds_surname_first_entry():
+    players = {"zhang|s": {"form": 0.1}}
+    resolved = e._resolve_tennis_key("Zhang Shuai", players)
+    assert resolved == "zhang|s"
+
+
+def test_resolve_tennis_key_falls_back_to_western_guess_when_unknown():
+    resolved = e._resolve_tennis_key("Zhang Shuai", {})
+    assert resolved == "shuai|z"  # unknown player — keep the old guess, don't invent data
+
+
+def test_muchova_vs_zhang_h2h_now_resolves_correctly():
+    # Arrange: real data shape — built with the CORRECT "zhang|s" key
+    # (as fetch_tennis_form.py's unambiguous "Surname Initial." keyer produces).
+    muchova_key = "%s|%s" % name_key("Muchova K.")
+    zhang_key = "%s|%s" % name_key("Zhang S.")
+    assert zhang_key == "zhang|s"
+    _set_form(
+        players={muchova_key: {"form": 0.0}, zhang_key: {"form": 0.0}},
+        h2h={muchova_key: {zhang_key: {"all": 0.6, "Grass": 0.8}}},
+    )
+    # Act: lookup uses the FULL display names, as the odds feed supplies them.
+    nudge, detail = e._tennis_aux_logit("Karolina Muchova", "Zhang Shuai", "Grass")
+    # Assert: H2H is found and applied — before the fix this silently returned {}.
+    assert detail.get("h2h") == 0.8
+    assert nudge > 0

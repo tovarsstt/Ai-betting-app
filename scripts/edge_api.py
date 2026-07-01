@@ -311,7 +311,9 @@ TENNIS_AUX_CAP = 0.8
 W_H2H, W_FORM, W_PSYCH, W_CLUTCH, W_STREAK = 0.7, 0.6, 0.4, 0.4, 0.02
 
 def _tennis_key(name: str) -> Optional[str]:
-    """(last surname, first initial) key — mirrors fetch_tennis_form.name_key."""
+    """(last surname, first initial) key — mirrors fetch_tennis_form.name_key.
+    Assumes Western given-first order; use _resolve_tennis_key for a full
+    display name that might be surname-first (see its docstring)."""
     toks = str(name).replace(".", "").split()
     if len(toks) < 2:
         return None
@@ -319,11 +321,42 @@ def _tennis_key(name: str) -> Optional[str]:
         return f"{toks[-2].lower()}|{toks[-1][0].lower()}"
     return f"{toks[-1].lower()}|{toks[0][0].lower()}"
 
+
+def _tennis_key_candidates(name: str) -> list:
+    """Both possible keys for a full display name. tennis-data.co.uk always
+    stores 'Surname Initial.' unambiguously, so the BUILD side (name_key in
+    fetch_tennis_form.py / fetch_tennis_surface.py) is always correct. But a
+    full display name like "Zhang Shuai" is ambiguous at LOOKUP time: Western
+    order assumes the LAST token is the surname, which is wrong for
+    surname-first names (Chinese, Korean, Vietnamese, Hungarian, ...) —
+    "Zhang" genuinely IS her surname, so guessing "Shuai" silently breaks
+    every H2H/profile lookup for her. Try both orderings."""
+    given_first = _tennis_key(name)
+    if not given_first:
+        return []
+    toks = str(name).replace(".", "").split()
+    surname_first = f"{toks[0].lower()}|{toks[-1][0].lower()}"
+    return [given_first] if given_first == surname_first else [given_first, surname_first]
+
+
+def _resolve_tennis_key(name: str, *data: dict) -> Optional[str]:
+    """Pick whichever key candidate actually exists in the given data dicts
+    (checked in order); falls back to the given-first guess when neither
+    candidate is present (keeps the old None-safe behaviour for genuinely
+    unknown players)."""
+    candidates = _tennis_key_candidates(name)
+    if not candidates:
+        return None
+    for cand in candidates:
+        if any(cand in d for d in data):
+            return cand
+    return candidates[0]
+
 def _tennis_aux_logit(home: str, away: str, surf: str):
     """H2H + form + psych + clutch folded into one capped, home-positive logit nudge."""
     players = TENNIS_FORM.get("players") or {}
     h2h = TENNIS_FORM.get("h2h") or {}
-    hk, ak = _tennis_key(home), _tennis_key(away)
+    hk, ak = _resolve_tennis_key(home, players, h2h), _resolve_tennis_key(away, players, h2h)
     if not hk or not ak:
         return 0.0, {}
     h, a = players.get(hk) or {}, players.get(ak) or {}
