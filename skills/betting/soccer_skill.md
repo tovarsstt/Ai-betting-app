@@ -104,6 +104,20 @@ draw, then pick the market that both survives the draw AND clears the value gate
   `python3 scripts/fetch_international_results.py && python3 scripts/fit_soccer_ratings.py`
   then restart edge_api.py. Never fit on stale-cached data silently — rerun
   fetch first.
+- **Club-league coverage (2026-07-01):** the international fit above is
+  national teams only — most soccer betting outside a World Cup window is
+  CLUB fixtures. `fit_club_ratings.py` runs the same Poisson-regression +
+  Keener-eigenvector fitters on real results from the big-5 domestic leagues
+  (Premier League, La Liga, Serie A, Bundesliga, Ligue 1 — source:
+  football-data.co.uk, same publisher as the tennis surface/form data), fit
+  PER LEAGUE (attack/defense scales aren't comparable across leagues that
+  never play each other). When no odds are given and both teams resolve to
+  the SAME league, `lambda_source` reads
+  `"data_fit_poisson_regression_club(<League Name>)"`. Champions/Europa
+  League and leagues outside the big-5 are NOT covered — no odds + a team
+  from an uncovered league/competition still returns `NO_DATA` honestly,
+  never a fabricated number. Refresh: `python3 scripts/fetch_club_results.py
+  && python3 scripts/fit_club_ratings.py`.
 
 ## MARKET PRIORITY (sharpest → softest)
 

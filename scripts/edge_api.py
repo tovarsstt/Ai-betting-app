@@ -37,6 +37,7 @@ TENNIS_SERVE: dict = {}  # ATP serve/break-point stats — built by fetch_tennis
 SOCCER_FORM: dict = {}   # national-team form / goals / H2H — built by fetch_soccer_form.py
 WNBA_FORM: dict = {}     # form / rest / B2B / H2H — built by fetch_wnba_form.py
 INTL_SOCCER_RATINGS: dict = {}  # data-fit national-team attack/defense/eigen — fit_soccer_ratings.py
+CLUB_SOCCER_RATINGS: dict = {}  # data-fit big-5-league club attack/defense/eigen — fit_club_ratings.py
 SIGMA = {"NBA": 11.5, "WNBA": 9.5, "NFL": 13.5, "MLB": 3.0, "TENNIS": 30.0, "SOCCER": 2.0, "Tennis": 30.0, "Soccer": 2.0}
 
 
@@ -55,6 +56,28 @@ def _intl_lambdas(home: str, away: str, neutral: bool):
     lh = float(np.exp(mu + home_adv + h["attack"] - a["defense"]))
     la = float(np.exp(mu + a["attack"] - h["defense"]))
     return max(0.15, lh), max(0.15, la)
+
+
+def _club_lambdas(home: str, away: str, neutral: bool):
+    """
+    (lambda_home, lambda_away) from the Poisson-regression CLUB-league fit
+    (fit_club_ratings.py — big-5 domestic leagues, real match data). Fit is
+    PER LEAGUE (see fit_club_ratings.py docstring for why), so both teams
+    must resolve to the SAME league's pool — cross-league attack/defense
+    values aren't on a comparable scale. Returns (lambdas, league_name) or
+    (None, None) if no single league has both teams (never invents one).
+    """
+    for league, data in (CLUB_SOCCER_RATINGS.get("leagues") or {}).items():
+        teams = data.get("teams", {})
+        h, a = teams.get(home), teams.get(away)
+        if not h or not a or h.get("attack") is None or a.get("attack") is None:
+            continue
+        mu = data.get("mu", 0.0)
+        home_adv = 0.0 if neutral else data.get("home_advantage", 0.0)
+        lh = float(np.exp(mu + home_adv + h["attack"] - a["defense"]))
+        la = float(np.exp(mu + a["attack"] - h["defense"]))
+        return (max(0.15, lh), max(0.15, la)), league
+    return None, None
 
 @app.on_event("startup")
 def load_all():
@@ -84,6 +107,9 @@ def load_all():
     if (BASE / "soccer" / "international_ratings.json").exists():
         with open(BASE / "soccer" / "international_ratings.json") as f:
             INTL_SOCCER_RATINGS.update(json.load(f))
+    if (BASE / "soccer" / "club_ratings.json").exists():
+        with open(BASE / "soccer" / "club_ratings.json") as f:
+            CLUB_SOCCER_RATINGS.update(json.load(f))
     if (BASE / "tennis_form.json").exists():
         with open(BASE / "tennis_form.json") as f:
             TENNIS_FORM.update(json.load(f))
@@ -99,9 +125,10 @@ def load_all():
     nfp = len((TENNIS_FORM.get("players") or {}))
     nts = len((TENNIS_SERVE.get("players") or {}))
     nsf = len((SOCCER_FORM.get("teams") or {}))
+    ncr = sum(len(l.get("teams", {})) for l in (CLUB_SOCCER_RATINGS.get("leagues") or {}).values())
     nwf = len((WNBA_FORM.get("teams") or {}))
     print(f"[EdgeAPI] {len(BUNDLES)} models: {list(BUNDLES.keys())} | "
-          f"tennis {nfp} (serve {nts} ATP) | soccer {nsf} | wnba {nwf}")
+          f"tennis {nfp} (serve {nts} ATP) | soccer {nsf} (club {ncr}) | wnba {nwf}")
 
 # ── Team resolution ───────────────────────────────────────────────────────────
 NBA_IDS = {
@@ -644,13 +671,15 @@ def predict_soccer(req: SoccerMarketReq):
     a_r = get_ratings("Soccer", req.away_team)
     have_odds = None not in (req.home_odds, req.draw_odds, req.away_odds)
     intl = _intl_lambdas(req.home_team, req.away_team, req.neutral) if not have_odds else None
+    club, club_league = (_club_lambdas(req.home_team, req.away_team, req.neutral)
+                          if not have_odds and intl is None else (None, None))
     intl_teams = INTL_SOCCER_RATINGS.get("teams", {})
     # Ratings are ONLY needed for the no-odds fallback. With full 1X2 odds we
     # market-calibrate the lambdas (the sharp price beats any model), so a name
     # mismatch must NOT kill the board — common for WC nations (e.g. odds feed
     # "USA" vs ratings' "United States"). Refuse only when we have neither odds
     # nor ANY ratings source (data-fit or heuristic) to work from.
-    if not have_odds and intl is None and (not h_r or not a_r):
+    if not have_odds and intl is None and club is None and (not h_r or not a_r):
         return {"status": "NO_DATA",
                 "note": "no odds and team(s) not in soccer ratings — no model opinion",
                 "home_ratings": h_r, "away_ratings": a_r}
@@ -658,11 +687,13 @@ def predict_soccer(req: SoccerMarketReq):
     # Goal rates, in priority order:
     #   1. MARKET-CALIBRATED — fit to the devigged 1X2 when full odds exist.
     #      The sharp market beats any model; nothing below this is used if we have odds.
-    #   2. DATA-FIT POISSON REGRESSION — real match results (fit_soccer_ratings.py),
-    #      not a hand-tuned heuristic. Used when odds are missing but both teams
-    #      are in the fit (~260 national teams as of the last refresh).
-    #   3. HEURISTIC RATINGS — the old {"attack":1.4,"defense":1.2}-style default,
-    #      last resort for a team with no real match history in the fit.
+    #   2. DATA-FIT POISSON REGRESSION (INTERNATIONAL) — real match results
+    #      (fit_soccer_ratings.py), not a hand-tuned heuristic. National teams only.
+    #   3. DATA-FIT POISSON REGRESSION (CLUB) — same fitter, big-5 domestic
+    #      leagues (fit_club_ratings.py). Only used when BOTH teams resolve to
+    #      the same league's pool — see _club_lambdas docstring.
+    #   4. HEURISTIC RATINGS — the old {"attack":1.4,"defense":1.2}-style default,
+    #      last resort for a team with no real match history in either fit.
     calibrated = False
     lambda_source = "ratings_heuristic"
     if have_odds:
@@ -673,6 +704,9 @@ def predict_soccer(req: SoccerMarketReq):
     elif intl is not None:
         lh, la = intl
         lambda_source = "data_fit_poisson_regression"
+    elif club is not None:
+        lh, la = club
+        lambda_source = f"data_fit_poisson_regression_club({club_league})"
     else:
         home_boost = 1.0 if req.neutral else 1.3
         lh = max(0.3, h_r.get("attack", 1.4) * a_r.get("defense", 1.2) * home_boost)
@@ -741,11 +775,21 @@ def predict_soccer(req: SoccerMarketReq):
         "lambda_home": round(lh, 3), "lambda_away": round(la, 3),
         "lambda_source": lambda_source,
         "method": f"{'MarketCalibrated' if calibrated else 'Ratings'}Poisson+DixonColes(rho={req.rho})",
-        "data_fit_ratings": {
+        "data_fit_ratings": ({
             "home": intl_teams.get(req.home_team), "away": intl_teams.get(req.away_team),
             "note": "eigen_rating = Keener eigenvector strength (higher = stronger); "
                     "attack/defense = Poisson regression coefficients on the log scale",
-        } if (intl_teams.get(req.home_team) or intl_teams.get(req.away_team)) else None,
+        } if (intl_teams.get(req.home_team) or intl_teams.get(req.away_team)) else
+        {
+            "league": club_league,
+            "home": (CLUB_SOCCER_RATINGS.get("leagues", {}).get(club_league, {})
+                     .get("teams", {}).get(req.home_team)),
+            "away": (CLUB_SOCCER_RATINGS.get("leagues", {}).get(club_league, {})
+                     .get("teams", {}).get(req.away_team)),
+            "note": "eigen_rating = Keener eigenvector strength (higher = stronger); "
+                    "attack/defense = Poisson regression coefficients on the log scale, "
+                    "fit within this league only — not comparable across leagues",
+        } if club_league else None),
         "markets": {
             "1x2": {"home": round(book.home_win, 4), "draw": round(book.draw, 4),
                     "away": round(book.away_win, 4)},
