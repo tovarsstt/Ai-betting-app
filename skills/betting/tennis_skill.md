@@ -8,6 +8,7 @@
 - **Odds come from the live board ONLY.** The app auto-discovers every active `tennis_*` tournament from the Odds API `/sports` endpoint and pulls real prices. NEVER invent a tennis odd — if a price isn't on the board or supplied by the user, say "no line", don't estimate one.
 - **Ranks publish every Monday.** Auto-refreshed weekly (`fetch_tennis_ratings.py` cron, or `POST /api/refresh-rankings`). If `predict` returns `ranks_stale`, say so and refresh before trusting a rank-driven edge.
 - **`bet_signal`/`edge_strength` are live for tennis** (prob-edge based, fixed 2026-06-25). STRONG = ≥10pt model-vs-market prob edge + EV>5%.
+- **Live/in-play re-pricing (2026-07-01):** pass `sets_won_home`/`sets_won_away`/`best_of` to `/predict` for a match in progress and the model re-prices off the ACTUAL set score (`scripts/tennis_live.py`) instead of only showing the pregame number. `profile`'s `live` block shows the pregame vs live prob when active — use the live one.
 
 ---
 
@@ -17,7 +18,7 @@ REAL results. Cite these — they are data, not guesses:
 - **H2H** — recency-weighted, SAME-SURFACE when available (clay H2H ≠ grass H2H).
 - **form** — recency-weighted recent win-rate edge.
 - **psych** — win-rate after dropping the first set (fighter vs folder).
-- **clutch** — deciding-set + tiebreak-set win-rate (NO break-point %/aces yet — not in our data).
+- **clutch** — deciding-set + tiebreak-set win-rate, PLUS real break-point save/convert % for ATP (`fetch_tennis_serve_stats.py`, source: Tennismylife/TML-Database — Sackmann's original repos are gone from GitHub as of 2026-07-01). WTA still deciding-set/tiebreak only — no live-updated WTA serve-stat source found yet.
 - **streak** — current W/L run.
 
 The model blends points + surface + this profile, **capped** so profile refines but never
