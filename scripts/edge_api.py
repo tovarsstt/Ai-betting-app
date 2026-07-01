@@ -22,6 +22,7 @@ import poisson_regression as psreg
 import ufc_markets as um
 import chaos_engine as ce
 import staking as stk
+import tennis_live as tlive
 from typing import List
 
 BASE = Path(__file__).parent.parent / "data"
@@ -242,6 +243,10 @@ class PredictReq(BaseModel):
     bankroll: float = 1000.0
     neutral: bool = False  # neutral venue (World Cup) — no home boost
     surface: Optional[str] = None  # tennis: Hard | Clay | Grass (for surface affinity)
+    # Live/in-play tennis — omit both for a pre-match price.
+    sets_won_home: Optional[int] = None
+    sets_won_away: Optional[int] = None
+    best_of: int = 3  # 3 = WTA / most ATP, 5 = ATP majors
 
 def _formula_margin(sport: str, h_r: dict, a_r: dict) -> float:
     """Pure-formula margin prediction — used when model is missing or degenerate."""
@@ -463,6 +468,24 @@ def predict(req: PredictReq):
                  "profile_adj_logit": round(aux, 3)}
         if aux_detail:
             extra["profile"] = aux_detail
+        # ── Live/in-play: re-price off the current set score ──────────────────
+        # Pre-match hcp above stays the PREGAME number (method/profile/surface all
+        # keep working off it). If the caller supplies a live set score, invert it
+        # into a per-set win prob (tennis_live.py) and recompute — the model was
+        # blind to match state before this; now a 2-0 leader prices near 1.0
+        # instead of showing their pregame number all match long.
+        if req.sets_won_home is not None and req.sets_won_away is not None:
+            try:
+                live = tlive.live_win_prob(hcp, req.sets_won_home, req.sets_won_away,
+                                           best_of=req.best_of)
+                hcp = live["live_match_prob_home"]
+                acp = 1.0 - hcp
+                pred_margin = (hcp - 0.5) * 10  # re-proxy off the live prob
+                method += "+Live"
+                extra["method"] = method
+                extra["live"] = live
+            except ValueError as e:
+                extra["live_error"] = str(e)
         # Rank freshness — honest about stale data; ATP/WTA ranks publish weekly.
         meta = RATINGS_META.get("tennis") or {}
         if meta.get("updated"):

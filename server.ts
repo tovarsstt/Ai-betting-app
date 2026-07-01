@@ -1536,6 +1536,90 @@ function tennisActiveSurface(): 'Clay' | 'Grass' | 'Hard' {
   return 'Hard';
 }
 
+// ── ESPN tennis scoreboard shape ────────────────────────────────────────────
+// ESPN nests every match (major AND regular tour) under
+// events[].groupings[].competitions[] — there is NO top-level events[].competitions.
+// linescores[].winner is the authoritative "who won this set" flag (linescore
+// VALUE is games won in that set, not sets won — count winner:true entries).
+interface TennisLinescore { value: number; winner?: boolean; tiebreak?: number }
+interface TennisCompetitor {
+  athlete?: { displayName?: string; rank?: number };
+  winner?: boolean;
+  linescores?: TennisLinescore[];
+}
+interface TennisMatch {
+  date: string;
+  status: { type: { description: string; state: string; completed: boolean } };
+  format?: { regulation?: { periods?: number } };
+  competitors: TennisCompetitor[];
+}
+interface TennisTourEvent {
+  name: string;
+  groupings?: Array<{ grouping?: { slug?: string }; competitions: TennisMatch[] }>;
+}
+
+// Flattens to singles matches only — doubles/mixed pairs would poison both the
+// schedule listing and the live-score lookup (the model is singles-only, see
+// project memory on the doubles-vs-singles gap).
+function flattenTennisSinglesMatches(events: TennisTourEvent[]): TennisMatch[] {
+  const out: TennisMatch[] = [];
+  for (const ev of events) {
+    for (const g of ev.groupings ?? []) {
+      if (!g.grouping?.slug?.includes('singles')) continue;
+      out.push(...g.competitions);
+    }
+  }
+  return out;
+}
+
+function setsWon(c: TennisCompetitor): number {
+  return (c.linescores ?? []).filter(ls => ls.winner === true).length;
+}
+
+const tennisSurname = (name: string): string =>
+  name.trim().toLowerCase().split(/[\s,]+/).filter(Boolean).pop() ?? '';
+
+// Best-effort live set score for an in-progress match — used to re-price the
+// tennis model off the CURRENT score instead of only the pregame number
+// (scripts/tennis_live.py does the actual math). Returns null for anything
+// pre-match, finished, or that ESPN doesn't have live right now; the /predict
+// call falls back to a pure pregame price when this is null.
+async function fetchTennisLiveSetScore(
+  homeName: string, awayName: string
+): Promise<{ setsWonHome: number; setsWonAway: number; bestOf: number } | null> {
+  try {
+    const results = await Promise.allSettled([
+      fetch('https://site.api.espn.com/apis/site/v2/sports/tennis/atp/scoreboard', { signal: AbortSignal.timeout(4000) }),
+      fetch('https://site.api.espn.com/apis/site/v2/sports/tennis/wta/scoreboard', { signal: AbortSignal.timeout(4000) }),
+    ]);
+    const homeSurname = tennisSurname(homeName);
+    const awaySurname = tennisSurname(awayName);
+    if (!homeSurname || !awaySurname) return null;
+
+    for (const r of results) {
+      if (r.status !== 'fulfilled' || !r.value.ok) continue;
+      const data = await r.value.json() as { events?: TennisTourEvent[] };
+      const matches = flattenTennisSinglesMatches(data.events ?? []);
+      for (const m of matches) {
+        if (m.status.type.state !== 'in') continue; // only live matches carry a real-time score
+        const names = m.competitors.map(c => c.athlete?.displayName?.toLowerCase() ?? '');
+        const homeIdx = names.findIndex(n => n.includes(homeSurname));
+        const awayIdx = names.findIndex(n => n.includes(awaySurname));
+        if (homeIdx === -1 || awayIdx === -1 || homeIdx === awayIdx) continue;
+        const periods = m.format?.regulation?.periods;
+        return {
+          setsWonHome: setsWon(m.competitors[homeIdx]),
+          setsWonAway: setsWon(m.competitors[awayIdx]),
+          bestOf: periods === 5 ? 5 : 3,
+        };
+      }
+    }
+    return null;
+  } catch {
+    return null; // best-effort — pregame pricing still works without this
+  }
+}
+
 async function fetchTennisContext(matchup: string): Promise<string> {
   // Identify active tournament — first key in TENNIS list is the current priority
   const activeTournamentKey = SPORT_KEYS.TENNIS?.[0] ?? '';
@@ -1605,49 +1689,42 @@ CRITICAL: Never cite clay stats for a grass match. Do NOT use clay season head-t
     fetch('https://site.api.espn.com/apis/site/v2/sports/tennis/wta/scoreboard', { signal: AbortSignal.timeout(5000) }),
   ]);
 
-  type TennisEvent = {
-    name: string;
-    date: string;
-    status: { type: { description: string } };
-    competitions: Array<{
-      competitors: Array<{ athlete?: { displayName?: string; rank?: number }; score?: string; winner?: boolean }>;
-    }>;
-  };
-
   const keywords = matchup
     ? matchup.toLowerCase().split(/\s+vs?\.?\s+/i).map(t => t.trim())
     : [];
 
   for (const [idx, result] of scheduleResults.entries()) {
     if (result.status !== 'fulfilled' || !result.value.ok) continue;
-    const data = await result.value.json() as { events?: TennisEvent[] };
-    if (!data.events?.length) continue;
+    const data = await result.value.json() as { events?: TennisTourEvent[] };
+    const allMatches = flattenTennisSinglesMatches(data.events ?? []);
+    if (!allMatches.length) continue;
 
     const tour = idx === 0 ? 'ATP' : 'WTA';
     const relevant = keywords.length
-      ? data.events.filter(ev =>
-          ev.competitions[0]?.competitors.some(c =>
+      ? allMatches.filter(m =>
+          m.competitors.some(c =>
             keywords.some(kw => c.athlete?.displayName?.toLowerCase().includes(kw))
           )
         )
-      : data.events.slice(0, 6);
+      : allMatches.slice(0, 6);
 
     if (!relevant.length) continue;
     parts.push(`TODAY'S ${tour} SCHEDULE (ESPN):`);
-    for (const ev of relevant.slice(0, 6)) {
-      const comp = ev.competitions[0];
-      const p1 = comp?.competitors[0];
-      const p2 = comp?.competitors[1];
-      const status = ev.status.type.description;
-      const time = new Date(ev.date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'America/New_York' });
+    for (const m of relevant.slice(0, 6)) {
+      const p1 = m.competitors[0];
+      const p2 = m.competitors[1];
+      const status = m.status.type.description;
+      const time = new Date(m.date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'America/New_York' });
       const name1 = p1?.athlete?.displayName ?? '?';
       const name2 = p2?.athlete?.displayName ?? '?';
       const liveRank1 = rankingsMap[name1.toLowerCase()];
       const rank1 = (p1?.athlete?.rank ?? liveRank1) ? `(#${p1?.athlete?.rank ?? liveRank1})` : '';
       const rank2Num = p2?.athlete?.rank ?? rankingsMap[name2.toLowerCase()];
       const rank2 = rank2Num ? `(#${rank2Num})` : '';
+      const isLive = m.status.type.state === 'in';
+      const scoreTag = isLive ? ` [LIVE ${setsWon(p1)}-${setsWon(p2)} sets]` : '';
       parts.push(
-        `  ${name1} ${rank1} vs ${name2} ${rank2} — ${status === 'Scheduled' ? time + ' ET' : status}`
+        `  ${name1} ${rank1} vs ${name2} ${rank2} — ${status === 'Scheduled' ? time + ' ET' : status}${scoreTag}`
       );
     }
   }
@@ -2095,6 +2172,9 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
         // profile: H2H / form / psych / clutch), NOT the XGBoost margin path. Pass
         // the match surface so surface affinity AND surface-aware H2H engage.
         const surface = tennisActiveSurface();
+        // Live/in-play: if the match is on court right now, re-price off the
+        // actual set score (tennis_live.py) instead of only the pregame number.
+        const liveScore = await fetchTennisLiveSetScore(oddsGame.home, oddsGame.away);
         const tRes = await fetch('http://127.0.0.1:8001/predict', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -2103,6 +2183,11 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
             home_team: oddsGame.home, away_team: oddsGame.away,
             spread: oddsGame.spread, home_odds: oddsGame.homeOdds, away_odds: oddsGame.awayOdds,
             surface,
+            ...(liveScore ? {
+              sets_won_home: liveScore.setsWonHome,
+              sets_won_away: liveScore.setsWonAway,
+              best_of: liveScore.bestOf,
+            } : {}),
           }),
           signal: AbortSignal.timeout(4000),
         });
@@ -2112,6 +2197,7 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
             home_true_prob: number | null; bet_signal?: string;
             pick_quality?: string; quality_note?: string;
             method?: string; surface?: string; profile?: Record<string, number>;
+            live?: { sets_won_home: number; sets_won_away: number; pregame_match_prob_home: number };
           };
           if (t.bet_signal === 'NO_DATA' || t.home_cover_prob == null) {
             quantCtx = `━━ TENNIS MODEL: no ranking data for one/both players — model offers NO opinion. Rely on market devig + surface heuristics only.`;
@@ -2127,8 +2213,13 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
               dim('H2H', p.h2h), dim('form', p.form_diff), dim('psych', p.psych_diff),
               dim('clutch', p.clutch_diff), dim('streak', p.streak_diff),
             ].filter(Boolean).join(' |') || ' (no profile data for this pair)';
+            const liveLine = t.live
+              ? `🔴 LIVE — set score ${t.live.sets_won_home}-${t.live.sets_won_away} (${oddsGame.home}-${oddsGame.away}). ` +
+                `Pregame was ${(t.live.pregame_match_prob_home * 100).toFixed(1)}% ${oddsGame.home} — the ${winH}% above is the RE-PRICED live number, use it over the pregame line.\n`
+              : '';
             quantCtx =
               `━━ TENNIS WIN-PROB MODEL (${t.method ?? 'logistic'} on ${t.surface ?? surface}):\n` +
+              liveLine +
               `Model: ${oddsGame.home} ${winH}% vs ${oddsGame.away} ${winA}% | Market devig: ${oddsGame.home} ${mktH}%` +
               (edgeH != null ? ` | Edge ${edgeH > 0 ? '+' : ''}${edgeH.toFixed(1)}pp ${oddsGame.home}` : '') + `\n` +
               `Comparative profile (home − away, surface-aware):${profileLine}\n` +
