@@ -65,6 +65,16 @@ def predict(line_history: list, steps: int = 3, n_samples: int = 30) -> dict:
             "mean": close_preds.tolist(),
             "std":  [0.0] * len(close_preds),
         }
+    except ModuleNotFoundError as e:
+        return {
+            "error": str(e),
+            "note":  "torch/transformers not installed. On Intel Macs, recent PyTorch "
+                     "releases dropped macOS x86_64 wheels for current Python versions "
+                     "(cp313+) — `pip install torch transformers` will fail with "
+                     "'No matching distribution'. Needs an arm64 Mac, an older "
+                     "Python (<=3.12 for torch<=2.2.2, the last Intel-macOS build), "
+                     "or a Linux/cloud box to run Kronos.",
+        }
     except Exception as e:
         return {
             "error": str(e),

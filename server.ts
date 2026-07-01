@@ -6,7 +6,7 @@ import { spawn } from 'child_process';
 import Anthropic from '@anthropic-ai/sdk';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { readFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { impliedProb, devig, toDecimal, marginToWinProb, normalCDF } from './src/utils/mathUtils.js';
 import { parseJSON, parseOddsForTeams, parseMatchupsFromOdds, parseSelectionIdentity } from './src/utils/parsers.js';
 import { getCached, setCache } from './src/utils/cache.js';
@@ -2175,6 +2175,9 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
         // Live/in-play: if the match is on court right now, re-price off the
         // actual set score (tennis_live.py) instead of only the pregame number.
         const liveScore = await fetchTennisLiveSetScore(oddsGame.home, oddsGame.away);
+        // Feed the Kronos line-history store off odds already fetched for this
+        // real pick — builds real line-movement data with zero extra API calls.
+        recordTennisLineSnapshot(oddsGame.home, oddsGame.away, oddsGame.homeOdds);
         const tRes = await fetch('http://127.0.0.1:8001/predict', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -3685,9 +3688,38 @@ app.get('/api/proxy-image', async (req: express.Request, res: express.Response) 
 const KRONOS_ADAPTER = path.resolve(process.cwd(), 'scripts/kronos_adapter.py');
 const KRONOS_CWD     = path.resolve(process.cwd(), 'scripts/kronos');
 
-app.post('/api/line-movement', (req: express.Request, res: express.Response) => {
+interface KronosLineRecord { open: number; high: number; low: number; close: number; volume: number; amount: number }
+
+function runKronosAdapter(
+  history: KronosLineRecord[], steps: number, n_samples: number
+): Promise<Record<string, unknown>> {
+  return new Promise((resolve) => {
+    const input = JSON.stringify({ history, steps, n_samples });
+    const py    = spawn('python3', [KRONOS_ADAPTER, '--json'], { cwd: KRONOS_CWD });
+
+    let stdout = '';
+    let stderr = '';
+    py.stdout.on('data', (chunk: Buffer) => { stdout += chunk.toString(); });
+    py.stderr.on('data', (chunk: Buffer) => { stderr += chunk.toString(); });
+    py.stdin.write(input);
+    py.stdin.end();
+
+    const timer = setTimeout(() => { py.kill(); resolve({ error: 'Kronos timeout' }); }, 90_000);
+
+    py.on('close', () => {
+      clearTimeout(timer);
+      try {
+        resolve(JSON.parse(stdout.trim()));
+      } catch {
+        resolve({ error: 'Kronos parse failed', detail: stderr.slice(0, 300) });
+      }
+    });
+  });
+}
+
+app.post('/api/line-movement', async (req: express.Request, res: express.Response) => {
   const { history, steps = 3, n_samples = 30 } = req.body as {
-    history: Array<{ open: number; high: number; low: number; close: number; volume: number; amount: number }>;
+    history: KronosLineRecord[];
     steps?: number;
     n_samples?: number;
   };
@@ -3697,26 +3729,74 @@ app.post('/api/line-movement', (req: express.Request, res: express.Response) => 
     return;
   }
 
-  const input = JSON.stringify({ history, steps, n_samples });
-  const py    = spawn('python3', [KRONOS_ADAPTER, '--json'], { cwd: KRONOS_CWD });
+  res.json(await runKronosAdapter(history, steps, n_samples));
+});
 
-  let stdout = '';
-  let stderr = '';
-  py.stdout.on('data', (chunk: Buffer) => { stdout += chunk.toString(); });
-  py.stderr.on('data', (chunk: Buffer) => { stderr += chunk.toString(); });
-  py.stdin.write(input);
-  py.stdin.end();
+// ── Tennis line-history accumulation ────────────────────────────────────────
+// Kronos needs a real time series of the LINE to forecast movement — this app
+// had no persisted odds history anywhere (see project memory: "closing_odds
+// never populated"). Rather than adding NEW polling calls to build one (which
+// would burn Odds API quota outside real usage), this piggybacks on odds the
+// app already fetches for real tennis predictions: every /predict call for a
+// TENNIS matchup appends the observed price as one point. History accumulates
+// organically over real usage, never fabricated, and no extra API calls.
+const TENNIS_LINE_HISTORY_PATH = path.resolve(__dirname, 'data/tennis_line_history.json');
+const TENNIS_LINE_HISTORY_MAX  = 512;      // Kronos max context
+const TENNIS_LINE_HISTORY_MIN  = 5;        // adapter's own floor
+const TENNIS_SNAPSHOT_COOLDOWN_MS = 60_000; // don't double-record within a minute
 
-  const timer = setTimeout(() => { py.kill(); res.status(504).json({ error: 'Kronos timeout' }); }, 90_000);
+function tennisMatchKey(home: string, away: string): string {
+  return `${home.trim().toLowerCase()}|${away.trim().toLowerCase()}`;
+}
 
-  py.on('close', () => {
-    clearTimeout(timer);
-    try {
-      res.json(JSON.parse(stdout.trim()));
-    } catch {
-      res.status(500).json({ error: 'Kronos parse failed', detail: stderr.slice(0, 300) });
-    }
-  });
+function loadTennisLineHistory(): Record<string, Array<KronosLineRecord & { ts: number }>> {
+  try {
+    return JSON.parse(readFileSync(TENNIS_LINE_HISTORY_PATH, 'utf8'));
+  } catch {
+    return {};
+  }
+}
+
+function recordTennisLineSnapshot(home: string, away: string, americanOdds: number): void {
+  try {
+    const store = loadTennisLineHistory();
+    const key = tennisMatchKey(home, away);
+    const series = store[key] ?? [];
+    const now = Date.now();
+    const last = series[series.length - 1];
+    if (last && now - last.ts < TENNIS_SNAPSHOT_COOLDOWN_MS) return; // too soon, skip
+
+    // Each observation is a single point-in-time price, not a range — recorded
+    // as a zero-range bar (open=high=low=close). volume=1 per real observation,
+    // amount=0 (no handle data — never invented).
+    series.push({ ts: now, open: americanOdds, high: americanOdds, low: americanOdds,
+                   close: americanOdds, volume: 1, amount: 0 });
+    store[key] = series.slice(-TENNIS_LINE_HISTORY_MAX);
+    writeFileSync(TENNIS_LINE_HISTORY_PATH, JSON.stringify(store));
+  } catch (e) {
+    console.error('recordTennisLineSnapshot failed (non-blocking):', e instanceof Error ? e.message : String(e));
+  }
+}
+
+// GET /api/tennis-line-movement?home=X&away=Y — Kronos forecast off the
+// REAL accumulated history for this matchup. Returns INSUFFICIENT_HISTORY
+// (with a count) instead of ever calling Kronos on fabricated data.
+app.get('/api/tennis-line-movement', async (req: express.Request, res: express.Response) => {
+  const home = String(req.query.home ?? '');
+  const away = String(req.query.away ?? '');
+  if (!home || !away) {
+    res.status(400).json({ error: 'home and away query params required' });
+    return;
+  }
+  const store = loadTennisLineHistory();
+  const series = store[tennisMatchKey(home, away)] ?? [];
+  if (series.length < TENNIS_LINE_HISTORY_MIN) {
+    res.json({ status: 'INSUFFICIENT_HISTORY', n: series.length, need: TENNIS_LINE_HISTORY_MIN,
+               note: 'history accumulates from real /predict calls for this matchup — not enough observations yet' });
+    return;
+  }
+  const history = series.map(({ ts: _ts, ...rec }) => rec);
+  res.json({ status: 'OK', n: series.length, ...(await runKronosAdapter(history, 3, 30)) });
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
