@@ -26,28 +26,15 @@ import math
 from dataclasses import dataclass
 from typing import Optional
 
+import poisson_model as pm
+
 MAX_GOALS = 10
 DEFAULT_RHO = -0.13  # Dixon-Coles low-score correction (typical fitted value)
 
-
-# ── Score matrix ────────────────────────────────────────────────────────────
-def _poisson_pmf(k: int, lam: float) -> float:
-    if lam <= 0:
-        return 1.0 if k == 0 else 0.0
-    return math.exp(-lam) * lam**k / math.factorial(k)
-
-
-def _dc_tau(hg: int, ag: int, lh: float, la: float, rho: float) -> float:
-    """Dixon-Coles adjustment for the four low-score cells; 1.0 elsewhere."""
-    if hg == 0 and ag == 0:
-        return 1.0 - lh * la * rho
-    if hg == 0 and ag == 1:
-        return 1.0 + lh * rho
-    if hg == 1 and ag == 0:
-        return 1.0 + la * rho
-    if hg == 1 and ag == 1:
-        return 1.0 - rho
-    return 1.0
+# Shared primitives — the generic Poisson engine lives in poisson_model.py so
+# other sports can reuse it. Local aliases keep this module's call sites unchanged.
+_poisson_pmf = pm.poisson_pmf
+_dc_tau = pm.dixon_coles_tau
 
 
 def _poisson_vector(lam: float, n: int) -> list[float]:
@@ -118,17 +105,7 @@ def score_matrix(
     lh: float, la: float, max_goals: int = MAX_GOALS, rho: float = DEFAULT_RHO
 ) -> list[list[float]]:
     """P(home=i, away=j) for i,j in [0, max_goals], renormalized to sum to 1."""
-    matrix = [
-        [
-            _poisson_pmf(i, lh) * _poisson_pmf(j, la) * _dc_tau(i, j, lh, la, rho)
-            for j in range(max_goals + 1)
-        ]
-        for i in range(max_goals + 1)
-    ]
-    total = sum(cell for row in matrix for cell in row)
-    if total <= 0:
-        return matrix
-    return [[cell / total for cell in row] for row in matrix]
+    return pm.score_matrix(lh, la, max_count=max_goals, rho=rho)
 
 
 # ── Market probabilities (all derived from the matrix) ────────────────────────
@@ -147,11 +124,13 @@ class MarketBook:
     btts_no: float
     over_under: dict[float, dict[str, float]]  # line -> {"over","under"}
     expected_total_goals: float
+    correct_score: list[dict]  # top scorelines: [{"score","home","away","prob","fair_decimal_odds"}]
 
 
 def derive_markets(
     matrix: list[list[float]],
     total_lines: tuple[float, ...] = (0.5, 1.5, 2.5, 3.5, 4.5),
+    correct_score_top_n: int = 10,
 ) -> MarketBook:
     home_win = draw = away_win = btts_yes = 0.0
     exp_goals = 0.0
@@ -192,7 +171,50 @@ def derive_markets(
             ln: {"over": over[ln], "under": 1.0 - over[ln]} for ln in total_lines
         },
         expected_total_goals=exp_goals,
+        correct_score=pm.correct_score_probs(matrix, top_n=correct_score_top_n),
     )
+
+
+# ── Monte Carlo cross-check + correlated same-game markets ─────────────────────
+def simulate_match(
+    lh: float,
+    la: float,
+    rho: float = DEFAULT_RHO,
+    n_sims: int = 20000,
+    seed: Optional[int] = None,
+) -> dict:
+    """
+    Monte Carlo sample from the same Dixon-Coles matrix the closed-form markets
+    are priced off. The 1x2/BTTS/totals here should match derive_markets()
+    closely (sanity check on the matrix) — the real value is the correlated
+    same-game numbers derive_markets() can't give directly, e.g. P(home win
+    AND BTTS yes) evaluated jointly instead of multiplying marginals.
+    """
+    matrix = score_matrix(lh, la, rho=rho)
+    sim = pm.simulate_matches(matrix, n_sims=n_sims, seed=seed)
+    return {
+        "n_sims": n_sims,
+        "simulated_1x2": {
+            "home": pm.hit_rate(sim, pm.home_win),
+            "draw": pm.hit_rate(sim, pm.draw),
+            "away": pm.hit_rate(sim, pm.away_win),
+        },
+        "simulated_btts_yes": pm.hit_rate(sim, pm.btts_yes),
+        "simulated_over_2_5": pm.hit_rate(sim, pm.over(2.5)),
+        "top_simulated_scores": sorted(
+            (
+                {"score": f"{h}-{a}", **pm.hit_rate(sim, pm.exact_score(h, a))}
+                for h, a in {(int(hh), int(aa)) for hh, aa in zip(sim.home_goals, sim.away_goals)}
+            ),
+            key=lambda c: c["prob"],
+            reverse=True,
+        )[:5],
+        "correlated": {
+            "home_win_and_btts_yes": pm.combo_hit_rate(sim, [pm.home_win, pm.btts_yes]),
+            "away_win_and_btts_yes": pm.combo_hit_rate(sim, [pm.away_win, pm.btts_yes]),
+            "over_2_5_and_btts_yes": pm.combo_hit_rate(sim, [pm.over(2.5), pm.btts_yes]),
+        },
+    }
 
 
 # ── Odds helpers ──────────────────────────────────────────────────────────────

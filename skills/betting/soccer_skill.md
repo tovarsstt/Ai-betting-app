@@ -79,8 +79,14 @@ draw, then pick the market that both survives the draw AND clears the value gate
 - Straight Win/ML is a candidate ONLY when its price isn't crushing juice AND
   carries real +EV over the draw risk.
 - Engine: `POST /predict-soccer` (edge_api, port 8001) returns the full board
-  (1X2 / DC / DNB / O-U / BTTS / corners) + the recommended draw-insured pick.
-  Built on bivariate Poisson + Dixon-Coles (calibrates 0-0 / 1-1 draws).
+  (1X2 / DC / DNB / O-U / BTTS / corners / correct score) + the recommended
+  draw-insured pick. Built on bivariate Poisson + Dixon-Coles (calibrates 0-0
+  / 1-1 draws). `markets.correct_score` gives the top 10 exact scorelines with
+  fair odds — the swarm's "simulation" section must cite THESE, never invent
+  a score line. A `simulation` block (Monte Carlo cross-check, `scripts/poisson_model.py`)
+  also ships alongside it — same matrix, useful for correlated same-game
+  markets (e.g. home win AND BTTS) that the closed form can't give jointly.
+  Generic version (any sport, caller-supplied lambdas): `POST /simulate-match`.
 
 ## MARKET PRIORITY (sharpest → softest)
 

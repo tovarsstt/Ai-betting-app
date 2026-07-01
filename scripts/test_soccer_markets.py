@@ -57,6 +57,30 @@ def test_over_under_complementary():
         assert math.isclose(v["over"] + v["under"], 1.0, abs_tol=1e-9)
 
 
+def test_derive_markets_exposes_correct_score():
+    b = sm.derive_markets(sm.score_matrix(1.6, 1.1))
+    assert len(b.correct_score) == 10
+    probs = [c["prob"] for c in b.correct_score]
+    assert probs == sorted(probs, reverse=True)
+    assert sum(probs) <= 1.0
+
+
+# ── Monte Carlo simulator ──────────────────────────────────────────────────
+def test_simulate_match_1x2_matches_closed_form():
+    b = sm.derive_markets(sm.score_matrix(1.6, 1.1))
+    sim = sm.simulate_match(1.6, 1.1, n_sims=30000, seed=11)
+    assert abs(sim["simulated_1x2"]["home"]["prob"] - b.home_win) < 0.02
+    assert abs(sim["simulated_1x2"]["draw"]["prob"] - b.draw) < 0.02
+    assert abs(sim["simulated_1x2"]["away"]["prob"] - b.away_win) < 0.02
+
+
+def test_simulate_match_correlated_never_exceeds_marginals():
+    sim = sm.simulate_match(1.5, 1.3, n_sims=20000, seed=13)
+    combo = sim["correlated"]["home_win_and_btts_yes"]["prob"]
+    assert combo <= sim["simulated_1x2"]["home"]["prob"] + 1e-6
+    assert combo <= sim["simulated_btts_yes"]["prob"] + 1e-6
+
+
 # ── Odds helpers ──────────────────────────────────────────────────────────────
 def test_devig_3way_sums_to_one_and_reports_vig():
     dv = sm.devig_3way(-110, 250, 280)

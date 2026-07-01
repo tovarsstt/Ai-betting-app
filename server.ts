@@ -2211,6 +2211,11 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
               totals?: Record<string, { over: number; under: number }>;
               btts?: { yes: number; no: number };
               expected_total_goals?: number;
+              correct_score?: { score: string; prob: number; fair_decimal_odds: number | null }[];
+            };
+            simulation?: {
+              n_sims: number;
+              top_simulated_scores?: { score: string; prob: number }[];
             };
             lambda_source?: string;
             upset_risk?: { level: string; non_win_prob: number; favourite_true_win: number;
@@ -2235,6 +2240,13 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
             const btts = s.markets?.btts;
             const bttsSide = btts ? (btts.yes >= btts.no ? `BTTS Yes ${(btts.yes*100).toFixed(0)}%` : `BTTS No ${(btts.no*100).toFixed(0)}%`) : 'n/a';
             const xg = s.markets?.expected_total_goals;
+            // Correct score + Monte Carlo — grounds the "simulation" swarm section in the
+            // real Poisson/Dixon-Coles matrix instead of the LLM guessing a score line.
+            const topScores = (s.markets?.correct_score ?? s.simulation?.top_simulated_scores ?? []).slice(0, 3);
+            const correctScoreLine = topScores.length
+              ? `\nCorrect score (Poisson+DixonColes, n=${s.simulation?.n_sims ?? 'closed-form'}): ` +
+                topScores.map(c => `${c.score} ${(c.prob*100).toFixed(0)}%`).join(' | ')
+              : '';
             // Upset / public-trap flag — only surface when ELEVATED or HIGH.
             const up = s.upset_risk;
             const upsetLine = (up && up.level !== 'LOW')
@@ -2260,7 +2272,8 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
               `━━ SOCCER MARKET BOARD (devigged 3-way + market-calibrated Poisson — sharp, draw priced):\n` +
               `Fav ${mr.favorite}: win ${(w.win*100).toFixed(0)}% / draw ${(w.draw*100).toFixed(0)}% / lose ${(w.lose*100).toFixed(0)}%\n` +
               `Double Chance (gana o empata) ${((mr.double_chance?.fav_or_draw ?? 0)*100).toFixed(0)}% | Draw No Bet (apuesta sin empate) ${((mr.draw_no_bet?.fav ?? 0)*100).toFixed(0)}%\n` +
-              `Totals/BTTS (market-calibrated${xg != null ? `, xGoals ${xg.toFixed(2)}` : ''}): ${ouSide} | ${bttsSide}\n` +
+              `Totals/BTTS (market-calibrated${xg != null ? `, xGoals ${xg.toFixed(2)}` : ''}): ${ouSide} | ${bttsSide}` +
+              correctScoreLine + `\n` +
               `>>> DRAW-INSURED PICK: ${mr.primary_pick.side} [${mr.primary_pick.market}] @ ${(mr.primary_pick.model_prob*100).toFixed(0)}%` +
               upsetLine + chaosLine + profileBlock + `\n` +
               `Rule: straight Win only when the price isn't heavy chalk (≳ -250) AND beats its devig; if "better but not dominant", insure the draw with DC/DNB when DC pays ~1.40-2.50; if the fav is HEAVY chalk (e.g. -511) the ML/DC have NO value — take the handicap (-1.5/-2.5), team total or correct score, else PASS. Build correlated SGP from calibrated legs (e.g. fav handicap + Over + BTTS that agree).`;
@@ -2375,7 +2388,7 @@ Output ONLY this raw JSON (no markdown):
       { "label": "SGP Leg 2", "value": "Pick from LIVE ODDS + odds", "rationale": "[SOURCE]: 1 sourced fact", "espn_id": "" },
       { "label": "SGP Leg 3", "value": "Pick from LIVE ODDS + odds", "rationale": "[SOURCE]: 1 sourced fact", "espn_id": "" }
     ],
-    "omni_report": "2 sentences: cite the simulated distribution (e.g. likely score line / total goals) and the market it makes most probable. SOURCED DATA ONLY."
+    "omni_report": "2 sentences: cite the real simulated distribution (soccer: the 'Correct score (Poisson+DixonColes)' line in the MARKET BOARD above — use those exact score lines, never invent one; other sports: the quant model's predicted margin/total) and the market it makes most probable. SOURCED DATA ONLY."
   },
   "primary_single": "FINAL best pick — the SINGLE highest win-prob +value market after scanning ALL market types (ML / draw / double chance / DNB / spread / total over-under / team total / BTTS / derivative / player prop). Pick whatever TYPE wins, not the moneyline by default. It MUST have value — a no-value heavy favourite (e.g. -511 ML, or DC on it) can NEVER be the pick; on chalk take the favourite's handicap/total/correct-score, on a live dog take its +value side, else PASS. If nothing clears the value gate, write exactly 'PASS — no value'. Must match the MARKET BOARD pick unless value_check justifies a deviation.",
   "primary_odds": "-115 (or \"\" if PASS)",

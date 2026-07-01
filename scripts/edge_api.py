@@ -17,6 +17,7 @@ from pydantic import BaseModel
 import uvicorn
 
 import soccer_markets as sm
+import poisson_model as pm
 import ufc_markets as um
 import chaos_engine as ce
 import staking as stk
@@ -555,6 +556,8 @@ class SoccerMarketReq(BaseModel):
     away_team: str
     neutral: bool = True          # World Cup = neutral venue, no home boost
     rho: float = sm.DEFAULT_RHO   # Dixon-Coles draw/low-score correction
+    simulate: bool = True         # Monte Carlo cross-check + correlated same-game markets
+    n_sims: int = 20000
     # Optional book prices (American). Provide to get EV/edge per market.
     home_odds: Optional[float] = None
     draw_odds: Optional[float] = None
@@ -683,7 +686,9 @@ def predict_soccer(req: SoccerMarketReq):
             "btts": {"yes": round(book.btts_yes, 4), "no": round(book.btts_no, 4)},
             "expected_total_goals": round(book.expected_total_goals, 3),
             "corners": sm.estimate_corners(lh, la),
+            "correct_score": book.correct_score,
         },
+        "simulation": sm.simulate_match(lh, la, rho=req.rho, n_sims=req.n_sims) if req.simulate else None,
         "market_3way": market_3way,
         "market_recommendation": market_recommendation,
         "upset_risk": upset,
@@ -691,6 +696,53 @@ def predict_soccer(req: SoccerMarketReq):
         "recommendation": rec,
         "profile": _soccer_profile(req.home_team, req.away_team),
         "home_ratings": h_r, "away_ratings": a_r,
+    }
+
+
+# ── Generic Poisson simulator: any sport, given two scoring rates ──────────────
+# Sport-agnostic — soccer has its own /predict-soccer wiring above. This is for
+# any other low/moderate-count two-team market (hockey goals, corners, cards...)
+# where the CALLER supplies the lambdas (we never fabricate a rate for a sport
+# with no data feed here — see global "no invented stats" rule).
+class SimulateMatchReq(BaseModel):
+    lambda_home: float
+    lambda_away: float
+    rho: float = 0.0        # Dixon-Coles low-score correction; 0 = plain independent Poisson
+    n_sims: int = 20000
+    max_count: int = 10     # highest home/away count the score matrix covers
+    seed: Optional[int] = None
+    sport: str = "GENERIC"  # label only, no sport-specific behavior
+
+
+@app.post("/simulate-match")
+def simulate_match_generic(req: SimulateMatchReq):
+    """
+    Sport-agnostic Poisson score matrix + Monte Carlo cross-check. Returns
+    correct-score probabilities and simulated 1x2/BTTS/totals from two supplied
+    scoring rates — no ratings lookup, no odds required, works for any sport
+    with a caller-supplied lambda pair.
+    """
+    matrix = pm.score_matrix(req.lambda_home, req.lambda_away, max_count=req.max_count, rho=req.rho)
+    home, drawp, away = pm.win_draw_loss(matrix)
+    sim = pm.simulate_matches(matrix, n_sims=req.n_sims, seed=req.seed)
+    return {
+        "status": "OK",
+        "sport": req.sport,
+        "lambda_home": req.lambda_home, "lambda_away": req.lambda_away,
+        "rho": req.rho,
+        "method": f"Poisson+DixonColes(rho={req.rho})" if req.rho else "Poisson(independent)",
+        "closed_form_1x2": {"home": round(home, 4), "draw": round(drawp, 4), "away": round(away, 4)},
+        "correct_score": pm.correct_score_probs(matrix, top_n=10),
+        "simulation": {
+            "n_sims": req.n_sims,
+            "simulated_1x2": {
+                "home": pm.hit_rate(sim, pm.home_win),
+                "draw": pm.hit_rate(sim, pm.draw),
+                "away": pm.hit_rate(sim, pm.away_win),
+            },
+            "simulated_btts_yes": pm.hit_rate(sim, pm.btts_yes),
+            "simulated_over_2_5": pm.hit_rate(sim, pm.over(2.5)),
+        },
     }
 
 
