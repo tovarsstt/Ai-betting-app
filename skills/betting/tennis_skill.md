@@ -9,6 +9,7 @@
 - **Ranks publish every Monday.** Auto-refreshed weekly (`fetch_tennis_ratings.py` cron, or `POST /api/refresh-rankings`). If `predict` returns `ranks_stale`, say so and refresh before trusting a rank-driven edge.
 - **`bet_signal`/`edge_strength` are live for tennis** (prob-edge based, fixed 2026-06-25). STRONG = ≥10pt model-vs-market prob edge + EV>5%.
 - **Live/in-play re-pricing (2026-07-01):** pass `sets_won_home`/`sets_won_away`/`best_of` to `/predict` for a match in progress and the model re-prices off the ACTUAL set score (`scripts/tennis_live.py`) instead of only showing the pregame number. `profile`'s `live` block shows the pregame vs live prob when active — use the live one.
+- **Sofascore cross-check tool (2026-07-01):** `GET /sofascore/player?name=`, `/sofascore/h2h?home=&away=`, `/sofascore/odds/{event_id}`, `/sofascore/stats/{event_id}` (`scripts/sofascore.py`) — an UNOFFICIAL API, no public docs, may block/rate-limit. Use it to spot-check a surprising model read (this is exactly how the H2H surname-first bug got found and fixed), not as a silent second model — it's not wired into the automatic pick pipeline. `status: ERROR` means the call failed (connectivity/schema drift), not that the fact is wrong; `NOT_FOUND`/`NO_MEETING_FOUND` are honest no-data responses.
 
 ---
 

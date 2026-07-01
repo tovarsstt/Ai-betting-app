@@ -23,6 +23,7 @@ import ufc_markets as um
 import chaos_engine as ce
 import staking as stk
 import tennis_live as tlive
+import sofascore as sofa
 from typing import List
 
 BASE = Path(__file__).parent.parent / "data"
@@ -1159,6 +1160,70 @@ def scan_slate_endpoint(req: SlateReq):
         key=lambda x: x["ev"], reverse=True)
     return {"status": "OK", "value_gate": ss.VALUE_GATE,
             "games": out, "plays": [p for p in plays if p["ev"] >= ss.VALUE_GATE]}
+
+
+# ── Sofascore — on-demand cross-check tool (unofficial API, see sofascore.py) ──
+# NOT wired into the automatic pick pipeline — this is a verification tool for
+# spot-checking a model read against a second real source (found valuable
+# 2026-07-01 confirming/correcting real H2H claims), not a silent replacement
+# for the app's own data-fit models. Every route is best-effort: Sofascore's
+# API is unofficial/undocumented and may block datacenter IPs or change
+# shape without notice — a failure here means check connectivity/schema
+# drift, not that the underlying fact is wrong.
+@app.get("/sofascore/player")
+def sofascore_player(name: str, pages: int = 2):
+    """Search + recent form + current streak for a tennis player."""
+    try:
+        profile = sofa.player_profile(name, pages=pages)
+        if profile is None:
+            return {"status": "NOT_FOUND", "note": f"no tennis player matched '{name}'"}
+        return {"status": "OK", **profile}
+    except Exception as e:
+        return {"status": "ERROR", "error": str(e),
+                "note": "Sofascore call failed — unofficial API, may be blocked/rate-limited/changed"}
+
+
+@app.get("/sofascore/h2h")
+def sofascore_h2h(home: str, away: str, max_pages: int = 5):
+    """Head-to-head record between two players — found by scanning the home
+    player's recent match history for a meeting with the away player, then
+    pulling that event's career H2H summary."""
+    try:
+        h_entity = sofa.search_player(home)
+        if not h_entity:
+            return {"status": "NOT_FOUND", "note": f"no tennis player matched '{home}'"}
+        event = sofa.find_shared_event(h_entity["id"], away, max_pages=max_pages)
+        if not event:
+            return {"status": "NO_MEETING_FOUND",
+                     "note": f"no meeting between '{home}' and '{away}' in the last "
+                             f"{max_pages} page(s) of {home}'s match history"}
+        summary = sofa.h2h_summary(event["id"])
+        return {"status": "OK", "event_id": event["id"], **summary}
+    except Exception as e:
+        return {"status": "ERROR", "error": str(e),
+                "note": "Sofascore call failed — unofficial API, may be blocked/rate-limited/changed"}
+
+
+@app.get("/sofascore/odds/{event_id}")
+def sofascore_odds(event_id: int):
+    """Pre-match markets (decimal odds) for a specific Sofascore event id —
+    get the id from /sofascore/h2h's response for a known matchup."""
+    try:
+        return {"status": "OK", "markets": sofa.match_odds(event_id)}
+    except Exception as e:
+        return {"status": "ERROR", "error": str(e),
+                "note": "Sofascore call failed — unofficial API, may be blocked/rate-limited/changed"}
+
+
+@app.get("/sofascore/stats/{event_id}")
+def sofascore_stats(event_id: int):
+    """Per-match statistics (aces, serve %, points, games) for a specific
+    Sofascore event id."""
+    try:
+        return {"status": "OK", "statistics": sofa.match_statistics(event_id)}
+    except Exception as e:
+        return {"status": "ERROR", "error": str(e),
+                "note": "Sofascore call failed — unofficial API, may be blocked/rate-limited/changed"}
 
 
 @app.get("/health")
