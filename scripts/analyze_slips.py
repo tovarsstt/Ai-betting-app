@@ -25,8 +25,35 @@ RAW = Path(__file__).parent.parent / "data" / "slips_raw.txt"
 # Each ticket ends: Cuotas <c> Apuesta <stake> [Multi Boost +N% <x>] Pago <payout>
 TICKET = re.compile(
     r"Cuotas\s+([\d.,]+)\s+Apuesta\s+([\d.]+).*?Pago\s+([\d.]+)", re.S)
-# Leg count: "<n> Multi tramo" or "Multi apuesta del mismo partido (<n>"; else 1 (single).
-LEGS = re.compile(r"(\d+)\s+Multi tramo|Multi apuesta del mismo partido\s*\((\d+)")
+# Ticket header "<n> Multi tramo" is the OUTER leg count and always wins: a combo's
+# legs can themselves be same-game blocks ("Multi apuesta del mismo partido (2/(3"),
+# and taking an inner block's count mislabels a 7-leg combo as 3-leg.
+MULTI_TRAMO = re.compile(r"(\d+)\s+Multi tramo")
+SGM = re.compile(r"Multi apuesta del mismo partido\s*\((\d+)")
+
+# Market markers for ticket_type — matched against the ticket's own block text.
+SOCCER_MARKERS = ("1x2", "Ambos equipos marcan", "Totales asiáticos",
+                  "Tiros de esquina", "Doble Oportunidad", "Goleador")
+TENNIS_MARKERS = ("Hándicap de Set", "Total sets", "juego")
+# "Surname, Firstname Ganador <odds>" — a tennis match-winner leg.
+TENNIS_ML = re.compile(r"[^\W\d_][^\s,]*,\s+[^\W\d_][^\s]*\s+Ganador", re.U)
+
+
+def ticket_type(block: str) -> str:
+    """Heuristic sport/shape tag for one ticket's raw block text."""
+    is_soccer = any(m in block for m in SOCCER_MARKERS)
+    is_tennis = any(m in block for m in TENNIS_MARKERS) or TENNIS_ML.search(block)
+    if is_soccer and is_tennis:
+        return "mixed sports"
+    if is_tennis:
+        return "tennis stack" if MULTI_TRAMO.search(block) else "tennis single"
+    if is_soccer:
+        if MULTI_TRAMO.search(block):
+            return "soccer cross-match combo"
+        if SGM.search(block):
+            return "soccer same-game (1 match)"
+        return "soccer single"
+    return "unknown"
 
 
 def odds_band(dec: float) -> str:
@@ -48,8 +75,9 @@ def odds_band(dec: float) -> str:
     return "lottery (5.0+)"
 
 
-def parse() -> list:
-    text = RAW.read_text()
+def parse(text: str | None = None) -> list:
+    if text is None:
+        text = RAW.read_text()
     out = []
     prev_end = 0
     for m in TICKET.finditer(text):
@@ -58,9 +86,14 @@ def parse() -> list:
         # leg count from THIS ticket's own block only (since the previous ticket end),
         # so singles aren't tagged with a neighbouring parlay's leg count.
         head = text[prev_end:m.start()]
-        legs_found = LEGS.findall(head)
-        legs = int(next((a or b for a, b in reversed(legs_found)), 1)) if legs_found else 1
-        out.append({"dec": dec, "stake": stake, "payout": payout, "legs": legs})
+        tramo = MULTI_TRAMO.search(head)           # outer header beats inner SGM blocks
+        if tramo:
+            legs = int(tramo.group(1))
+        else:
+            sgm = SGM.findall(head)
+            legs = int(sgm[-1]) if sgm else 1
+        out.append({"dec": dec, "stake": stake, "payout": payout, "legs": legs,
+                    "type": ticket_type(head)})
         prev_end = m.end()
     return out
 
@@ -128,6 +161,8 @@ def main() -> None:
     if singles:
         breakdown(singles, lambda i: odds_band(i["dec"]),
                   "By LEG odds — singles only (true per-leg ROI; what the linter gates on)")
+    breakdown(uniq, lambda i: i.get("type", "unknown"),
+              "By ticket TYPE (sport + shape — where the money actually comes from)")
 
 
 if __name__ == "__main__":

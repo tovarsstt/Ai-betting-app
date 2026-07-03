@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, LabelList } from "recharts";
 
 const SPORTS = ["NBA", "WNBA", "NFL", "MLB", "NHL", "SOCCER", "TENNIS", "F1"];
 
@@ -34,9 +35,38 @@ interface SwarmAgent {
   confidence_score?: number;
 }
 
+interface SimHitRate {
+  prob: number;
+  ci_95: [number, number];
+}
+
+interface TeamFitRating {
+  eigen_rating?: number;
+  attack?: number;
+  defense?: number;
+}
+
+interface PoissonBoard {
+  favorite?: string;
+  win_draw_lose?: { win: number; draw: number; lose: number };
+  correct_score: { score: string; prob: number }[];
+  expected_total_goals?: number;
+  totals?: Record<string, { over: number; under: number }>;
+  btts?: { yes: number; no: number };
+  lambda_source?: string;
+  n_sims?: number;
+  sim_1x2?: { home?: SimHitRate; draw?: SimHitRate; away?: SimHitRate };
+  sim_over_2_5?: SimHitRate;
+  sim_btts_yes?: SimHitRate;
+  correlated?: Record<string, SimHitRate>;
+  ratings?: { home?: TeamFitRating | null; away?: TeamFitRating | null;
+              home_team?: string; away_team?: string; league?: string };
+}
+
 interface AnalyzeResult {
   quant?: SwarmAgent;
   simulation?: SwarmAgent;
+  poisson?: PoissonBoard;
   primary_single?: string;
   primary_odds?: string;
   bet_structure?: string;       // math-computed
@@ -268,6 +298,153 @@ function WagerCalculator({ odds, payout100 }: { odds: string; payout100?: number
 }
 
 /* ─── Sharp Panel — pure math, no AI ─── */
+/* ─── Poisson distribution chart — real model output, no AI numbers ───
+   Ochre = the model's most likely scores; W/D/L strip devigged from the 1X2. */
+const OCHRE = "#C8860A";
+
+function PoissonChart({ poisson }: { poisson: PoissonBoard }) {
+  if (!poisson.correct_score?.length) return null;
+  const data = poisson.correct_score.map((c) => ({
+    score: c.score,
+    pct: Math.round(c.prob * 1000) / 10,
+  }));
+  const maxPct = Math.max(...data.map((d) => d.pct));
+  const wdl = poisson.win_draw_lose;
+  const ou = poisson.totals?.["2.5"];
+  const src = poisson.n_sims
+    ? `Monte Carlo n=${poisson.n_sims.toLocaleString()}`
+    : "closed-form matrix";
+
+  return (
+    <Card className="border-white/5 bg-[#1A1A1A]">
+      <CardHeader className="pb-2">
+        <CardTitle className="flex items-center gap-2 text-sm font-black uppercase tracking-widest">
+          <Binary className="w-4 h-4" style={{ color: OCHRE }} />
+          Poisson Score Engine
+          <span className="ml-auto text-[9px] font-mono normal-case tracking-normal text-muted-foreground">
+            Dixon-Coles · {src}
+            {poisson.lambda_source ? ` · λ ${poisson.lambda_source}` : ""}
+          </span>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="h-44">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data} margin={{ top: 18, right: 8, left: -22, bottom: 0 }}>
+              <XAxis dataKey="score" tick={{ fill: "#F5F0E8", fontSize: 11, fontWeight: 700 }}
+                     axisLine={{ stroke: "#2C2C2C" }} tickLine={false} />
+              <YAxis tick={{ fill: "#6b6b6b", fontSize: 9 }} axisLine={false} tickLine={false}
+                     unit="%" />
+              <Bar dataKey="pct" radius={[2, 2, 0, 0]} isAnimationActive={false}>
+                <LabelList dataKey="pct" position="top"
+                           style={{ fill: "#F5F0E8", fontSize: 10, fontWeight: 800 }}
+                           formatter={(v: number) => `${v}%`} />
+                {data.map((d) => (
+                  <Cell key={d.score} fill={d.pct === maxPct ? OCHRE : "#2C2C2C"}
+                        stroke={d.pct === maxPct ? OCHRE : "#3a3a3a"} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {wdl && (
+          <div className="space-y-1.5">
+            <div className="flex h-3 w-full overflow-hidden rounded-sm border border-white/10">
+              <div style={{ width: `${wdl.win * 100}%`, background: OCHRE }} />
+              <div style={{ width: `${wdl.draw * 100}%`, background: "#5a5a5a" }} />
+              <div style={{ width: `${wdl.lose * 100}%`, background: "#2C2C2C" }} />
+            </div>
+            <div className="flex justify-between text-[9px] font-black uppercase tracking-widest">
+              <span style={{ color: OCHRE }}>
+                {poisson.favorite ?? "Fav"} {(wdl.win * 100).toFixed(0)}%
+              </span>
+              <span className="text-muted-foreground">Draw {(wdl.draw * 100).toFixed(0)}%</span>
+              <span className="text-muted-foreground">Other {(wdl.lose * 100).toFixed(0)}%</span>
+            </div>
+          </div>
+        )}
+
+        <div className="flex flex-wrap gap-x-5 gap-y-1 text-[10px] font-mono text-muted-foreground">
+          {poisson.expected_total_goals != null && (
+            <span>xG total <b className="text-foreground">{poisson.expected_total_goals.toFixed(2)}</b></span>
+          )}
+          {ou && (
+            <span>O/U 2.5 <b className="text-foreground">{(ou.over * 100).toFixed(0)}% / {(ou.under * 100).toFixed(0)}%</b></span>
+          )}
+          {poisson.btts && (
+            <span>BTTS <b className="text-foreground">{(poisson.btts.yes * 100).toFixed(0)}% yes</b></span>
+          )}
+        </div>
+
+        {/* Monte Carlo cross-check — Wilson 95% CI = the binomial honesty bar */}
+        {(poisson.sim_1x2?.home || poisson.sim_over_2_5) && (
+          <div className="border-t border-white/5 pt-3 space-y-1">
+            <div className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">
+              Monte Carlo cross-check (95% CI)
+            </div>
+            <div className="flex flex-wrap gap-x-5 gap-y-1 text-[10px] font-mono text-muted-foreground">
+              {poisson.sim_1x2?.home && <SimStat label="Fav win" s={poisson.sim_1x2.home} />}
+              {poisson.sim_over_2_5 && <SimStat label="Over 2.5" s={poisson.sim_over_2_5} />}
+              {poisson.sim_btts_yes && <SimStat label="BTTS yes" s={poisson.sim_btts_yes} />}
+            </div>
+          </div>
+        )}
+
+        {/* Correlated SGP combos — jointly simulated, NOT multiplied marginals */}
+        {poisson.correlated && Object.keys(poisson.correlated).length > 0 && (
+          <div className="border-t border-white/5 pt-3 space-y-1">
+            <div className="text-[9px] font-black uppercase tracking-widest" style={{ color: OCHRE }}>
+              Correlated SGP (joint simulation)
+            </div>
+            <div className="flex flex-wrap gap-x-5 gap-y-1 text-[10px] font-mono text-muted-foreground">
+              {Object.entries(poisson.correlated).map(([k, s]) => (
+                <SimStat key={k} label={k.replace(/_/g, " ").replace(/and/g, "+")} s={s} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Data-fit strength — Keener eigenvector + Poisson-regression coefficients */}
+        {(poisson.ratings?.home || poisson.ratings?.away) && (
+          <div className="border-t border-white/5 pt-3 space-y-1">
+            <div className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">
+              Model strength — eigenvector + regression fit
+              {poisson.ratings.league ? ` (${poisson.ratings.league})` : ""}
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 text-[10px] font-mono text-muted-foreground">
+              <FitLine team={poisson.ratings.home_team} fit={poisson.ratings.home} />
+              <FitLine team={poisson.ratings.away_team} fit={poisson.ratings.away} />
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function SimStat({ label, s }: { label: string; s: SimHitRate }) {
+  return (
+    <span>
+      {label}{" "}
+      <b className="text-foreground">{(s.prob * 100).toFixed(1)}%</b>
+      <span className="opacity-60"> [{(s.ci_95[0] * 100).toFixed(1)}–{(s.ci_95[1] * 100).toFixed(1)}]</span>
+    </span>
+  );
+}
+
+function FitLine({ team, fit }: { team?: string; fit?: TeamFitRating | null }) {
+  if (!fit) return null;
+  return (
+    <span>
+      <b className="text-foreground">{team ?? "?"}</b>
+      {fit.eigen_rating != null && <> · eigen {fit.eigen_rating.toFixed(4)}</>}
+      {fit.attack != null && <> · atk {fit.attack.toFixed(2)}</>}
+      {fit.defense != null && <> · def {fit.defense.toFixed(2)}</>}
+    </span>
+  );
+}
+
 function SharpPanel({ sport }: { sport: string }) {
   const { data, isLoading, refetch } = useQuery<LineGapsResult>({
     queryKey: ["line-gaps", sport],
@@ -764,6 +941,9 @@ export default function GameBreakdown() {
                 )}
               </CardContent>
             </Card>
+
+            {/* Poisson distribution — real model output (soccer) */}
+            {swarmData.poisson && <PoissonChart poisson={swarmData.poisson} />}
 
             {/* Agent Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

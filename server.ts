@@ -17,7 +17,7 @@ import { getBettingHeuristics, getSportBetContext, getShortHeuristics } from './
 import { getSharpIdentity } from './src/prompts/identity.js';
 import { SPORT_KEYS } from './src/services/oddsService.js';
 import { ArbitrageService, type ArbitrageOpportunity } from './src/services/arbitrageService.js';
-import type { SGPLeg, SwarmAgentData, SwarmFinalPayload, AlphaSheetItem, AlphaSheetContainer, ParlayLeg, ParlayBlock, ParlaysPayload } from './src/types/index.js';
+import type { SGPLeg, SwarmAgentData, SwarmFinalPayload, PoissonBoard, SimHitRate, TeamFitRating, AlphaSheetItem, AlphaSheetContainer, ParlayLeg, ParlayBlock, ParlaysPayload } from './src/types/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -2288,6 +2288,9 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
     //         Authoritative for WC national teams (rating model is unreliable).
     // UFC:    devig ML → routes juiced favourites to value derivatives.
     let marketsCtx = '';
+    // Structured Poisson board — same numbers as the prompt text, but as DATA so
+    // the Game Breakdown page can chart the model distribution (soccer only).
+    let soccerPoisson: PoissonBoard | null = null;
     try {
       if (league === 'SOCCER' && oddsGame && oddsGame.drawOdds != null) {
         const sRes = await fetch('http://127.0.0.1:8001/predict-soccer', {
@@ -2310,7 +2313,15 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
             simulation?: {
               n_sims: number;
               top_simulated_scores?: { score: string; prob: number }[];
+              simulated_1x2?: { home?: SimHitRate; draw?: SimHitRate; away?: SimHitRate };
+              simulated_btts_yes?: SimHitRate;
+              simulated_over_2_5?: SimHitRate;
+              correlated?: Record<string, SimHitRate>;
             };
+            data_fit_ratings?: {
+              home?: TeamFitRating | null; away?: TeamFitRating | null;
+              league?: string; note?: string;
+            } | null;
             lambda_source?: string;
             upset_risk?: { level: string; non_win_prob: number; favourite_true_win: number;
               reasons: string[]; protective_action: string };
@@ -2336,7 +2347,27 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
             const xg = s.markets?.expected_total_goals;
             // Correct score + Monte Carlo — grounds the "simulation" swarm section in the
             // real Poisson/Dixon-Coles matrix instead of the LLM guessing a score line.
-            const topScores = (s.markets?.correct_score ?? s.simulation?.top_simulated_scores ?? []).slice(0, 3);
+            const allScores = s.markets?.correct_score ?? s.simulation?.top_simulated_scores ?? [];
+            const topScores = allScores.slice(0, 3);
+            soccerPoisson = {
+              favorite: mr.favorite,
+              win_draw_lose: w,
+              correct_score: allScores.slice(0, 8).map(c => ({ score: c.score, prob: c.prob })),
+              expected_total_goals: s.markets?.expected_total_goals,
+              totals: s.markets?.totals,
+              btts: s.markets?.btts,
+              lambda_source: s.lambda_source,
+              n_sims: s.simulation?.n_sims,
+              sim_1x2: s.simulation?.simulated_1x2,
+              sim_over_2_5: s.simulation?.simulated_over_2_5,
+              sim_btts_yes: s.simulation?.simulated_btts_yes,
+              correlated: s.simulation?.correlated,
+              ratings: s.data_fit_ratings ? {
+                home: s.data_fit_ratings.home, away: s.data_fit_ratings.away,
+                home_team: oddsGame.home, away_team: oddsGame.away,
+                league: s.data_fit_ratings.league,
+              } : undefined,
+            };
             const correctScoreLine = topScores.length
               ? `\nCorrect score (Poisson+DixonColes, n=${s.simulation?.n_sims ?? 'closed-form'}): ` +
                 topScores.map(c => `${c.score} ${(c.prob*100).toFixed(0)}%`).join(' | ')
@@ -2542,6 +2573,7 @@ Output ONLY this raw JSON (no markdown):
       ...exec,
       bet_structure: getBetStructure(topOddsNum),
       implied_prob: topImp ?? undefined,
+      poisson: soccerPoisson ?? undefined,
       swarm_report: {
         quant:      quantRaw ? computePickMath(quantRaw) as SwarmAgentData : undefined,
         simulation: simRaw   ? computePickMath(simRaw)  as SwarmAgentData : undefined,
@@ -4074,6 +4106,28 @@ app.post('/api/lint-slip', async (req: express.Request, res: express.Response) =
   const data = await lintLegs(legs);
   if (data == null) return res.status(500).json({ error: 'LINTER_FAILED' });
   res.json({ success: true, data });
+});
+
+interface LintSlip { legs: (LintLeg & { match?: string })[] }
+// PORTFOLIO LINTER — lints the whole day's card at once. Catches the two leaks a
+// single-slip lint can't see: the same leg cloned across slips (one soft leg dies,
+// every ticket dies — the Jodar leak) and 3+ correlated sub-markets of one match
+// stacked in one slip (the Suiza-Argelia leak).
+app.post('/api/lint-portfolio', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 60, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  const { slips } = req.body as { slips?: LintSlip[] };
+  if (!Array.isArray(slips) || slips.length === 0 || slips.some(s => !Array.isArray(s?.legs) || s.legs.length === 0)) {
+    return res.status(400).json({ error: 'NEED_SLIPS', message: 'body: { slips: [{ legs: [{ decimal, selection, match? }] }] }' });
+  }
+  if (slips.some(s => s.legs.some(l => typeof l?.decimal !== 'number' || !(l.decimal > 1)))) {
+    return res.status(400).json({ error: 'BAD_DECIMAL', message: 'each leg needs decimal odds > 1' });
+  }
+  try {
+    const data = await spawnPythonJson(SLIP_LINTER, ['--json'], JSON.stringify({ slips }));
+    res.json({ success: true, data });
+  } catch {
+    res.status(500).json({ error: 'LINTER_FAILED' });
+  }
 });
 
 // LEDGER REPORT — CLV grading + model calibration over the booked picks. Reads

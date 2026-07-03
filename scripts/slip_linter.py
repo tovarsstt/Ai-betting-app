@@ -224,12 +224,74 @@ def lint(legs: list[dict], band_roi: dict | None = None,
     return Verdict(status, tuple(reasons), tuple(cut), keep_n)
 
 
+MAX_SAME_MATCH = 2    # 3+ sub-markets of one match in one slip = correlated stack
+
+
+def lint_portfolio(slips: list[dict]) -> dict:
+    """Cross-slip exposure gate — lints the WHOLE day's card, not one ticket.
+
+    Two leaks the single-slip lint can't see (both cost real money, Jul 2026):
+      1. SHARED LEG: the same selection cloned into 2+ slips is one bet bought
+         N times — one soft leg dies, every slip dies (Jodar killed 3 at once).
+      2. CORRELATED STACK: 3+ sub-markets of ONE match inside one slip (BTTS +
+         totals + corners) live and die on the same game script.
+
+    `slips` = [{"legs": [{"decimal":.., "selection":.., "match": optional}]}].
+    Returns {"warnings": [..], "shared_legs": {selection: [slip indices]},
+             "verdicts": [per-slip lint verdict dicts]}.
+    """
+    exposure: dict[str, list[int]] = {}
+    for si, slip in enumerate(slips):
+        for leg in slip.get("legs", []):
+            sel = str(leg.get("selection", "")).strip()
+            if sel:
+                exposure.setdefault(sel, []).append(si)
+
+    shared = {sel: idxs for sel, idxs in exposure.items() if len(idxs) > 1}
+    warnings = [
+        f"SHARED LEG: '{sel}' in {len(idxs)} slips (#{', #'.join(str(i + 1) for i in idxs)}) — "
+        f"one bet bought {len(idxs)} times; if it dies, all {len(idxs)} die together"
+        for sel, idxs in shared.items()
+    ]
+
+    for si, slip in enumerate(slips):
+        by_match: dict[str, int] = {}
+        for leg in slip.get("legs", []):
+            m = str(leg.get("match", "")).strip()
+            if m:
+                by_match[m] = by_match.get(m, 0) + 1
+        for m, n in by_match.items():
+            if n > MAX_SAME_MATCH:
+                warnings.append(
+                    f"CORRELATED STACK: slip #{si + 1} has {n} legs on '{m}' — "
+                    f"same-match sub-markets die together; cap {MAX_SAME_MATCH}/match")
+
+    band_roi, shape_roi = _history_rois()
+    verdicts = []
+    for slip in slips:
+        v = lint(slip.get("legs", []), band_roi, shape_roi)
+        verdicts.append({"status": v.status, "keep_count": v.keep_count,
+                         "cut_legs": list(v.cut_legs), "reasons": list(v.reasons)})
+    return {"warnings": warnings, "shared_legs": shared, "verdicts": verdicts}
+
+
 def _main() -> None:
     raw = sys.stdin.read()
     payload = json.loads(raw) if raw.strip() else {}
+    if payload.get("slips"):
+        out = lint_portfolio(payload["slips"])
+        if "--json" in sys.argv:
+            print(json.dumps(out, indent=2))
+        else:
+            for w in out["warnings"] or ["clean — no shared legs, no correlated stacks"]:
+                print(f"  ! {w}")
+            for i, v in enumerate(out["verdicts"]):
+                print(f"  slip #{i + 1}: [{v['status']}] keep {v['keep_count']}")
+        return
     legs = payload.get("legs", [])
     if not legs:
-        raise SystemExit("no legs — pass {\"legs\":[{\"decimal\":..,\"selection\":..}]}")
+        raise SystemExit("no legs — pass {\"legs\":[{\"decimal\":..,\"selection\":..}]} "
+                         "or {\"slips\":[{\"legs\":[..]}, ..]}")
     v = lint(legs)
     out = {
         "status": v.status,

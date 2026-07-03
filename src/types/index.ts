@@ -30,9 +30,48 @@ export interface SwarmAgentData {
   implied_prob?: number;          // devigged market prob from primary_odds
 }
 
+// Structured Poisson/Dixon-Coles board for the chart (soccer only) — the same
+// numbers the LLM prompt cites, passed through as DATA so the UI can render them.
+
+// One Monte Carlo market estimate: Bernoulli hit rate + binomial Wilson 95% CI.
+export interface SimHitRate {
+  prob: number;
+  ci_95: [number, number];
+}
+
+// Data-fit team strength: Keener eigenvector rating + Poisson-regression
+// attack/defense coefficients (log scale).
+export interface TeamFitRating {
+  eigen_rating?: number;
+  attack?: number;
+  defense?: number;
+  n_matches?: number;
+}
+
+export interface PoissonBoard {
+  favorite?: string;
+  win_draw_lose?: { win: number; draw: number; lose: number };
+  correct_score: { score: string; prob: number }[];
+  expected_total_goals?: number;
+  totals?: Record<string, { over: number; under: number }>;
+  btts?: { yes: number; no: number };
+  lambda_source?: string;
+  n_sims?: number;                // Monte Carlo sample count; absent = closed-form
+  // Monte Carlo cross-check with Wilson CIs (binomial uncertainty on the sim).
+  sim_1x2?: { home?: SimHitRate; draw?: SimHitRate; away?: SimHitRate };
+  sim_over_2_5?: SimHitRate;
+  sim_btts_yes?: SimHitRate;
+  // Correlated same-game combos — JOINTLY simulated, not multiplied marginals.
+  correlated?: Record<string, SimHitRate>;
+  // Eigenvector + regression strength behind the lambdas (when a fit exists).
+  ratings?: { home?: TeamFitRating | null; away?: TeamFitRating | null;
+              home_team?: string; away_team?: string; league?: string };
+}
+
 export interface SwarmFinalPayload extends SwarmAgentData {
   bet_structure?: string;         // math-computed
   implied_prob?: number;          // math-computed from primary_odds
+  poisson?: PoissonBoard;         // soccer: real model distribution for the chart
   swarm_report: {
     quant?: SwarmAgentData;
     simulation?: SwarmAgentData;

@@ -87,23 +87,39 @@ def scan_game(game: dict) -> dict:
     }
 
 
+def kickoff_label(iso: str | None) -> str:
+    """Local 'Fri 03 Jul 13:00' from the API's ISO commence_time ('' if absent)."""
+    if not iso:
+        return ""
+    from datetime import datetime
+    try:
+        t = datetime.fromisoformat(iso.replace("Z", "+00:00")).astimezone()
+        return t.strftime("%a %d %b %H:%M")
+    except ValueError:
+        return ""
+
+
 def scan_slate(games: list) -> None:
+    games = sorted(games, key=lambda g: g.get("commence_time") or "")
     results = [scan_game(g) for g in games]
     picks = []
     print(f"\n{'='*64}\n  SLATE SCAN — {len(games)} games  (value gate +{VALUE_GATE*100:.0f}%)\n{'='*64}")
-    for r in results:
+    for g, r in zip(games, results):
         best_ev, best_mkt, best_p = r["edges"][0][1], r["edges"][0][0], r["edges"][0][2]
         tag = "  <== EDGE" if best_ev >= VALUE_GATE else ""
-        print(f"\n• {r['name']}  (xG {r['xg_total']}, vig {r['devig']['vig_pct']}%)")
+        ko = kickoff_label(g.get("commence_time"))
+        when = f"  [{ko}]" if ko else ""
+        print(f"\n• {r['name']}{when}  (xG {r['xg_total']}, vig {r['devig']['vig_pct']}%)")
         print(f"    best: {best_mkt:10} model {best_p*100:4.1f}%  EV {best_ev*100:+5.1f}%{tag}")
         if best_ev >= VALUE_GATE:
-            picks.append((best_ev, r["name"], best_mkt, best_p))
+            picks.append((best_ev, r["name"], best_mkt, best_p, ko))
     print(f"\n{'-'*64}")
     if picks:
         picks.sort(reverse=True)
         print("  PLAYS (ranked):")
-        for ev, name, mkt, p in picks:
-            print(f"    {ev*100:+5.1f}%  {name} — {mkt} ({p*100:.0f}%)")
+        for ev, name, mkt, p, ko in picks:
+            when = f"  [{ko}]" if ko else ""
+            print(f"    {ev*100:+5.1f}%  {name} — {mkt} ({p*100:.0f}%){when}")
     else:
         print("  No edges clear the gate — disciplined PASS on the whole slate.")
     print(f"{'-'*64}\n")
@@ -136,7 +152,8 @@ def fetch_slate_oddsapi(sport_key: str, regions="eu", markets="h2h,totals") -> l
         draw = o.get("Draw")
         if draw is None:
             continue
-        g = {"name": f"{home} v {away}", "h2h": [o[home], draw, o[away]], "totals": []}
+        g = {"name": f"{home} v {away}", "h2h": [o[home], draw, o[away]], "totals": [],
+             "commence_time": ev.get("commence_time")}
         if "totals" in mk:
             lines = collections.defaultdict(dict)
             for x in mk["totals"]["outcomes"]:
