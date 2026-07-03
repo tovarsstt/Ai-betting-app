@@ -63,10 +63,18 @@ interface PoissonBoard {
               home_team?: string; away_team?: string; league?: string };
 }
 
+interface PickGrade {
+  grade: "LOCK" | "PICK" | "LEAN";
+  win_prob: number;
+  market: string;
+  side: string;
+}
+
 interface AnalyzeResult {
   quant?: SwarmAgent;
   simulation?: SwarmAgent;
   poisson?: PoissonBoard;
+  pick_grade?: PickGrade;
   primary_single?: string;
   primary_odds?: string;
   bet_structure?: string;       // math-computed
@@ -420,6 +428,19 @@ function PoissonChart({ poisson }: { poisson: PoissonBoard }) {
         )}
       </CardContent>
     </Card>
+  );
+}
+
+/* Math grade on the model's primary pick — LOCK anchors, PICK rides, LEAN warns. */
+function GradeBadge({ g }: { g: PickGrade }) {
+  const style =
+    g.grade === "LOCK" ? { background: `${OCHRE}22`, color: OCHRE, border: `1px solid ${OCHRE}55` } :
+    g.grade === "PICK" ? { background: "#ffffff0d", color: "#F5F0E8", border: "1px solid #ffffff22" } :
+                         { background: "#b4530915", color: "#e8955f", border: "1px solid #b4530966" };
+  return (
+    <span className="text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded" style={style}>
+      {g.grade} · {(g.win_prob * 100).toFixed(0)}%
+    </span>
   );
 }
 
@@ -915,8 +936,18 @@ export default function GameBreakdown() {
                     {swarmData.primary_odds && (
                       <span className="text-xl font-black text-primary tabular-nums">{swarmData.primary_odds}</span>
                     )}
+                    {swarmData.pick_grade && <GradeBadge g={swarmData.pick_grade} />}
                   </div>
                 </div>
+                {swarmData.pick_grade?.grade === "LEAN" && (
+                  <div className="p-3 rounded-lg border text-xs font-bold"
+                       style={{ borderColor: "#b4530966", background: "#b4530915", color: "#e8955f" }}>
+                    LEAN — model gives {(swarmData.pick_grade.win_prob * 100).toFixed(0)}%
+                    {" "}({swarmData.pick_grade.side} [{swarmData.pick_grade.market}]).
+                    NOT a lock: loses ~{(100 - swarmData.pick_grade.win_prob * 100).toFixed(0)} of 100.
+                    Small single only — never a parlay anchor. Profit here comes from volume, not one bet.
+                  </div>
+                )}
                 {swarmData.implied_prob != null && (
                   <LockMeter impliedProb={swarmData.implied_prob} />
                 )}

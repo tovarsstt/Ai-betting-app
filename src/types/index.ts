@@ -68,9 +68,19 @@ export interface PoissonBoard {
               home_team?: string; away_team?: string; league?: string };
 }
 
+// Math-computed pick grade (mirrors edge_api.pick_quality thresholds:
+// LOCK >=70% win-prob, PICK >=62%, LEAN below — a LEAN never anchors a parlay).
+export interface PickGrade {
+  grade: 'LOCK' | 'PICK' | 'LEAN';
+  win_prob: number;               // the model's own probability for the pick
+  market: string;
+  side: string;
+}
+
 export interface SwarmFinalPayload extends SwarmAgentData {
   bet_structure?: string;         // math-computed
   implied_prob?: number;          // math-computed from primary_odds
+  pick_grade?: PickGrade;         // soccer: math grade on the model's primary pick
   poisson?: PoissonBoard;         // soccer: real model distribution for the chart
   swarm_report: {
     quant?: SwarmAgentData;

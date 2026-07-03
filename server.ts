@@ -17,7 +17,7 @@ import { getBettingHeuristics, getSportBetContext, getShortHeuristics } from './
 import { getSharpIdentity } from './src/prompts/identity.js';
 import { SPORT_KEYS } from './src/services/oddsService.js';
 import { ArbitrageService, type ArbitrageOpportunity } from './src/services/arbitrageService.js';
-import type { SGPLeg, SwarmAgentData, SwarmFinalPayload, PoissonBoard, SimHitRate, TeamFitRating, AlphaSheetItem, AlphaSheetContainer, ParlayLeg, ParlayBlock, ParlaysPayload } from './src/types/index.js';
+import type { SGPLeg, SwarmAgentData, SwarmFinalPayload, PoissonBoard, SimHitRate, TeamFitRating, PickGrade, AlphaSheetItem, AlphaSheetContainer, ParlayLeg, ParlayBlock, ParlaysPayload } from './src/types/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -2291,6 +2291,10 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
     // Structured Poisson board — same numbers as the prompt text, but as DATA so
     // the Game Breakdown page can chart the model distribution (soccer only).
     let soccerPoisson: PoissonBoard | null = null;
+    // Math grade on the model's primary pick (mirrors edge_api.pick_quality:
+    // LOCK >=70%, PICK >=62%, LEAN below). A LEAN must be visibly flagged in the
+    // UI — a 55% play presented without a warning reads like a lock and isn't.
+    let soccerGrade: PickGrade | null = null;
     try {
       if (league === 'SOCCER' && oddsGame && oddsGame.drawOdds != null) {
         const sRes = await fetch('http://127.0.0.1:8001/predict-soccer', {
@@ -2367,6 +2371,13 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
                 home_team: oddsGame.home, away_team: oddsGame.away,
                 league: s.data_fit_ratings.league,
               } : undefined,
+            };
+            const gp = mr.primary_pick.model_prob;
+            soccerGrade = {
+              grade: gp >= 0.70 ? 'LOCK' : gp >= 0.62 ? 'PICK' : 'LEAN',
+              win_prob: gp,
+              market: mr.primary_pick.market,
+              side: mr.primary_pick.side,
             };
             const correctScoreLine = topScores.length
               ? `\nCorrect score (Poisson+DixonColes, n=${s.simulation?.n_sims ?? 'closed-form'}): ` +
@@ -2574,6 +2585,7 @@ Output ONLY this raw JSON (no markdown):
       bet_structure: getBetStructure(topOddsNum),
       implied_prob: topImp ?? undefined,
       poisson: soccerPoisson ?? undefined,
+      pick_grade: soccerGrade ?? undefined,
       swarm_report: {
         quant:      quantRaw ? computePickMath(quantRaw) as SwarmAgentData : undefined,
         simulation: simRaw   ? computePickMath(simRaw)  as SwarmAgentData : undefined,
