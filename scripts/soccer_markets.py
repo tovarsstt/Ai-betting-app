@@ -180,7 +180,7 @@ def simulate_match(
     lh: float,
     la: float,
     rho: float = DEFAULT_RHO,
-    n_sims: int = 20000,
+    n_sims: int = 120_000,
     seed: Optional[int] = None,
 ) -> dict:
     """

@@ -677,7 +677,7 @@ class SoccerMarketReq(BaseModel):
     neutral: bool = True          # World Cup = neutral venue, no home boost
     rho: float = sm.DEFAULT_RHO   # Dixon-Coles draw/low-score correction
     simulate: bool = True         # Monte Carlo cross-check + correlated same-game markets
-    n_sims: int = 20000
+    n_sims: int = 120_000
     # Optional book prices (American). Provide to get EV/edge per market.
     home_odds: Optional[float] = None
     draw_odds: Optional[float] = None
@@ -860,7 +860,7 @@ class SimulateMatchReq(BaseModel):
     lambda_home: float
     lambda_away: float
     rho: float = 0.0        # Dixon-Coles low-score correction; 0 = plain independent Poisson
-    n_sims: int = 20000
+    n_sims: int = 120_000
     max_count: int = 10     # highest home/away count the score matrix covers
     seed: Optional[int] = None
     sport: str = "GENERIC"  # label only, no sport-specific behavior

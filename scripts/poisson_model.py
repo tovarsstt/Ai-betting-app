@@ -111,7 +111,7 @@ class SimResult:
 
 
 def simulate_matches(
-    matrix: list[list[float]], n_sims: int = 20000, seed: Optional[int] = None
+    matrix: list[list[float]], n_sims: int = 120_000, seed: Optional[int] = None
 ) -> SimResult:
     """
     Draw n_sims scorelines from the (Dixon-Coles adjusted) joint distribution
