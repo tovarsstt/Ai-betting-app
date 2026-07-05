@@ -190,3 +190,22 @@ def test_day_card_returns_tickets_and_singles():
     for s in card["singles"]:
         assert s["decimal"] >= bb.SINGLE_MIN_ODDS
         assert s["prob"] >= 0.58
+
+
+# ── Stake-portable price floors: bet only if YOUR book's price >= min_odds ───
+
+def test_single_min_odds_keeps_ev_floor():
+    out = bb.strong_singles(SINGLES_BOARD)
+    for s in out:
+        # at exactly min_odds the bet still clears the +5% EV gate
+        assert s["prob"] * s["min_odds"] - 1.0 >= bb.SINGLE_MIN_EV - 1e-9
+        # floor is tight: one cent lower breaks the gate
+        assert s["prob"] * (s["min_odds"] - 0.01) - 1.0 < bb.SINGLE_MIN_EV
+
+
+def test_ticket_legs_and_combined_carry_min_odds():
+    out = bb.build_tickets(BOARD)
+    for t in out["tickets"]:
+        for l in t["legs"]:
+            assert l["min_odds"] * float(l["prob"]) >= 1.0 - 1e-9   # leg break-even
+        assert t["min_combined"] * t["joint_prob"] >= 1.0 - 1e-9    # ticket break-even

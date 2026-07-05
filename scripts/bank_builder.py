@@ -21,6 +21,7 @@ CLI:  echo '{"candidates":[{"match":..,"selection":..,"decimal":..,"prob":..}]}'
 from __future__ import annotations
 
 import json
+import math
 import sys
 from itertools import combinations
 from pathlib import Path
@@ -50,6 +51,11 @@ def _leg_ok(c: dict) -> bool:
     return prob >= MIN_LEG_PROB and (prob * dec - 1.0) >= 0.0
 
 
+def _ceil2(x: float) -> float:
+    """Round UP to 2 decimals — a price floor must never understate."""
+    return math.ceil(x * 100 - 1e-9) / 100
+
+
 def _lane(combined: float) -> str | None:
     if TARGET_MIN <= combined <= TARGET_MAX:
         return "target"
@@ -70,10 +76,13 @@ def _ticket(legs: tuple) -> dict | None:
     v = lint([{"decimal": l["decimal"], "selection": l["selection"]} for l in legs])
     if v.status != "ACCEPT":
         return None
+    # min_odds = lowest price at YOUR book (Stake) where the bet stays +EV.
+    # The feed's price found the edge; Stake's on-screen price decides the bet.
     return {
-        "legs": list(legs),
+        "legs": [{**l, "min_odds": _ceil2(1.0 / float(l["prob"]))} for l in legs],
         "combined": round(combined, 2),
         "joint_prob": round(joint, 4),
+        "min_combined": _ceil2(1.0 / joint),
         "ev_pct": round((joint * combined - 1.0) * 100, 1),
         "lane": lane,
         "verdict": v.status,
@@ -142,6 +151,8 @@ def strong_singles(candidates: list[dict], bankroll: float | None = None) -> lis
             "prob": prob,
             "ev_pct": round(ev * 100, 1),
             "stake_pct": stake_pct,
+            # bet on Stake only if its price >= this — keeps the +5% edge
+            "min_odds": _ceil2((1.0 + SINGLE_MIN_EV) / prob),
         }
         if bankroll is not None:
             single["stake_usd"] = round(bankroll * stake_pct / 100, 2)
