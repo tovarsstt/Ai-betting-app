@@ -27,12 +27,21 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 from slip_linter import lint  # every emitted ticket must survive the pre-bet gate
+from staking import NORMAL_MIN  # 0.58 — the tier floor "bet more" already trusts
 
 TARGET_MIN, TARGET_MAX = 3.0, 5.0    # user's growth lane: 3-5x the stake
 PATTERN_MIN, PATTERN_MAX = 2.3, 6.0  # rule 14 proven range (8/8, +176% ROI)
 MIN_LEG_PROB = 0.56                  # rule 14 floor: every leg a probable event
 LEG_COUNTS = (2, 3)                  # the +ROI shape; 5+ legs bust (sim + record)
 DEFAULT_TICKETS = 3
+
+# Strong singles: 1.75+ pays enough to matter as a single (user directive);
+# betting BIGGER demands 2.5x the +2% scan flag gate; quarter-Kelly because
+# model probs carry error — full Kelly on an overestimated prob ruins banks.
+SINGLE_MIN_ODDS = 1.75
+SINGLE_MIN_EV = 0.05
+KELLY_FRACTION = 0.25
+KELLY_CAP_PCT = 3.0                  # never more than 3% of bank on one bet
 
 
 def _leg_ok(c: dict) -> bool:
@@ -111,15 +120,48 @@ def build_tickets(candidates: list[dict], n_tickets: int = DEFAULT_TICKETS) -> d
     }
 
 
+def strong_singles(candidates: list[dict], bankroll: float | None = None) -> list[dict]:
+    """Singles worth betting MORE on: 1.75+ odds AND >=58% model prob AND
+    >=+5% EV. Stake = quarter-Kelly, capped at KELLY_CAP_PCT of bankroll.
+
+    Honest math: at 1.75-2.2 a qualifying pick wins ~58-65% — the best value
+    zone on a board, NOT a lock. Quarter-Kelly is how "bet more" stays safe.
+    """
+    out = []
+    for c in candidates:
+        dec, prob = float(c["decimal"]), float(c["prob"])
+        ev = prob * dec - 1.0
+        if dec < SINGLE_MIN_ODDS or prob < NORMAL_MIN or ev < SINGLE_MIN_EV:
+            continue
+        kelly = ev / (dec - 1.0)                      # full Kelly fraction
+        stake_pct = round(min(kelly * KELLY_FRACTION * 100, KELLY_CAP_PCT), 2)
+        single = {
+            "match": c["match"],
+            "selection": c["selection"],
+            "decimal": dec,
+            "prob": prob,
+            "ev_pct": round(ev * 100, 1),
+            "stake_pct": stake_pct,
+        }
+        if bankroll is not None:
+            single["stake_usd"] = round(bankroll * stake_pct / 100, 2)
+        out.append(single)
+    out.sort(key=lambda s: (-s["prob"], -s["ev_pct"]))  # win-prob first
+    return out
+
+
 def _main() -> None:
     raw = sys.stdin.read()
     payload = json.loads(raw) if raw.strip() else {}
     cands = payload.get("candidates", [])
+    bankroll = payload.get("bankroll")
     out = build_tickets(cands, int(payload.get("n_tickets", DEFAULT_TICKETS)))
+    out = {**out, "singles": strong_singles(
+        cands, float(bankroll) if bankroll is not None else None)}
     if "--json" in sys.argv:
         print(json.dumps(out, indent=2))
         return
-    if out["pass"]:
+    if out["pass"] and not out["singles"]:
         print("[PASS] " + out["note"])
         return
     for i, t in enumerate(out["tickets"], 1):
@@ -127,6 +169,10 @@ def _main() -> None:
               f"win {t['joint_prob']*100:.0f}%  EV {t['ev_pct']:+.1f}%")
         for l in t["legs"]:
             print(f"    {l['selection']} @ {l['decimal']}  ({l['match']})")
+    for s in out["singles"]:
+        usd = f"  ${s['stake_usd']}" if "stake_usd" in s else ""
+        print(f"single  {s['selection']} @ {s['decimal']}  win {s['prob']*100:.0f}%  "
+              f"EV {s['ev_pct']:+.1f}%  stake {s['stake_pct']}% of bank{usd}  ({s['match']})")
 
 
 if __name__ == "__main__":

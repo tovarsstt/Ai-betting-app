@@ -4170,7 +4170,7 @@ interface BankCandidate { match: string; selection: string; decimal: number; pro
 // ranked, linter-approved, returned tickets never share a leg. Pure local compute.
 app.post('/api/bank-builder', async (req: express.Request, res: express.Response) => {
   if (rateLimit(req, 30, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
-  const { candidates, n_tickets } = req.body as { candidates?: BankCandidate[]; n_tickets?: number };
+  const { candidates, n_tickets, bankroll } = req.body as { candidates?: BankCandidate[]; n_tickets?: number; bankroll?: number };
   if (!Array.isArray(candidates) || candidates.length === 0) {
     return res.status(400).json({ error: 'NEED_CANDIDATES', message: 'body: { candidates: [{ match, selection, decimal, prob }] }' });
   }
@@ -4180,7 +4180,7 @@ app.post('/api/bank-builder', async (req: express.Request, res: express.Response
     return res.status(400).json({ error: 'BAD_CANDIDATE', message: 'each candidate needs match, selection, decimal > 1, prob in (0,1)' });
   }
   try {
-    const data = await spawnPythonJson(BANK_BUILDER, ['--json'], JSON.stringify({ candidates, n_tickets }));
+    const data = await spawnPythonJson(BANK_BUILDER, ['--json'], JSON.stringify({ candidates, n_tickets, bankroll }));
     res.json({ success: true, data });
   } catch {
     res.status(500).json({ error: 'BUILDER_FAILED' });

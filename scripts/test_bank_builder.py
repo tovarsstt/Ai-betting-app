@@ -101,3 +101,46 @@ def test_tickets_survive_slip_linter():
     out = bb.build_tickets(BOARD)
     for t in out["tickets"]:
         assert t["verdict"] == "ACCEPT"
+
+
+# ── Strong singles: 1.75+ odds, high model prob, quarter-Kelly sized ─────────
+
+SINGLES_BOARD = [
+    leg("Brasil v Chile", "Brasil ML", 1.45, 0.70),      # great prob, pays too thin
+    leg("Japon v Honduras", "Over 2.5", 1.85, 0.62),     # qualifies: EV +14.7%
+    leg("Francia v Peru", "BTTS Yes", 1.90, 0.56),       # prob under 0.58 floor
+    leg("Italia v Ghana", "Italia ML", 1.75, 0.59),      # EV +3.3% — edge too thin
+    leg("Alemania v Egipto", "Under 3.5", 1.80, 0.60),   # qualifies: EV +8.0%
+]
+
+
+def test_strong_singles_gates():
+    out = bb.strong_singles(SINGLES_BOARD)
+    picks = {s["selection"] for s in out}
+    assert picks == {"Over 2.5", "Under 3.5"}
+
+
+def test_strong_singles_sorted_by_prob_first():
+    out = bb.strong_singles(SINGLES_BOARD)
+    probs = [s["prob"] for s in out]
+    assert probs == sorted(probs, reverse=True)
+
+
+def test_strong_singles_quarter_kelly_capped():
+    out = bb.strong_singles(SINGLES_BOARD)
+    for s in out:
+        dec, p = s["decimal"], s["prob"]
+        full_kelly = (p * dec - 1.0) / (dec - 1.0)
+        expected = min(full_kelly * bb.KELLY_FRACTION * 100, bb.KELLY_CAP_PCT)
+        assert math.isclose(s["stake_pct"], round(expected, 2), abs_tol=0.011)
+        assert s["stake_pct"] <= bb.KELLY_CAP_PCT
+
+
+def test_strong_singles_stake_usd_from_bankroll():
+    out = bb.strong_singles(SINGLES_BOARD, bankroll=200.0)
+    for s in out:
+        assert math.isclose(s["stake_usd"], round(200.0 * s["stake_pct"] / 100, 2), abs_tol=0.011)
+
+
+def test_strong_singles_empty_board():
+    assert bb.strong_singles([]) == []
