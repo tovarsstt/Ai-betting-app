@@ -58,6 +58,11 @@ const BANKROLL_KEY = "caveman_bankroll";
 // F1 excluded: outright race markets don't fit the ML/day-card shape.
 const SUPPORTED = ["SOCCER", "NBA", "WNBA", "NFL", "MLB", "NHL", "TENNIS"];
 
+// Ledger stores American odds; the card works in decimal.
+function decToAmerican(dec: number): number {
+  return dec >= 2 ? Math.round((dec - 1) * 100) : Math.round(-100 / (dec - 1));
+}
+
 /* Bet on Stake only when its on-screen price clears this floor. */
 function StakeFloor({ floor }: { floor: number }) {
   return (
@@ -71,6 +76,42 @@ export function DayCard({ sport }: { sport: string }) {
   const [bankroll, setBankroll] = useState(
     () => localStorage.getItem(BANKROLL_KEY) ?? "200",
   );
+  const [logged, setLogged] = useState<Set<string>>(new Set());
+
+  // Book a pick into the ledger — predicted_prob is what feeds calibration,
+  // closing-odds capture grades it vs the close. The learning loop.
+  const { mutate: logPick, isPending: logPending } = useMutation({
+    mutationFn: async (p: { key: string; game: string; selection: string; decimal: number; prob?: number; stakeUnits?: number }) => {
+      const res = await fetch("/api/ledger/pick", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sport, game: p.game, selection: p.selection,
+          odds: decToAmerican(p.decimal),
+          stake_units: p.stakeUnits ?? 1,
+          predicted_prob: p.prob,
+          source: "day_card",
+        }),
+      });
+      if (!res.ok) throw new Error("Ledger write failed");
+      return p.key;
+    },
+    onSuccess: (key) => setLogged((prev) => new Set(prev).add(key)),
+  });
+
+  function LogButton({ p }: { p: { key: string; game: string; selection: string; decimal: number; prob?: number; stakeUnits?: number } }) {
+    const done = logged.has(p.key);
+    return (
+      <Button
+        size="sm" variant={done ? "outline" : "default"}
+        disabled={done || logPending}
+        onClick={() => logPick(p)}
+        className="h-6 px-2 text-[9px] font-black tracking-widest uppercase shrink-0"
+      >
+        {done ? "LOGGED" : "LOG"}
+      </Button>
+    );
+  }
 
   const { mutate: build, data, isPending, error } = useMutation({
     mutationFn: async () => {
@@ -174,9 +215,18 @@ export function DayCard({ sport }: { sport: string }) {
                 </span>
               </div>
             ))}
-            <p className="text-[10px] font-mono text-muted-foreground pt-1 border-t border-white/10">
-              playable while combined ≥ {t.min_combined.toFixed(2)} on Stake
-            </p>
+            <div className="flex items-center justify-between pt-1 border-t border-white/10">
+              <p className="text-[10px] font-mono text-muted-foreground">
+                playable while combined ≥ {t.min_combined.toFixed(2)} on Stake
+              </p>
+              <LogButton p={{
+                key: `ticket-${i}`,
+                game: t.legs.map((l) => l.match).join(" / "),
+                selection: t.legs.map((l) => l.selection).join(" + "),
+                decimal: t.combined,
+                prob: t.joint_prob,
+              }} />
+            </div>
           </div>
         ))}
 
@@ -225,9 +275,19 @@ export function DayCard({ sport }: { sport: string }) {
                 {s.selection}
                 <span className="text-muted-foreground font-normal text-xs normal-case truncate">{s.match}</span>
               </span>
-              {s.stake_usd != null && (
-                <span className="font-mono text-lg font-black text-primary shrink-0">${s.stake_usd.toFixed(0)}</span>
-              )}
+              <span className="flex items-center gap-2 shrink-0">
+                {s.stake_usd != null && (
+                  <span className="font-mono text-lg font-black text-primary">${s.stake_usd.toFixed(0)}</span>
+                )}
+                <LogButton p={{
+                  key: `single-${i}`,
+                  game: s.match,
+                  selection: s.selection,
+                  decimal: s.decimal,
+                  prob: s.prob,
+                  stakeUnits: s.stake_pct,
+                }} />
+              </span>
             </div>
             <div className={cn("flex items-center gap-4 mt-2 font-mono text-xs text-muted-foreground")}>
               <span>win {(s.prob * 100).toFixed(0)}%</span>
