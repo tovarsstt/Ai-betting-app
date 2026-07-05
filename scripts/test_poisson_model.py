@@ -102,3 +102,19 @@ def test_exact_score_predicate_matches_correct_score_prob():
     closed_form = matrix[1][0]
     simulated = pm.hit_rate(sim, pm.exact_score(1, 0))["prob"]
     assert abs(simulated - closed_form) < 0.02
+
+def test_default_is_120k_real_simulations():
+    # Guard the contract: default sample size is 120,000 REAL random draws.
+    matrix = pm.score_matrix(1.88, 0.65, rho=-0.13)
+    sim = pm.simulate_matches(matrix)           # no n_sims arg -> default
+    assert sim.n_sims == 120_000
+    assert len(sim.home_goals) == 120_000       # actual draw arrays, not a label
+    # real sampling: two seeds must NOT produce identical outcomes
+    a = pm.simulate_matches(matrix, seed=1)
+    b = pm.simulate_matches(matrix, seed=2)
+    assert (a.home_goals != b.home_goals).any()
+    # converged: simulated home-win within 1pt of the analytic matrix
+    analytic = sum(matrix[h][x] for h in range(len(matrix))
+                   for x in range(len(matrix[0])) if h > x)
+    simulated = pm.hit_rate(a, pm.home_win)["prob"]
+    assert abs(simulated - analytic) < 0.01
