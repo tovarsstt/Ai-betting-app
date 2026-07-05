@@ -347,7 +347,7 @@ function PoissonChart({ poisson }: { poisson: PoissonBoard }) {
               <Bar dataKey="pct" radius={[2, 2, 0, 0]} isAnimationActive={false}>
                 <LabelList dataKey="pct" position="top"
                            style={{ fill: "#F5F0E8", fontSize: 10, fontWeight: 800 }}
-                           formatter={(v: number) => `${v}%`} />
+                           formatter={(v) => `${String(v)}%`} />
                 {data.map((d) => (
                   <Cell key={d.score} fill={d.pct === maxPct ? OCHRE : "#2C2C2C"}
                         stroke={d.pct === maxPct ? OCHRE : "#3a3a3a"} />
