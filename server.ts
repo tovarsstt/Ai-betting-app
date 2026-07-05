@@ -2296,13 +2296,22 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
     // UI — a 55% play presented without a warning reads like a lock and isn't.
     let soccerGrade: PickGrade | null = null;
     try {
-      if (league === 'SOCCER' && oddsGame && oddsGame.drawOdds != null) {
+      // Odds feed missing this match must NOT kill the board — edge_api falls
+      // back to the data-fit Poisson regression ratings when no 1X2 is sent,
+      // so the simulation still renders instead of "no data to simulate".
+      const socTeams = String(matchup).split(/\s+vs\.?\s+/i).map(t => t.trim()).filter(Boolean);
+      const socHome = oddsGame?.home ?? socTeams[0];
+      const socAway = oddsGame?.away ?? socTeams[1];
+      const socHasOdds = oddsGame != null && oddsGame.drawOdds != null;
+      if (league === 'SOCCER' && socHome && socAway) {
         const sRes = await fetch('http://127.0.0.1:8001/predict-soccer', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            home_team: oddsGame.home, away_team: oddsGame.away, neutral: true,
-            home_odds: oddsGame.homeOdds, draw_odds: oddsGame.drawOdds, away_odds: oddsGame.awayOdds,
+            home_team: socHome, away_team: socAway, neutral: true,
+            ...(socHasOdds
+              ? { home_odds: oddsGame.homeOdds, draw_odds: oddsGame.drawOdds, away_odds: oddsGame.awayOdds }
+              : {}),
           }),
           signal: AbortSignal.timeout(4000),
         });
@@ -2368,7 +2377,7 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
               correlated: s.simulation?.correlated,
               ratings: s.data_fit_ratings ? {
                 home: s.data_fit_ratings.home, away: s.data_fit_ratings.away,
-                home_team: oddsGame.home, away_team: oddsGame.away,
+                home_team: socHome, away_team: socAway,
                 league: s.data_fit_ratings.league,
               } : undefined,
             };

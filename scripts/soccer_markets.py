@@ -240,12 +240,22 @@ def fair_odds(prob: float) -> dict:
     return {"decimal": round(dec, 3), "american": decimal_to_american(dec)}
 
 
+def price_to_decimal(odds: float) -> float:
+    """Accept American OR decimal book prices. Valid American odds are always
+    |odds| >= 100, so anything in (1, 100) is a decimal price (e.g. a LatAm
+    book's 1.42). Without this, decimal input devigged to ~equal thirds — a
+    silently fake board."""
+    if 1.0 < odds < 100.0:
+        return odds
+    return american_to_decimal(odds)
+
+
 def devig_3way(home_odds: float, draw_odds: float, away_odds: float) -> dict:
     """Proportional devig of a 3-way market into fair probabilities."""
     raw = [
-        1.0 / american_to_decimal(home_odds),
-        1.0 / american_to_decimal(draw_odds),
-        1.0 / american_to_decimal(away_odds),
+        1.0 / price_to_decimal(home_odds),
+        1.0 / price_to_decimal(draw_odds),
+        1.0 / price_to_decimal(away_odds),
     ]
     overround = sum(raw)
     if overround <= 0:
@@ -260,7 +270,7 @@ def devig_3way(home_odds: float, draw_odds: float, away_odds: float) -> dict:
 
 def ev_pct(model_prob: float, american_odds: float) -> float:
     """Expected value as a fraction of stake for a 1-unit bet."""
-    dec = american_to_decimal(american_odds)
+    dec = price_to_decimal(american_odds)
     return round(model_prob * (dec - 1.0) - (1.0 - model_prob), 4)
 
 

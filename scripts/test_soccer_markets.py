@@ -88,6 +88,23 @@ def test_devig_3way_sums_to_one_and_reports_vig():
     assert dv["vig_pct"] > 0
 
 
+def test_devig_3way_accepts_decimal_prices():
+    # LatAm book board (decimal): heavy fav must devig heavy, not ~equal thirds
+    dv = sm.devig_3way(1.42, 4.40, 8.20)
+    assert dv["home"] > 0.60
+    assert dv["away"] < 0.15
+    assert math.isclose(dv["home"] + dv["draw"] + dv["away"], 1.0, abs_tol=1e-9)
+    # matches the same market quoted in American
+    dv_am = sm.devig_3way(-238, 340, 720)
+    assert math.isclose(dv["home"], dv_am["home"], abs_tol=0.01)
+
+
+def test_price_to_decimal_detects_format():
+    assert math.isclose(sm.price_to_decimal(1.42), 1.42, abs_tol=1e-9)
+    assert math.isclose(sm.price_to_decimal(-200), 1.5, abs_tol=1e-9)
+    assert math.isclose(sm.price_to_decimal(150), 2.5, abs_tol=1e-9)
+
+
 def test_american_decimal_roundtrip():
     assert math.isclose(sm.american_to_decimal(-200), 1.5, abs_tol=1e-9)
     assert math.isclose(sm.american_to_decimal(150), 2.5, abs_tol=1e-9)

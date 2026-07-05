@@ -52,8 +52,10 @@ v13_omni_engine.py
 memory_matrix.sqlite
 *.db
 
-# CodeGraph — commit DB, exclude cache
-.codegraph/cache/
+# CodeGraph — regenerable index, local only
+.codegraph/
+# Runtime state (rate-limit counters)
+data/persistent_memory.json
 # Understand-Anything
 .understand-anything/intermediate/
 .understand-anything/diff-overlay.json
