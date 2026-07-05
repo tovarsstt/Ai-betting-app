@@ -201,7 +201,11 @@ def _main() -> None:
     bankroll = payload.get("bankroll")
     bank = float(bankroll) if bankroll is not None else None
     n = int(payload.get("n_tickets", DEFAULT_TICKETS))
-    if payload.get("games"):                 # whole slate -> auto-fed day card
+    if payload.get("live"):                  # REAL runs only — Odds API quota
+        from scan_slate import fetch_slate_oddsapi
+        games = fetch_slate_oddsapi(payload.get("sport", "soccer_fifa_world_cup"))
+        out = day_card(games, n, bank)
+    elif payload.get("games"):               # whole slate -> auto-fed day card
         out = day_card(payload["games"], n, bank)
     else:
         cands = payload.get("candidates", [])

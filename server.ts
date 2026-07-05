@@ -4100,6 +4100,9 @@ app.post('/api/ledger/capture-clv', async (req: express.Request, res: express.Re
 const SLIP_LINTER   = path.resolve(process.cwd(), 'scripts/slip_linter.py');
 const LEDGER_REPORT = path.resolve(process.cwd(), 'scripts/ledger_report.py');
 const BANK_BUILDER  = path.resolve(process.cwd(), 'scripts/bank_builder.py');
+// Live day-card cache — repeat clicks must not burn Odds API quota.
+const dayCardCache = new Map<string, { at: number; data: unknown }>();
+const DAY_CARD_TTL_MS = 10 * 60_000;
 
 function spawnPythonJson(script: string, args: string[], stdin: string | null, timeoutMs = 8_000): Promise<unknown> {
   return new Promise((resolve, reject) => {
@@ -4171,14 +4174,30 @@ interface BankCandidate { match: string; selection: string; decimal: number; pro
 app.post('/api/bank-builder', async (req: express.Request, res: express.Response) => {
   if (rateLimit(req, 30, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
   interface SlateGame { name: string; h2h: number[] }
-  const { candidates, games, n_tickets, bankroll } = req.body as {
-    candidates?: BankCandidate[]; games?: SlateGame[]; n_tickets?: number; bankroll?: number;
+  const { candidates, games, live, sport, n_tickets, bankroll } = req.body as {
+    candidates?: BankCandidate[]; games?: SlateGame[]; live?: boolean; sport?: string; n_tickets?: number; bankroll?: number;
   };
-  // Two feeds: pre-built candidates, or a raw slate (games) the Dixon-Coles
-  // engine converts to candidates itself — no hand-assembly needed.
+  // Three feeds: pre-built candidates, a raw slate (games), or live: true —
+  // the server pulls the slate itself (Odds API quota; cached 10 min).
+  if (live) {
+    const sportKey = String(sport || 'soccer_fifa_world_cup').replace(/[^a-z0-9_]/g, '');
+    const cacheKey = `${sportKey}:${bankroll ?? 0}`;
+    const hit = dayCardCache.get(cacheKey);
+    if (hit && Date.now() - hit.at < DAY_CARD_TTL_MS) {
+      return res.json({ success: true, data: hit.data, cached: true });
+    }
+    try {
+      const data = await spawnPythonJson(BANK_BUILDER, ['--json'],
+        JSON.stringify({ live: true, sport: sportKey, n_tickets, bankroll }), 30_000);
+      dayCardCache.set(cacheKey, { at: Date.now(), data });
+      return res.json({ success: true, data });
+    } catch (e: unknown) {
+      return res.status(502).json({ error: 'LIVE_SLATE_FAILED', message: e instanceof Error ? e.message : String(e) });
+    }
+  }
   const hasGames = Array.isArray(games) && games.length > 0;
   if (!hasGames && (!Array.isArray(candidates) || candidates.length === 0)) {
-    return res.status(400).json({ error: 'NEED_CANDIDATES_OR_GAMES', message: 'body: { candidates: [{ match, selection, decimal, prob }] } or { games: [{ name, h2h: [h,d,a], totals?, btts?, dc_x2?, dc_1x? }] }' });
+    return res.status(400).json({ error: 'NEED_CANDIDATES_OR_GAMES', message: 'body: { candidates: [{ match, selection, decimal, prob }] } or { games: [{ name, h2h: [h,d,a], totals?, btts?, dc_x2?, dc_1x? }] } or { live: true }' });
   }
   if (hasGames && games.some(g => !g?.name || !Array.isArray(g?.h2h) || g.h2h.length !== 3 || g.h2h.some(o => typeof o !== 'number' || !(o > 1)))) {
     return res.status(400).json({ error: 'BAD_GAME', message: 'each game needs name and h2h: [home, draw, away] decimal odds > 1' });

@@ -12,6 +12,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, LabelList } from "recharts";
+import { DayCard } from "@/components/DayCard";
 
 const SPORTS = ["NBA", "WNBA", "NFL", "MLB", "NHL", "SOCCER", "TENNIS", "F1"];
 
@@ -756,6 +757,9 @@ export default function GameBreakdown() {
 
         {/* ── Sharp Panel — always visible, auto-loads ── */}
         <SharpPanel sport={sport} />
+
+        {/* ── Day Card — bank-builder ticket + Kelly singles, Stake floors ── */}
+        <DayCard sport={sport} />
 
         {/* ── Search ── */}
         <div className="glass p-5 rounded-2xl shadow-2xl relative overflow-hidden group">
