@@ -64,3 +64,7 @@ data/persistent_memory.json
 .claude/worktrees/
 scripts/kronos/
 *.bak
+.clone/
+.pytest_cache/
+# Third-party claude-bridge repos — nested git clones, never tracked here
+integrations/
