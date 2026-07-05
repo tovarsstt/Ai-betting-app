@@ -4087,6 +4087,7 @@ app.post('/api/ledger/capture-clv', async (req: express.Request, res: express.Re
 // ─────────────────────────────────────────────────────────────────────────────
 const SLIP_LINTER   = path.resolve(process.cwd(), 'scripts/slip_linter.py');
 const LEDGER_REPORT = path.resolve(process.cwd(), 'scripts/ledger_report.py');
+const BANK_BUILDER  = path.resolve(process.cwd(), 'scripts/bank_builder.py');
 
 function spawnPythonJson(script: string, args: string[], stdin: string | null, timeoutMs = 8_000): Promise<unknown> {
   return new Promise((resolve, reject) => {
@@ -4148,6 +4149,29 @@ app.post('/api/lint-portfolio', async (req: express.Request, res: express.Respon
     res.json({ success: true, data });
   } catch {
     res.status(500).json({ error: 'LINTER_FAILED' });
+  }
+});
+
+interface BankCandidate { match: string; selection: string; decimal: number; prob: number }
+// BANK BUILDER — constructs the 3-5x growth-lane ticket from model edges (rule 14
+// winning pattern: 2-3 legs, different matches, every leg probable). Win-prob
+// ranked, linter-approved, returned tickets never share a leg. Pure local compute.
+app.post('/api/bank-builder', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 30, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  const { candidates, n_tickets } = req.body as { candidates?: BankCandidate[]; n_tickets?: number };
+  if (!Array.isArray(candidates) || candidates.length === 0) {
+    return res.status(400).json({ error: 'NEED_CANDIDATES', message: 'body: { candidates: [{ match, selection, decimal, prob }] }' });
+  }
+  if (candidates.some(c => typeof c?.decimal !== 'number' || !(c.decimal > 1)
+      || typeof c?.prob !== 'number' || !(c.prob > 0 && c.prob < 1)
+      || !c?.match || !c?.selection)) {
+    return res.status(400).json({ error: 'BAD_CANDIDATE', message: 'each candidate needs match, selection, decimal > 1, prob in (0,1)' });
+  }
+  try {
+    const data = await spawnPythonJson(BANK_BUILDER, ['--json'], JSON.stringify({ candidates, n_tickets }));
+    res.json({ success: true, data });
+  } catch {
+    res.status(500).json({ error: 'BUILDER_FAILED' });
   }
 });
 
