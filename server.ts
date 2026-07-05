@@ -1860,18 +1860,30 @@ const SHARP_IDENTITY = () => getSharpIdentity(
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const DEEPSEEK_KEY = process.env.DEEPSEEK_API_KEY || "";
 
-async function ask(prompt: string, model = "claude-sonnet-4-6"): Promise<string> {
+async function ask(prompt: string, model = "claude-fable-5"): Promise<string> {
   try {
-    const msg = await anthropic.messages.create({
+    const msg = await anthropic.beta.messages.create({
       model,
-      max_tokens: 4096,
+      // Fable 5 thinking is always on and counts against max_tokens — 4096
+      // left verdicts truncated mid-thought; 16000 gives the reasoning room.
+      max_tokens: 16000,
+      // Server-side fallback: a safety-classifier decline re-runs the same
+      // request on Opus 4.8 inside the same call instead of killing the pick.
+      betas: ["server-side-fallback-2026-06-01"],
+      fallbacks: [{ model: "claude-opus-4-8" }],
       messages: [{ role: "user", content: prompt }],
     });
-    const text = msg.content[0].type === "text" ? msg.content[0].text : "";
+    // Whole fallback chain refused → treat like a provider failure below.
+    if (msg.stop_reason === "refusal") throw new Error("CLAUDE_REFUSAL");
+    // Always-on thinking puts a thinking block first — never read content[0].
+    const textBlock = msg.content.find(b => b.type === "text");
+    const text = textBlock?.type === "text" ? textBlock.text : "";
     return text.replace(/```json|```/g, "").trim();
   } catch (err: unknown) {
-    // Mythos-router style fallback: if Anthropic 429/500 → try DeepSeek V3
-    const isRateLimit = err instanceof Error && (err.message.includes("529") || err.message.includes("overloaded") || err.message.includes("rate_limit"));
+    // Typed retryable check (429/5xx/refusal) → try DeepSeek V3
+    const isRateLimit =
+      (err instanceof Anthropic.APIError && [429, 500, 529].includes(Number(err.status))) ||
+      (err instanceof Error && err.message === "CLAUDE_REFUSAL");
     if (isRateLimit && DEEPSEEK_KEY) {
       console.warn("Anthropic overloaded → falling back to DeepSeek V3");
       const res = await fetch("https://api.deepseek.com/v1/chat/completions", {
