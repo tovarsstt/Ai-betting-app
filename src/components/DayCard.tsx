@@ -36,9 +36,20 @@ interface DayCardSingle {
   stake_usd?: number;
 }
 
+interface MatchVerdict {
+  match: string;
+  selection: string;
+  decimal: number;
+  prob: number;
+  ev_pct: number;
+  verdict: "BET" | "LEAN" | "NO_BET";
+  min_odds: number;
+}
+
 interface DayCardData {
   tickets: DayCardTicket[];
   singles: DayCardSingle[];
+  per_match?: MatchVerdict[];
   pass: boolean;
   note: string;
 }
@@ -129,8 +140,11 @@ export function DayCard({ sport }: { sport: string }) {
 
         {data?.pass && data.tickets.length === 0 && data.singles.length === 0 && (
           <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-            <p className="text-sm font-black uppercase tracking-wide">Pass. Bet nothing today.</p>
-            <p className="text-xs text-muted-foreground mt-1">{data.note}</p>
+            <p className="text-sm font-black uppercase tracking-wide">No ticket, no sized single today.</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Best option per match below — BET rows are playable, NO BET rows
+              show the Stake price that would make them playable.
+            </p>
           </div>
         )}
 
@@ -165,6 +179,42 @@ export function DayCard({ sport }: { sport: string }) {
             </p>
           </div>
         ))}
+
+        {/* ── Every match answered: best option + honest verdict ── */}
+        {data?.per_match && data.per_match.length > 0 && (
+          <div className="space-y-1.5">
+            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+              Every match — best option on its board
+            </p>
+            {data.per_match.map((m, i) => (
+              <div key={i} className="flex items-center justify-between gap-2 rounded-lg border border-white/5 bg-white/[0.03] px-3 py-2 text-sm">
+                <span className="flex items-center gap-2 min-w-0">
+                  <Badge className={cn(
+                    "text-[9px] font-black shrink-0 border",
+                    m.verdict === "BET" && "bg-primary/15 text-primary border-primary/30",
+                    m.verdict === "LEAN" && "bg-white/5 text-foreground border-white/15",
+                    m.verdict === "NO_BET" && "bg-transparent text-muted-foreground border-white/10",
+                  )}>
+                    {m.verdict === "NO_BET" ? "NO BET" : m.verdict}
+                  </Badge>
+                  <span className={cn("font-bold truncate", m.verdict === "NO_BET" && "text-muted-foreground font-medium")}>
+                    {m.selection}
+                    <span className="text-muted-foreground font-normal text-xs ml-2">{m.match}</span>
+                  </span>
+                </span>
+                <span className="flex items-center gap-3 shrink-0 font-mono text-xs text-muted-foreground">
+                  <span>win {(m.prob * 100).toFixed(0)}%</span>
+                  <span>EV {m.ev_pct > 0 ? "+" : ""}{m.ev_pct.toFixed(1)}%</span>
+                  <StakeFloor floor={m.min_odds} />
+                </span>
+              </div>
+            ))}
+            <p className="text-[10px] text-muted-foreground pt-1">
+              NO BET = every option on that board loses money at feed prices — play it
+              only if Stake shows ≥ the floor. Forcing NO BET rows is how banks die.
+            </p>
+          </div>
+        )}
 
         {/* ── Strong singles: bet more, sized by quarter-Kelly ── */}
         {data?.singles.map((s, i) => (

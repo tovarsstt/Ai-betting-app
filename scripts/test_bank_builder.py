@@ -258,3 +258,56 @@ def test_day_card_2way_mode_runs_the_same_gates():
     assert "tickets" in card and "singles" in card
     for s in card["singles"]:
         assert s["prob"] >= 0.58 and s["decimal"] >= bb.SINGLE_MIN_ODDS
+
+
+# ── Best-per-match: EVERY match gets an answer with an honest verdict ────────
+
+PER_MATCH_BOARD = [
+    # match A: clear +EV probable pick -> BET
+    leg("Brasil v Chile", "Brasil ML", 1.52, 0.70),        # EV +6.4%
+    leg("Brasil v Chile", "Over 2.5", 1.85, 0.50),         # worse: lower prob
+    # match B: nothing positive -> least-bad shown as NO_BET
+    leg("Suiza v Argelia", "Suiza ML", 1.30, 0.72),        # EV -6.4%
+    leg("Suiza v Argelia", "Under 2.5", 1.70, 0.56),       # EV -4.8% (least bad)
+    # match C: fair-priced probable -> LEAN
+    leg("Japon v Honduras", "Japon ML", 1.65, 0.61),       # EV +0.65%
+]
+
+
+def test_every_match_gets_exactly_one_answer():
+    out = bb.best_per_match(PER_MATCH_BOARD)
+    assert sorted(m["match"] for m in out) == sorted(
+        ["Brasil v Chile", "Suiza v Argelia", "Japon v Honduras"])
+
+
+def test_verdicts_are_honest():
+    v = {m["match"]: m["verdict"] for m in bb.best_per_match(PER_MATCH_BOARD)}
+    assert v["Brasil v Chile"] == "BET"        # probable AND clears +2% gate
+    assert v["Japon v Honduras"] == "LEAN"     # fair-ish, no real edge
+    assert v["Suiza v Argelia"] == "NO_BET"    # everything -EV: shown, not bet
+
+
+def test_no_bet_row_shows_the_flip_price():
+    row = next(m for m in bb.best_per_match(PER_MATCH_BOARD)
+               if m["match"] == "Suiza v Argelia")
+    assert row["selection"] == "Under 2.5"     # least-bad option, max EV
+    # floor = price where it becomes a BET; at floor the +2% gate clears
+    assert row["prob"] * row["min_odds"] - 1.0 >= 0.02 - 1e-9
+
+
+def test_bet_rows_prefer_win_prob_among_positive_ev():
+    board = [
+        leg("X v Y", "X ML", 1.55, 0.68),      # EV +5.4%, prob 68  <- money first
+        leg("X v Y", "Over 2.5", 2.10, 0.51),  # EV +7.1%, prob 51
+    ]
+    row = bb.best_per_match(board)[0]
+    assert row["selection"] == "X ML"
+
+
+def test_day_card_includes_per_match():
+    games = [{"name": "Brasil v Chile", "h2h": [1.45, 4.60, 8.00],
+              "totals": [[2.5, 1.85, 1.95]]}]
+    card = bb.day_card(games, bankroll=200.0)
+    assert "per_match" in card
+    assert len(card["per_match"]) == 1
+    assert card["per_match"][0]["verdict"] in ("BET", "LEAN", "NO_BET")

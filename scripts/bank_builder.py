@@ -170,6 +170,53 @@ def strong_singles(candidates: list[dict], bankroll: float | None = None) -> lis
     return deduped
 
 
+# Per-match verdict gates: BET clears the scan flag gate on a probable event;
+# LEAN is fair-or-better but thin; NO_BET is -EV — shown with the flip price,
+# never staked. "A bet on every match" stays honest this way: every match gets
+# an answer, only positive answers get money.
+VERDICT_BET_EV = 0.02
+VERDICT_BET_PROB = 0.56
+
+
+def _verdict(prob: float, ev: float) -> str:
+    if prob >= VERDICT_BET_PROB and ev >= VERDICT_BET_EV:
+        return "BET"
+    if ev >= 0.0:
+        return "LEAN"
+    return "NO_BET"
+
+
+def best_per_match(candidates: list[dict]) -> list[dict]:
+    """EVERY match -> its single best option + honest verdict.
+
+    Money-first ranking: among non-negative-EV options take the highest win
+    probability; if the whole board is -EV take the least-bad (max EV) and
+    mark it NO_BET. min_odds is the Stake price that flips the row to a BET
+    (clears the +2% gate) — check the board, don't force the bet.
+    """
+    by_match: dict = {}
+    for c in candidates:
+        by_match.setdefault(c["match"], []).append(c)
+    out = []
+    for match, cands in by_match.items():
+        scored = [(float(c["prob"]), float(c["prob"]) * float(c["decimal"]) - 1.0, c)
+                  for c in cands]
+        positive = [t for t in scored if t[1] >= 0.0]
+        prob, ev, c = (max(positive, key=lambda t: (t[0], t[1])) if positive
+                       else max(scored, key=lambda t: t[1]))
+        out.append({
+            "match": match,
+            "selection": c["selection"],
+            "decimal": float(c["decimal"]),
+            "prob": round(prob, 4),
+            "ev_pct": round(ev * 100, 1),
+            "verdict": _verdict(prob, ev),
+            "min_odds": _ceil2((1.0 + VERDICT_BET_EV) / prob),
+        })
+    out.sort(key=lambda m: (-m["prob"], -m["ev_pct"]))
+    return out
+
+
 def candidates_from_slate(games: list[dict]) -> list[dict]:
     """Whole slate -> candidate legs, priced by the BOOK (never invented).
 
@@ -210,7 +257,8 @@ def day_card(games: list[dict], n_tickets: int = DEFAULT_TICKETS,
     mode="soccer" runs the Poisson board; mode="2way" runs sharp-anchored ML."""
     cands = candidates_from_2way(games) if mode == "2way" else candidates_from_slate(games)
     return {**build_tickets(cands, n_tickets),
-            "singles": strong_singles(cands, bankroll)}
+            "singles": strong_singles(cands, bankroll),
+            "per_match": best_per_match(cands)}
 
 
 def _main() -> None:
