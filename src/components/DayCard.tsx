@@ -44,6 +44,8 @@ interface DayCardData {
 }
 
 const BANKROLL_KEY = "caveman_bankroll";
+// F1 excluded: outright race markets don't fit the ML/day-card shape.
+const SUPPORTED = ["SOCCER", "NBA", "WNBA", "NFL", "MLB", "NHL", "TENNIS"];
 
 /* Bet on Stake only when its on-screen price clears this floor. */
 function StakeFloor({ floor }: { floor: number }) {
@@ -66,7 +68,7 @@ export function DayCard({ sport }: { sport: string }) {
       const res = await fetch("/api/bank-builder", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ live: true, bankroll: bank }),
+        body: JSON.stringify({ live: true, sport, bankroll: bank }),
       });
       if (!res.ok) {
         const body = await res.json().catch(() => null) as { message?: string } | null;
@@ -77,7 +79,8 @@ export function DayCard({ sport }: { sport: string }) {
     },
   });
 
-  if (sport !== "SOCCER") return null; // engine is soccer-only today
+  if (!SUPPORTED.includes(sport)) return null;
+  const isSoccer = sport === "SOCCER";
 
   return (
     <Card className="border-primary/20 bg-card/60">
@@ -117,9 +120,10 @@ export function DayCard({ sport }: { sport: string }) {
 
         {!data && !isPending && error == null && (
           <p className="text-xs text-muted-foreground">
-            One click: live slate → devig → Poisson → the day&apos;s ticket and
-            Kelly-sized singles, each with its Stake price floor. Uses one Odds
-            API request, cached 10 min.
+            {isSoccer
+              ? "One click: live slate → devig → Poisson → the day's ticket and Kelly-sized singles, each with its Stake price floor."
+              : `One click: live ${sport} slate → Pinnacle fair line → best price across books → ticket and Kelly-sized singles with Stake floors.`}
+            {" "}Uses one Odds API request, cached 10 min.
           </p>
         )}
 

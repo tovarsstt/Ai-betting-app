@@ -201,3 +201,14 @@ def test_ev_pct_positive_when_model_beats_price():
     assert sm.ev_pct(0.60, 100) > 0
     # Model 40% vs -200 (implied 66.7%) → negative EV
     assert sm.ev_pct(0.40, -200) < 0
+
+
+def test_devig_2way_sums_to_one_and_orders_correctly():
+    # NBA-style board: -200 fav / +170 dog quoted decimal
+    dv = sm.devig_2way(1.50, 2.70)
+    assert math.isclose(dv["a"] + dv["b"], 1.0, abs_tol=1e-9)
+    assert dv["a"] > 0.60 and dv["b"] < 0.40
+    assert dv["vig_pct"] > 0
+    # American input works through the same price detection
+    dv_am = sm.devig_2way(-200, 170)
+    assert math.isclose(dv["a"], dv_am["a"], abs_tol=1e-9)

@@ -268,6 +268,20 @@ def devig_3way(home_odds: float, draw_odds: float, away_odds: float) -> dict:
     }
 
 
+def devig_2way(odds_a: float, odds_b: float) -> dict:
+    """Proportional devig of a 2-way market (ML in NBA/NFL/MLB/NHL/tennis).
+    Accepts American or decimal prices, same as devig_3way."""
+    raw = [1.0 / price_to_decimal(odds_a), 1.0 / price_to_decimal(odds_b)]
+    overround = sum(raw)
+    if overround <= 0:
+        raise ValueError("invalid 2-way prices")
+    return {
+        "a": raw[0] / overround,
+        "b": raw[1] / overround,
+        "vig_pct": round((overround - 1.0) * 100, 2),
+    }
+
+
 def ev_pct(model_prob: float, american_odds: float) -> float:
     """Expected value as a fraction of stake for a 1-unit bet."""
     dec = price_to_decimal(american_odds)

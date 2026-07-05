@@ -127,6 +127,69 @@ def scan_slate(games: list) -> None:
     print(f"{'-'*64}\n")
 
 
+def normalize_2way_event(ev: dict) -> dict | None:
+    """One the-odds-api event -> sharp-anchored 2-way game, or None.
+
+    Pinnacle's devigged line is the fair-prob anchor: no Pinnacle price for
+    the game means no candidate — we never guess a fair line. `best` is the
+    highest available price per side across every book in the payload
+    (line shopping is the whole 2-way edge)."""
+    home, away = ev.get("home_team"), ev.get("away_team")
+    if not home or not away:
+        return None
+    pin = None
+    best = {home: (0.0, ""), away: (0.0, "")}
+    for bk in ev.get("bookmakers", []):
+        mk = next((m for m in bk.get("markets", []) if m.get("key") == "h2h"), None)
+        if not mk:
+            continue
+        o = {x.get("name"): float(x.get("price", 0)) for x in mk.get("outcomes", [])}
+        if not o.get(home) or not o.get(away):
+            continue
+        if bk.get("key") == "pinnacle":
+            pin = (o[home], o[away])
+        for side in (home, away):
+            if o[side] > best[side][0]:
+                best[side] = (o[side], bk.get("key", ""))
+    if pin is None:
+        return None
+    return {
+        "name": f"{home} v {away}", "home": home, "away": away,
+        "pinnacle": list(pin),
+        "best": [best[home][0], best[away][0]],
+        "best_books": [best[home][1], best[away][1]],
+        "commence_time": ev.get("commence_time"),
+    }
+
+
+def fetch_slate_2way_oddsapi(sport_key: str, regions="us,eu") -> list:
+    """LIVE: 2-way ML slate for NBA/NFL/MLB/NHL/tennis keys. Real runs only."""
+    import urllib.request
+    key = os.environ.get("ODDS_API_KEY")
+    if not key:
+        raise SystemExit("ODDS_API_KEY not set in env — cannot fetch live slate.")
+    url = (f"https://api.the-odds-api.com/v4/sports/{sport_key}/odds/"
+           f"?apiKey={key}&regions={regions}&markets=h2h&oddsFormat=decimal")
+    with urllib.request.urlopen(url, timeout=15) as resp:
+        raw = json.load(resp)
+    return [g for g in (normalize_2way_event(ev) for ev in raw) if g]
+
+
+def discover_tennis_keys(max_keys: int = 3) -> list[str]:
+    """LIVE: active tennis_* sport keys via /v4/sports (a FREE endpoint —
+    costs no quota). Capped so a busy tennis week can't drain credits."""
+    import urllib.request
+    key = os.environ.get("ODDS_API_KEY")
+    if not key:
+        raise SystemExit("ODDS_API_KEY not set in env.")
+    with urllib.request.urlopen(
+            f"https://api.the-odds-api.com/v4/sports/?apiKey={key}", timeout=15) as resp:
+        sports = json.load(resp)
+    keys = [s["key"] for s in sports
+            if s.get("active") and str(s.get("key", "")).startswith("tennis_")]
+    return keys[:max_keys]
+
+
 def fetch_slate_oddsapi(sport_key: str, regions="eu", markets="h2h,totals") -> list:
     """LIVE: pull a slate from the-odds-api.com. Real runs only (never in dev)."""
     import urllib.request

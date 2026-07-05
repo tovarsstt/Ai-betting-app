@@ -209,3 +209,52 @@ def test_ticket_legs_and_combined_carry_min_odds():
         for l in t["legs"]:
             assert l["min_odds"] * float(l["prob"]) >= 1.0 - 1e-9   # leg break-even
         assert t["min_combined"] * t["joint_prob"] >= 1.0 - 1e-9    # ticket break-even
+
+
+# ── 2-way sports (NBA/NFL/MLB/NHL/tennis): sharp-anchored candidates ─────────
+
+ODDS_API_EVENT = {  # exact the-odds-api /v4 event shape
+    "home_team": "Lakers", "away_team": "Celtics",
+    "commence_time": "2026-07-06T00:00:00Z",
+    "bookmakers": [
+        {"key": "pinnacle", "markets": [{"key": "h2h", "outcomes": [
+            {"name": "Lakers", "price": 1.50}, {"name": "Celtics", "price": 2.70}]}]},
+        {"key": "draftkings", "markets": [{"key": "h2h", "outcomes": [
+            {"name": "Lakers", "price": 1.57}, {"name": "Celtics", "price": 2.55}]}]},
+    ],
+}
+
+
+def test_normalize_2way_event_anchors_pinnacle_and_takes_best_price():
+    from scan_slate import normalize_2way_event
+    g = normalize_2way_event(ODDS_API_EVENT)
+    assert g["pinnacle"] == [1.50, 2.70]
+    assert g["best"] == [1.57, 2.70]           # DK better on fav, pinnacle on dog
+    assert g["best_books"] == ["draftkings", "pinnacle"]
+
+
+def test_normalize_2way_event_no_pinnacle_no_candidate():
+    from scan_slate import normalize_2way_event
+    ev = {**ODDS_API_EVENT, "bookmakers": ODDS_API_EVENT["bookmakers"][1:]}
+    assert normalize_2way_event(ev) is None    # no sharp anchor -> never guess
+
+
+def test_candidates_from_2way_probs_and_prices():
+    from scan_slate import normalize_2way_event
+    g = normalize_2way_event(ODDS_API_EVENT)
+    cands = bb.candidates_from_2way([g])
+    by_sel = {c["selection"]: c for c in cands}
+    lak = by_sel["Lakers ML"]
+    assert lak["decimal"] == 1.57              # best price, not pinnacle's
+    assert 0.62 < lak["prob"] < 0.66           # devigged pinnacle fair prob
+    assert by_sel["Celtics ML"]["prob"] < 0.38
+    assert math.isclose(lak["prob"] + by_sel["Celtics ML"]["prob"], 1.0, abs_tol=1e-9)
+
+
+def test_day_card_2way_mode_runs_the_same_gates():
+    from scan_slate import normalize_2way_event
+    g = normalize_2way_event(ODDS_API_EVENT)
+    card = bb.day_card([g], bankroll=200.0, mode="2way")
+    assert "tickets" in card and "singles" in card
+    for s in card["singles"]:
+        assert s["prob"] >= 0.58 and s["decimal"] >= bb.SINGLE_MIN_ODDS

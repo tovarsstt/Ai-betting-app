@@ -187,10 +187,28 @@ def candidates_from_slate(games: list[dict]) -> list[dict]:
     return cands
 
 
+def candidates_from_2way(games: list[dict]) -> list[dict]:
+    """Sharp-anchored 2-way candidates (NBA/NFL/MLB/NHL/tennis).
+
+    prob = devigged PINNACLE fair probability; decimal = best available
+    price across books. EV > 0 exists only when a soft book beats the
+    sharp fair line — the classic +EV method, no invented model."""
+    from soccer_markets import devig_2way
+    cands = []
+    for g in games:
+        dv = devig_2way(g["pinnacle"][0], g["pinnacle"][1])
+        for side, prob, price in ((g["home"], dv["a"], g["best"][0]),
+                                  (g["away"], dv["b"], g["best"][1])):
+            cands.append({"match": g["name"], "selection": f"{side} ML",
+                          "decimal": float(price), "prob": float(prob)})
+    return cands
+
+
 def day_card(games: list[dict], n_tickets: int = DEFAULT_TICKETS,
-             bankroll: float | None = None) -> dict:
-    """One call: slate in, day card out — 3-5x tickets + Kelly-sized singles."""
-    cands = candidates_from_slate(games)
+             bankroll: float | None = None, mode: str = "soccer") -> dict:
+    """One call: slate in, day card out — 3-5x tickets + Kelly-sized singles.
+    mode="soccer" runs the Poisson board; mode="2way" runs sharp-anchored ML."""
+    cands = candidates_from_2way(games) if mode == "2way" else candidates_from_slate(games)
     return {**build_tickets(cands, n_tickets),
             "singles": strong_singles(cands, bankroll)}
 
@@ -202,9 +220,17 @@ def _main() -> None:
     bank = float(bankroll) if bankroll is not None else None
     n = int(payload.get("n_tickets", DEFAULT_TICKETS))
     if payload.get("live"):                  # REAL runs only — Odds API quota
-        from scan_slate import fetch_slate_oddsapi
-        games = fetch_slate_oddsapi(payload.get("sport", "soccer_fifa_world_cup"))
-        out = day_card(games, n, bank)
+        sport = str(payload.get("sport", "soccer_fifa_world_cup"))
+        if sport.startswith("soccer"):       # 3-way -> full Poisson board
+            from scan_slate import fetch_slate_oddsapi
+            out = day_card(fetch_slate_oddsapi(sport), n, bank)
+        elif sport == "tennis":              # active tournaments discovered live
+            from scan_slate import discover_tennis_keys, fetch_slate_2way_oddsapi
+            games = [g for k in discover_tennis_keys() for g in fetch_slate_2way_oddsapi(k)]
+            out = day_card(games, n, bank, mode="2way")
+        else:                                # NBA/NFL/MLB/NHL... -> sharp-anchored ML
+            from scan_slate import fetch_slate_2way_oddsapi
+            out = day_card(fetch_slate_2way_oddsapi(sport), n, bank, mode="2way")
     elif payload.get("games"):               # whole slate -> auto-fed day card
         out = day_card(payload["games"], n, bank)
     else:

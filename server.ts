@@ -4179,8 +4179,15 @@ app.post('/api/bank-builder', async (req: express.Request, res: express.Response
   };
   // Three feeds: pre-built candidates, a raw slate (games), or live: true —
   // the server pulls the slate itself (Odds API quota; cached 10 min).
+  // UI sport names -> odds-api keys; soccer runs the Poisson board, the rest
+  // run sharp-anchored 2-way ML (Pinnacle fair prob x best price).
+  const DAY_CARD_SPORTS: Record<string, string> = {
+    SOCCER: 'soccer_fifa_world_cup', NBA: 'basketball_nba', WNBA: 'basketball_wnba',
+    NFL: 'americanfootball_nfl', MLB: 'baseball_mlb', NHL: 'icehockey_nhl', TENNIS: 'tennis',
+  };
   if (live) {
-    const sportKey = String(sport || 'soccer_fifa_world_cup').replace(/[^a-z0-9_]/g, '');
+    const mapped = DAY_CARD_SPORTS[String(sport || 'SOCCER').toUpperCase()];
+    const sportKey = (mapped ?? String(sport || 'soccer_fifa_world_cup')).replace(/[^a-z0-9_]/g, '');
     const cacheKey = `${sportKey}:${bankroll ?? 0}`;
     const hit = dayCardCache.get(cacheKey);
     if (hit && Date.now() - hit.at < DAY_CARD_TTL_MS) {
