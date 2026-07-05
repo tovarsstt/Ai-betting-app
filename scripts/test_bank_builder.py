@@ -144,3 +144,49 @@ def test_strong_singles_stake_usd_from_bankroll():
 
 def test_strong_singles_empty_board():
     assert bb.strong_singles([]) == []
+
+
+def test_strong_singles_one_per_match():
+    # Over 2.5 AND BTTS Yes of the SAME game as two "singles" = stacked
+    # exposure on one game script — keep only the highest-prob one.
+    board = [
+        leg("Japon v Honduras", "Over 2.5", 1.85, 0.62),
+        leg("Japon v Honduras", "BTTS Yes", 1.80, 0.60),
+    ]
+    out = bb.strong_singles(board)
+    assert len(out) == 1
+    assert out[0]["selection"] == "Over 2.5"
+
+
+# ── Slate auto-feed: games in, day card out — no hand-built candidates ───────
+
+GAME = {
+    "name": "Brasil v Chile",
+    "h2h": [1.45, 4.60, 8.00],
+    "totals": [[2.5, 1.85, 1.95]],
+    "btts": [1.90, 1.85],
+    "dc_x2": 2.90,
+}
+
+
+def test_candidates_from_slate_carry_real_prices():
+    cands = bb.candidates_from_slate([GAME])
+    by_sel = {c["selection"]: c for c in cands}
+    assert by_sel["Home ML"]["decimal"] == 1.45     # book price, not invented
+    assert by_sel["Over 2.5"]["decimal"] == 1.85
+    for c in cands:
+        assert c["match"] == "Brasil v Chile"
+        assert 0.0 < c["prob"] < 1.0
+
+
+def test_day_card_returns_tickets_and_singles():
+    games = [
+        GAME,
+        {"name": "Francia v Peru", "h2h": [1.48, 4.40, 7.50], "totals": [[2.5, 1.88, 1.92]]},
+        {"name": "Alemania v Egipto", "h2h": [1.42, 4.80, 8.50], "totals": []},
+    ]
+    card = bb.day_card(games, bankroll=200.0)
+    assert "tickets" in card and "singles" in card
+    for s in card["singles"]:
+        assert s["decimal"] >= bb.SINGLE_MIN_ODDS
+        assert s["prob"] >= 0.58

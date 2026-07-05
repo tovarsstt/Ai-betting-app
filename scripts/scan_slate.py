@@ -58,25 +58,27 @@ def scan_game(game: dict) -> dict:
             tot[h + a] += mat[h][a]
     P = lambda c: sum(mat[h][a] for h in range(N) for a in range(M) if c(h, a))
 
+    # 4th slot = the BOOK decimal price the EV was computed against, so
+    # downstream consumers (bank_builder) never have to reverse-engineer it.
     edges = []
-    edges.append(("Home ML", dv["home"] * ho - 1, dv["home"]))
-    edges.append(("Away ML", dv["away"] * ao - 1, dv["away"]))
+    edges.append(("Home ML", dv["home"] * ho - 1, dv["home"], ho))
+    edges.append(("Away ML", dv["away"] * ao - 1, dv["away"], ao))
     for line, ov, un in (game.get("totals") or []):
         edges.append((f"Over {line}", _ev_total(tot, ov, line, "over"),
-                      P(lambda h, a: h + a > line)))
+                      P(lambda h, a: h + a > line), ov))
         edges.append((f"Under {line}", _ev_total(tot, un, line, "under"),
-                      P(lambda h, a: h + a < line)))
+                      P(lambda h, a: h + a < line), un))
     if game.get("btts"):
         y, n = game["btts"]
         bt = P(lambda h, a: h >= 1 and a >= 1)
-        edges.append(("BTTS Yes", bt * y - 1, bt))
-        edges.append(("BTTS No", (1 - bt) * n - 1, 1 - bt))
+        edges.append(("BTTS Yes", bt * y - 1, bt, y))
+        edges.append(("BTTS No", (1 - bt) * n - 1, 1 - bt, n))
     if game.get("dc_x2"):                   # draw-or-away
         x2 = P(lambda h, a: a >= h)
-        edges.append(("DC X2", x2 * game["dc_x2"] - 1, x2))
+        edges.append(("DC X2", x2 * game["dc_x2"] - 1, x2, game["dc_x2"]))
     if game.get("dc_1x"):                   # home-or-draw
         d1x = P(lambda h, a: h >= a)
-        edges.append(("DC 1X", d1x * game["dc_1x"] - 1, d1x))
+        edges.append(("DC 1X", d1x * game["dc_1x"] - 1, d1x, game["dc_1x"]))
 
     edges.sort(key=lambda e: e[1], reverse=True)
     return {

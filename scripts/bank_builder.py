@@ -147,17 +147,54 @@ def strong_singles(candidates: list[dict], bankroll: float | None = None) -> lis
             single["stake_usd"] = round(bankroll * stake_pct / 100, 2)
         out.append(single)
     out.sort(key=lambda s: (-s["prob"], -s["ev_pct"]))  # win-prob first
-    return out
+    # One single per match: two sub-markets of one game as "singles" is a
+    # stacked bet on the same game script (the Suiza-Argelia leak).
+    seen: set = set()
+    deduped = []
+    for s in out:
+        if s["match"] in seen:
+            continue
+        seen.add(s["match"])
+        deduped.append(s)
+    return deduped
+
+
+def candidates_from_slate(games: list[dict]) -> list[dict]:
+    """Whole slate -> candidate legs, priced by the BOOK (never invented).
+
+    Runs the same Dixon-Coles engine as /predict-soccer over every game
+    (scan_slate.scan_game) and flattens each priced edge into the candidate
+    shape build_tickets/strong_singles consume.
+    """
+    from scan_slate import scan_game  # deferred: keeps CLI import cheap
+    cands = []
+    for g in games:
+        r = scan_game(g)
+        for mkt, _ev, prob, price in r["edges"]:
+            cands.append({"match": r["name"], "selection": mkt,
+                          "decimal": float(price), "prob": float(prob)})
+    return cands
+
+
+def day_card(games: list[dict], n_tickets: int = DEFAULT_TICKETS,
+             bankroll: float | None = None) -> dict:
+    """One call: slate in, day card out — 3-5x tickets + Kelly-sized singles."""
+    cands = candidates_from_slate(games)
+    return {**build_tickets(cands, n_tickets),
+            "singles": strong_singles(cands, bankroll)}
 
 
 def _main() -> None:
     raw = sys.stdin.read()
     payload = json.loads(raw) if raw.strip() else {}
-    cands = payload.get("candidates", [])
     bankroll = payload.get("bankroll")
-    out = build_tickets(cands, int(payload.get("n_tickets", DEFAULT_TICKETS)))
-    out = {**out, "singles": strong_singles(
-        cands, float(bankroll) if bankroll is not None else None)}
+    bank = float(bankroll) if bankroll is not None else None
+    n = int(payload.get("n_tickets", DEFAULT_TICKETS))
+    if payload.get("games"):                 # whole slate -> auto-fed day card
+        out = day_card(payload["games"], n, bank)
+    else:
+        cands = payload.get("candidates", [])
+        out = {**build_tickets(cands, n), "singles": strong_singles(cands, bank)}
     if "--json" in sys.argv:
         print(json.dumps(out, indent=2))
         return

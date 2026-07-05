@@ -4170,17 +4170,27 @@ interface BankCandidate { match: string; selection: string; decimal: number; pro
 // ranked, linter-approved, returned tickets never share a leg. Pure local compute.
 app.post('/api/bank-builder', async (req: express.Request, res: express.Response) => {
   if (rateLimit(req, 30, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
-  const { candidates, n_tickets, bankroll } = req.body as { candidates?: BankCandidate[]; n_tickets?: number; bankroll?: number };
-  if (!Array.isArray(candidates) || candidates.length === 0) {
-    return res.status(400).json({ error: 'NEED_CANDIDATES', message: 'body: { candidates: [{ match, selection, decimal, prob }] }' });
+  interface SlateGame { name: string; h2h: number[] }
+  const { candidates, games, n_tickets, bankroll } = req.body as {
+    candidates?: BankCandidate[]; games?: SlateGame[]; n_tickets?: number; bankroll?: number;
+  };
+  // Two feeds: pre-built candidates, or a raw slate (games) the Dixon-Coles
+  // engine converts to candidates itself — no hand-assembly needed.
+  const hasGames = Array.isArray(games) && games.length > 0;
+  if (!hasGames && (!Array.isArray(candidates) || candidates.length === 0)) {
+    return res.status(400).json({ error: 'NEED_CANDIDATES_OR_GAMES', message: 'body: { candidates: [{ match, selection, decimal, prob }] } or { games: [{ name, h2h: [h,d,a], totals?, btts?, dc_x2?, dc_1x? }] }' });
   }
-  if (candidates.some(c => typeof c?.decimal !== 'number' || !(c.decimal > 1)
+  if (hasGames && games.some(g => !g?.name || !Array.isArray(g?.h2h) || g.h2h.length !== 3 || g.h2h.some(o => typeof o !== 'number' || !(o > 1)))) {
+    return res.status(400).json({ error: 'BAD_GAME', message: 'each game needs name and h2h: [home, draw, away] decimal odds > 1' });
+  }
+  if (!hasGames && candidates!.some(c => typeof c?.decimal !== 'number' || !(c.decimal > 1)
       || typeof c?.prob !== 'number' || !(c.prob > 0 && c.prob < 1)
       || !c?.match || !c?.selection)) {
     return res.status(400).json({ error: 'BAD_CANDIDATE', message: 'each candidate needs match, selection, decimal > 1, prob in (0,1)' });
   }
   try {
-    const data = await spawnPythonJson(BANK_BUILDER, ['--json'], JSON.stringify({ candidates, n_tickets, bankroll }));
+    const data = await spawnPythonJson(BANK_BUILDER, ['--json'], JSON.stringify(
+      hasGames ? { games, n_tickets, bankroll } : { candidates, n_tickets, bankroll }));
     res.json({ success: true, data });
   } catch {
     res.status(500).json({ error: 'BUILDER_FAILED' });
