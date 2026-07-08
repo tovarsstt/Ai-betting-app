@@ -4258,6 +4258,29 @@ app.post('/api/full-board', async (req: express.Request, res: express.Response) 
   }
 });
 
+// Player prop simulator — REAL game logs (ESPN/Sofascore, free) -> distribution
+// fit -> Monte Carlo -> P(over line) + fair/min odds + BET/LEAN/NO_BET.
+// Live network per call (game-log fetch): real usage only, never debug.
+app.post('/api/player-prop', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 20, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  const { sport, player, stat, line, odds_over, odds_under, teammates_out } = req.body ?? {};
+  if (!sport || !player || !stat || line == null) {
+    return res.status(400).json({ error: 'NEED_SPORT_PLAYER_STAT_LINE' });
+  }
+  try {
+    const r = await fetch('http://127.0.0.1:8001/player-prop', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sport, player, stat, line, odds_over, odds_under, teammates_out }),
+      signal: AbortSignal.timeout(45_000), // soccer/vacuum = one fetch per game/teammate
+    });
+    if (!r.ok) return res.status(502).json({ error: 'EDGE_API_ERROR', status: r.status });
+    res.json({ success: true, data: await r.json() });
+  } catch (e: unknown) {
+    res.status(503).json({ error: 'EDGE_API_UNAVAILABLE', message: e instanceof Error ? e.message : String(e) });
+  }
+});
+
 // ── Tennis rankings auto-refresh — ATP/WTA ranks move weekly (publish every Monday).
 // Pulls the OFFICIAL ATP+WTA ranks via ESPN (free, 0 Odds-API quota) into
 // all_ratings.json and stamps data/ratings_meta.json so stale ranks can be flagged.

@@ -24,6 +24,7 @@ import chaos_engine as ce
 import staking as stk
 import tennis_live as tlive
 import sofascore as sofa
+import player_props as props
 from typing import List
 
 BASE = Path(__file__).parent.parent / "data"
@@ -1224,6 +1225,30 @@ def sofascore_stats(event_id: int):
     except Exception as e:
         return {"status": "ERROR", "error": str(e),
                 "note": "Sofascore call failed — unofficial API, may be blocked/rate-limited/changed"}
+
+
+class PlayerPropReq(BaseModel):
+    sport: str            # nba | wnba | nfl | soccer
+    player: str
+    stat: str             # points/rebounds/assists, shots/shots_on_target, *_yards/tackles/sacks...
+    line: float
+    odds_over: Optional[float] = None    # offered decimal price, if user has one
+    odds_under: Optional[float] = None
+    teammates_out: Optional[List[str]] = None  # ruled-out teammates -> vacuum model
+
+
+@app.post("/player-prop")
+def player_prop(req: PlayerPropReq):
+    """Simulate one player prop from REAL game logs (ESPN / Sofascore, free —
+    no quota keys). Live network per call: real usage only, never debug."""
+    try:
+        return props.simulate_player_prop(
+            req.sport, req.player, req.stat, req.line,
+            odds_over=req.odds_over, odds_under=req.odds_under,
+            teammates_out=req.teammates_out)
+    except Exception as e:
+        return {"status": "ERROR", "error": str(e),
+                "note": "game-log fetch failed — free public API, may be blocked/changed"}
 
 
 @app.get("/health")

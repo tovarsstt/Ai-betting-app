@@ -214,3 +214,83 @@ def parse_statistics(data: dict) -> dict:
                     stats[key] = {"home": item.get("homeValue"), "away": item.get("awayValue")}
         out[period] = stats
     return out
+
+
+# ── Soccer players (props engine) ────────────────────────────────────────────
+# Soccer players are 'player'-typed search entities (tennis players are
+# 'team'-typed — Sofascore models a tennis player AS a team). Endpoints:
+#   GET /api/v1/player/{id}/events/last/{page}                -> recent matches
+#   GET /api/v1/event/{eventId}/player/{playerId}/statistics  -> per-match line
+def search_soccer_player(name: str) -> Optional[dict]:
+    """Resolve a display name to a Sofascore SOCCER player entity."""
+    data = _get(f"/search/all?q={urllib.parse.quote(name)}")
+    return parse_soccer_player_search(data)
+
+
+def parse_soccer_player_search(data: dict) -> Optional[dict]:
+    """Pure: best football player match from search results."""
+    candidates = [
+        r["entity"] for r in data.get("results", [])
+        if r.get("type") == "player"
+        and ((r["entity"].get("team") or {}).get("sport") or {}).get("slug") == "football"
+    ]
+    return candidates[0] if candidates else None
+
+
+def soccer_player_events(player_id: int, pages: int = 1) -> list:
+    """Most recent FINISHED matches this player's team played (page 0 first)."""
+    out = []
+    for p in range(pages):
+        try:
+            data = _get(f"/player/{player_id}/events/last/{p}")
+        except Exception:
+            break
+        out.extend(e for e in data.get("events", [])
+                   if (e.get("status") or {}).get("type") == "finished")
+    out.sort(key=lambda e: e.get("startTimestamp", 0), reverse=True)
+    return out
+
+
+def soccer_player_match_stats(event_id: int, player_id: int) -> dict:
+    """This player's stat line in one match ({} if he didn't play)."""
+    try:
+        data = _get(f"/event/{event_id}/player/{player_id}/statistics")
+    except Exception:
+        return {}
+    return data.get("statistics") or {}
+
+
+# Per-match Sofascore keys -> prop stat. A goal counts as a shot on target,
+# but Sofascore's onTargetScoringAttempt already includes it — no double add.
+def extract_soccer_stat(stats: dict, stat: str) -> Optional[float]:
+    """Pure: pull one prop stat from a Sofascore player match-stats dict.
+    Returns None when the player has no minutes (didn't play)."""
+    if not stats or not stats.get("minutesPlayed"):
+        return None
+    on_target = stats.get("onTargetScoringAttempt", 0) or 0
+    off_target = stats.get("shotOffTarget", 0) or 0
+    blocked = stats.get("blockedScoringAttempt", 0) or 0
+    table = {
+        "shots": on_target + off_target + blocked,
+        "shots_on_target": on_target,
+        "goals": stats.get("goals", 0) or 0,
+        "assists": stats.get("goalAssist", 0) or 0,
+        "tackles": stats.get("totalTackle", 0) or 0,
+        "passes": stats.get("totalPass", 0) or 0,
+    }
+    val = table.get(stat)
+    return float(val) if val is not None else None
+
+
+def soccer_player_gamelog(name: str, stat: str, pages: int = 1, max_games: int = 12) -> Optional[dict]:
+    """Player name -> {player, values} where values = per-match stat, most
+    recent first, matches he didn't play excluded. None if name unresolved."""
+    entity = search_soccer_player(name)
+    if not entity:
+        return None
+    values = []
+    for ev in soccer_player_events(entity["id"], pages=pages)[:max_games]:
+        v = extract_soccer_stat(soccer_player_match_stats(ev["id"], entity["id"]), stat)
+        if v is not None:
+            values.append(v)
+    return {"player": entity.get("name", name), "player_id": entity["id"], "values": values}
