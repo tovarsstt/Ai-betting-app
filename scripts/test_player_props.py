@@ -191,6 +191,68 @@ def test_unsupported_stat_lists_known():
     assert "rebounds" in r["note"]
 
 
+# ── Soccer: WC cache + multi-source merge ────────────────────────────────────
+import fetch_wc_player_stats as wc
+
+
+def test_norm_name_strips_accents_and_case():
+    assert wc.norm_name("Luis Díaz") == "luis diaz"
+    assert wc.norm_name("  GRANIT   Xhaka ") == "granit xhaka"
+
+
+def test_wc_lookup_matches_comma_format_and_partial():
+    cache = {"players": {
+        "luis diaz": {"display": "Luis Díaz", "team": "Colombia", "games": []},
+        "luis suarez": {"display": "Luis Suárez", "team": "Colombia", "games": []},
+        "lionel messi": {"display": "Lionel Messi", "team": "Argentina", "games": []},
+    }}
+    assert pp.wc_lookup(cache, "Díaz, Luis")["display"] == "Luis Díaz"
+    assert pp.wc_lookup(cache, "messi")["display"] == "Lionel Messi"
+    assert pp.wc_lookup(cache, "Kylian Mbappé") is None
+
+
+def test_merge_gamelogs_dedupes_by_day_first_source_wins():
+    wc_log = ("wc_2026", [("2026-07-07T15:00Z", 1.0), ("2026-07-04T15:00Z", 2.0)])
+    sofa_log = ("sofascore", [("2026-07-07T15:00:00+00:00", 9.0),  # same match, ignored
+                               ("2026-05-20T19:00Z", 3.0)])
+    values, sources = pp.merge_gamelogs(wc_log, sofa_log)
+    assert values == [1.0, 2.0, 3.0]  # newest first, no double count
+    assert sources == ["wc_2026", "sofascore"]
+
+
+def test_parse_summary_rosters_skips_dnp_and_maps_stats():
+    summary = {"rosters": [
+        {"homeAway": "home", "team": {"displayName": "Colombia"}, "roster": [
+            {"athlete": {"displayName": "Luis Díaz"}, "stats": [
+                {"name": "appearances", "value": 1.0},
+                {"name": "totalShots", "value": 3.0},
+                {"name": "shotsOnTarget", "value": 1.0},
+                {"name": "totalGoals", "value": 0.0},
+                {"name": "goalAssists", "value": 0.0},
+                {"name": "foulsCommitted", "value": 2.0},
+                {"name": "yellowCards", "value": 0.0},
+                {"name": "redCards", "value": 0.0}]},
+            {"athlete": {"displayName": "Bench Guy"}, "stats": [
+                {"name": "appearances", "value": 0.0}]},
+        ]},
+        {"homeAway": "away", "team": {"displayName": "Switzerland"}, "roster": []},
+    ]}
+    rows = wc.parse_summary_rosters(summary, "760508", "2026-07-07T15:00Z")
+    assert len(rows) == 1  # DNP excluded — a bench seat is not a 0-shot game
+    assert rows[0]["player"] == "Luis Díaz"
+    assert rows[0]["opponent"] == "Switzerland"
+    assert rows[0]["shots"] == 3.0 and rows[0]["shots_on_target"] == 1.0
+
+
+def test_parse_espn_search_soccer_matches_sport_uid():
+    data = {"results": [{"type": "player", "contents": [
+        {"uid": "s:600~a:45843", "displayName": "Lionel Messi",
+         "defaultLeagueSlug": "usa.1"},
+    ]}]}
+    hit = pp.parse_espn_search(data, "soccer")
+    assert hit == {"id": "45843", "name": "Lionel Messi"}
+
+
 # ── Sofascore soccer-player parsing ──────────────────────────────────────────
 def test_parse_soccer_player_search_picks_football_player():
     data = {"results": [

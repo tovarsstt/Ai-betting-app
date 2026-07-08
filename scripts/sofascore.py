@@ -283,14 +283,21 @@ def extract_soccer_stat(stats: dict, stat: str) -> Optional[float]:
 
 
 def soccer_player_gamelog(name: str, stat: str, pages: int = 1, max_games: int = 12) -> Optional[dict]:
-    """Player name -> {player, values} where values = per-match stat, most
-    recent first, matches he didn't play excluded. None if name unresolved."""
+    """Player name -> {player, entries, values} where entries = per-match
+    (iso_date, stat) most recent first, matches he didn't play excluded.
+    Dates let callers dedupe against other sources. None if name unresolved."""
+    import datetime as _dt
     entity = search_soccer_player(name)
     if not entity:
         return None
-    values = []
+    entries = []
     for ev in soccer_player_events(entity["id"], pages=pages)[:max_games]:
         v = extract_soccer_stat(soccer_player_match_stats(ev["id"], entity["id"]), stat)
-        if v is not None:
-            values.append(v)
-    return {"player": entity.get("name", name), "player_id": entity["id"], "values": values}
+        if v is None:
+            continue
+        ts = ev.get("startTimestamp")
+        date = (_dt.datetime.fromtimestamp(ts, _dt.timezone.utc).isoformat()
+                if ts else "")
+        entries.append((date, v))
+    return {"player": entity.get("name", name), "player_id": entity["id"],
+            "entries": entries, "values": [v for _, v in entries]}

@@ -47,6 +47,7 @@ from typing import Optional
 
 import numpy as np
 
+import fetch_wc_player_stats as wc_fetch
 import sofascore as sofa
 from bank_builder import VERDICT_BET_EV, _verdict
 
@@ -76,18 +77,25 @@ ESPN_STATS = {
         "passing_tds":     {"kind": "count",  "names": ["passingTouchdowns"]},
         "rushing_attempts": {"kind": "count", "names": ["rushingAttempts"]},
     },
-    "soccer": {  # served by Sofascore, kinds still apply
-        "shots":           {"kind": "count"},
-        "shots_on_target": {"kind": "count"},
-        "goals":           {"kind": "count"},
-        "assists":         {"kind": "count"},
-        "tackles":         {"kind": "count"},
-        "passes":          {"kind": "volume"},
+    # Soccer merges THREE sources (WC short — every real game counts):
+    #   1. WC 2026 cache (fetch_wc_player_stats.py — tournament games)
+    #   2. ESPN club gamelog soccer/all (recent club form, `names` below)
+    #   3. Sofascore (bonus when reachable; sole source for tackles/passes)
+    "soccer": {
+        "shots":           {"kind": "count",  "names": ["totalShots"]},
+        "shots_on_target": {"kind": "count",  "names": ["shotsOnTarget"]},
+        "goals":           {"kind": "count",  "names": ["totalGoals"]},
+        "assists":         {"kind": "count",  "names": ["goalAssists"]},
+        "fouls":           {"kind": "count",  "names": ["foulsCommitted"]},
+        "tackles":         {"kind": "count"},   # sofascore only
+        "passes":          {"kind": "volume"},  # sofascore only
     },
 }
 ESPN_STATS["wnba"] = ESPN_STATS["nba"]  # same box score, same keys
 
-ESPN_LEAGUE = {"nba": "basketball/nba", "wnba": "basketball/wnba", "nfl": "football/nfl"}
+ESPN_LEAGUE = {"nba": "basketball/nba", "wnba": "basketball/wnba",
+               "nfl": "football/nfl", "soccer": "soccer/all"}
+ESPN_SOCCER_SPORT_UID = "s:600"  # soccer athletes match by sport id, not league
 
 MIN_GAMES_FULL = 8   # below this the read is flagged SMALL_SAMPLE
 MIN_GAMES_BET = 5    # below this no verdict at all — data-gated, never estimate
@@ -125,7 +133,9 @@ def espn_search_player(sport: str, name: str) -> Optional[dict]:
 
 
 def parse_espn_search(data: dict, sport: str) -> Optional[dict]:
-    """Pure: first player result whose league/sport slug matches."""
+    """Pure: first player result whose league/sport matches. Soccer players
+    carry their CLUB league slug (usa.1, eng.1, ...) so they match on the
+    sport uid (s:600) instead."""
     league = ESPN_LEAGUE[sport].split("/")[1]
     for section in data.get("results", []):
         if section.get("type") != "player":
@@ -133,7 +143,9 @@ def parse_espn_search(data: dict, sport: str) -> Optional[dict]:
         for item in section.get("contents", []):
             uid = item.get("uid", "")           # e.g. "s:40~l:46~a:1966"
             slug = (item.get("defaultLeagueSlug") or item.get("subtitle") or "").lower()
-            if league in slug or league in uid.lower():
+            matched = (uid.startswith(ESPN_SOCCER_SPORT_UID + "~") if sport == "soccer"
+                       else league in slug or league in uid.lower())
+            if matched:
                 athlete_id = uid.split("a:")[-1] if "a:" in uid else item.get("id")
                 if athlete_id:
                     return {"id": str(athlete_id), "name": item.get("displayName", "")}
@@ -248,6 +260,93 @@ def _stat_attempted(s) -> Optional[float]:
         return None
 
 
+# ── Soccer: three-source merged game log ─────────────────────────────────────
+WC_STATS = {"shots", "shots_on_target", "goals", "assists", "fouls",
+            "yellow_cards", "red_cards"}
+
+
+def wc_lookup(cache: dict, player: str) -> Optional[dict]:
+    """Pure: find a player in the WC cache — accent/case-insensitive, accepts
+    'Díaz, Luis', 'luis diaz' or plain 'messi' (token-subset match)."""
+    want = set(wc_fetch.norm_name(player.replace(",", " ")).split())
+    if not want:
+        return None
+    best, best_size = None, 99
+    for key, slot in cache.get("players", {}).items():
+        have = set(key.split())
+        if want == have:
+            return slot
+        if want <= have and len(have) < best_size:  # shortest superset wins
+            best, best_size = slot, len(have)
+    return best
+
+
+def merge_gamelogs(*source_logs: tuple[str, list[tuple[str, float]]]) -> tuple[list[float], list[str]]:
+    """Pure: merge (source, [(date, value)]) logs, dedupe by calendar day
+    (first source wins — WC cache is fed first on purpose), newest first."""
+    seen_days: set[str] = set()
+    merged: list[tuple[str, float]] = []
+    used: list[str] = []
+    for source, entries in source_logs:
+        hit = False
+        for date, value in entries:
+            day = (date or "")[:10]
+            if day and day in seen_days:
+                continue
+            seen_days.add(day)
+            merged.append((date, value))
+            hit = True
+        if hit:
+            used.append(source)
+    merged.sort(key=lambda r: r[0], reverse=True)
+    return [v for _, v in merged], used
+
+
+def soccer_combined_gamelog(player: str, stat: str) -> Optional[dict]:
+    """WC cache + ESPN club form + Sofascore, merged. Returns
+    {player, values, sources} or None when no source knows the name."""
+    logs: list[tuple[str, list[tuple[str, float]]]] = []
+    resolved = None
+
+    if stat in WC_STATS:  # 1. tournament games — the current-competition read
+        try:
+            hit = wc_lookup(wc_fetch.ensure_fresh(), player)
+        except Exception:
+            hit = None
+        if hit:
+            resolved = hit.get("display") or player
+            logs.append(("wc_2026", [(g["date"], float(g.get(stat, 0.0)))
+                                     for g in hit.get("games", [])]))
+
+    catalog = ESPN_STATS["soccer"].get(stat) or {}
+    if catalog.get("names"):  # 2. club recent form (ESPN, all competitions)
+        try:
+            athlete = espn_search_player("soccer", player)
+        except Exception:
+            athlete = None
+        if athlete:
+            resolved = resolved or athlete["name"]
+            try:
+                rows = parse_espn_gamelog_rows(
+                    espn_gamelog("soccer", athlete["id"]), catalog["names"])
+                logs.append(("espn_club", [(r["date"], r["value"]) for r in rows]))
+            except Exception:
+                pass
+
+    try:  # 3. Sofascore — bonus depth; only source for tackles/passes
+        sofa_log = sofa.soccer_player_gamelog(player, stat, pages=2, max_games=20)
+    except Exception:
+        sofa_log = None
+    if sofa_log and sofa_log.get("entries"):
+        resolved = resolved or sofa_log["player"]
+        logs.append(("sofascore", sofa_log["entries"]))
+
+    if resolved is None:
+        return None
+    values, used = merge_gamelogs(*logs)
+    return {"player": resolved, "values": values, "sources": used}
+
+
 # ── Distribution fit + simulation (pure) ─────────────────────────────────────
 def weighted_moments(values: list[float], halflife: int = HALFLIFE_GAMES) -> tuple[float, float]:
     """Recency-weighted (mean, var). values[0] = most recent game."""
@@ -348,11 +447,13 @@ def simulate_player_prop(sport: str, player: str, stat: str, line: float,
                 "note": f"'{stat}' not modelled for '{sport}'. Known: {known}"}
 
     if sport == "soccer":
-        log = sofa.soccer_player_gamelog(player, stat, pages=1)
+        log = soccer_combined_gamelog(player, stat)
         if log is None:
-            return {"status": "NOT_FOUND", "note": f"no soccer player matched '{player}'"}
+            return {"status": "NOT_FOUND",
+                    "note": f"no soccer player matched '{player}' in WC cache / ESPN / Sofascore"}
         report = build_report(sport, log["player"], stat, catalog[stat]["kind"],
-                              log["values"], line, odds_over, odds_under, "sofascore")
+                              log["values"], line, odds_over, odds_under,
+                              "+".join(log["sources"]) or "none")
         if teammates_out:
             report.setdefault("context", {})["vacuum"] = {
                 "out": teammates_out, "mode": "unsupported",
