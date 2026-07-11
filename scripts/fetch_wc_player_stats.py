@@ -52,9 +52,17 @@ def _get(url: str, timeout: int = 15) -> dict:
         return json.loads(r.read().decode("utf-8"))
 
 
+_NORDIC = str.maketrans({"ø": "o", "Ø": "O", "æ": "ae", "Æ": "AE",
+                         "å": "a", "Å": "A", "ð": "d", "Ð": "D", "þ": "th"})
+
+
 def norm_name(name: str) -> str:
-    """Accent-insensitive, lowercase key: 'Luis Díaz' -> 'luis diaz'."""
-    stripped = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode()
+    """Accent-insensitive, lowercase key: 'Luis Díaz' -> 'luis diaz'.
+    Nordic letters translate FIRST — NFKD can't decompose ø/æ (they're not
+    composed chars) so ascii-ignore would silently DELETE them:
+    'Sørloth' -> 'srloth' never matches a user's 'Sorloth'."""
+    pre = name.translate(_NORDIC)
+    stripped = unicodedata.normalize("NFKD", pre).encode("ascii", "ignore").decode()
     return " ".join(stripped.lower().split())
 
 

@@ -405,3 +405,10 @@ def test_extract_nhl_derives_games_from_totals():
         {"name": "defensive", "stats": [{"name": "avgGoalsAgainst", "value": 2.9}]}]}}
     r = tod.extract_nhl(fixture)
     assert r["games"] == 82  # NHL core stats carry no gamesPlayed
+
+
+def test_norm_name_nordic_letters_survive():
+    # NFKD can't decompose these — without the pre-translate they'd be DELETED
+    assert wc.norm_name("Alexander Sørloth") == "alexander sorloth"
+    assert wc.norm_name("Martin Ødegaard") == "martin odegaard"
+    assert wc.norm_name("Åge Hareide") == "age hareide"
