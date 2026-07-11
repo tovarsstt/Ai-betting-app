@@ -48,6 +48,7 @@ from typing import Optional
 import numpy as np
 
 import fetch_wc_player_stats as wc_fetch
+import opponent_adjust as opp_adj
 import sofascore as sofa
 from bank_builder import VERDICT_BET_EV, _verdict
 
@@ -437,7 +438,8 @@ def price_side(prob: float, offered_odds: Optional[float]) -> dict:
 def simulate_player_prop(sport: str, player: str, stat: str, line: float,
                          odds_over: Optional[float] = None,
                          odds_under: Optional[float] = None,
-                         teammates_out: Optional[list[str]] = None) -> dict:
+                         teammates_out: Optional[list[str]] = None,
+                         opponent: Optional[str] = None) -> dict:
     """Full report for one prop. Network for the game logs, then pure math."""
     sport = sport.lower()
     catalog = ESPN_STATS.get(sport)
@@ -446,14 +448,21 @@ def simulate_player_prop(sport: str, player: str, stat: str, line: float,
         return {"status": "UNSUPPORTED",
                 "note": f"'{stat}' not modelled for '{sport}'. Known: {known}"}
 
+    opp_ctx = opp_adj.opponent_factor(sport, opponent, stat) if opponent else None
+    opp_scale = float(opp_ctx["factor"]) if opp_ctx else 1.0
+
     if sport == "soccer":
         log = soccer_combined_gamelog(player, stat)
         if log is None:
             return {"status": "NOT_FOUND",
                     "note": f"no soccer player matched '{player}' in WC cache / ESPN / Sofascore"}
+        context: dict = {}
+        if opp_ctx:
+            context["opponent_adjust"] = opp_ctx
         report = build_report(sport, log["player"], stat, catalog[stat]["kind"],
                               log["values"], line, odds_over, odds_under,
-                              "+".join(log["sources"]) or "none")
+                              "+".join(log["sources"]) or "none",
+                              context=context or None, mean_scale=opp_scale)
         if teammates_out:
             report.setdefault("context", {})["vacuum"] = {
                 "out": teammates_out, "mode": "unsupported",
@@ -489,6 +498,10 @@ def simulate_player_prop(sport: str, player: str, stat: str, line: float,
         vac, values, projected_mean, mean_scale = _espn_vacuum(
             sport, rows, values, projected_mean, teammates_out)
         context["vacuum"] = vac
+
+    if opp_ctx:  # opponent multiplier stacks with the vacuum scale
+        context["opponent_adjust"] = opp_ctx
+        mean_scale *= opp_scale
 
     return build_report(sport, athlete["name"], stat, catalog[stat]["kind"],
                         values, line, odds_over, odds_under, "espn",
@@ -606,8 +619,10 @@ if __name__ == "__main__":
     ap.add_argument("--odds-under", type=float, help="offered decimal odds for the UNDER")
     ap.add_argument("--out", action="append", default=None, metavar="TEAMMATE",
                     help="teammate ruled OUT (repeatable) — triggers the vacuum model")
+    ap.add_argument("--vs", default=None, metavar="OPPONENT",
+                    help="opponent team — triggers the defense-allowed adjustment")
     args = ap.parse_args()
     print(json.dumps(simulate_player_prop(
         args.sport, args.player, args.stat, args.line,
         odds_over=args.odds, odds_under=args.odds_under,
-        teammates_out=args.out), indent=2))
+        teammates_out=args.out, opponent=args.vs), indent=2))

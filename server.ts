@@ -4263,7 +4263,7 @@ app.post('/api/full-board', async (req: express.Request, res: express.Response) 
 // Live network per call (game-log fetch): real usage only, never debug.
 app.post('/api/player-prop', async (req: express.Request, res: express.Response) => {
   if (rateLimit(req, 20, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
-  const { sport, player, stat, line, odds_over, odds_under, teammates_out } = req.body ?? {};
+  const { sport, player, stat, line, odds_over, odds_under, teammates_out, opponent } = req.body ?? {};
   if (!sport || !player || !stat || line == null) {
     return res.status(400).json({ error: 'NEED_SPORT_PLAYER_STAT_LINE' });
   }
@@ -4271,7 +4271,7 @@ app.post('/api/player-prop', async (req: express.Request, res: express.Response)
     const r = await fetch('http://127.0.0.1:8001/player-prop', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sport, player, stat, line, odds_over, odds_under, teammates_out }),
+      body: JSON.stringify({ sport, player, stat, line, odds_over, odds_under, teammates_out, opponent }),
       signal: AbortSignal.timeout(45_000), // soccer/vacuum = one fetch per game/teammate
     });
     if (!r.ok) return res.status(502).json({ error: 'EDGE_API_ERROR', status: r.status });

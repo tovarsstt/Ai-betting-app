@@ -25,6 +25,7 @@ import staking as stk
 import tennis_live as tlive
 import sofascore as sofa
 import player_props as props
+import team_off_def as tod
 from typing import List
 
 BASE = Path(__file__).parent.parent / "data"
@@ -1235,6 +1236,7 @@ class PlayerPropReq(BaseModel):
     odds_over: Optional[float] = None    # offered decimal price, if user has one
     odds_under: Optional[float] = None
     teammates_out: Optional[List[str]] = None  # ruled-out teammates -> vacuum model
+    opponent: Optional[str] = None             # opposing team -> defense-allowed factor
 
 
 @app.post("/player-prop")
@@ -1245,10 +1247,25 @@ def player_prop(req: PlayerPropReq):
         return props.simulate_player_prop(
             req.sport, req.player, req.stat, req.line,
             odds_over=req.odds_over, odds_under=req.odds_under,
-            teammates_out=req.teammates_out)
+            teammates_out=req.teammates_out, opponent=req.opponent)
     except Exception as e:
         return {"status": "ERROR", "error": str(e),
                 "note": "game-log fetch failed — free public API, may be blocked/changed"}
+
+
+@app.get("/team-ratings/{sport}")
+def team_ratings(sport: str):
+    """Offensive/defensive ratings per team (off_rating >1 = strong offense,
+    def_rating <1 = strong defense). Served from data/team_off_def.json,
+    rebuilt from ESPN when older than 24h."""
+    sport = sport.lower()
+    if sport not in tod.SPORTS:
+        return {"status": "UNSUPPORTED", "known": list(tod.SPORTS)}
+    try:
+        table = tod.get_table(sport)
+        return {"status": "OK", "sport": sport, **table}
+    except Exception as e:
+        return {"status": "ERROR", "error": str(e)}
 
 
 @app.get("/health")

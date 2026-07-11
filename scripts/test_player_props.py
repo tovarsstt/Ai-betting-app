@@ -275,3 +275,133 @@ def test_extract_soccer_stat_shots_sums_all_attempts():
 def test_extract_soccer_stat_dnp_returns_none():
     assert sofa.extract_soccer_stat({}, "shots") is None
     assert sofa.extract_soccer_stat({"minutesPlayed": 0}, "shots") is None
+
+
+# ── Opponent adjustment ──────────────────────────────────────────────────────
+import opponent_adjust as oa
+
+
+def test_shrink_factor_pulls_toward_one_and_clamps():
+    # 5 games: keep 5/9 of the deviation
+    assert oa.shrink_factor(1.9, 5) == pytest.approx(1.5)   # clamped at max
+    assert oa.shrink_factor(1.18, 5) == pytest.approx(1.1)
+    assert oa.shrink_factor(0.2, 100) == pytest.approx(0.6)  # clamped at min
+    assert oa.shrink_factor(1.0, 5) == 1.0
+
+
+def _wc_cache_fixture():
+    # Two matches: Attackers vs Wall (event A), Attackers vs Sieve (event B).
+    return {"players": {
+        "striker one": {"display": "Striker One", "team": "Attackers", "games": [
+            {"event_id": "A", "date": "2026-07-01", "opponent": "Wall",
+             "shots": 2.0, "shots_on_target": 1.0, "goals": 0.0, "assists": 0.0,
+             "fouls": 1.0, "yellow_cards": 0.0, "red_cards": 0.0},
+            {"event_id": "B", "date": "2026-07-04", "opponent": "Sieve",
+             "shots": 8.0, "shots_on_target": 5.0, "goals": 2.0, "assists": 1.0,
+             "fouls": 1.0, "yellow_cards": 0.0, "red_cards": 0.0},
+        ]},
+    }}
+
+
+def test_wc_defense_table_allowed_is_what_opponents_produced():
+    table = oa.wc_defense_table(_wc_cache_fixture())
+    assert table["teams"]["wall"]["allowed"]["shots_on_target"] == 1.0
+    assert table["teams"]["sieve"]["allowed"]["shots_on_target"] == 5.0
+    assert table["league_avg"]["shots_on_target"] == pytest.approx(3.0)
+
+
+def test_soccer_factor_shrinks_and_flags_unknown():
+    cache = _wc_cache_fixture()
+    wall = oa.soccer_factor("Wall", "shots_on_target", cache)
+    sieve = oa.soccer_factor("Sieve", "shots_on_target", cache)
+    assert wall["factor"] < 1.0 < sieve["factor"]
+    assert wall["basis"] == "wc_2026_allowed"
+    ghost = oa.soccer_factor("Atlantis", "shots_on_target", cache)
+    assert ghost["factor"] == 1.0 and ghost["basis"] == "no_data"
+
+
+def test_basketball_factor_partial_name_and_pace_proxy_half():
+    cache = {"teams": {
+        "las vegas aces": {"display": "Las Vegas Aces", "points_allowed": 95.0, "games": 20},
+        "golden state valkyries": {"display": "Golden State Valkyries", "points_allowed": 85.0, "games": 20},
+    }}
+    pts = oa.basketball_factor("wnba", "Aces", "points", cache)
+    reb = oa.basketball_factor("wnba", "Aces", "rebounds", cache)
+    assert pts["factor"] > 1.0
+    # rebounds get HALF the deviation of the points factor (pace proxy)
+    assert (reb["factor"] - 1.0) == pytest.approx((pts["factor"] - 1.0) * 0.5)
+    assert reb["basis"] == "points_allowed_pace_proxy_half"
+
+
+def test_nfl_factor_routes_pass_vs_rush_and_neutral_stats():
+    cache = {"season": 2025, "teams": {
+        "steel curtain": {"display": "Steel Curtain", "games": 17,
+                          "pass_allowed": 180.0, "rush_allowed": 80.0},
+        "swiss cheese": {"display": "Swiss Cheese", "games": 17,
+                         "pass_allowed": 260.0, "rush_allowed": 150.0},
+    }}
+    rec = oa.nfl_factor("Steel Curtain", "receiving_yards", cache)
+    rush = oa.nfl_factor("Swiss Cheese", "rushing_yards", cache)
+    assert rec["basis"] == "pass_defense" and rec["factor"] < 1.0
+    assert rush["basis"] == "rush_defense" and rush["factor"] > 1.0
+    tackles = oa.nfl_factor("Steel Curtain", "tackles", cache)
+    assert tackles["factor"] == 1.0 and tackles["basis"] == "no_data"
+
+
+def test_parse_nfl_boxscore_teams():
+    summary = {"boxscore": {"teams": [
+        {"team": {"displayName": "A"}, "statistics": [
+            {"name": "netPassingYards", "displayValue": "191"},
+            {"name": "rushingYards", "displayValue": "42"}]},
+        {"team": {"displayName": "B"}, "statistics": [
+            {"name": "netPassingYards", "displayValue": "250"},
+            {"name": "rushingYards", "displayValue": "120"}]},
+    ]}}
+    sides = oa.parse_nfl_boxscore_teams(summary)
+    assert sides[0] == {"team": "A", "pass_yards": 191.0, "rush_yards": 42.0}
+    assert oa.parse_nfl_boxscore_teams({"boxscore": {"teams": []}}) is None
+
+
+def test_opponent_factor_dispatcher_never_raises():
+    r = oa.opponent_factor("cricket", "Anyone", "runs")
+    assert r["factor"] == 1.0 and r["basis"] == "no_data"
+
+
+# ── Team off/def ratings ─────────────────────────────────────────────────────
+import team_off_def as tod
+
+
+def test_finish_table_normalizes_vs_league_avg():
+    teams = {"hot": {"display": "Hot", "games": 10, "scored_pg": 120.0, "allowed_pg": 100.0},
+             "cold": {"display": "Cold", "games": 10, "scored_pg": 80.0, "allowed_pg": 100.0}}
+    t = tod.finish_table(teams, 2026)
+    assert t["league_avg"] == 100.0
+    assert t["teams"]["hot"]["off_rating"] == 1.2
+    assert t["teams"]["cold"]["off_rating"] == 0.8
+    assert t["teams"]["hot"]["def_rating"] == 1.0
+
+
+def test_finish_table_unweighted_when_no_games_metadata():
+    teams = {"a": {"display": "A", "games": 0, "scored_pg": 3.0, "allowed_pg": 2.0},
+             "b": {"display": "B", "games": 0, "scored_pg": 1.0, "allowed_pg": 2.0}}
+    t = tod.finish_table(teams, 2026)
+    assert t["league_avg"] == 2.0  # unweighted mean, table never comes back empty
+
+
+def test_extract_mlb_runs_scored_vs_allowed():
+    fixture = {"splits": {"categories": [
+        {"name": "batting", "stats": [{"name": "gamesPlayed", "value": 90},
+                                       {"name": "runs", "value": 450}]},
+        {"name": "pitching", "stats": [{"name": "gamesPlayed", "value": 90},
+                                        {"name": "runs", "value": 360}]}]}}
+    r = tod.extract_mlb(fixture)
+    assert r == {"scored_pg": 5.0, "allowed_pg": 4.0, "games": 90}
+
+
+def test_extract_nhl_derives_games_from_totals():
+    fixture = {"splits": {"categories": [
+        {"name": "offensive", "stats": [{"name": "avgGoals", "value": 3.2},
+                                         {"name": "goals", "value": 262.4}]},
+        {"name": "defensive", "stats": [{"name": "avgGoalsAgainst", "value": 2.9}]}]}}
+    r = tod.extract_nhl(fixture)
+    assert r["games"] == 82  # NHL core stats carry no gamesPlayed
