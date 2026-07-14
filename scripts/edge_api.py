@@ -36,7 +36,7 @@ BUNDLES: dict = {}
 ALL_RATINGS: dict = {}
 RATINGS_META: dict = {}   # freshness stamps (ratings_meta.json) — flag stale ranks
 TENNIS_FORM: dict = {}   # H2H / form / psych / clutch — built by fetch_tennis_form.py
-TENNIS_SERVE: dict = {}  # ATP serve/break-point stats — built by fetch_tennis_serve_stats.py
+TENNIS_SERVE: dict = {}  # ATP+WTA serve/break-point stats — built by fetch_tennis_serve_stats.py
 SOCCER_FORM: dict = {}   # national-team form / goals / H2H — built by fetch_soccer_form.py
 WNBA_FORM: dict = {}     # form / rest / B2B / H2H — built by fetch_wnba_form.py
 INTL_SOCCER_RATINGS: dict = {}  # data-fit national-team attack/defense/eigen — fit_soccer_ratings.py
@@ -387,10 +387,10 @@ def _tennis_aux_logit(home: str, away: str, surf: str):
     if d is not None:
         nudge += W_PSYCH * d; detail["psych_diff"] = round(d, 3)
     clutch = [x for x in (diff("decider"), diff("tb")) if x is not None]
-    # Real break-point stats (ATP only — fetch_tennis_serve_stats.py) enrich the
-    # same clutch bucket: bp_save_pct = held up serving under pressure,
-    # bp_convert_pct = won the point returning under pressure. WTA has neither
-    # source yet, so this only fires when both players carry ATP serve data.
+    # Real break-point stats (ATP + WTA — fetch_tennis_serve_stats.py) enrich
+    # the same clutch bucket: bp_save_pct = held up serving under pressure,
+    # bp_convert_pct = won the point returning under pressure. Cross-tour
+    # ambiguous keys are dropped at build time, so a hit here is unambiguous.
     serve_players = TENNIS_SERVE.get("players") or {}
     hs, as_ = serve_players.get(hk) or {}, serve_players.get(ak) or {}
     for field in ("bp_save_pct", "bp_convert_pct"):

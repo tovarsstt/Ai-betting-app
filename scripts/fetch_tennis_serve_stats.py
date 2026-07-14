@@ -1,16 +1,19 @@
 #!/usr/bin/env python3
 """
 fetch_tennis_serve_stats.py — real serve/break-point stats for the tennis
-clutch model, ATP only.
+clutch model, ATP + WTA.
 
 fetch_tennis_form.py's clutch signal is deciding-set + tiebreak win-rate ONLY,
 because its source (tennis-data.co.uk) has no point-level stats. Sackmann's
 original tennis_atp/tennis_wta GitHub repos (which had them) are gone from his
-account as of this writing — but Tennismylife/TML-Database is a live-updated
-ATP mirror of the exact same schema (w_ace, w_svpt, w_1stIn, w_1stWon,
-w_2ndWon, w_SvGms, w_bpSaved, w_bpFaced, mirrored l_*). No live-updated WTA
-equivalent was found reachable — WTA stays on the deciding-set/tiebreak-only
-clutch signal from fetch_tennis_form.py until one turns up. Never invented.
+account (verified 404 2026-07-14), but two mirrors of the exact same schema
+(w_ace, w_svpt, w_1stIn, w_1stWon, w_2ndWon, w_SvGms, w_bpSaved, w_bpFaced,
+mirrored l_*) are reachable:
+  ATP  Tennismylife/TML-Database          — live-updated
+  WTA  Aneeshers/tennis-sackmann-archive  — archival mirror, updates lag weeks
+        (verified 2026-07-14: wta_matches_2026.csv present, 1112 stat rows
+        through 2026-05-25). Lag is fine — these are multi-season career
+        rates, not form. Never invented.
 
 Builds, per player (weighted like fetch_tennis_form.py — CUR season heaviest):
   ace_rate              = ace / svpt
@@ -23,7 +26,10 @@ Builds, per player (weighted like fetch_tennis_form.py — CUR season heaviest):
 Output (data/tennis_serve.json):
   { "players": { "surname|initial": { ace_rate, first_serve_pct,
         first_serve_win_pct, second_serve_win_pct, bp_save_pct,
-        bp_convert_pct, n } }, "tour": "ATP", "built": "YYYY-MM-DD" }
+        bp_convert_pct, n, tour } }, "tours": {"ATP": n, "WTA": n},
+    "built": "YYYY-MM-DD" }
+A surname|initial key that exists on BOTH tours is ambiguous and dropped from
+both — wrong-tour stats are worse than no stats.
 
 Re-run weekly, same cadence as fetch_tennis_form.py.
 """
@@ -39,7 +45,10 @@ import pandas as pd
 OUT = Path(__file__).parent.parent / "data" / "tennis_serve.json"
 CUR = datetime.date.today().year
 YEAR_WEIGHT = {CUR: 3.0, CUR - 1: 2.0, CUR - 2: 1.0}
-SOURCE = "https://raw.githubusercontent.com/Tennismylife/TML-Database/master/{y}.csv"
+SOURCES = {
+    "ATP": "https://raw.githubusercontent.com/Tennismylife/TML-Database/master/{y}.csv",
+    "WTA": "https://raw.githubusercontent.com/Aneeshers/tennis-sackmann-archive/main/wta/wta_matches_{y}.csv",
+}
 
 MIN_SVPT = 200        # weighted service points before trusting a player's serve rates
 MIN_BP_FACED = 10     # weighted break points faced before trusting bp_save_pct
@@ -59,8 +68,8 @@ def name_key(full: str):
     return (toks[-1].lower(), toks[0][0].lower())
 
 
-def load_year(year: int) -> pd.DataFrame:
-    url = SOURCE.format(y=year)
+def load_year(year: int, tour: str) -> pd.DataFrame:
+    url = SOURCES[tour].format(y=year)
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=30) as r:
         text = r.read().decode("utf-8", errors="replace")
@@ -70,16 +79,16 @@ def load_year(year: int) -> pd.DataFrame:
     return df[have]
 
 
-def load_matches() -> list:
+def load_matches(tour: str) -> list:
     frames = []
     for yr, wt in YEAR_WEIGHT.items():
         try:
-            df = load_year(yr).copy()
+            df = load_year(yr, tour).copy()
             df["__wt"] = wt
             frames.append(df)
-            print(f"  atp {yr}: {len(df)} matches (w={wt})")
+            print(f"  {tour.lower()} {yr}: {len(df)} matches (w={wt})")
         except Exception as e:
-            print(f"  atp {yr}: skip ({e})")
+            print(f"  {tour.lower()} {yr}: skip ({e})")
     if not frames:
         return []
     return pd.concat(frames, ignore_index=True).to_dict("records")
@@ -135,16 +144,36 @@ def aggregate(rows: list) -> dict:
     return players
 
 
+def merge_tours(atp: dict, wta: dict) -> tuple[dict, list[str]]:
+    """Pure: flatten both tours into one surname|initial dict, tagging each
+    entry with its tour. Keys present on BOTH tours are ambiguous — dropped
+    from the merge entirely and returned as the collision list."""
+    collisions = sorted(set(atp) & set(wta))
+    merged = {}
+    for tour, players in (("ATP", atp), ("WTA", wta)):
+        for key, rec in players.items():
+            if key in collisions:
+                continue
+            merged[key] = {**rec, "tour": tour}
+    return merged, collisions
+
+
 def build() -> None:
-    rows = load_matches()
-    if not rows:
-        raise SystemExit("no match data — Tennismylife/TML-Database unreachable?")
-    players = aggregate(rows)
-    out = {"players": players, "tour": "ATP", "built": datetime.date.today().isoformat(),
-           "note": "ATP only — no live-updated WTA serve-stat source found; "
-                   "WTA clutch stays on deciding-set/tiebreak signal (fetch_tennis_form.py)"}
+    atp_rows = load_matches("ATP")
+    if not atp_rows:
+        raise SystemExit("no ATP match data — Tennismylife/TML-Database unreachable?")
+    wta_rows = load_matches("WTA")  # mirror may lag or vanish — WTA is best-effort
+    atp, wta = aggregate(atp_rows), aggregate(wta_rows)
+    players, collisions = merge_tours(atp, wta)
+    out = {"players": players, "tours": {"ATP": len(atp), "WTA": len(wta)},
+           "built": datetime.date.today().isoformat(),
+           "note": "ATP from Tennismylife/TML-Database (live); WTA from "
+                   "Aneeshers/tennis-sackmann-archive (archival mirror, lags weeks); "
+                   f"{len(collisions)} ambiguous cross-tour keys dropped",
+           "dropped_cross_tour_keys": collisions}
     OUT.write_text(json.dumps(out, ensure_ascii=False))
-    print(f"serve stats for {len(players)} ATP players -> {OUT.name}")
+    print(f"serve stats: {len(atp)} ATP + {len(wta)} WTA "
+          f"({len(collisions)} cross-tour collisions dropped) -> {OUT.name}")
     print("restart edge_api (kill :8001) to load")
 
 

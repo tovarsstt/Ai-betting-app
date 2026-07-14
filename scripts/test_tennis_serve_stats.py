@@ -89,3 +89,32 @@ def test_aggregate_ignores_unparseable_names():
     rows = [_row(winner="Madonna", loser="Prince")]
     players = fss.aggregate(rows)
     assert players == {}
+
+
+# ── merge_tours: ATP + WTA into one flat dict ────────────────────────────────
+def test_merge_tours_tags_each_player_with_tour():
+    atp = {"tiafoe|f": {"ace_rate": 0.12, "n": 40.0}}
+    wta = {"swiatek|i": {"ace_rate": 0.04, "n": 55.0}}
+    merged, collisions = fss.merge_tours(atp, wta)
+    assert merged["tiafoe|f"]["tour"] == "ATP"
+    assert merged["swiatek|i"]["tour"] == "WTA"
+    assert collisions == []
+
+
+def test_merge_tours_drops_cross_tour_key_collisions():
+    # Same surname|initial on both tours -> ambiguous, drop BOTH (never risk
+    # feeding an ATP player's rates into a WTA match or vice versa).
+    atp = {"martinez|p": {"ace_rate": 0.09, "n": 30.0}}
+    wta = {"martinez|p": {"ace_rate": 0.02, "n": 25.0},
+           "gauff|c": {"ace_rate": 0.05, "n": 60.0}}
+    merged, collisions = fss.merge_tours(atp, wta)
+    assert "martinez|p" not in merged
+    assert collisions == ["martinez|p"]
+    assert merged["gauff|c"]["tour"] == "WTA"
+
+
+def test_merge_tours_does_not_mutate_inputs():
+    atp = {"tiafoe|f": {"ace_rate": 0.12, "n": 40.0}}
+    wta = {}
+    fss.merge_tours(atp, wta)
+    assert "tour" not in atp["tiafoe|f"]
