@@ -47,6 +47,7 @@ from typing import Optional
 
 import numpy as np
 
+import failure_modes as fmod
 import fetch_wc_player_stats as wc_fetch
 import opponent_adjust as opp_adj
 import sofascore as sofa
@@ -282,6 +283,26 @@ def wc_lookup(cache: dict, player: str) -> Optional[dict]:
     return best
 
 
+def soccer_failure_modes(player: str) -> dict:
+    """The 'how it could go wrong' block for a soccer prop: data-backed
+    appearance risk (WC cache — player appearances vs team games) + the fixed
+    unmodelled-hazard taxonomy. Never invents a probability."""
+    avail = fmod.availability(0, 0)
+    try:
+        cache = wc_fetch.ensure_fresh()
+        hit = wc_lookup(cache, player)
+        if hit:
+            team = hit.get("team")
+            team_events = {g.get("event_id")
+                           for slot in cache.get("players", {}).values()
+                           if slot.get("team") == team
+                           for g in slot.get("games", [])}
+            avail = fmod.availability(len(hit.get("games", [])), len(team_events))
+    except Exception:
+        pass
+    return {"availability": avail, "unmodelled": fmod.unmodelled("soccer")}
+
+
 def merge_gamelogs(*source_logs: tuple[str, list[tuple[str, float]]]) -> tuple[list[float], list[str]]:
     """Pure: merge (source, [(date, value)]) logs, dedupe by calendar day
     (first source wins — WC cache is fed first on purpose), newest first."""
@@ -459,6 +480,7 @@ def simulate_player_prop(sport: str, player: str, stat: str, line: float,
         context: dict = {}
         if opp_ctx:
             context["opponent_adjust"] = opp_ctx
+        context["failure_modes"] = soccer_failure_modes(player)
         report = build_report(sport, log["player"], stat, catalog[stat]["kind"],
                               log["values"], line, odds_over, odds_under,
                               "+".join(log["sources"]) or "none",
@@ -502,6 +524,9 @@ def simulate_player_prop(sport: str, player: str, stat: str, line: float,
     if opp_ctx:  # opponent multiplier stacks with the vacuum scale
         context["opponent_adjust"] = opp_ctx
         mean_scale *= opp_scale
+
+    context["failure_modes"] = {
+        "unmodelled": fmod.unmodelled("nba" if sport == "wnba" else sport)}
 
     return build_report(sport, athlete["name"], stat, catalog[stat]["kind"],
                         values, line, odds_over, odds_under, "espn",

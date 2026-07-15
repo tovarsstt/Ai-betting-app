@@ -16,6 +16,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uvicorn
 
+import failure_modes as fmod
 import soccer_markets as sm
 import poisson_model as pm
 import poisson_regression as psreg
@@ -847,6 +848,12 @@ def predict_soccer(req: SoccerMarketReq):
         "market_recommendation": market_recommendation,
         "upset_risk": upset,
         "chaos": chaos,
+        "failure_modes": {
+            "kill_paths": {mk: fmod.match_kill_paths(matrix, mk)
+                           for mk in ("ml_home", "ml_away", "under_2_5",
+                                      "over_2_5", "btts_no", "dc_1x", "dc_x2")},
+            "unmodelled": fmod.unmodelled("soccer"),
+        },
         "recommendation": rec,
         "profile": _soccer_profile(req.home_team, req.away_team),
         "home_ratings": h_r, "away_ratings": a_r,
@@ -1055,6 +1062,7 @@ def predict_ufc(req: UFCReq):
         },
         "recommendation": rec,
         "used_empirical_priors": fb.used_empirical,
+        "failure_modes": {"unmodelled": fmod.unmodelled("ufc")},
     }
 
 
