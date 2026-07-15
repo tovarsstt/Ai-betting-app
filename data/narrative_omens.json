@@ -1,5 +1,5 @@
 {
-  "rule": "Omens are VERIFIED coincidences only — every entry needs sources and a verified date. They are a tie-breaker factor: shown on every report, allowed to lean a coin-flip call, NEVER allowed to move a model probability or flip a verdict. Applies to EVERY sport: teams holds team names for team sports, player/fighter names for tennis and UFC; each omen carries its sport.",
+  "rule": "Omens are VERIFIED entries only — every entry needs sources and a verified date. Two types: coincidence (may favor a SIDE, tie-breaker on coin flips) and cultural (rivalry/context with a market_signal — raises ATTENTION on a market like cards/fouls). They NEVER move a model probability or flips a verdict. Applies to EVERY sport: teams holds team names for team sports, player/fighter names for tennis and UFC.",
   "updated": "2026-07-15",
   "omens": [
     {
@@ -14,7 +14,8 @@
         "https://www.fcbarcelona.com/en/news/1123445/2010-world-cup-finals-and-fc-barcelona-vii"
       ],
       "verified": "2026-07-15",
-      "sport": "soccer"
+      "sport": "soccer",
+      "type": "coincidence"
     },
     {
       "id": "shakira-song-echo",
@@ -28,7 +29,8 @@
         "https://www.npr.org/2026/05/15/nx-s1-5823435/world-cup-official-song-shakira-burna-boy"
       ],
       "verified": "2026-07-15",
-      "sport": "soccer"
+      "sport": "soccer",
+      "type": "coincidence"
     },
     {
       "id": "spain-opener-stumble-echo",
@@ -42,7 +44,8 @@
         "data/wc_player_stats.json (event join, 2026-06-15 Cape Verde 0-0)"
       ],
       "verified": "2026-07-15",
-      "sport": "soccer"
+      "sport": "soccer",
+      "type": "coincidence"
     },
     {
       "id": "spain-defense-echo",
@@ -56,7 +59,8 @@
         "https://www.fifa.com/en/match-centre/match/17/285023/289290/400021541?gender=2&date=2026-07-14"
       ],
       "verified": "2026-07-15",
-      "sport": "soccer"
+      "sport": "soccer",
+      "type": "coincidence"
     },
     {
       "id": "england-1966-60yr",
@@ -69,7 +73,8 @@
         "https://www.aljazeera.com/sports/2026/7/12/fifa-world-cup-england-vs-argentina-historic-rivalry-greatest-moments-semifinal"
       ],
       "verified": "2026-07-15",
-      "sport": "soccer"
+      "sport": "soccer",
+      "type": "coincidence"
     },
     {
       "id": "argentina-1986-north-america-echo",
@@ -83,7 +88,8 @@
         "https://www.nbcnews.com/sports/soccer/world-cup-semifinal-england-argentina-falklands-war-maradona-messi-rcna587252"
       ],
       "verified": "2026-07-15",
-      "sport": "soccer"
+      "sport": "soccer",
+      "type": "coincidence"
     },
     {
       "id": "no-repeat-champion",
@@ -96,7 +102,8 @@
         "https://www.aljazeera.com/sports/2026/7/15/argentina-england-world-cup-semifinal-messi-kane-prediction-time"
       ],
       "verified": "2026-07-15",
-      "sport": "soccer"
+      "sport": "soccer",
+      "type": "coincidence"
     },
     {
       "id": "messi-first-vs-england",
@@ -110,7 +117,29 @@
         "https://www.aljazeera.com/sports/2026/7/15/argentina-england-world-cup-semifinal-messi-kane-prediction-time"
       ],
       "verified": "2026-07-15",
-      "sport": "soccer"
+      "sport": "soccer",
+      "type": "coincidence"
+    },
+    {
+      "id": "england-argentina-malvinas-cards",
+      "type": "cultural",
+      "sport": "soccer",
+      "teams": [
+        "England",
+        "Argentina"
+      ],
+      "favors": "none",
+      "market_signal": {
+        "market": "cards_fouls",
+        "lean": "over"
+      },
+      "claim": "England-Argentina is played against the Falklands/Malvinas war backdrop (1982) and has the angriest disciplinary history in World Cup football: Rattin's 1966 sending-off (the direct catalyst for the INVENTION of yellow/red cards), Maradona's Hand of God 1986, Beckham's red card 1998. Grudge context historically expresses itself in cards and fouls — attention flag on card markets, which the model prices without a referee/context feed.",
+      "sources": [
+        "https://www.espn.com/soccer/story/_/id/49353029/england-argentina-world-cup-rivalry-antonio-rattin-diego-maradona-hand-god-michael-owen-david-beckham",
+        "https://www.cbsnews.com/news/world-cup-england-argentina-semifinal-rivalry-falklands-war-maradona/",
+        "https://www.thestar.com.my/sport/football/2026/07/15/soccer-039hand-of-god039-rattin-and-beckham-see-red-witnesses-relive-england-argentina-world-cup-rivalry"
+      ],
+      "verified": "2026-07-15"
     }
   ]
 }

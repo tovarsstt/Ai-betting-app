@@ -1,15 +1,22 @@
 #!/usr/bin/env python3
 """
-narrative.py — the omens ledger. Verified coincidences in and around the
-sport (squad echoes, anthem singers, anniversary years...), curated by hand
-with sources, surfaced on every report.
+narrative.py — the omens ledger. Two species, both verified and curated by
+hand with sources, surfaced on every report:
+
+  * type "coincidence" — echoes and signs (squad numerology, anthem singers,
+    anniversary years). May favor a SIDE.
+  * type "cultural"    — rivalry/context that historically expresses itself
+    in a MARKET (Malvinas-charged England-Argentina -> cards/fouls). Carries
+    a market_signal {market, lean} instead of favoring a side.
 
 Hard rules, enforced by tests:
   * Every omen carries at least one source and a verified date — an
     unsourced omen never enters the ledger.
-  * Omens are a TIE-BREAKER factor only: they may lean a call the model
-    already scores as a coin flip; they never move a probability and never
-    flip a BET/LEAN/NO_BET verdict. The lean is a count, not a weight.
+  * Omens are a TIE-BREAKER / ATTENTION factor only: a coincidence may lean
+    a call the model already scores as a coin flip; a cultural market_signal
+    raises attention on a market the model prices without a referee/context
+    feed. Neither ever moves a probability or flips a BET/LEAN/NO_BET
+    verdict. The lean is a count, not a weight.
 """
 from __future__ import annotations
 
@@ -55,5 +62,12 @@ def omens_for(home: str, away: str, ledger: dict | None = None,
                     lean[orig] += 1
     tilt = ("balanced" if lean[home] == lean[away]
             else home if lean[home] > lean[away] else away)
+    market_signals = [
+        {"market": o["market_signal"]["market"],
+         "lean": o["market_signal"]["lean"], "omen_id": o["id"]}
+        for o in entries
+        if o.get("type") == "cultural" and o.get("market_signal")
+    ]
     return {"entries": entries, "lean": lean, "tilt": tilt,
+            "market_signals": market_signals,
             "rule": ledger.get("rule", "")}

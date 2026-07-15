@@ -88,3 +88,38 @@ def test_ufc_opponent_omen_credits_the_other_fighter():
 def test_ledger_every_omen_carries_a_sport():
     for o in nv.load_ledger()["omens"]:
         assert o.get("sport"), f"omen '{o['id']}' has no sport tag"
+
+
+# ── cultural omens: market signals, not side leans ───────────────────────────
+CULTURAL = {"rule": "tie-breaker only, never probabilities", "omens": [
+    {"id": "rivalry-cards", "type": "cultural", "sport": "soccer",
+     "teams": ["England", "Argentina"], "favors": "none",
+     "market_signal": {"market": "cards_fouls", "lean": "over"},
+     "claim": "x", "sources": ["s"], "verified": "2026-07-15"},
+    {"id": "plain-coincidence", "type": "coincidence", "sport": "soccer",
+     "teams": ["England"], "favors": "England",
+     "claim": "x", "sources": ["s"], "verified": "2026-07-15"},
+]}
+
+
+def test_cultural_omen_surfaces_as_market_signal_not_lean():
+    out = nv.omens_for("England", "Argentina", CULTURAL, sport="soccer")
+    assert out["market_signals"] == [
+        {"market": "cards_fouls", "lean": "over", "omen_id": "rivalry-cards"}]
+    # favors 'none' -> no side credit from the cultural entry
+    assert out["lean"]["England"] == 1  # only the coincidence omen counts
+    assert out["lean"]["Argentina"] == 0
+
+
+def test_coincidence_omens_never_emit_market_signals():
+    out = nv.omens_for("England", "Whoever", {
+        "rule": "r", "omens": [CULTURAL["omens"][1]]}, sport="soccer")
+    assert out["market_signals"] == []
+
+
+def test_ledger_cultural_entries_carry_market_signal():
+    for o in nv.load_ledger()["omens"]:
+        if o.get("type") == "cultural":
+            ms = o.get("market_signal")
+            assert ms and ms.get("market") and ms.get("lean"), \
+                f"cultural omen '{o['id']}' missing market_signal"
