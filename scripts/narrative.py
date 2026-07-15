@@ -24,27 +24,35 @@ def load_ledger(path: Path = LEDGER) -> dict:
         return json.load(f)
 
 
-def omens_for(home: str, away: str, ledger: dict | None = None) -> dict:
-    """All ledger omens touching either team + a net lean per side.
+def omens_for(home: str, away: str, ledger: dict | None = None,
+              sport: str | None = None) -> dict:
+    """All ledger omens touching either side + a net lean. Works for every
+    sport — 'teams' holds team names for team sports, player/fighter names
+    for tennis and UFC. Matching is case-insensitive.
 
-    favors == team name  -> +1 for that side
+    favors == side name  -> +1 for that side
     favors == "opponent" -> +1 for whichever of home/away it plays against
     favors == "none"     -> listed, counts for nobody
     """
     ledger = ledger or load_ledger()
-    sides = {home, away}
+    fold = lambda s: str(s).casefold()
+    sides = {fold(home): home, fold(away): away}
     entries, lean = [], {home: 0, away: 0}
     for o in ledger.get("omens", []):
-        if not sides & set(o.get("teams", [])):
+        if sport and o.get("sport") and fold(o["sport"]) != fold(sport):
+            continue
+        onames = {fold(t) for t in o.get("teams", [])}
+        hit = onames & set(sides)
+        if not hit:
             continue
         entries.append(o)
-        fav = o.get("favors")
-        if fav in lean:
-            lean[fav] += 1
+        fav = fold(o.get("favors", ""))
+        if fav in sides:
+            lean[sides[fav]] += 1
         elif fav == "opponent":
-            against = set(o.get("teams", [])) & sides
-            for team in sides - against:
-                lean[team] += 1
+            for key, orig in sides.items():
+                if key not in hit:
+                    lean[orig] += 1
     tilt = ("balanced" if lean[home] == lean[away]
             else home if lean[home] > lean[away] else away)
     return {"entries": entries, "lean": lean, "tilt": tilt,

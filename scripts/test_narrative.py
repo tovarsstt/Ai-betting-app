@@ -53,3 +53,38 @@ def test_no_matching_omens_is_balanced_not_invented():
     out = nv.omens_for("Japan", "Morocco", FAKE)
     assert out["entries"] == []
     assert out["tilt"] == "balanced"
+
+
+# ── every sport: sport filter, player names, case-insensitive match ──────────
+MULTI = {"rule": "tie-breaker only, never probabilities", "omens": [
+    {"id": "t1", "sport": "tennis", "teams": ["Iga Swiatek"], "favors": "Iga Swiatek",
+     "claim": "x", "sources": ["s"], "verified": "2026-07-15"},
+    {"id": "u1", "sport": "ufc", "teams": ["Ilia Topuria"], "favors": "opponent",
+     "claim": "x", "sources": ["s"], "verified": "2026-07-15"},
+    {"id": "s1", "sport": "soccer", "teams": ["Spain"], "favors": "Spain",
+     "claim": "x", "sources": ["s"], "verified": "2026-07-15"},
+]}
+
+
+def test_tennis_player_names_match_case_insensitively():
+    out = nv.omens_for("iga swiatek", "Aryna Sabalenka", MULTI, sport="tennis")
+    assert [o["id"] for o in out["entries"]] == ["t1"]
+    assert out["lean"]["iga swiatek"] == 1
+    assert out["tilt"] == "iga swiatek"
+
+
+def test_sport_filter_excludes_other_sports():
+    # a fighter literally named like a soccer team must not pull soccer omens
+    out = nv.omens_for("Spain", "Whoever", MULTI, sport="ufc")
+    assert out["entries"] == []
+
+
+def test_ufc_opponent_omen_credits_the_other_fighter():
+    out = nv.omens_for("Ilia Topuria", "Max Holloway", MULTI, sport="ufc")
+    assert out["lean"]["Max Holloway"] == 1
+    assert out["tilt"] == "Max Holloway"
+
+
+def test_ledger_every_omen_carries_a_sport():
+    for o in nv.load_ledger()["omens"]:
+        assert o.get("sport"), f"omen '{o['id']}' has no sport tag"

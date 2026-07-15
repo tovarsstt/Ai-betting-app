@@ -1,91 +1,116 @@
 {
-  "rule": "Omens are VERIFIED coincidences only — every entry needs sources and a verified date. They are a tie-breaker factor: shown on every report, allowed to lean a coin-flip call, NEVER allowed to move a model probability or flip a verdict.",
+  "rule": "Omens are VERIFIED coincidences only — every entry needs sources and a verified date. They are a tie-breaker factor: shown on every report, allowed to lean a coin-flip call, NEVER allowed to move a model probability or flip a verdict. Applies to EVERY sport: teams holds team names for team sports, player/fighter names for tennis and UFC; each omen carries its sport.",
   "updated": "2026-07-15",
   "omens": [
     {
       "id": "spain-8-barca-echo",
-      "teams": ["Spain"],
+      "teams": [
+        "Spain"
+      ],
       "favors": "Spain",
       "claim": "Spain's 2026 squad carries exactly 8 Barcelona players — the 2010 title squad also had exactly 8 Barca players become champions (Valdes, Pique, Puyol, Busquets, Xavi, Iniesta, Pedro, Villa).",
       "sources": [
         "https://www.barcablaugranes.com/barcelona-internationals/121477/eight-barcelona-stars-in-spains-world-cup-2026-squad-as-gavi-joan-garcia-and-eric-garcia-make-list",
         "https://www.fcbarcelona.com/en/news/1123445/2010-world-cup-finals-and-fc-barcelona-vii"
       ],
-      "verified": "2026-07-15"
+      "verified": "2026-07-15",
+      "sport": "soccer"
     },
     {
       "id": "shakira-song-echo",
-      "teams": ["Spain"],
+      "teams": [
+        "Spain"
+      ],
       "favors": "Spain",
       "claim": "Shakira performs the official World Cup song in 2026 (Dai Dai, with Burna Boy) — the last World Cup with a Shakira official song was 2010 (Waka Waka), which Spain won.",
       "sources": [
         "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/shakira-and-burna-boy-dai-dai-the-official-song",
         "https://www.npr.org/2026/05/15/nx-s1-5823435/world-cup-official-song-shakira-burna-boy"
       ],
-      "verified": "2026-07-15"
+      "verified": "2026-07-15",
+      "sport": "soccer"
     },
     {
       "id": "spain-opener-stumble-echo",
-      "teams": ["Spain"],
+      "teams": [
+        "Spain"
+      ],
       "favors": "Spain",
       "claim": "2010 Spain failed to win its opener (0-1 Switzerland) then won the title; 2026 Spain's ONLY dropped points are its opener (0-0 Cape Verde, per WC cache) — same stumble-then-march shape.",
       "sources": [
         "https://www.goal.com/en-us/lists/spain-2010-world-cup-winning-team-who-were-the-players-and-where-are-they-now/bltebd22e4835208d72",
         "data/wc_player_stats.json (event join, 2026-06-15 Cape Verde 0-0)"
       ],
-      "verified": "2026-07-15"
+      "verified": "2026-07-15",
+      "sport": "soccer"
     },
     {
       "id": "spain-defense-echo",
-      "teams": ["Spain"],
+      "teams": [
+        "Spain"
+      ],
       "favors": "Spain",
       "claim": "2010 Spain conceded 2 goals in 7 games; 2026 Spain has conceded 1 through 7 (semi included, 2-0 vs France) — the same all-time-stingy run profile.",
       "sources": [
         "https://www.fifa.com/en/articles/spain-la-roja-casillas-xavi-iniesta-villa-2010-fifa-world-cup-south-africa-champions-in-stats",
         "https://www.fifa.com/en/match-centre/match/17/285023/289290/400021541?gender=2&date=2026-07-14"
       ],
-      "verified": "2026-07-15"
+      "verified": "2026-07-15",
+      "sport": "soccer"
     },
     {
       "id": "england-1966-60yr",
-      "teams": ["England"],
+      "teams": [
+        "England"
+      ],
       "favors": "England",
       "claim": "2026 is the 60th anniversary of 1966 — England's only World Cup title.",
       "sources": [
         "https://www.aljazeera.com/sports/2026/7/12/fifa-world-cup-england-vs-argentina-historic-rivalry-greatest-moments-semifinal"
       ],
-      "verified": "2026-07-15"
+      "verified": "2026-07-15",
+      "sport": "soccer"
     },
     {
       "id": "argentina-1986-north-america-echo",
-      "teams": ["Argentina"],
+      "teams": [
+        "Argentina"
+      ],
       "favors": "Argentina",
       "claim": "Argentina's only title on foreign soil came in North America (Mexico 1986), beating England on the way — 2026 is the World Cup's return to North America, 40 years on.",
       "sources": [
         "https://www.cbsnews.com/news/world-cup-england-argentina-semifinal-rivalry-falklands-war-maradona/",
         "https://www.nbcnews.com/sports/soccer/world-cup-semifinal-england-argentina-falklands-war-maradona-messi-rcna587252"
       ],
-      "verified": "2026-07-15"
+      "verified": "2026-07-15",
+      "sport": "soccer"
     },
     {
       "id": "no-repeat-champion",
-      "teams": ["Argentina"],
+      "teams": [
+        "Argentina"
+      ],
       "favors": "opponent",
       "claim": "No nation has retained the World Cup since Brazil 1962 — Argentina are the defending 2022 champions, so 60+ years of history lean against the repeat.",
       "sources": [
         "https://www.aljazeera.com/sports/2026/7/15/argentina-england-world-cup-semifinal-messi-kane-prediction-time"
       ],
-      "verified": "2026-07-15"
+      "verified": "2026-07-15",
+      "sport": "soccer"
     },
     {
       "id": "messi-first-vs-england",
-      "teams": ["Argentina", "England"],
+      "teams": [
+        "Argentina",
+        "England"
+      ],
       "favors": "none",
       "claim": "Messi has never faced England in his entire career — this semifinal is the first time, and the first England-Argentina match of any kind in 21 years.",
       "sources": [
         "https://www.aljazeera.com/sports/2026/7/15/argentina-england-world-cup-semifinal-messi-kane-prediction-time"
       ],
-      "verified": "2026-07-15"
+      "verified": "2026-07-15",
+      "sport": "soccer"
     }
   ]
 }

@@ -671,6 +671,8 @@ def predict(req: PredictReq):
         "trained_on": bundle["trained_on"] if bundle else 0,
         "model_loaded": model_used,
         "profile": _wnba_profile(req.home_team, req.away_team) if sport == "WNBA" else None,
+        # verified-coincidence ledger — tie-breaker display only, never math
+        "omens": nv.omens_for(req.home_team, req.away_team, sport=sport.lower()),
         **extra,
     }
 
@@ -856,7 +858,7 @@ def predict_soccer(req: SoccerMarketReq):
             "unmodelled": fmod.unmodelled("soccer"),
         },
         # verified-coincidence ledger — tie-breaker display only, never math
-        "omens": nv.omens_for(req.home_team, req.away_team),
+        "omens": nv.omens_for(req.home_team, req.away_team, sport="soccer"),
         "recommendation": rec,
         "profile": _soccer_profile(req.home_team, req.away_team),
         "home_ratings": h_r, "away_ratings": a_r,
@@ -1066,6 +1068,8 @@ def predict_ufc(req: UFCReq):
         "recommendation": rec,
         "used_empirical_priors": fb.used_empirical,
         "failure_modes": {"unmodelled": fmod.unmodelled("ufc")},
+        # verified-coincidence ledger — tie-breaker display only, never math
+        "omens": nv.omens_for(req.fighter_a, req.fighter_b, sport="ufc"),
     }
 
 
