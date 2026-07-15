@@ -83,3 +83,30 @@ def test_unmodelled_every_flag_has_mitigation():
 def test_unmodelled_unknown_sport_falls_back_to_generic():
     flags = fm.unmodelled("curling")
     assert len(flags) >= 1
+
+
+# ── edge_kill_path: parses day-card selection names ──────────────────────────
+def test_edge_kill_path_home_ml_top_kill_is_biggest_threat():
+    out = fm.edge_kill_path(MATRIX, "Home ML")
+    assert out["event"] in ("draw", "opponent wins")
+    assert 0 < out["prob"] < 1
+
+
+def test_edge_kill_path_under_any_line_names_first_killing_count():
+    out = fm.edge_kill_path(MATRIX, "Under 2.25")
+    # first whole-goal count above 2.25 is 3
+    assert out["event"] == "exactly 3 goals"
+
+
+def test_edge_kill_path_over_names_the_short_side():
+    out = fm.edge_kill_path(MATRIX, "Over 2.5")
+    assert "goals" in out["event"]
+
+
+def test_edge_kill_path_btts_no():
+    out = fm.edge_kill_path(MATRIX, "BTTS No")
+    assert out["event"] == "both teams score"
+
+
+def test_edge_kill_path_unknown_selection_is_none():
+    assert fm.edge_kill_path(MATRIX, "Corners Over 9.5") is None

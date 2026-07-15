@@ -153,6 +153,7 @@ def strong_singles(candidates: list[dict], bankroll: float | None = None) -> lis
             "stake_pct": stake_pct,
             # bet on Stake only if its price >= this — keeps the +5% edge
             "min_odds": _ceil2((1.0 + SINGLE_MIN_EV) / prob),
+            "kill": c.get("kill"),   # top model-priced way this leg dies
         }
         if bankroll is not None:
             single["stake_usd"] = round(bankroll * stake_pct / 100, 2)
@@ -212,6 +213,7 @@ def best_per_match(candidates: list[dict]) -> list[dict]:
             "ev_pct": round(ev * 100, 1),
             "verdict": _verdict(prob, ev),
             "min_odds": _ceil2((1.0 + VERDICT_BET_EV) / prob),
+            "kill": c.get("kill"),
         })
     out.sort(key=lambda m: (-m["prob"], -m["ev_pct"]))
     return out
@@ -230,7 +232,8 @@ def candidates_from_slate(games: list[dict]) -> list[dict]:
         r = scan_game(g)
         for mkt, _ev, prob, price in r["edges"]:
             cands.append({"match": r["name"], "selection": mkt,
-                          "decimal": float(price), "prob": float(prob)})
+                          "decimal": float(price), "prob": float(prob),
+                          "kill": r.get("kill_paths", {}).get(mkt)})
     return cands
 
 

@@ -75,6 +75,38 @@ def match_kill_paths(matrix: list[list[float]], market: str) -> dict:
             "basis": "dixon_coles_matrix"}
 
 
+def edge_kill_path(matrix: list[list[float]], selection: str) -> dict | None:
+    """Top kill event for a day-card edge, parsed from its selection name
+    ('Home ML', 'Under 2.25', 'BTTS No', 'DC 1X'...). None when the selection
+    isn't a matrix market — never guessed."""
+    sel = selection.strip().lower()
+    named = {"home ml": "ml_home", "away ml": "ml_away",
+             "btts no": "btts_no", "btts yes": "btts_yes",
+             "dc 1x": "dc_1x", "dc x2": "dc_x2"}
+    if sel in named:
+        out = match_kill_paths(matrix, named[sel])
+        return out["kill_paths"][0] if out["kill_paths"] else None
+
+    parts = sel.split()
+    if len(parts) == 2 and parts[0] in ("under", "over"):
+        try:
+            line = float(parts[1])
+        except ValueError:
+            return None
+        goal_tot: dict[int, float] = {}
+        for i, row in enumerate(matrix):
+            for j, cell in enumerate(row):
+                goal_tot[i + j] = goal_tot.get(i + j, 0.0) + cell
+        if parts[0] == "under":
+            k = int(line) + 1          # first whole count that beats the under
+            return {"event": f"exactly {k} goals",
+                    "prob": round(goal_tot.get(k, 0.0), 4)}
+        k = int(line)                  # the count that lands just short
+        return {"event": f"exactly {k} goals",
+                "prob": round(goal_tot.get(k, 0.0), 4)}
+    return None
+
+
 def availability(appearances: int, team_games: int) -> dict:
     """Appearance risk for a player prop — real cache counts, no estimates."""
     if team_games <= 0:

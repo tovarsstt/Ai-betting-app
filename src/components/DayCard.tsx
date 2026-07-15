@@ -8,12 +8,18 @@ import { useMutation } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
 
 /* ─── Types mirror scripts/bank_builder.py output — real model numbers only ─── */
+interface KillPath {
+  event: string;
+  prob: number;
+}
+
 interface DayCardLeg {
   match: string;
   selection: string;
   decimal: number;
   prob: number;
   min_odds: number;
+  kill?: KillPath | null;
 }
 
 interface DayCardTicket {
@@ -34,6 +40,7 @@ interface DayCardSingle {
   stake_pct: number;
   min_odds: number;
   stake_usd?: number;
+  kill?: KillPath | null;
 }
 
 interface MatchVerdict {
@@ -44,6 +51,7 @@ interface MatchVerdict {
   ev_pct: number;
   verdict: "BET" | "LEAN" | "NO_BET";
   min_odds: number;
+  kill?: KillPath | null;
 }
 
 interface DayCardData {
@@ -61,6 +69,16 @@ const SUPPORTED = ["SOCCER", "NBA", "WNBA", "NFL", "MLB", "NHL", "TENNIS"];
 // Ledger stores American odds; the card works in decimal.
 function decToAmerican(dec: number): number {
   return dec >= 2 ? Math.round((dec - 1) * 100) : Math.round(-100 / (dec - 1));
+}
+
+/* The model-priced top way this pick loses — shown so no leg is bet blind. */
+function KillLine({ kill }: { kill?: KillPath | null }) {
+  if (!kill) return null;
+  return (
+    <span className="font-mono text-[10px] text-muted-foreground/70 whitespace-nowrap">
+      dies on: {kill.event} ({(kill.prob * 100).toFixed(0)}%)
+    </span>
+  );
 }
 
 /* Bet on Stake only when its on-screen price clears this floor. */
@@ -210,6 +228,7 @@ export function DayCard({ sport }: { sport: string }) {
                   <span className="text-muted-foreground font-normal text-xs ml-2">{l.match}</span>
                 </span>
                 <span className="flex items-center gap-3 shrink-0">
+                  <KillLine kill={l.kill} />
                   <span className="font-mono text-xs">{l.decimal.toFixed(2)}</span>
                   <StakeFloor floor={l.min_odds} />
                 </span>
@@ -253,6 +272,7 @@ export function DayCard({ sport }: { sport: string }) {
                   </span>
                 </span>
                 <span className="flex items-center gap-3 shrink-0 font-mono text-xs text-muted-foreground">
+                  <KillLine kill={m.kill} />
                   <span>win {(m.prob * 100).toFixed(0)}%</span>
                   <span>EV {m.ev_pct > 0 ? "+" : ""}{m.ev_pct.toFixed(1)}%</span>
                   <StakeFloor floor={m.min_odds} />
@@ -294,6 +314,7 @@ export function DayCard({ sport }: { sport: string }) {
               <span>EV +{s.ev_pct.toFixed(1)}%</span>
               <span>{s.stake_pct.toFixed(1)}% of bank</span>
               <StakeFloor floor={s.min_odds} />
+              <KillLine kill={s.kill} />
             </div>
           </div>
         ))}

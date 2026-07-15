@@ -19,6 +19,7 @@ import sys, json, os, argparse, collections
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
+import failure_modes as fmod
 import soccer_markets as sm
 
 VALUE_GATE = 0.02            # flag a market at >= +2% model EV
@@ -86,6 +87,8 @@ def scan_game(game: dict) -> dict:
         "devig": dv,
         "xg_total": round(sum(k * p for k, p in tot.items()), 2),
         "edges": edges,
+        # top model-priced way each edge LOSES — additive key, same matrix
+        "kill_paths": {e[0]: fmod.edge_kill_path(mat, e[0]) for e in edges},
     }
 
 
