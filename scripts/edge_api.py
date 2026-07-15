@@ -17,6 +17,7 @@ from pydantic import BaseModel
 import uvicorn
 
 import failure_modes as fmod
+import narrative as nv
 import soccer_markets as sm
 import poisson_model as pm
 import poisson_regression as psreg
@@ -854,6 +855,8 @@ def predict_soccer(req: SoccerMarketReq):
                                       "over_2_5", "btts_no", "dc_1x", "dc_x2")},
             "unmodelled": fmod.unmodelled("soccer"),
         },
+        # verified-coincidence ledger — tie-breaker display only, never math
+        "omens": nv.omens_for(req.home_team, req.away_team),
         "recommendation": rec,
         "profile": _soccer_profile(req.home_team, req.away_team),
         "home_ratings": h_r, "away_ratings": a_r,
