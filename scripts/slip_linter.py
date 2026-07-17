@@ -24,6 +24,7 @@ Pure functions, immutable outputs, no API calls. Never fabricates a number.
 from __future__ import annotations
 
 import json
+import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -38,6 +39,32 @@ COMBINED_MAX = 8.0
 SOFT_FAV_BAND = "soft favorite (1.50-1.90)"  # favourite but NOT a lock — the trap zone
 MAX_SOFT_FAV = 1      # win-prob-first: at most one soft favourite per ticket
 MIN_BAND_SAMPLE = 5   # min singles before a band's per-leg ROI is trusted as a cut signal
+
+# ── Coverage gate: markets NO engine models — "no data, no bet" (rule 13).
+# Jul 16 2026 audit: -94 of a -71.10 day came entirely from esports/volleyball
+# slips no model would ever price. Detection is from the leg's own text (or an
+# explicit "sport" field when the caller knows it): keyword markers, plus
+# Stake's esports convention of a human nickname in parens ("Pacers (Mick)") —
+# letters only, so numeric handicaps like "(0.5)" / "(-5.5)" never match.
+# Jul 17: volleyball (FIVB fitted model), LMB (statsapi run rates) and cricket
+# (ICC ratings + win-prob MLE-fitted on 900+ real T20Is via the cricsheet-derived
+# results mirror) earned their way OUT of the gate. Esports sims and summer
+# league stay: no data feed / no stable signal.
+UNMODELLED_MARKERS = ("esport", "esoccer", "ebasket", "efootball", "virtual",
+                      "summer league", "kabaddi")
+COVERED_SPORTS = {"tennis", "soccer", "wnba", "nba", "nfl", "mlb", "nhl", "ufc",
+                  "volleyball", "lmb", "cricket"}
+ESPORTS_NICK = re.compile(r"\([A-Za-z]{2,}\)")
+
+
+def _is_unmodelled(leg: dict) -> bool:
+    sport = str(leg.get("sport", "")).strip().lower()
+    if sport:
+        return sport not in COVERED_SPORTS
+    text = " ".join(str(leg.get(k, "")) for k in ("selection", "match", "market"))
+    if any(m in text.lower() for m in UNMODELLED_MARKERS):
+        return True
+    return bool(ESPORTS_NICK.search(text))
 
 
 def leg_bucket(n: int) -> str:
@@ -130,7 +157,11 @@ def _gate_legs(legs: list[dict], band_roi: dict) -> tuple[list, list]:
         dec = float(leg["decimal"])
         band = odds_band(dec)
         roi = band_roi.get(band)
-        if dec >= 5.0:                                      # lottery is never a safe leg
+        if _is_unmodelled(leg):                             # coverage gate beats everything
+            cut.append(idx)
+            reasons.append(f"CUT {_tag(leg, idx)} @ {dec:.2f} — unmodelled market "
+                           f"(esports/virtual/uncovered sport): no data, no bet")
+        elif dec >= 5.0:                                    # lottery is never a safe leg
             cut.append(idx)
             reasons.append(f"CUT {_tag(leg, idx)} @ {dec:.2f} — lottery (5.0+), never a safe leg")
         elif roi is not None and roi < 0 and dec >= 1.50:   # data-backed losing band (enough samples)
@@ -191,8 +222,9 @@ def lint(legs: list[dict], band_roi: dict | None = None,
 
     # 3. Nothing left, or shape itself is a money-loser that trimming can't fix.
     if keep_n == 0:
-        return Verdict("REJECT", ("every leg is a soft favourite / lottery / losing band — "
-                                  "PASS, force nothing",),
+        return Verdict("REJECT",
+                       tuple(reasons) + ("every leg cut (unmodelled / soft favourite / "
+                                         "lottery / losing band) — PASS, force nothing",),
                        tuple(cut), 0)
 
     shape = leg_bucket(keep_n)

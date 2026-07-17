@@ -112,3 +112,50 @@ def test_leg_bucket_boundaries():
 def test_roi_by_computes_sign():
     items = [{"stake": 10, "payout": 0, "k": "x"}, {"stake": 10, "payout": 30, "k": "x"}]
     assert roi_by(items, lambda i: i["k"])["x"] == 50.0  # staked 20, back 30
+
+
+# ── Coverage gate: "no data, no bet" (Jul 16 2026: -94 of the day's -71 came
+# from esports/volleyball markets no engine models) ──────────────────────────
+def test_esports_nickname_leg_cut():
+    # Stake tags esports sims with a human nickname in parens: "(Mick)".
+    legs = [{"decimal": 1.22, "selection": "Indiana Pacers (Mick) ML"},
+            {"decimal": 3.0, "selection": "value"}]
+    v = lint(legs, BAND, SHAPE)
+    assert 0 in v.cut_legs
+    assert any("unmodelled" in r.lower() for r in v.reasons)
+
+
+def test_covered_sports_pass_gate():
+    # Jul 17: volleyball (FIVB fit), lmb (statsapi), cricket (fitted on real
+    # results) all earned coverage — none cut by the gate
+    legs = [{"decimal": 2.25, "selection": "Argentina ML", "sport": "volleyball"},
+            {"decimal": 2.10, "selection": "England ML", "sport": "cricket"},
+            {"decimal": 3.0, "selection": "Dorados ML", "sport": "lmb"}]
+    v = lint(legs, BAND, SHAPE)
+    assert not v.cut_legs
+
+
+def test_all_unmodelled_rejects_with_no_data_reason():
+    legs = [{"decimal": 2.25, "selection": "GSW ML summer league"},
+            {"decimal": 1.40, "selection": "Empire (Legion) esports"}]
+    v = lint(legs, BAND, SHAPE)
+    assert v.status == "REJECT"
+    assert v.keep_count == 0
+    assert any("no data" in r.lower() for r in v.reasons)
+
+
+def test_explicit_sport_field_gates():
+    band = {**BAND, "soft favorite (1.50-1.90)": 5.0}  # positive band so only the sport gate bites
+    legs = [{"decimal": 1.70, "selection": "Patna Pirates ML", "sport": "kabaddi"},
+            {"decimal": 3.0, "selection": "value", "sport": "tennis"}]
+    v = lint(legs, band, SHAPE)
+    assert 0 in v.cut_legs
+    assert 1 not in v.cut_legs
+
+
+def test_numeric_handicap_parens_not_mistaken_for_esports():
+    band = {**BAND, "soft favorite (1.50-1.90)": 5.0}
+    legs = [{"decimal": 1.67, "selection": "Badosa (-5.5) game handicap"},
+            {"decimal": 3.0, "selection": "value"}]
+    v = lint(legs, band, SHAPE)
+    assert 0 not in v.cut_legs
