@@ -28,6 +28,11 @@ import tennis_live as tlive
 import sofascore as sofa
 import player_props as props
 import team_off_def as tod
+import mlb_game_model as mgm
+import volleyball_model as vbm
+import lmb_model as lmbm
+import cricket_model as ckm
+import tennis_games_model as tgm
 from typing import List
 
 BASE = Path(__file__).parent.parent / "data"
@@ -1244,7 +1249,7 @@ def sofascore_stats(event_id: int):
 
 
 class PlayerPropReq(BaseModel):
-    sport: str            # nba | wnba | nfl | soccer
+    sport: str            # nba | wnba | nfl | soccer | mlb (statsapi game logs)
     player: str
     stat: str             # points/rebounds/assists, shots/shots_on_target, *_yards/tackles/sacks...
     line: float
@@ -1281,6 +1286,77 @@ def team_ratings(sport: str):
         return {"status": "OK", "sport": sport, **table}
     except Exception as e:
         return {"status": "ERROR", "error": str(e)}
+
+
+# ── New-coverage models (Jul 17 2026 — sports the coverage gate used to block).
+# All pure-local reads of fetched data files; refetch via their fetch_* scripts.
+class MLBGameReq(BaseModel):
+    home: str
+    away: str
+    total_line: Optional[float] = None
+    spread_home: float = -1.5
+    use_probables: bool = True
+
+
+@app.post("/predict-mlb")
+def predict_mlb(req: MLBGameReq):
+    """MLB ML / run line / total / team totals — NB matrix (phi fitted on this
+    season's games) + probable-starter adjustment. Backtested 2026-05-15+:
+    59.0% ML acc with pitchers vs 52.8% without (see mlb_game_model.backtest)."""
+    return mgm.predict(req.home, req.away, req.total_line,
+                       req.spread_home, req.use_probables)
+
+
+class VolleyReq(BaseModel):
+    team_a: str
+    team_b: str
+    gender: str = "men"           # men | women
+
+
+@app.post("/predict-volleyball")
+def predict_volleyball(req: VolleyReq):
+    """FIVB WR logistic (scale MLE-fitted on real results) + set markets."""
+    return vbm.predict(req.team_a, req.team_b, req.gender)
+
+
+class LMBReq(BaseModel):
+    home: str
+    away: str
+
+
+@app.post("/predict-lmb")
+def predict_lmb(req: LMBReq):
+    """LMB ML + expected runs from statsapi run rates (fitted pyth + real HFA)."""
+    return lmbm.predict(req.home, req.away)
+
+
+class CricketReq(BaseModel):
+    team_a: str
+    team_b: str
+    fmt: str = "t20i"             # t20i | odi | test
+
+
+@app.post("/cricket-context")
+def cricket_context(req: CricketReq):
+    """ICC ratings + win prob (logistic MLE-fitted on real results per format;
+    a format without a fit still refuses the number and says why)."""
+    return ckm.compare(req.team_a, req.team_b, req.fmt)
+
+
+class TennisGamesReq(BaseModel):
+    player_a: str
+    player_b: str
+    games_line: Optional[float] = None
+    handicap_a: Optional[float] = None
+    best_of: int = 3
+    target_match_prob_a: Optional[float] = None   # pass /predict's prob to calibrate level
+
+
+@app.post("/tennis-games")
+def tennis_games(req: TennisGamesReq):
+    """Games totals / game handicap simulated from measured serve stats."""
+    return tgm.predict(req.player_a, req.player_b, req.games_line,
+                       req.handicap_a, req.best_of, req.target_match_prob_a)
 
 
 @app.get("/health")
