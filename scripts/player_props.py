@@ -95,6 +95,20 @@ ESPN_STATS = {
 }
 ESPN_STATS["wnba"] = ESPN_STATS["nba"]  # same box score, same keys
 
+# MLB comes from statsapi.mlb.com (official, free, no key — NOT Odds API quota):
+# per-game logs are exact box-score counts, so every stat is kind "count".
+# key = (statsapi stats group, field inside each gameLog split's `stat` dict).
+MLB_STATS = {
+    "hits":         {"kind": "count", "group": "hitting", "field": "hits"},
+    "total_bases":  {"kind": "count", "group": "hitting", "field": "totalBases"},
+    "home_runs":    {"kind": "count", "group": "hitting", "field": "homeRuns"},
+    "rbi":          {"kind": "count", "group": "hitting", "field": "rbi"},
+    "runs":         {"kind": "count", "group": "hitting", "field": "runs"},
+    "stolen_bases": {"kind": "count", "group": "hitting", "field": "stolenBases"},
+    "strikeouts":   {"kind": "count", "group": "pitching", "field": "strikeOuts"},
+}
+MLB_API = "https://statsapi.mlb.com/api/v1"
+
 ESPN_LEAGUE = {"nba": "basketball/nba", "wnba": "basketball/wnba",
                "nfl": "football/nfl", "soccer": "soccer/all"}
 ESPN_SOCCER_SPORT_UID = "s:600"  # soccer athletes match by sport id, not league
@@ -125,6 +139,40 @@ def _get_json(url: str, timeout: int = 12) -> dict:
     req = urllib.request.Request(url, headers=_UA)
     with urllib.request.urlopen(req, timeout=timeout) as r:
         return json.loads(r.read().decode("utf-8"))
+
+
+# ── MLB via statsapi (network — real usage only) ─────────────────────────────
+def mlb_search_player(name: str) -> Optional[dict]:
+    """Resolve a name to a statsapi person {id, name}. Prefers active players."""
+    from urllib.parse import quote
+    data = _get_json(f"{MLB_API}/people/search?names={quote(name)}")
+    people = data.get("people") or []
+    if not people:
+        return None
+    people = sorted(people, key=lambda p: not p.get("active", False))
+    return {"id": people[0]["id"], "name": people[0]["fullName"]}
+
+
+def mlb_gamelog(person_id, group: str, season: int) -> list[dict]:
+    """Regular-season gameLog splits (oldest→newest, statsapi's own order)."""
+    data = _get_json(f"{MLB_API}/people/{person_id}/stats"
+                     f"?stats=gameLog&season={season}&group={group}")
+    stats = data.get("stats") or []
+    return (stats[0].get("splits") or []) if stats else []
+
+
+def parse_mlb_gamelog(splits: list[dict], field: str) -> list[float]:
+    """Per-game values for one box-score field; skips splits missing it."""
+    out = []
+    for s in splits:
+        v = (s.get("stat") or {}).get(field)
+        if v is None:
+            continue
+        try:
+            out.append(float(v))
+        except (TypeError, ValueError):
+            continue
+    return out
 
 
 def espn_search_player(sport: str, name: str) -> Optional[dict]:
@@ -463,11 +511,36 @@ def simulate_player_prop(sport: str, player: str, stat: str, line: float,
                          opponent: Optional[str] = None) -> dict:
     """Full report for one prop. Network for the game logs, then pure math."""
     sport = sport.lower()
-    catalog = ESPN_STATS.get(sport)
+    catalog = MLB_STATS if sport == "mlb" else ESPN_STATS.get(sport)
     if not catalog or stat not in catalog:
-        known = sorted(catalog) if catalog else sorted(ESPN_STATS)
+        known = sorted(catalog) if catalog else sorted(ESPN_STATS) + ["mlb"]
         return {"status": "UNSUPPORTED",
                 "note": f"'{stat}' not modelled for '{sport}'. Known: {known}"}
+
+    # MLB: statsapi game logs, straight to the shared report machinery.
+    # No minutes/usage/vacuum model (baseball has no possession economy) and no
+    # opponent factor yet — the starting pitcher is the honest gap, flagged in
+    # failure_modes so a report never pretends to know tonight's matchup.
+    if sport == "mlb":
+        person = mlb_search_player(player)
+        if person is None:
+            return {"status": "NOT_FOUND", "note": f"no MLB player matched '{player}'"}
+        from datetime import datetime, timezone
+        season = datetime.now(timezone.utc).year
+        spec = catalog[stat]
+        splits = mlb_gamelog(person["id"], spec["group"], season)
+        values = parse_mlb_gamelog(splits, spec["field"])
+        context: dict = {"failure_modes": {"unmodelled": fmod.unmodelled("mlb")}}
+        if opponent:
+            context["opponent_adjust"] = {
+                "opponent": opponent, "mode": "unsupported",
+                "note": "MLB opponent/pitcher factor not modelled — check the probable starter"}
+        if teammates_out:
+            context["vacuum"] = {"out": teammates_out, "mode": "unsupported",
+                                 "note": "MLB vacuum not modelled — lineups shift daily"}
+        return build_report(sport, person["name"], stat, spec["kind"],
+                            values, line, odds_over, odds_under, "statsapi",
+                            context=context)
 
     opp_ctx = opp_adj.opponent_factor(sport, opponent, stat) if opponent else None
     opp_scale = float(opp_ctx["factor"]) if opp_ctx else 1.0

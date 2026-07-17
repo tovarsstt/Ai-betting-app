@@ -1,0 +1,822 @@
+{
+ "meta": {
+  "fetched_at": "2026-07-17T20:31:25+00:00",
+  "source": "ICC official ratings via Wikipedia rankings pages",
+  "source_dates": {
+   "t20i": "11 July 2026",
+   "odi": "9 July 2026",
+   "test": "07 July 2026"
+  },
+  "method": "ICC ratings + per-format logistic win-prob, scale MLE-fitted on real results (cricsheet-derived matches CSV); current ratings treated as quasi-static over each fit window",
+  "fits": {
+   "t20i": {
+    "k": 0.017,
+    "n": 932,
+    "favorite_accuracy": 0.6856,
+    "window_since": "2025-01-01",
+    "draw_or_nr_rate": 0.0342
+   },
+   "odi": {
+    "k": 0.0275,
+    "n": 421,
+    "favorite_accuracy": 0.6081,
+    "window_since": "2023-07-01",
+    "draw_or_nr_rate": 0.0582
+   },
+   "test": {
+    "k": 0.0335,
+    "n": 112,
+    "favorite_accuracy": 0.6964,
+    "window_since": "2023-01-01",
+    "draw_or_nr_rate": 0.0894
+   }
+  },
+  "results_source": "https://raw.githubusercontent.com/yash-006/Cricsheet-Match-Data-Analysis/HEAD/data/processed/matches.csv"
+ },
+ "t20i": {
+  "England": {
+   "matches": 38,
+   "points": 10186,
+   "rating": 268,
+   "rank": 1
+  },
+  "India": {
+   "matches": 58,
+   "points": 15532,
+   "rating": 268,
+   "rank": 2
+  },
+  "Australia": {
+   "matches": 38,
+   "points": 9868,
+   "rating": 260,
+   "rank": 3
+  },
+  "New Zealand": {
+   "matches": 50,
+   "points": 12348,
+   "rating": 247,
+   "rank": 4
+  },
+  "South Africa": {
+   "matches": 48,
+   "points": 11717,
+   "rating": 244,
+   "rank": 5
+  },
+  "Pakistan": {
+   "matches": 57,
+   "points": 13679,
+   "rating": 240,
+   "rank": 6
+  },
+  "West Indies": {
+   "matches": 56,
+   "points": 13079,
+   "rating": 234,
+   "rank": 7
+  },
+  "Bangladesh": {
+   "matches": 50,
+   "points": 11202,
+   "rating": 224,
+   "rank": 8
+  },
+  "Sri Lanka": {
+   "matches": 44,
+   "points": 9703,
+   "rating": 221,
+   "rank": 9
+  },
+  "Afghanistan": {
+   "matches": 36,
+   "points": 7935,
+   "rating": 220,
+   "rank": 10
+  },
+  "Ireland": {
+   "matches": 29,
+   "points": 5942,
+   "rating": 205,
+   "rank": 11
+  },
+  "Zimbabwe": {
+   "matches": 48,
+   "points": 9679,
+   "rating": 202,
+   "rank": 12
+  },
+  "United States": {
+   "matches": 20,
+   "points": 3650,
+   "rating": 183,
+   "rank": 13
+  },
+  "Netherlands": {
+   "matches": 24,
+   "points": 4311,
+   "rating": 180,
+   "rank": 14
+  },
+  "Nepal": {
+   "matches": 43,
+   "points": 7699,
+   "rating": 179,
+   "rank": 15
+  },
+  "Scotland": {
+   "matches": 23,
+   "points": 4116,
+   "rating": 179,
+   "rank": 16
+  },
+  "Namibia": {
+   "matches": 37,
+   "points": 6616,
+   "rating": 179,
+   "rank": 17
+  },
+  "United Arab Emirates": {
+   "matches": 54,
+   "points": 9408,
+   "rating": 174,
+   "rank": 18
+  },
+  "Oman": {
+   "matches": 43,
+   "points": 6619,
+   "rating": 154,
+   "rank": 19
+  },
+  "Canada": {
+   "matches": 26,
+   "points": 3864,
+   "rating": 149,
+   "rank": 20
+  },
+  "Uganda": {
+   "matches": 38,
+   "points": 5478,
+   "rating": 144,
+   "rank": 21
+  },
+  "Papua New Guinea": {
+   "matches": 20,
+   "points": 2743,
+   "rating": 137,
+   "rank": 22
+  },
+  "Italy": {
+   "matches": 15,
+   "points": 1988,
+   "rating": 133,
+   "rank": 23
+  },
+  "Hong Kong": {
+   "matches": 48,
+   "points": 6215,
+   "rating": 129,
+   "rank": 24
+  },
+  "Malaysia": {
+   "matches": 50,
+   "points": 6335,
+   "rating": 127,
+   "rank": 25
+  },
+  "Spain": {
+   "matches": 11,
+   "points": 1377,
+   "rating": 125,
+   "rank": 26
+  },
+  "Kuwait": {
+   "matches": 29,
+   "points": 3585,
+   "rating": 124,
+   "rank": 27
+  },
+  "Qatar": {
+   "matches": 36,
+   "points": 4297,
+   "rating": 119,
+   "rank": 28
+  },
+  "Jersey": {
+   "matches": 21,
+   "points": 2484,
+   "rating": 118,
+   "rank": 29
+  },
+  "Bahrain": {
+   "matches": 63,
+   "points": 7431,
+   "rating": 118,
+   "rank": 30
+  },
+  "Bermuda": {
+   "matches": 20,
+   "points": 2295,
+   "rating": 115,
+   "rank": 31
+  },
+  "Saudi Arabia": {
+   "matches": 26,
+   "points": 2825,
+   "rating": 109,
+   "rank": 32
+  },
+  "Kenya": {
+   "matches": 39,
+   "points": 4022,
+   "rating": 103,
+   "rank": 33
+  },
+  "Tanzania": {
+   "matches": 30,
+   "points": 2967,
+   "rating": 99,
+   "rank": 34
+  },
+  "Guernsey": {
+   "matches": 24,
+   "points": 2028,
+   "rating": 85,
+   "rank": 35
+  },
+  "Portugal": {
+   "matches": 23,
+   "points": 1928,
+   "rating": 84,
+   "rank": 36
+  },
+  "Germany": {
+   "matches": 24,
+   "points": 1964,
+   "rating": 82,
+   "rank": 37
+  },
+  "Denmark": {
+   "matches": 17,
+   "points": 1385,
+   "rating": 81,
+   "rank": 38
+  },
+  "Cayman Islands": {
+   "matches": 24,
+   "points": 1915,
+   "rating": 80,
+   "rank": 39
+  },
+  "Nigeria": {
+   "matches": 44,
+   "points": 3399,
+   "rating": 77,
+   "rank": 40
+  },
+  "Japan": {
+   "matches": 37,
+   "points": 2739,
+   "rating": 74,
+   "rank": 41
+  },
+  "Singapore": {
+   "matches": 31,
+   "points": 2211,
+   "rating": 71,
+   "rank": 42
+  },
+  "Austria": {
+   "matches": 61,
+   "points": 4046,
+   "rating": 66,
+   "rank": 43
+  },
+  "Sweden": {
+   "matches": 36,
+   "points": 2151,
+   "rating": 60,
+   "rank": 44
+  },
+  "Belgium": {
+   "matches": 31,
+   "points": 1847,
+   "rating": 60,
+   "rank": 45
+  },
+  "Finland": {
+   "matches": 24,
+   "points": 1377,
+   "rating": 57,
+   "rank": 46
+  },
+  "Norway": {
+   "matches": 34,
+   "points": 1908,
+   "rating": 56,
+   "rank": 47
+  },
+  "Argentina": {
+   "matches": 14,
+   "points": 728,
+   "rating": 54,
+   "rank": 48
+  },
+  "Switzerland": {
+   "matches": 26,
+   "points": 1260,
+   "rating": 48,
+   "rank": 49
+  },
+  "Botswana": {
+   "matches": 32,
+   "points": 1530,
+   "rating": 48,
+   "rank": 50
+  },
+  "France": {
+   "matches": 29,
+   "points": 1366,
+   "rating": 47,
+   "rank": 51
+  },
+  "Cook Islands": {
+   "matches": 14,
+   "points": 649,
+   "rating": 46,
+   "rank": 52
+  },
+  "Malawi": {
+   "matches": 36,
+   "points": 1667,
+   "rating": 46,
+   "rank": 53
+  },
+  "Romania": {
+   "matches": 35,
+   "points": 1627,
+   "rating": 46,
+   "rank": 54
+  },
+  "Samoa": {
+   "matches": 21,
+   "points": 933,
+   "rating": 44,
+   "rank": 55
+  },
+  "Rwanda": {
+   "matches": 57,
+   "points": 2504,
+   "rating": 44,
+   "rank": 56
+  },
+  "Philippines": {
+   "matches": 29,
+   "points": 1191,
+   "rating": 41,
+   "rank": 57
+  },
+  "Ghana": {
+   "matches": 15,
+   "points": 605,
+   "rating": 40,
+   "rank": 58
+  },
+  "Thailand": {
+   "matches": 35,
+   "points": 1377,
+   "rating": 39,
+   "rank": 59
+  },
+  "Bahamas": {
+   "matches": 18,
+   "points": 704,
+   "rating": 39,
+   "rank": 60
+  },
+  "Cambodia": {
+   "matches": 29,
+   "points": 1109,
+   "rating": 38,
+   "rank": 61
+  },
+  "Czech Republic": {
+   "matches": 16,
+   "points": 603,
+   "rating": 38,
+   "rank": 62
+  },
+  "Indonesia": {
+   "matches": 83,
+   "points": 3052,
+   "rating": 37,
+   "rank": 63
+  },
+  "Isle of Man": {
+   "matches": 8,
+   "points": 285,
+   "rating": 36,
+   "rank": 64
+  },
+  "Cyprus": {
+   "matches": 26,
+   "points": 892,
+   "rating": 34,
+   "rank": 65
+  },
+  "Malta": {
+   "matches": 39,
+   "points": 1326,
+   "rating": 34,
+   "rank": 66
+  },
+  "Vanuatu": {
+   "matches": 15,
+   "points": 491,
+   "rating": 33,
+   "rank": 67
+  },
+  "Eswatini": {
+   "matches": 22,
+   "points": 713,
+   "rating": 32,
+   "rank": 68
+  },
+  "Panama": {
+   "matches": 11,
+   "points": 329,
+   "rating": 30,
+   "rank": 69
+  },
+  "Hungary": {
+   "matches": 32,
+   "points": 935,
+   "rating": 29,
+   "rank": 70
+  },
+  "Zambia": {
+   "matches": 10,
+   "points": 290,
+   "rating": 29,
+   "rank": 71
+  },
+  "Luxembourg": {
+   "matches": 20,
+   "points": 451,
+   "rating": 23,
+   "rank": 72
+  },
+  "Estonia": {
+   "matches": 19,
+   "points": 408,
+   "rating": 21,
+   "rank": 73
+  },
+  "Cameroon": {
+   "matches": 10,
+   "points": 213,
+   "rating": 21,
+   "rank": 74
+  },
+  "Mexico": {
+   "matches": 22,
+   "points": 454,
+   "rating": 21,
+   "rank": 75
+  },
+  "Bhutan": {
+   "matches": 26,
+   "points": 519,
+   "rating": 20,
+   "rank": 76
+  },
+  "Belize": {
+   "matches": 7,
+   "points": 139,
+   "rating": 20,
+   "rank": 77
+  },
+  "South Korea": {
+   "matches": 17,
+   "points": 294,
+   "rating": 17,
+   "rank": 78
+  },
+  "Gibraltar": {
+   "matches": 23,
+   "points": 350,
+   "rating": 15,
+   "rank": 79
+  },
+  "Mozambique": {
+   "matches": 17,
+   "points": 250,
+   "rating": 15,
+   "rank": 80
+  },
+  "Sierra Leone": {
+   "matches": 27,
+   "points": 295,
+   "rating": 11,
+   "rank": 81
+  },
+  "Maldives": {
+   "matches": 13,
+   "points": 112,
+   "rating": 9,
+   "rank": 82
+  },
+  "Bulgaria": {
+   "matches": 20,
+   "points": 165,
+   "rating": 8,
+   "rank": 83
+  },
+  "Suriname": {
+   "matches": 10,
+   "points": 82,
+   "rating": 8,
+   "rank": 84
+  },
+  "Serbia": {
+   "matches": 25,
+   "points": 174,
+   "rating": 7,
+   "rank": 85
+  },
+  "Croatia": {
+   "matches": 24,
+   "points": 169,
+   "rating": 7,
+   "rank": 86
+  },
+  "Seychelles": {
+   "matches": 7,
+   "points": 46,
+   "rating": 7,
+   "rank": 87
+  },
+  "Lesotho": {
+   "matches": 16,
+   "points": 85,
+   "rating": 5,
+   "rank": 88
+  },
+  "Brazil": {
+   "matches": 17,
+   "points": 72,
+   "rating": 4,
+   "rank": 89
+  },
+  "China": {
+   "matches": 8,
+   "points": 17,
+   "rating": 2,
+   "rank": 90
+  },
+  "Fiji": {
+   "matches": 9,
+   "points": 19,
+   "rating": 2,
+   "rank": 91
+  },
+  "Turkey": {
+   "matches": 10,
+   "points": 14,
+   "rating": 1,
+   "rank": 92
+  },
+  "Timor-Leste": {
+   "matches": 8,
+   "points": 0,
+   "rating": 0,
+   "rank": 93
+  },
+  "Ivory Coast": {
+   "matches": 9,
+   "points": 0,
+   "rating": 0,
+   "rank": 94
+  },
+  "Mongolia": {
+   "matches": 7,
+   "points": 0,
+   "rating": 0,
+   "rank": 95
+  },
+  "Saint Helena": {
+   "matches": 7,
+   "points": 0,
+   "rating": 0,
+   "rank": 96
+  },
+  "Slovenia": {
+   "matches": 17,
+   "points": 0,
+   "rating": 0,
+   "rank": 97
+  },
+  "Myanmar": {
+   "matches": 23,
+   "points": 0,
+   "rating": 0,
+   "rank": 98
+  },
+  "Mali": {
+   "matches": 10,
+   "points": 0,
+   "rating": 0,
+   "rank": 99
+  },
+  "Costa Rica": {
+   "matches": 12,
+   "points": 0,
+   "rating": 0,
+   "rank": 100
+  }
+ },
+ "odi": {
+  "India": {
+   "matches": 30,
+   "points": 3623,
+   "rating": 121,
+   "rank": 1
+  },
+  "New Zealand": {
+   "matches": 30,
+   "points": 3384,
+   "rating": 113,
+   "rank": 2
+  },
+  "Australia": {
+   "matches": 29,
+   "points": 2965,
+   "rating": 102,
+   "rank": 3
+  },
+  "South Africa": {
+   "matches": 28,
+   "points": 2855,
+   "rating": 102,
+   "rank": 4
+  },
+  "Pakistan": {
+   "matches": 32,
+   "points": 3215,
+   "rating": 100,
+   "rank": 5
+  },
+  "Sri Lanka": {
+   "matches": 36,
+   "points": 3470,
+   "rating": 96,
+   "rank": 6
+  },
+  "Afghanistan": {
+   "matches": 24,
+   "points": 2154,
+   "rating": 90,
+   "rank": 7
+  },
+  "England": {
+   "matches": 28,
+   "points": 2487,
+   "rating": 89,
+   "rank": 8
+  },
+  "Bangladesh": {
+   "matches": 38,
+   "points": 3136,
+   "rating": 83,
+   "rank": 9
+  },
+  "West Indies": {
+   "matches": 29,
+   "points": 2119,
+   "rating": 73,
+   "rank": 10
+  },
+  "Zimbabwe": {
+   "matches": 14,
+   "points": 908,
+   "rating": 65,
+   "rank": 11
+  },
+  "Ireland": {
+   "matches": 12,
+   "points": 653,
+   "rating": 54,
+   "rank": 12
+  },
+  "Scotland": {
+   "matches": 25,
+   "points": 1071,
+   "rating": 43,
+   "rank": 13
+  },
+  "Netherlands": {
+   "matches": 26,
+   "points": 1097,
+   "rating": 42,
+   "rank": 14
+  },
+  "United States": {
+   "matches": 26,
+   "points": 1035,
+   "rating": 40,
+   "rank": 15
+  },
+  "Oman": {
+   "matches": 22,
+   "points": 716,
+   "rating": 33,
+   "rank": 16
+  },
+  "Nepal": {
+   "matches": 27,
+   "points": 855,
+   "rating": 32,
+   "rank": 17
+  },
+  "Namibia": {
+   "matches": 16,
+   "points": 373,
+   "rating": 23,
+   "rank": 18
+  },
+  "United Arab Emirates": {
+   "matches": 23,
+   "points": 357,
+   "rating": 16,
+   "rank": 19
+  },
+  "Canada": {
+   "matches": 19,
+   "points": 242,
+   "rating": 13,
+   "rank": 20
+  }
+ },
+ "test": {
+  "Australia": {
+   "matches": 24,
+   "points": 3138,
+   "rating": 131,
+   "rank": 1
+  },
+  "South Africa": {
+   "matches": 19,
+   "points": 2256,
+   "rating": 119,
+   "rank": 2
+  },
+  "New Zealand": {
+   "matches": 22,
+   "points": 2326,
+   "rating": 106,
+   "rank": 3
+  },
+  "India": {
+   "matches": 25,
+   "points": 2600,
+   "rating": 104,
+   "rank": 4
+  },
+  "England": {
+   "matches": 32,
+   "points": 3158,
+   "rating": 99,
+   "rank": 5
+  },
+  "Sri Lanka": {
+   "matches": 16,
+   "points": 1222,
+   "rating": 76,
+   "rank": 6
+  },
+  "Pakistan": {
+   "matches": 16,
+   "points": 1118,
+   "rating": 75,
+   "rank": 7
+  },
+  "West Indies": {
+   "matches": 24,
+   "points": 1425,
+   "rating": 74,
+   "rank": 8
+  },
+  "Bangladesh": {
+   "matches": 21,
+   "points": 1134,
+   "rating": 73,
+   "rank": 9
+  },
+  "Zimbabwe": {
+   "matches": 13,
+   "points": 217,
+   "rating": 17,
+   "rank": 10
+  }
+ }
+}

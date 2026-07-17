@@ -1,0 +1,516 @@
+{
+ "meta": {
+  "fetched_at": "2026-07-17T14:12:25+00:00",
+  "source": "FIVB World Ranking API (en.volleyballworld.com)",
+  "k_match": 0.0169,
+  "k_set": 0.0104,
+  "n_matches_fit": 3199,
+  "n_sets_fit": 11710,
+  "favorite_accuracy": 0.7618,
+  "method": "logistic on WR-score diff, scale fitted by MLE on real results"
+ },
+ "men": {
+  "Poland": {
+   "rank": 1,
+   "points": 382.24,
+   "code": "POL"
+  },
+  "Italy": {
+   "rank": 2,
+   "points": 363.37,
+   "code": "ITA"
+  },
+  "Russia": {
+   "rank": 3,
+   "points": 352.1,
+   "code": "RUS"
+  },
+  "USA": {
+   "rank": 4,
+   "points": 347.28,
+   "code": "USA"
+  },
+  "Japan": {
+   "rank": 5,
+   "points": 341.71,
+   "code": "JPN"
+  },
+  "Slovenia": {
+   "rank": 6,
+   "points": 322.76,
+   "code": "SLO"
+  },
+  "Brazil": {
+   "rank": 7,
+   "points": 316.67,
+   "code": "BRA"
+  },
+  "France": {
+   "rank": 8,
+   "points": 295.9,
+   "code": "FRA"
+  },
+  "Türkiye": {
+   "rank": 9,
+   "points": 272.26,
+   "code": "TUR"
+  },
+  "Bulgaria": {
+   "rank": 10,
+   "points": 269.4,
+   "code": "BUL"
+  },
+  "Serbia": {
+   "rank": 11,
+   "points": 245.21,
+   "code": "SRB"
+  },
+  "Germany": {
+   "rank": 12,
+   "points": 244.94,
+   "code": "GER"
+  },
+  "Ukraine": {
+   "rank": 13,
+   "points": 242.88,
+   "code": "UKR"
+  },
+  "Argentina": {
+   "rank": 14,
+   "points": 240.99,
+   "code": "ARG"
+  },
+  "Canada": {
+   "rank": 15,
+   "points": 231.28,
+   "code": "CAN"
+  },
+  "Finland": {
+   "rank": 16,
+   "points": 218.01,
+   "code": "FIN"
+  },
+  "Iran": {
+   "rank": 17,
+   "points": 214.28,
+   "code": "IRI"
+  },
+  "Cuba": {
+   "rank": 18,
+   "points": 213.97,
+   "code": "CUB"
+  },
+  "Czech Republic": {
+   "rank": 19,
+   "points": 203.22,
+   "code": "CZE"
+  },
+  "Belgium": {
+   "rank": 20,
+   "points": 200.5,
+   "code": "BEL"
+  },
+  "Netherlands": {
+   "rank": 21,
+   "points": 194.97,
+   "code": "NED"
+  },
+  "Puerto Rico": {
+   "rank": 22,
+   "points": 168.59,
+   "code": "PUR"
+  },
+  "Qatar": {
+   "rank": 23,
+   "points": 149.81,
+   "code": "QAT"
+  },
+  "Greece": {
+   "rank": 24,
+   "points": 148.96,
+   "code": "GRE"
+  },
+  "Portugal": {
+   "rank": 25,
+   "points": 138.86,
+   "code": "POR"
+  },
+  "Korea": {
+   "rank": 26,
+   "points": 137.22,
+   "code": "KOR"
+  },
+  "Egypt": {
+   "rank": 27,
+   "points": 136.56,
+   "code": "EGY"
+  },
+  "Switzerland": {
+   "rank": 28,
+   "points": 134.76,
+   "code": "SUI"
+  },
+  "Israel": {
+   "rank": 29,
+   "points": 133.53,
+   "code": "ISR"
+  },
+  "Estonia": {
+   "rank": 30,
+   "points": 133.14,
+   "code": "EST"
+  },
+  "Denmark": {
+   "rank": 31,
+   "points": 130.66,
+   "code": "DEN"
+  },
+  "Chile": {
+   "rank": 32,
+   "points": 125.32,
+   "code": "CHI"
+  },
+  "Romania": {
+   "rank": 33,
+   "points": 124.47,
+   "code": "ROU"
+  },
+  "China": {
+   "rank": 34,
+   "points": 123.69,
+   "code": "CHN"
+  },
+  "Spain": {
+   "rank": 35,
+   "points": 121.73,
+   "code": "ESP"
+  },
+  "Belarus": {
+   "rank": 36,
+   "points": 120.51,
+   "code": "BLR"
+  },
+  "Mexico": {
+   "rank": 37,
+   "points": 116.96,
+   "code": "MEX"
+  },
+  "Sweden": {
+   "rank": 38,
+   "points": 113.41,
+   "code": "SWE"
+  },
+  "Croatia": {
+   "rank": 39,
+   "points": 112.96,
+   "code": "CRO"
+  },
+  "Tunisia": {
+   "rank": 40,
+   "points": 108.93,
+   "code": "TUN"
+  },
+  "Slovak Republic": {
+   "rank": 41,
+   "points": 108.8,
+   "code": "SVK"
+  },
+  "Bahrain": {
+   "rank": 42,
+   "points": 102.66,
+   "code": "BRN"
+  },
+  "India": {
+   "rank": 43,
+   "points": 101.86,
+   "code": "IND"
+  },
+  "Indonesia": {
+   "rank": 44,
+   "points": 101.75,
+   "code": "INA"
+  },
+  "Dominican Republic": {
+   "rank": 45,
+   "points": 97.71,
+   "code": "DOM"
+  },
+  "Hungary": {
+   "rank": 46,
+   "points": 94.3,
+   "code": "HUN"
+  },
+  "Venezuela": {
+   "rank": 47,
+   "points": 94.25,
+   "code": "VEN"
+  },
+  "Pakistan": {
+   "rank": 48,
+   "points": 92.83,
+   "code": "PAK"
+  },
+  "Latvia": {
+   "rank": 49,
+   "points": 92.47,
+   "code": "LAT"
+  },
+  "Colombia": {
+   "rank": 50,
+   "points": 90.91,
+   "code": "COL"
+  }
+ },
+ "women": {
+  "Italy": {
+   "rank": 1,
+   "points": 467.01,
+   "code": "ITA"
+  },
+  "Brazil": {
+   "rank": 2,
+   "points": 400.56,
+   "code": "BRA"
+  },
+  "USA": {
+   "rank": 3,
+   "points": 371.71,
+   "code": "USA"
+  },
+  "Türkiye": {
+   "rank": 4,
+   "points": 369.04,
+   "code": "TUR"
+  },
+  "Poland": {
+   "rank": 5,
+   "points": 338.37,
+   "code": "POL"
+  },
+  "Japan": {
+   "rank": 6,
+   "points": 335.27,
+   "code": "JPN"
+  },
+  "China": {
+   "rank": 7,
+   "points": 315.2,
+   "code": "CHN"
+  },
+  "Netherlands": {
+   "rank": 8,
+   "points": 294.84,
+   "code": "NED"
+  },
+  "Russia": {
+   "rank": 9,
+   "points": 277.59,
+   "code": "RUS"
+  },
+  "Serbia": {
+   "rank": 10,
+   "points": 276.38,
+   "code": "SRB"
+  },
+  "Canada": {
+   "rank": 11,
+   "points": 276.34,
+   "code": "CAN"
+  },
+  "Germany": {
+   "rank": 12,
+   "points": 253.62,
+   "code": "GER"
+  },
+  "Dominican Republic": {
+   "rank": 13,
+   "points": 230.37,
+   "code": "DOM"
+  },
+  "Czech Republic": {
+   "rank": 14,
+   "points": 220.41,
+   "code": "CZE"
+  },
+  "France": {
+   "rank": 15,
+   "points": 207.28,
+   "code": "FRA"
+  },
+  "Belgium": {
+   "rank": 16,
+   "points": 195.58,
+   "code": "BEL"
+  },
+  "Thailand": {
+   "rank": 17,
+   "points": 189.26,
+   "code": "THA"
+  },
+  "Ukraine": {
+   "rank": 18,
+   "points": 188.1,
+   "code": "UKR"
+  },
+  "Argentina": {
+   "rank": 19,
+   "points": 182.42,
+   "code": "ARG"
+  },
+  "Slovenia": {
+   "rank": 20,
+   "points": 182.01,
+   "code": "SLO"
+  },
+  "Sweden": {
+   "rank": 21,
+   "points": 180.54,
+   "code": "SWE"
+  },
+  "Mexico": {
+   "rank": 22,
+   "points": 178.93,
+   "code": "MEX"
+  },
+  "Kenya": {
+   "rank": 23,
+   "points": 158.49,
+   "code": "KEN"
+  },
+  "Colombia": {
+   "rank": 24,
+   "points": 157.31,
+   "code": "COL"
+  },
+  "Puerto Rico": {
+   "rank": 25,
+   "points": 154.74,
+   "code": "PUR"
+  },
+  "Hungary": {
+   "rank": 26,
+   "points": 149.28,
+   "code": "HUN"
+  },
+  "Romania": {
+   "rank": 27,
+   "points": 142.4,
+   "code": "ROU"
+  },
+  "Vietnam": {
+   "rank": 28,
+   "points": 142.26,
+   "code": "VIE"
+  },
+  "Greece": {
+   "rank": 29,
+   "points": 138.71,
+   "code": "GRE"
+  },
+  "Korea": {
+   "rank": 30,
+   "points": 138.56,
+   "code": "KOR"
+  },
+  "Spain": {
+   "rank": 31,
+   "points": 137.04,
+   "code": "ESP"
+  },
+  "Bulgaria": {
+   "rank": 32,
+   "points": 136.02,
+   "code": "BUL"
+  },
+  "Switzerland": {
+   "rank": 33,
+   "points": 131.15,
+   "code": "SUI"
+  },
+  "Cuba": {
+   "rank": 34,
+   "points": 130.99,
+   "code": "CUB"
+  },
+  "Slovak Republic": {
+   "rank": 35,
+   "points": 128.23,
+   "code": "SVK"
+  },
+  "Finland": {
+   "rank": 36,
+   "points": 127.77,
+   "code": "FIN"
+  },
+  "Belarus": {
+   "rank": 37,
+   "points": 116.06,
+   "code": "BLR"
+  },
+  "Chinese Taipei": {
+   "rank": 38,
+   "points": 114.76,
+   "code": "TPE"
+  },
+  "Kazakhstan": {
+   "rank": 39,
+   "points": 110.91,
+   "code": "KAZ"
+  },
+  "Croatia": {
+   "rank": 40,
+   "points": 110.34,
+   "code": "CRO"
+  },
+  "Peru": {
+   "rank": 41,
+   "points": 99.82,
+   "code": "PER"
+  },
+  "Iran": {
+   "rank": 42,
+   "points": 95.6,
+   "code": "IRI"
+  },
+  "Austria": {
+   "rank": 43,
+   "points": 92.37,
+   "code": "AUT"
+  },
+  "Bosnia and Herzegovina": {
+   "rank": 44,
+   "points": 86.79,
+   "code": "BIH"
+  },
+  "Scotland": {
+   "rank": 45,
+   "points": 85.07,
+   "code": "SCO"
+  },
+  "Montenegro": {
+   "rank": 46,
+   "points": 84.53,
+   "code": "MNE"
+  },
+  "Portugal": {
+   "rank": 47,
+   "points": 84.16,
+   "code": "POR"
+  },
+  "Azerbaijan": {
+   "rank": 48,
+   "points": 77.36,
+   "code": "AZE"
+  },
+  "Cameroon": {
+   "rank": 49,
+   "points": 76.72,
+   "code": "CMR"
+  },
+  "San Marino": {
+   "rank": 50,
+   "points": 76.49,
+   "code": "SMR"
+  }
+ }
+}

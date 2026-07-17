@@ -412,3 +412,55 @@ def test_norm_name_nordic_letters_survive():
     assert wc.norm_name("Alexander Sørloth") == "alexander sorloth"
     assert wc.norm_name("Martin Ødegaard") == "martin odegaard"
     assert wc.norm_name("Åge Hareide") == "age hareide"
+
+
+# ── MLB via statsapi (added 2026-07-17 — Jul 16 SGM props had no model) ──────
+def test_mlb_parse_gamelog_extracts_field_and_skips_junk():
+    splits = [
+        {"stat": {"hits": 2, "totalBases": 5}},
+        {"stat": {"hits": 0, "totalBases": 0}},
+        {"stat": {}},                       # missing field -> skipped
+        {"no_stat": True},                  # malformed -> skipped
+        {"stat": {"hits": "1"}},            # string number -> parsed
+    ]
+    assert pp.parse_mlb_gamelog(splits, "hits") == [2.0, 0.0, 1.0]
+    assert pp.parse_mlb_gamelog(splits, "totalBases") == [5.0, 0.0]
+
+
+def test_mlb_unknown_stat_unsupported():
+    out = pp.simulate_player_prop("mlb", "Bryce Harper", "dunks", 1.5)
+    assert out["status"] == "UNSUPPORTED"
+    assert "hits" in out["note"]
+
+
+def test_mlb_player_not_found_refuses(monkeypatch):
+    monkeypatch.setattr(pp, "mlb_search_player", lambda name: None)
+    out = pp.simulate_player_prop("mlb", "Zzz Nobody", "hits", 0.5)
+    assert out["status"] == "NOT_FOUND"
+
+
+def test_mlb_report_from_fixture_logs(monkeypatch):
+    monkeypatch.setattr(pp, "mlb_search_player",
+                        lambda name: {"id": 1, "name": "Test Batter"})
+    fixture = [{"stat": {"hits": h, "totalBases": tb}}
+               for h, tb in [(1, 2), (0, 0), (2, 4), (1, 1), (0, 0),
+                             (3, 7), (1, 2), (0, 0), (2, 3), (1, 4)]]
+    monkeypatch.setattr(pp, "mlb_gamelog", lambda pid, group, season: fixture)
+    out = pp.simulate_player_prop("mlb", "Test Batter", "hits", 0.5)
+    assert out["status"] == "OK"                     # 10 games >= full-sample floor
+    assert out["source"] == "statsapi"
+    assert 0.0 < out["p_over"] < 1.0
+    # 7/10 fixture games had 1+ hits — simulated prob should be in that region
+    assert 0.45 < out["p_over"] < 0.9
+    hazards = out["context"]["failure_modes"]["unmodelled"]
+    assert any("pitcher" in h["risk"].lower() for h in hazards)
+
+
+def test_mlb_thin_log_no_verdict(monkeypatch):
+    monkeypatch.setattr(pp, "mlb_search_player",
+                        lambda name: {"id": 1, "name": "Test Batter"})
+    monkeypatch.setattr(pp, "mlb_gamelog",
+                        lambda pid, group, season: [{"stat": {"hits": 1}}] * 3)
+    out = pp.simulate_player_prop("mlb", "Test Batter", "hits", 0.5)
+    assert out["status"] == "LOW_DATA"
+    assert out.get("verdict") is None or "verdict" not in out

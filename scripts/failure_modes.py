@@ -172,6 +172,15 @@ _UNMODELLED: dict[str, list[dict]] = {
         {"risk": "Weather (wind kills passing volume and totals)",
          "mitigation": "check forecast for outdoor venues before totals/passing props"},
     ],
+    "mlb": [
+        {"risk": "Opposing starting pitcher NOT modelled — batter logs pool all "
+                 "matchups, but tonight's SP (ace vs spot-starter, L/R split) moves "
+                 "every hitting prop",
+         "mitigation": "check the probable starter before betting; big market "
+                       "disagreement with the model usually IS the pitcher"},
+        {"risk": "Lineup scratch / day off — day games after night games sit stars",
+         "mitigation": "bet only after lineups post (~2-4h before first pitch)"},
+    ],
 }
 
 
