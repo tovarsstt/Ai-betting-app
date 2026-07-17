@@ -237,28 +237,64 @@ def candidates_from_slate(games: list[dict]) -> list[dict]:
     return cands
 
 
-def candidates_from_2way(games: list[dict]) -> list[dict]:
+def _mlb_model_read(g: dict) -> dict | None:
+    """Pitcher-adjusted model probs for an MLB game (mlb_game_model, 59.0% ML
+    acc backtested w/ pitchers). Context only — never crashes the card."""
+    try:
+        import mlb_game_model as mgm
+        r = mgm.predict(g["home"], g["away"])
+        if r.get("error"):
+            return None
+        ps = (r.get("context") or {}).get("probable_starters") or {}
+        return {"home": float(r["ml"]["home"]), "away": float(r["ml"]["away"]),
+                "starters": {s: (ps.get(s) or {}).get("name")
+                             for s in ("home", "away")}}
+    except Exception:                                          # noqa: BLE001
+        return None
+
+
+MLB_FADE_DELTA = -0.10   # model this far under sharp = pitcher-driven fade flag
+
+
+def candidates_from_2way(games: list[dict], sport_key: str | None = None) -> list[dict]:
     """Sharp-anchored 2-way candidates (NBA/NFL/MLB/NHL/tennis).
 
     prob = devigged PINNACLE fair probability; decimal = best available
     price across books. EV > 0 exists only when a soft book beats the
-    sharp fair line — the classic +EV method, no invented model."""
+    sharp fair line — the classic +EV method, no invented model.
+
+    MLB extra: each side also carries the pitcher-adjusted model prob and its
+    delta vs the sharp anchor. The SHARP prob still prices the bet (the model
+    is a validated signal, not a validated closing line); a big negative delta
+    surfaces as model_warn so a starter mismatch is visible before LOG."""
     from soccer_markets import devig_2way
     cands = []
     for g in games:
         dv = devig_2way(g["pinnacle"][0], g["pinnacle"][1])
-        for side, prob, price in ((g["home"], dv["a"], g["best"][0]),
-                                  (g["away"], dv["b"], g["best"][1])):
-            cands.append({"match": g["name"], "selection": f"{side} ML",
-                          "decimal": float(price), "prob": float(prob)})
+        model = _mlb_model_read(g) if sport_key == "baseball_mlb" else None
+        for key, side, prob, price in (("home", g["home"], dv["a"], g["best"][0]),
+                                       ("away", g["away"], dv["b"], g["best"][1])):
+            c = {"match": g["name"], "selection": f"{side} ML",
+                 "decimal": float(price), "prob": float(prob)}
+            if model:
+                delta = model[key] - float(prob)
+                c["model_prob"] = round(model[key], 4)
+                c["model_delta"] = round(delta, 4)
+                c["starters"] = model["starters"]
+                if delta <= MLB_FADE_DELTA:
+                    c["model_warn"] = (f"pitcher model has {side} at "
+                                       f"{model[key]:.0%} vs sharp {prob:.0%} — fade signal")
+            cands.append(c)
     return cands
 
 
 def day_card(games: list[dict], n_tickets: int = DEFAULT_TICKETS,
-             bankroll: float | None = None, mode: str = "soccer") -> dict:
+             bankroll: float | None = None, mode: str = "soccer",
+             sport_key: str | None = None) -> dict:
     """One call: slate in, day card out — 3-5x tickets + Kelly-sized singles.
     mode="soccer" runs the Poisson board; mode="2way" runs sharp-anchored ML."""
-    cands = candidates_from_2way(games) if mode == "2way" else candidates_from_slate(games)
+    cands = (candidates_from_2way(games, sport_key) if mode == "2way"
+             else candidates_from_slate(games))
     return {**build_tickets(cands, n_tickets),
             "singles": strong_singles(cands, bankroll),
             "per_match": best_per_match(cands)}
@@ -281,7 +317,8 @@ def _main() -> None:
             out = day_card(games, n, bank, mode="2way")
         else:                                # NBA/NFL/MLB/NHL... -> sharp-anchored ML
             from scan_slate import fetch_slate_2way_oddsapi
-            out = day_card(fetch_slate_2way_oddsapi(sport), n, bank, mode="2way")
+            out = day_card(fetch_slate_2way_oddsapi(sport), n, bank, mode="2way",
+                           sport_key=sport)
     elif payload.get("games"):               # whole slate -> auto-fed day card
         out = day_card(payload["games"], n, bank)
     else:

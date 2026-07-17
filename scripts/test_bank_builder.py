@@ -311,3 +311,44 @@ def test_day_card_includes_per_match():
     assert "per_match" in card
     assert len(card["per_match"]) == 1
     assert card["per_match"][0]["verdict"] in ("BET", "LEAN", "NO_BET")
+
+
+# ── MLB model enrichment on day-card candidates (Jul 17 2026) ────────────────
+def _mlb_game():
+    return {"name": "Tampa Bay Rays @ Boston Red Sox",
+            "home": "Boston Red Sox", "away": "Tampa Bay Rays",
+            "pinnacle": (1.60, 2.40), "best": (1.65, 2.50)}
+
+
+def test_mlb_candidates_carry_model_read(monkeypatch):
+    monkeypatch.setattr(bb, "_mlb_model_read",
+                        lambda g: {"home": 0.67, "away": 0.33,
+                                   "starters": {"home": "Ace", "away": "Arm"}})
+    cands = bb.candidates_from_2way([_mlb_game()], sport_key="baseball_mlb")
+    home = next(c for c in cands if "Boston" in c["selection"])
+    assert home["model_prob"] == 0.67
+    assert home["starters"]["home"] == "Ace"
+    # sharp anchor still prices the bet — prob untouched by the model
+    assert abs(home["prob"] - (1 / 1.60) / (1 / 1.60 + 1 / 2.40)) < 0.01
+    assert "model_warn" not in home                # model above sharp, no fade
+
+
+def test_mlb_fade_flag_on_big_negative_delta(monkeypatch):
+    monkeypatch.setattr(bb, "_mlb_model_read",
+                        lambda g: {"home": 0.45, "away": 0.55,
+                                   "starters": {"home": None, "away": None}})
+    cands = bb.candidates_from_2way([_mlb_game()], sport_key="baseball_mlb")
+    home = next(c for c in cands if "Boston" in c["selection"])
+    assert home["model_delta"] <= bb.MLB_FADE_DELTA
+    assert "fade signal" in home["model_warn"]
+
+
+def test_non_mlb_sports_untouched_and_model_failure_safe(monkeypatch):
+    cands = bb.candidates_from_2way([_mlb_game()], sport_key="basketball_nba")
+    assert all("model_prob" not in c for c in cands)
+
+    def boom(g):
+        raise RuntimeError("model exploded")
+    monkeypatch.setattr(bb, "_mlb_model_read", lambda g: None)
+    cands = bb.candidates_from_2way([_mlb_game()], sport_key="baseball_mlb")
+    assert len(cands) == 2 and all("model_prob" not in c for c in cands)
