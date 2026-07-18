@@ -262,6 +262,27 @@ def kelly(mp: float, o: float, br: float) -> float:
 LOCK_PROB = 0.70   # high enough to carry a parlay
 PICK_PROB = 0.62   # solid favourite with a real edge
 
+STALE_RANK_GAP = 0.15   # model-vs-market gap where tennis ranks become the suspect
+
+
+def stale_rank_guard(picked_prob: float, market_prob: float,
+                     quality: str, note: str) -> tuple:
+    """Tennis-only confidence cap (Jul 18 2026: model faded Badosa at 49% while
+    the market had her 79% — official ranking points lag comebacks/injuries by
+    months, so a hard model-vs-market split on ranks is a DATA smell, not an
+    edge). Returns (quality, note, flag|None); grade drops one step, never up."""
+    gap = picked_prob - market_prob
+    if abs(gap) < STALE_RANK_GAP:
+        return quality, note, None
+    flag = (f"model {picked_prob:.0%} vs market {market_prob:.0%} ({gap:+.0%}) — "
+            f"ranking points lag form/comebacks; trust the market number unless "
+            f"you know why the model disagrees")
+    capped = {"LOCK": "PICK", "PICK": "LEAN"}.get(quality, quality)
+    if capped != quality:
+        note += " [capped: stale-rank suspect]"
+    return capped, note, flag
+
+
 def pick_quality(win_prob: Optional[float], best_ev: float, has_edge: bool) -> tuple:
     """Grade a pick by win-prob first, then value. Returns (grade, note).
     LOCK = anchor-grade · PICK = parlay-eligible · LEAN = single/small only · PASS."""
@@ -659,6 +680,12 @@ def predict(req: PredictReq):
     picked_prob = (hcp if signal in ("HOME_WIN", "HOME_COVER")
                    else acp if signal in ("AWAY_WIN", "AWAY_COVER") else None)
     quality, quality_note = pick_quality(picked_prob, best_ev, signal != "NO_EDGE")
+    if sport == "TENNIS" and picked_prob is not None:
+        market_side = ht if signal == "HOME_WIN" else at
+        quality, quality_note, stale_flag = stale_rank_guard(
+            picked_prob, market_side, quality, quality_note)
+        if stale_flag:
+            extra["stale_rank_suspect"] = stale_flag
 
     return {
         "sport": sport, "home_team": req.home_team, "away_team": req.away_team,

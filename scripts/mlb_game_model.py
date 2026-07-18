@@ -104,6 +104,21 @@ def _find_probable(doc: dict, hk: str, ak: str,
     return min(upcoming, key=lambda p: p["date"]) if upcoming else None
 
 
+def _park_adjust(lh: float, la: float, meta: dict, hk: str, ak: str) -> tuple[float, float, float]:
+    """Park-neutralize each side's rates (season numbers carry ~half a season of
+    the team's own park) then apply the game venue's factor. Validated: cut
+    backtest totals MAE 3.633 -> 3.544; ML probs essentially unmoved."""
+    pf = meta.get("park_factors") or {}
+    f_home_park = float(pf.get(hk, 1.0))
+    f_away_park = float(pf.get(ak, 1.0))
+    # each lambda = one side's scoring rate x other side's allowing rate, so BOTH
+    # teams' park-halves divide out of both lambdas; venue factor multiplies back
+    neutral = (1 + (f_home_park - 1) / 2) * (1 + (f_away_park - 1) / 2)
+    lh = lh / neutral * f_home_park
+    la = la / neutral * f_home_park
+    return lh, la, f_home_park
+
+
 def matchup_lambdas(doc: dict, hk: str, ak: str,
                     use_probables: bool = True) -> tuple[float, float, dict]:
     teams, meta = doc["teams"], doc["meta"]
@@ -113,7 +128,9 @@ def matchup_lambdas(doc: dict, hk: str, ak: str,
     la = a["rs_pg"] * h["ra_pg"] / rpg
     hf, af = home_scoring_split(doc.get("games") or [])
     lh, la = lh * hf, la * af
-    ctx: dict = {"home_scoring_factor": round(hf, 4), "away_scoring_factor": round(af, 4)}
+    lh, la, f_venue = _park_adjust(lh, la, meta, hk, ak)
+    ctx: dict = {"home_scoring_factor": round(hf, 4), "away_scoring_factor": round(af, 4),
+                 "venue_park_factor": round(f_venue, 4)}
     if use_probables:
         prob = _find_probable(doc, hk, ak)
         if prob:
@@ -250,6 +267,7 @@ def backtest(min_date: str = "2026-05-15", with_pitchers: bool = False) -> dict:
         a_ra = (a["ra"] - g["hs"]) / (a["g"] - 1)
         lh = h_rs * a_ra / rpg * hf
         la = a_rs * h_ra / rpg * af
+        lh, la, _ = _park_adjust(lh, la, meta, g["home"], g["away"])
         if with_pitchers:
             prob = _find_probable(doc, g["home"], g["away"], on_date=g["date"])
             if prob:

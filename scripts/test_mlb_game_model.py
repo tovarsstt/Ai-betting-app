@@ -115,3 +115,42 @@ def test_backtest_jackknife_runs_and_reports(monkeypatch):
     assert 0.0 <= bt["ml_accuracy"] <= 1.0
     assert 0.0 <= bt["brier"] <= 1.0
     assert "jackknife" in bt["notes"][0]
+
+
+# ── park factors (Jul 18 2026 — Coors +24% edge lost, park gap proven) ───────
+def test_park_factor_neutral_park_is_identity(monkeypatch):
+    meta = {"park_factors": {"New York Mets": 1.0, "Philadelphia Phillies": 1.0}}
+    lh, la, f = mm._park_adjust(4.5, 4.0, meta, "New York Mets", "Philadelphia Phillies")
+    assert (lh, la, f) == (4.5, 4.0, 1.0)
+
+
+def test_hitter_park_raises_both_lambdas(monkeypatch):
+    meta = {"park_factors": {"Colorado Rockies": 1.30, "San Diego Padres": 1.0}}
+    lh, la, f = mm._park_adjust(4.5, 4.0, meta, "Colorado Rockies", "San Diego Padres")
+    assert f == 1.30
+    assert lh > 4.5 and la > 4.0
+    # neutralize-then-apply: net boost is fH / (1 + (fH-1)/2) ≈ 1.13, not 1.30
+    assert abs(lh / 4.5 - 1.30 / 1.15) < 1e-9
+
+
+def test_park_factor_flows_into_predict_context(monkeypatch):
+    fx = {**FIXTURE, "meta": {**FIXTURE["meta"],
+                              "park_factors": {"New York Mets": 1.2,
+                                               "Philadelphia Phillies": 0.9}}}
+    monkeypatch.setattr(mm, "load", lambda: fx)
+    home_game = mm.predict("Mets", "Phillies", use_probables=False)
+    assert home_game["context"]["venue_park_factor"] == 1.2
+    road_game = mm.predict("Phillies", "Mets", use_probables=False)
+    assert road_game["context"]["venue_park_factor"] == 0.9
+    # same matchup totals higher in the hitter park
+    assert home_game["expected_runs"]["total"] > road_game["expected_runs"]["total"]
+
+
+def test_fetch_park_factors_controls_for_team_quality():
+    from fetch_mlb_data import park_factors
+    teams = {"A": {}, "B": {}}
+    # A: high-scoring at home AND away (good offense, neutral park) -> PF ~1
+    games = ([{"home": "A", "away": "B", "hs": 6, "as": 4}] * 10 +
+             [{"home": "B", "away": "A", "hs": 4, "as": 6}] * 10)
+    pf = park_factors(games, teams)
+    assert abs(pf["A"] - 1.0) < 1e-9 and abs(pf["B"] - 1.0) < 1e-9

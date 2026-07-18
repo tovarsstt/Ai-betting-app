@@ -40,3 +40,26 @@ def test_high_prob_but_no_value_is_not_a_lock():
 
 def test_thresholds_are_win_prob_ordered():
     assert LOCK_PROB > PICK_PROB >= 0.60
+
+
+# ── tennis stale-rank guard (Jul 18 2026 — Badosa comeback vs rank-141 read) ─
+def test_stale_guard_caps_grade_on_big_gap():
+    from edge_api import stale_rank_guard
+    q, note, flag = stale_rank_guard(0.51, 0.21, "PICK", "base")
+    assert q == "LEAN"
+    assert "capped" in note
+    assert "market" in flag
+
+
+def test_stale_guard_quiet_when_model_and_market_agree():
+    from edge_api import stale_rank_guard
+    q, note, flag = stale_rank_guard(0.62, 0.58, "PICK", "base")
+    assert (q, note, flag) == ("PICK", "base", None)
+
+
+def test_stale_guard_fires_both_directions_and_lock_drops_to_pick():
+    from edge_api import stale_rank_guard
+    q, _, flag = stale_rank_guard(0.72, 0.49, "LOCK", "n")
+    assert q == "PICK" and flag is not None
+    q2, _, flag2 = stale_rank_guard(0.40, 0.79, "LEAN", "n")   # model fading a market lock
+    assert flag2 is not None and q2 == "LEAN"                   # LEAN stays, flag shown

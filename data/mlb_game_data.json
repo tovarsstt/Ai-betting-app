@@ -1,92 +1,124 @@
 {
  "meta": {
-  "fetched_at": "2026-07-17T20:41:08+00:00",
+  "fetched_at": "2026-07-18T14:11:12+00:00",
   "season": 2026,
   "source": "statsapi.mlb.com (standings + schedule + pitcher season stats)",
-  "league_rpg": 4.515,
-  "pyth_exponent": 1.56,
-  "home_win_pct": 0.5221,
-  "nb_dispersion": 2.226,
-  "n_games": 1447,
+  "league_rpg": 4.518,
+  "pyth_exponent": 1.52,
+  "home_win_pct": 0.5202,
+  "nb_dispersion": 2.246,
+  "park_factors": {
+   "Tampa Bay Rays": 1.042,
+   "New York Yankees": 1.1483,
+   "Boston Red Sox": 0.9454,
+   "Baltimore Orioles": 1.0156,
+   "Toronto Blue Jays": 1.0777,
+   "Chicago White Sox": 0.8835,
+   "Cleveland Guardians": 0.9995,
+   "Minnesota Twins": 0.8786,
+   "Detroit Tigers": 0.9616,
+   "Kansas City Royals": 1.0576,
+   "Texas Rangers": 0.9202,
+   "Seattle Mariners": 0.8713,
+   "Houston Astros": 0.9482,
+   "Athletics": 1.6317,
+   "Los Angeles Angels": 0.8416,
+   "Atlanta Braves": 0.9846,
+   "Philadelphia Phillies": 1.1934,
+   "Miami Marlins": 0.8142,
+   "Washington Nationals": 1.1368,
+   "New York Mets": 1.1174,
+   "Milwaukee Brewers": 0.9494,
+   "Chicago Cubs": 1.0209,
+   "St. Louis Cardinals": 0.791,
+   "Pittsburgh Pirates": 1.1234,
+   "Cincinnati Reds": 0.9661,
+   "Los Angeles Dodgers": 0.8999,
+   "Arizona Diamondbacks": 1.0499,
+   "San Diego Padres": 0.8461,
+   "San Francisco Giants": 0.8858,
+   "Colorado Rockies": 1.1528
+  },
+  "n_games": 1460,
   "method": "all parameters fitted from this season's real games"
  },
  "teams": {
   "Tampa Bay Rays": {
    "w": 56,
-   "l": 39,
-   "g": 95,
-   "rs": 425,
-   "ra": 403,
-   "rs_pg": 4.474,
-   "ra_pg": 4.242,
+   "l": 40,
+   "g": 96,
+   "rs": 428,
+   "ra": 408,
+   "rs_pg": 4.458,
+   "ra_pg": 4.25,
    "home_w": 35,
    "home_l": 15,
    "away_w": 21,
-   "away_l": 24
+   "away_l": 25
   },
   "New York Yankees": {
    "w": 54,
-   "l": 42,
-   "g": 96,
-   "rs": 462,
-   "ra": 371,
-   "rs_pg": 4.812,
-   "ra_pg": 3.865,
+   "l": 43,
+   "g": 97,
+   "rs": 463,
+   "ra": 373,
+   "rs_pg": 4.773,
+   "ra_pg": 3.845,
    "home_w": 23,
-   "home_l": 20,
+   "home_l": 21,
    "away_w": 31,
    "away_l": 22
   },
   "Boston Red Sox": {
-   "w": 47,
+   "w": 48,
    "l": 48,
-   "g": 95,
-   "rs": 395,
-   "ra": 358,
-   "rs_pg": 4.158,
-   "ra_pg": 3.768,
-   "home_w": 18,
+   "g": 96,
+   "rs": 400,
+   "ra": 361,
+   "rs_pg": 4.167,
+   "ra_pg": 3.76,
+   "home_w": 19,
    "home_l": 27,
    "away_w": 29,
    "away_l": 21
   },
   "Baltimore Orioles": {
-   "w": 46,
+   "w": 47,
    "l": 51,
-   "g": 97,
-   "rs": 447,
-   "ra": 466,
-   "rs_pg": 4.608,
-   "ra_pg": 4.804,
+   "g": 98,
+   "rs": 450,
+   "ra": 468,
+   "rs_pg": 4.592,
+   "ra_pg": 4.776,
    "home_w": 28,
    "home_l": 25,
-   "away_w": 18,
+   "away_w": 19,
    "away_l": 26
   },
   "Toronto Blue Jays": {
    "w": 45,
-   "l": 51,
-   "g": 96,
-   "rs": 392,
-   "ra": 427,
-   "rs_pg": 4.083,
-   "ra_pg": 4.448,
+   "l": 52,
+   "g": 97,
+   "rs": 396,
+   "ra": 439,
+   "rs_pg": 4.082,
+   "ra_pg": 4.526,
    "home_w": 24,
-   "home_l": 25,
+   "home_l": 26,
    "away_w": 21,
    "away_l": 26
   },
   "Chicago White Sox": {
-   "w": 50,
+   "w": 51,
    "l": 45,
-   "g": 95,
-   "rs": 454,
-   "ra": 419,
-   "rs_pg": 4.779,
-   "ra_pg": 4.411,
+   "g": 96,
+   "rs": 466,
+   "ra": 423,
+   "rs_pg": 4.854,
+   "ra_pg": 4.406,
    "home_w": 31,
    "home_l": 17,
-   "away_w": 19,
+   "away_w": 20,
    "away_l": 28
   },
   "Cleveland Guardians": {
@@ -103,118 +135,118 @@
    "away_l": 24
   },
   "Minnesota Twins": {
-   "w": 48,
+   "w": 49,
    "l": 49,
-   "g": 97,
-   "rs": 471,
-   "ra": 485,
-   "rs_pg": 4.856,
-   "ra_pg": 5.0,
+   "g": 98,
+   "rs": 476,
+   "ra": 487,
+   "rs_pg": 4.857,
+   "ra_pg": 4.969,
    "home_w": 26,
    "home_l": 25,
-   "away_w": 22,
+   "away_w": 23,
    "away_l": 24
   },
   "Detroit Tigers": {
-   "w": 44,
+   "w": 45,
    "l": 52,
-   "g": 96,
-   "rs": 407,
-   "ra": 383,
-   "rs_pg": 4.24,
-   "ra_pg": 3.99,
+   "g": 97,
+   "rs": 409,
+   "ra": 384,
+   "rs_pg": 4.216,
+   "ra_pg": 3.959,
    "home_w": 27,
    "home_l": 23,
-   "away_w": 17,
+   "away_w": 18,
    "away_l": 29
   },
   "Kansas City Royals": {
-   "w": 38,
+   "w": 39,
    "l": 59,
-   "g": 97,
-   "rs": 411,
-   "ra": 499,
-   "rs_pg": 4.237,
-   "ra_pg": 5.144,
-   "home_w": 21,
+   "g": 98,
+   "rs": 418,
+   "ra": 505,
+   "rs_pg": 4.265,
+   "ra_pg": 5.153,
+   "home_w": 22,
    "home_l": 26,
    "away_w": 17,
    "away_l": 33
   },
   "Texas Rangers": {
    "w": 49,
-   "l": 47,
-   "g": 96,
-   "rs": 399,
-   "ra": 414,
-   "rs_pg": 4.156,
-   "ra_pg": 4.312,
+   "l": 48,
+   "g": 97,
+   "rs": 400,
+   "ra": 429,
+   "rs_pg": 4.124,
+   "ra_pg": 4.423,
    "home_w": 24,
    "home_l": 22,
    "away_w": 25,
-   "away_l": 25
+   "away_l": 26
   },
   "Seattle Mariners": {
    "w": 48,
-   "l": 49,
-   "g": 97,
+   "l": 50,
+   "g": 98,
    "rs": 392,
-   "ra": 376,
-   "rs_pg": 4.041,
-   "ra_pg": 3.876,
+   "ra": 383,
+   "rs_pg": 4.0,
+   "ra_pg": 3.908,
    "home_w": 27,
-   "home_l": 20,
+   "home_l": 21,
    "away_w": 21,
    "away_l": 29
   },
   "Houston Astros": {
    "w": 47,
-   "l": 51,
-   "g": 98,
-   "rs": 449,
-   "ra": 496,
-   "rs_pg": 4.582,
-   "ra_pg": 5.061,
+   "l": 52,
+   "g": 99,
+   "rs": 451,
+   "ra": 499,
+   "rs_pg": 4.556,
+   "ra_pg": 5.04,
    "home_w": 23,
-   "home_l": 24,
+   "home_l": 25,
    "away_w": 24,
    "away_l": 27
   },
   "Athletics": {
    "w": 41,
-   "l": 55,
-   "g": 96,
-   "rs": 422,
-   "ra": 528,
-   "rs_pg": 4.396,
-   "ra_pg": 5.5,
+   "l": 56,
+   "g": 97,
+   "rs": 426,
+   "ra": 551,
+   "rs_pg": 4.392,
+   "ra_pg": 5.68,
    "home_w": 19,
-   "home_l": 28,
+   "home_l": 29,
    "away_w": 22,
    "away_l": 27
   },
   "Los Angeles Angels": {
    "w": 38,
-   "l": 59,
-   "g": 97,
-   "rs": 430,
-   "ra": 485,
-   "rs_pg": 4.433,
-   "ra_pg": 5.0,
+   "l": 60,
+   "g": 98,
+   "rs": 431,
+   "ra": 487,
+   "rs_pg": 4.398,
+   "ra_pg": 4.969,
    "home_w": 21,
-   "home_l": 25,
+   "home_l": 26,
    "away_w": 17,
    "away_l": 34
   },
   "Atlanta Braves": {
-   "w": 55,
+   "w": 56,
    "l": 40,
-   "g": 95,
-   "rs": 460,
-   "ra": 368,
-   "rs_pg": 4.842,
-   "ra_pg": 3.874,
-   "home_w": 27,
+   "g": 96,
+   "rs": 475,
+   "ra": 369,
+   "rs_pg": 4.948,
+   "ra_pg": 3.844,
+   "home_w": 28,
    "home_l": 18,
    "away_w": 28,
    "away_l": 22
@@ -234,28 +266,28 @@
   },
   "Miami Marlins": {
    "w": 52,
-   "l": 45,
-   "g": 97,
-   "rs": 439,
-   "ra": 415,
-   "rs_pg": 4.526,
-   "ra_pg": 4.278,
+   "l": 46,
+   "g": 98,
+   "rs": 440,
+   "ra": 417,
+   "rs_pg": 4.49,
+   "ra_pg": 4.255,
    "home_w": 31,
    "home_l": 20,
    "away_w": 21,
-   "away_l": 25
+   "away_l": 26
   },
   "Washington Nationals": {
-   "w": 48,
+   "w": 49,
    "l": 49,
-   "g": 97,
-   "rs": 516,
-   "ra": 509,
-   "rs_pg": 5.32,
-   "ra_pg": 5.247,
+   "g": 98,
+   "rs": 539,
+   "ra": 513,
+   "rs_pg": 5.5,
+   "ra_pg": 5.235,
    "home_w": 20,
    "home_l": 31,
-   "away_w": 28,
+   "away_w": 29,
    "away_l": 18
   },
   "New York Mets": {
@@ -272,42 +304,42 @@
    "away_l": 29
   },
   "Milwaukee Brewers": {
-   "w": 59,
+   "w": 60,
    "l": 37,
-   "g": 96,
-   "rs": 489,
-   "ra": 363,
-   "rs_pg": 5.094,
-   "ra_pg": 3.781,
-   "home_w": 29,
+   "g": 97,
+   "rs": 491,
+   "ra": 364,
+   "rs_pg": 5.062,
+   "ra_pg": 3.753,
+   "home_w": 30,
    "home_l": 18,
    "away_w": 30,
    "away_l": 19
   },
   "Chicago Cubs": {
    "w": 54,
-   "l": 42,
-   "g": 96,
-   "rs": 484,
-   "ra": 432,
-   "rs_pg": 5.042,
-   "ra_pg": 4.5,
+   "l": 43,
+   "g": 97,
+   "rs": 486,
+   "ra": 437,
+   "rs_pg": 5.01,
+   "ra_pg": 4.505,
    "home_w": 27,
-   "home_l": 19,
+   "home_l": 20,
    "away_w": 27,
    "away_l": 23
   },
   "St. Louis Cardinals": {
-   "w": 50,
+   "w": 51,
    "l": 45,
-   "g": 95,
-   "rs": 429,
-   "ra": 423,
-   "rs_pg": 4.516,
-   "ra_pg": 4.453,
+   "g": 96,
+   "rs": 434,
+   "ra": 427,
+   "rs_pg": 4.521,
+   "ra_pg": 4.448,
    "home_w": 26,
    "home_l": 26,
-   "away_w": 24,
+   "away_w": 25,
    "away_l": 19
   },
   "Pittsburgh Pirates": {
@@ -324,80 +356,80 @@
    "away_l": 23
   },
   "Cincinnati Reds": {
-   "w": 43,
+   "w": 44,
    "l": 52,
-   "g": 95,
-   "rs": 395,
-   "ra": 455,
-   "rs_pg": 4.158,
-   "ra_pg": 4.789,
+   "g": 96,
+   "rs": 402,
+   "ra": 457,
+   "rs_pg": 4.188,
+   "ra_pg": 4.76,
    "home_w": 22,
    "home_l": 28,
-   "away_w": 21,
+   "away_w": 22,
    "away_l": 24
   },
   "Los Angeles Dodgers": {
-   "w": 61,
+   "w": 62,
    "l": 36,
-   "g": 97,
-   "rs": 506,
-   "ra": 357,
-   "rs_pg": 5.216,
-   "ra_pg": 3.68,
+   "g": 98,
+   "rs": 508,
+   "ra": 358,
+   "rs_pg": 5.184,
+   "ra_pg": 3.653,
    "home_w": 31,
    "home_l": 19,
-   "away_w": 30,
+   "away_w": 31,
    "away_l": 17
   },
   "Arizona Diamondbacks": {
    "w": 49,
-   "l": 47,
-   "g": 96,
-   "rs": 416,
-   "ra": 429,
-   "rs_pg": 4.333,
-   "ra_pg": 4.469,
+   "l": 48,
+   "g": 97,
+   "rs": 420,
+   "ra": 434,
+   "rs_pg": 4.33,
+   "ra_pg": 4.474,
    "home_w": 27,
-   "home_l": 20,
+   "home_l": 21,
    "away_w": 22,
    "away_l": 27
   },
   "San Diego Padres": {
    "w": 48,
-   "l": 48,
-   "g": 96,
-   "rs": 379,
-   "ra": 422,
-   "rs_pg": 3.948,
-   "ra_pg": 4.396,
+   "l": 49,
+   "g": 97,
+   "rs": 385,
+   "ra": 429,
+   "rs_pg": 3.969,
+   "ra_pg": 4.423,
    "home_w": 27,
    "home_l": 24,
    "away_w": 21,
-   "away_l": 24
+   "away_l": 25
   },
   "San Francisco Giants": {
-   "w": 41,
+   "w": 42,
    "l": 55,
-   "g": 96,
-   "rs": 395,
+   "g": 97,
+   "rs": 402,
    "ra": 459,
-   "rs_pg": 4.115,
-   "ra_pg": 4.781,
+   "rs_pg": 4.144,
+   "ra_pg": 4.732,
    "home_w": 22,
    "home_l": 25,
-   "away_w": 19,
+   "away_w": 20,
    "away_l": 30
   },
   "Colorado Rockies": {
    "w": 39,
-   "l": 59,
-   "g": 98,
-   "rs": 466,
-   "ra": 555,
-   "rs_pg": 4.755,
-   "ra_pg": 5.663,
+   "l": 60,
+   "g": 99,
+   "rs": 468,
+   "ra": 562,
+   "rs_pg": 4.727,
+   "ra_pg": 5.677,
    "home_w": 22,
-   "home_l": 25,
+   "home_l": 26,
    "away_w": 17,
    "away_l": 34
   }
@@ -10531,6 +10563,97 @@
    "away": "Tampa Bay Rays",
    "hs": 10,
    "as": 0
+  },
+  {
+   "date": "2026-07-17",
+   "home": "Boston Red Sox",
+   "away": "Tampa Bay Rays",
+   "hs": 5,
+   "as": 3
+  },
+  {
+   "date": "2026-07-17",
+   "home": "New York Yankees",
+   "away": "Los Angeles Dodgers",
+   "hs": 1,
+   "as": 2
+  },
+  {
+   "date": "2026-07-17",
+   "home": "Atlanta Braves",
+   "away": "Texas Rangers",
+   "hs": 15,
+   "as": 1
+  },
+  {
+   "date": "2026-07-17",
+   "home": "Toronto Blue Jays",
+   "away": "Chicago White Sox",
+   "hs": 4,
+   "as": 12
+  },
+  {
+   "date": "2026-07-17",
+   "home": "Milwaukee Brewers",
+   "away": "Miami Marlins",
+   "hs": 2,
+   "as": 1
+  },
+  {
+   "date": "2026-07-17",
+   "home": "Chicago Cubs",
+   "away": "Minnesota Twins",
+   "hs": 2,
+   "as": 5
+  },
+  {
+   "date": "2026-07-17",
+   "home": "Houston Astros",
+   "away": "Baltimore Orioles",
+   "hs": 2,
+   "as": 3
+  },
+  {
+   "date": "2026-07-17",
+   "home": "Kansas City Royals",
+   "away": "San Diego Padres",
+   "hs": 7,
+   "as": 6
+  },
+  {
+   "date": "2026-07-17",
+   "home": "Colorado Rockies",
+   "away": "Cincinnati Reds",
+   "hs": 2,
+   "as": 7
+  },
+  {
+   "date": "2026-07-17",
+   "home": "Los Angeles Angels",
+   "away": "Detroit Tigers",
+   "hs": 1,
+   "as": 2
+  },
+  {
+   "date": "2026-07-17",
+   "home": "Athletics",
+   "away": "Washington Nationals",
+   "hs": 4,
+   "as": 23
+  },
+  {
+   "date": "2026-07-17",
+   "home": "Arizona Diamondbacks",
+   "away": "St. Louis Cardinals",
+   "hs": 4,
+   "as": 5
+  },
+  {
+   "date": "2026-07-17",
+   "home": "Seattle Mariners",
+   "away": "San Francisco Giants",
+   "hs": 0,
+   "as": 7
   }
  ],
  "probables": [
@@ -10616,10 +10739,10 @@
    "away_pitcher": {
     "name": "Cade Cavalli",
     "id": 676917,
-    "ra9": 4.652,
-    "ip_per_start": 4.93,
-    "innings": 98.7,
-    "starts": 20
+    "ra9": 4.557,
+    "ip_per_start": 4.98,
+    "innings": 104.7,
+    "starts": 21
    }
   },
   {
@@ -10850,10 +10973,10 @@
    "home_pitcher": {
     "name": "Sandy Alcantara",
     "id": 645261,
-    "ra9": 4.339,
-    "ip_per_start": 6.53,
-    "innings": 130.7,
-    "starts": 20
+    "ra9": 4.215,
+    "ip_per_start": 6.51,
+    "innings": 136.7,
+    "starts": 21
    },
    "away_pitcher": {
     "name": "Kyle Freeland",
@@ -10872,10 +10995,10 @@
    "home_pitcher": {
     "name": "Chris Sale",
     "id": 519242,
-    "ra9": 2.663,
-    "ip_per_start": 5.76,
-    "innings": 98.0,
-    "starts": 17
+    "ra9": 2.486,
+    "ip_per_start": 5.83,
+    "innings": 105.0,
+    "starts": 18
    },
    "away_pitcher": {
     "name": "Cole Ragans",
@@ -10916,10 +11039,10 @@
    "home_pitcher": {
     "name": "Michael King",
     "id": 650633,
-    "ra9": 3.489,
-    "ip_per_start": 5.7,
-    "innings": 108.3,
-    "starts": 19
+    "ra9": 3.415,
+    "ip_per_start": 5.67,
+    "innings": 113.3,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "Framber Valdez",
@@ -10982,10 +11105,10 @@
    "home_pitcher": {
     "name": "Michael McGreevy",
     "id": 700241,
-    "ra9": 3.01,
-    "ip_per_start": 5.65,
-    "innings": 101.7,
-    "starts": 18
+    "ra9": 3.0,
+    "ip_per_start": 5.68,
+    "innings": 108.0,
+    "starts": 19
    },
    "away_pitcher": {
     "name": "Joe Boyle",
@@ -11092,10 +11215,10 @@
    "home_pitcher": {
     "name": "Brady Singer",
     "id": 663903,
-    "ra9": 5.219,
-    "ip_per_start": 4.98,
-    "innings": 89.7,
-    "starts": 18
+    "ra9": 5.028,
+    "ip_per_start": 5.09,
+    "innings": 96.7,
+    "starts": 19
    },
    "away_pitcher": {
     "name": "Sonny Gray",
@@ -11166,10 +11289,10 @@
    "away_pitcher": {
     "name": "Reid Detmers",
     "id": 672282,
-    "ra9": 4.638,
-    "ip_per_start": 5.72,
-    "innings": 108.7,
-    "starts": 19
+    "ra9": 4.395,
+    "ip_per_start": 5.73,
+    "innings": 114.7,
+    "starts": 20
    }
   },
   {
@@ -11180,9 +11303,9 @@
    "home_pitcher": {
     "name": "Chad Patrick",
     "id": 694477,
-    "ra9": 3.559,
-    "ip_per_start": 12.22,
-    "innings": 73.3,
+    "ra9": 3.511,
+    "ip_per_start": 12.39,
+    "innings": 74.3,
     "starts": 6
    },
    "away_pitcher": {
@@ -11320,10 +11443,10 @@
    "away_pitcher": {
     "name": "Bailey Ober",
     "id": 641927,
-    "ra9": 4.647,
-    "ip_per_start": 5.51,
-    "innings": 71.7,
-    "starts": 13
+    "ra9": 4.558,
+    "ip_per_start": 5.5,
+    "innings": 77.0,
+    "starts": 14
    }
   },
   {
@@ -11364,10 +11487,10 @@
    "away_pitcher": {
     "name": "Seth Lugo",
     "id": 607625,
-    "ra9": 5.159,
-    "ip_per_start": 5.51,
-    "innings": 104.7,
-    "starts": 19
+    "ra9": 5.042,
+    "ip_per_start": 5.53,
+    "innings": 110.7,
+    "starts": 20
    }
   },
   {
@@ -11496,10 +11619,10 @@
    "away_pitcher": {
     "name": "Anthony Kay",
     "id": 641743,
-    "ra9": 4.634,
-    "ip_per_start": 5.25,
-    "innings": 89.3,
-    "starts": 17
+    "ra9": 4.629,
+    "ip_per_start": 5.19,
+    "innings": 93.3,
+    "starts": 18
    }
   },
   {
@@ -11826,10 +11949,10 @@
    "away_pitcher": {
     "name": "Landen Roupp",
     "id": 694738,
-    "ra9": 4.639,
-    "ip_per_start": 5.39,
-    "innings": 97.0,
-    "starts": 18
+    "ra9": 4.327,
+    "ip_per_start": 5.47,
+    "innings": 104.0,
+    "starts": 19
    }
   },
   {
@@ -11884,10 +12007,10 @@
    "home_pitcher": {
     "name": "Roki Sasaki",
     "id": 808963,
-    "ra9": 5.444,
-    "ip_per_start": 5.06,
-    "innings": 81.0,
-    "starts": 16
+    "ra9": 5.192,
+    "ip_per_start": 5.1,
+    "innings": 86.7,
+    "starts": 17
    },
    "away_pitcher": {
     "name": "Parker Messick",
@@ -12016,9 +12139,9 @@
    "home_pitcher": {
     "name": "José Suarez",
     "id": 660761,
-    "ra9": 4.649,
-    "ip_per_start": 25.17,
-    "innings": 50.3,
+    "ra9": 4.909,
+    "ip_per_start": 25.67,
+    "innings": 51.3,
     "starts": 2
    },
    "away_pitcher": {
@@ -12214,10 +12337,10 @@
    "home_pitcher": {
     "name": "Chris Sale",
     "id": 519242,
-    "ra9": 2.663,
-    "ip_per_start": 5.76,
-    "innings": 98.0,
-    "starts": 17
+    "ra9": 2.486,
+    "ip_per_start": 5.83,
+    "innings": 105.0,
+    "starts": 18
    },
    "away_pitcher": {
     "name": "Luis Severino",
@@ -12288,10 +12411,10 @@
    "away_pitcher": {
     "name": "Cade Cavalli",
     "id": 676917,
-    "ra9": 4.652,
-    "ip_per_start": 4.93,
-    "innings": 98.7,
-    "starts": 20
+    "ra9": 4.557,
+    "ip_per_start": 4.98,
+    "innings": 104.7,
+    "starts": 21
    }
   },
   {
@@ -12324,10 +12447,10 @@
    "home_pitcher": {
     "name": "Sandy Alcantara",
     "id": 645261,
-    "ra9": 4.339,
-    "ip_per_start": 6.53,
-    "innings": 130.7,
-    "starts": 20
+    "ra9": 4.215,
+    "ip_per_start": 6.51,
+    "innings": 136.7,
+    "starts": 21
    },
    "away_pitcher": {
     "name": "Shane Smith",
@@ -12662,10 +12785,10 @@
    "away_pitcher": {
     "name": "Michael McGreevy",
     "id": 700241,
-    "ra9": 3.01,
-    "ip_per_start": 5.65,
-    "innings": 101.7,
-    "starts": 18
+    "ra9": 3.0,
+    "ip_per_start": 5.68,
+    "innings": 108.0,
+    "starts": 19
    }
   },
   {
@@ -12706,10 +12829,10 @@
    "away_pitcher": {
     "name": "Michael King",
     "id": 650633,
-    "ra9": 3.489,
-    "ip_per_start": 5.7,
-    "innings": 108.3,
-    "starts": 19
+    "ra9": 3.415,
+    "ip_per_start": 5.67,
+    "innings": 113.3,
+    "starts": 20
    }
   },
   {
@@ -12750,10 +12873,10 @@
    "away_pitcher": {
     "name": "Brady Singer",
     "id": 663903,
-    "ra9": 5.219,
-    "ip_per_start": 4.98,
-    "innings": 89.7,
-    "starts": 18
+    "ra9": 5.028,
+    "ip_per_start": 5.09,
+    "innings": 96.7,
+    "starts": 19
    }
   },
   {
@@ -12786,10 +12909,10 @@
    "home_pitcher": {
     "name": "Bailey Ober",
     "id": 641927,
-    "ra9": 4.647,
-    "ip_per_start": 5.51,
-    "innings": 71.7,
-    "starts": 13
+    "ra9": 4.558,
+    "ip_per_start": 5.5,
+    "innings": 77.0,
+    "starts": 14
    },
    "away_pitcher": {
     "name": "Joe Boyle",
@@ -12852,10 +12975,10 @@
    "home_pitcher": {
     "name": "Reid Detmers",
     "id": 672282,
-    "ra9": 4.638,
-    "ip_per_start": 5.72,
-    "innings": 108.7,
-    "starts": 19
+    "ra9": 4.395,
+    "ip_per_start": 5.73,
+    "innings": 114.7,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "Bryan Woo",
@@ -12948,9 +13071,9 @@
    "away_pitcher": {
     "name": "Chad Patrick",
     "id": 694477,
-    "ra9": 3.559,
-    "ip_per_start": 12.22,
-    "innings": 73.3,
+    "ra9": 3.511,
+    "ip_per_start": 12.39,
+    "innings": 74.3,
     "starts": 6
    }
   },
@@ -13014,9 +13137,9 @@
    "away_pitcher": {
     "name": "Chad Patrick",
     "id": 694477,
-    "ra9": 3.559,
-    "ip_per_start": 12.22,
-    "innings": 73.3,
+    "ra9": 3.511,
+    "ip_per_start": 12.39,
+    "innings": 74.3,
     "starts": 6
    }
   },
@@ -13028,18 +13151,18 @@
    "home_pitcher": {
     "name": "Seth Lugo",
     "id": 607625,
-    "ra9": 5.159,
-    "ip_per_start": 5.51,
-    "innings": 104.7,
-    "starts": 19
+    "ra9": 5.042,
+    "ip_per_start": 5.53,
+    "innings": 110.7,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "Logan Henderson",
     "id": 701656,
-    "ra9": 3.176,
-    "ip_per_start": 4.72,
-    "innings": 28.3,
-    "starts": 6
+    "ra9": 2.97,
+    "ip_per_start": 4.76,
+    "innings": 33.3,
+    "starts": 7
    }
   },
   {
@@ -13248,10 +13371,10 @@
    "home_pitcher": {
     "name": "Landen Roupp",
     "id": 694738,
-    "ra9": 4.639,
-    "ip_per_start": 5.39,
-    "innings": 97.0,
-    "starts": 18
+    "ra9": 4.327,
+    "ip_per_start": 5.47,
+    "innings": 104.0,
+    "starts": 19
    },
    "away_pitcher": {
     "name": "Clay Holmes",
@@ -13366,10 +13489,10 @@
    "away_pitcher": {
     "name": "Roki Sasaki",
     "id": 808963,
-    "ra9": 5.444,
-    "ip_per_start": 5.06,
-    "innings": 81.0,
-    "starts": 16
+    "ra9": 5.192,
+    "ip_per_start": 5.1,
+    "innings": 86.7,
+    "starts": 17
    }
   },
   {
@@ -13432,9 +13555,9 @@
    "away_pitcher": {
     "name": "Pete Fairbanks",
     "id": 664126,
-    "ra9": 7.759,
-    "ip_per_start": 29.0,
-    "innings": 29.0,
+    "ra9": 7.5,
+    "ip_per_start": 30.0,
+    "innings": 30.0,
     "starts": 1
    }
   },
@@ -13644,9 +13767,9 @@
    "home_pitcher": {
     "name": "Keider Montero",
     "id": 672456,
-    "ra9": 3.514,
-    "ip_per_start": 6.49,
-    "innings": 97.3,
+    "ra9": 3.397,
+    "ip_per_start": 6.71,
+    "innings": 100.7,
     "starts": 15
    },
    "away_pitcher": {
@@ -13916,10 +14039,10 @@
    "away_pitcher": {
     "name": "Chris Sale",
     "id": 519242,
-    "ra9": 2.663,
-    "ip_per_start": 5.76,
-    "innings": 98.0,
-    "starts": 17
+    "ra9": 2.486,
+    "ip_per_start": 5.83,
+    "innings": 105.0,
+    "starts": 18
    }
   },
   {
@@ -14040,10 +14163,10 @@
    "home_pitcher": {
     "name": "Mason Englert",
     "id": 669438,
-    "ra9": 4.109,
-    "ip_per_start": 15.33,
-    "innings": 30.7,
-    "starts": 2
+    "ra9": 4.794,
+    "ip_per_start": 11.89,
+    "innings": 35.7,
+    "starts": 3
    },
    "away_pitcher": {
     "name": "Javier Assad",
@@ -14062,10 +14185,10 @@
    "home_pitcher": {
     "name": "Sandy Alcantara",
     "id": 645261,
-    "ra9": 4.339,
-    "ip_per_start": 6.53,
-    "innings": 130.7,
-    "starts": 20
+    "ra9": 4.215,
+    "ip_per_start": 6.51,
+    "innings": 136.7,
+    "starts": 21
    },
    "away_pitcher": {
     "name": "Andrew Abbott",
@@ -14084,10 +14207,10 @@
    "home_pitcher": {
     "name": "Cade Cavalli",
     "id": 676917,
-    "ra9": 4.652,
-    "ip_per_start": 4.93,
-    "innings": 98.7,
-    "starts": 20
+    "ra9": 4.557,
+    "ip_per_start": 4.98,
+    "innings": 104.7,
+    "starts": 21
    },
    "away_pitcher": {
     "name": "Matthew Liberatore",
@@ -14290,10 +14413,10 @@
    "away_pitcher": {
     "name": "Michael King",
     "id": 650633,
-    "ra9": 3.489,
-    "ip_per_start": 5.7,
-    "innings": 108.3,
-    "starts": 19
+    "ra9": 3.415,
+    "ip_per_start": 5.67,
+    "innings": 113.3,
+    "starts": 20
    }
   },
   {
@@ -14466,10 +14589,10 @@
    "away_pitcher": {
     "name": "Michael McGreevy",
     "id": 700241,
-    "ra9": 3.01,
-    "ip_per_start": 5.65,
-    "innings": 101.7,
-    "starts": 18
+    "ra9": 3.0,
+    "ip_per_start": 5.68,
+    "innings": 108.0,
+    "starts": 19
    }
   },
   {
@@ -14480,10 +14603,10 @@
    "home_pitcher": {
     "name": "Reid Detmers",
     "id": 672282,
-    "ra9": 4.638,
-    "ip_per_start": 5.72,
-    "innings": 108.7,
-    "starts": 19
+    "ra9": 4.395,
+    "ip_per_start": 5.73,
+    "innings": 114.7,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "Grant Holmes",
@@ -14532,10 +14655,10 @@
    "away_pitcher": {
     "name": "Colin Rea",
     "id": 607067,
-    "ra9": 4.849,
-    "ip_per_start": 6.31,
-    "innings": 94.7,
-    "starts": 15
+    "ra9": 4.917,
+    "ip_per_start": 6.29,
+    "innings": 100.7,
+    "starts": 16
    }
   },
   {
@@ -14554,10 +14677,10 @@
    "away_pitcher": {
     "name": "Brady Singer",
     "id": 663903,
-    "ra9": 5.219,
-    "ip_per_start": 4.98,
-    "innings": 89.7,
-    "starts": 18
+    "ra9": 5.028,
+    "ip_per_start": 5.09,
+    "innings": 96.7,
+    "starts": 19
    }
   },
   {
@@ -14590,10 +14713,10 @@
    "home_pitcher": {
     "name": "Bailey Ober",
     "id": 641927,
-    "ra9": 4.647,
-    "ip_per_start": 5.51,
-    "innings": 71.7,
-    "starts": 13
+    "ra9": 4.558,
+    "ip_per_start": 5.5,
+    "innings": 77.0,
+    "starts": 14
    },
    "away_pitcher": {
     "name": "Framber Valdez",
@@ -14700,18 +14823,18 @@
    "home_pitcher": {
     "name": "Seth Lugo",
     "id": 607625,
-    "ra9": 5.159,
-    "ip_per_start": 5.51,
-    "innings": 104.7,
-    "starts": 19
+    "ra9": 5.042,
+    "ip_per_start": 5.53,
+    "innings": 110.7,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "Anthony Kay",
     "id": 641743,
-    "ra9": 4.634,
-    "ip_per_start": 5.25,
-    "innings": 89.3,
-    "starts": 17
+    "ra9": 4.629,
+    "ip_per_start": 5.19,
+    "innings": 93.3,
+    "starts": 18
    }
   },
   {
@@ -14730,9 +14853,9 @@
    "away_pitcher": {
     "name": "Jimmy Herget",
     "id": 623474,
-    "ra9": 4.32,
-    "ip_per_start": 8.33,
-    "innings": 25.0,
+    "ra9": 4.909,
+    "ip_per_start": 8.56,
+    "innings": 25.7,
     "starts": 3
    }
   },
@@ -14788,9 +14911,9 @@
    "home_pitcher": {
     "name": "Keider Montero",
     "id": 672456,
-    "ra9": 3.514,
-    "ip_per_start": 6.49,
-    "innings": 97.3,
+    "ra9": 3.397,
+    "ip_per_start": 6.71,
+    "innings": 100.7,
     "starts": 15
    },
    "away_pitcher": {
@@ -14832,9 +14955,9 @@
    "home_pitcher": {
     "name": "Patrick Corbin",
     "id": 571578,
-    "ra9": 5.07,
-    "ip_per_start": 5.09,
-    "innings": 76.3,
+    "ra9": 5.33,
+    "ip_per_start": 5.18,
+    "innings": 77.7,
     "starts": 15
    },
    "away_pitcher": {
@@ -14906,10 +15029,10 @@
    "away_pitcher": {
     "name": "Landen Roupp",
     "id": 694738,
-    "ra9": 4.639,
-    "ip_per_start": 5.39,
-    "innings": 97.0,
-    "starts": 18
+    "ra9": 4.327,
+    "ip_per_start": 5.47,
+    "innings": 104.0,
+    "starts": 19
    }
   },
   {
@@ -14964,9 +15087,9 @@
    "home_pitcher": {
     "name": "Aaron Ashby",
     "id": 676879,
-    "ra9": 4.204,
-    "ip_per_start": 55.67,
-    "innings": 55.7,
+    "ra9": 4.129,
+    "ip_per_start": 56.67,
+    "innings": 56.7,
     "starts": 1
    },
    "away_pitcher": {
@@ -15522,10 +15645,10 @@
    "away_pitcher": {
     "name": "Sandy Alcantara",
     "id": 645261,
-    "ra9": 4.339,
-    "ip_per_start": 6.53,
-    "innings": 130.7,
-    "starts": 20
+    "ra9": 4.215,
+    "ip_per_start": 6.51,
+    "innings": 136.7,
+    "starts": 21
    }
   },
   {
@@ -15690,10 +15813,10 @@
    "home_pitcher": {
     "name": "Roki Sasaki",
     "id": 808963,
-    "ra9": 5.444,
-    "ip_per_start": 5.06,
-    "innings": 81.0,
-    "starts": 16
+    "ra9": 5.192,
+    "ip_per_start": 5.1,
+    "innings": 86.7,
+    "starts": 17
    },
    "away_pitcher": {
     "name": "Jacob deGrom",
@@ -15712,10 +15835,10 @@
    "home_pitcher": {
     "name": "Chris Sale",
     "id": 519242,
-    "ra9": 2.663,
-    "ip_per_start": 5.76,
-    "innings": 98.0,
-    "starts": 17
+    "ra9": 2.486,
+    "ip_per_start": 5.83,
+    "innings": 105.0,
+    "starts": 18
    },
    "away_pitcher": {
     "name": "Tanner Bibee",
@@ -15756,10 +15879,10 @@
    "home_pitcher": {
     "name": "Dean Kremer",
     "id": 665152,
-    "ra9": 4.909,
-    "ip_per_start": 5.5,
-    "innings": 22.0,
-    "starts": 4
+    "ra9": 4.846,
+    "ip_per_start": 5.2,
+    "innings": 26.0,
+    "starts": 5
    },
    "away_pitcher": {
     "name": "Ryne Nelson",
@@ -15866,10 +15989,10 @@
    "home_pitcher": {
     "name": "Bailey Ober",
     "id": 641927,
-    "ra9": 4.647,
-    "ip_per_start": 5.51,
-    "innings": 71.7,
-    "starts": 13
+    "ra9": 4.558,
+    "ip_per_start": 5.5,
+    "innings": 77.0,
+    "starts": 14
    },
    "away_pitcher": {
     "name": "Garrett Crochet",
@@ -15962,10 +16085,10 @@
    "away_pitcher": {
     "name": "Merrill Kelly",
     "id": 518876,
-    "ra9": 5.381,
-    "ip_per_start": 5.85,
-    "innings": 93.7,
-    "starts": 16
+    "ra9": 5.382,
+    "ip_per_start": 5.8,
+    "innings": 98.7,
+    "starts": 17
    }
   },
   {
@@ -16020,10 +16143,10 @@
    "home_pitcher": {
     "name": "Brady Singer",
     "id": 663903,
-    "ra9": 5.219,
-    "ip_per_start": 4.98,
-    "innings": 89.7,
-    "starts": 18
+    "ra9": 5.028,
+    "ip_per_start": 5.09,
+    "innings": 96.7,
+    "starts": 19
    },
    "away_pitcher": {
     "name": "Robbie Ray",
@@ -16072,10 +16195,10 @@
    "away_pitcher": {
     "name": "Reid Detmers",
     "id": 672282,
-    "ra9": 4.638,
-    "ip_per_start": 5.72,
-    "innings": 108.7,
-    "starts": 19
+    "ra9": 4.395,
+    "ip_per_start": 5.73,
+    "innings": 114.7,
+    "starts": 20
    }
   },
   {
@@ -16174,10 +16297,10 @@
    "home_pitcher": {
     "name": "Michael McGreevy",
     "id": 700241,
-    "ra9": 3.01,
-    "ip_per_start": 5.65,
-    "innings": 101.7,
-    "starts": 18
+    "ra9": 3.0,
+    "ip_per_start": 5.68,
+    "innings": 108.0,
+    "starts": 19
    },
    "away_pitcher": {
     "name": "Joey Cantillo",
@@ -16218,10 +16341,10 @@
    "home_pitcher": {
     "name": "Michael King",
     "id": 650633,
-    "ra9": 3.489,
-    "ip_per_start": 5.7,
-    "innings": 108.3,
-    "starts": 19
+    "ra9": 3.415,
+    "ip_per_start": 5.67,
+    "innings": 113.3,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "Bryan Woo",
@@ -16358,10 +16481,10 @@
    "away_pitcher": {
     "name": "Seth Lugo",
     "id": 607625,
-    "ra9": 5.159,
-    "ip_per_start": 5.51,
-    "innings": 104.7,
-    "starts": 19
+    "ra9": 5.042,
+    "ip_per_start": 5.53,
+    "innings": 110.7,
+    "starts": 20
    }
   },
   {
@@ -16504,9 +16627,9 @@
    "home_pitcher": {
     "name": "Chad Patrick",
     "id": 694477,
-    "ra9": 3.559,
-    "ip_per_start": 12.22,
-    "innings": 73.3,
+    "ra9": 3.511,
+    "ip_per_start": 12.39,
+    "innings": 74.3,
     "starts": 6
    },
    "away_pitcher": {
@@ -16644,10 +16767,10 @@
    "away_pitcher": {
     "name": "Landen Roupp",
     "id": 694738,
-    "ra9": 4.639,
-    "ip_per_start": 5.39,
-    "innings": 97.0,
-    "starts": 18
+    "ra9": 4.327,
+    "ip_per_start": 5.47,
+    "innings": 104.0,
+    "starts": 19
    }
   },
   {
@@ -16658,9 +16781,9 @@
    "home_pitcher": {
     "name": "Keider Montero",
     "id": 672456,
-    "ra9": 3.514,
-    "ip_per_start": 6.49,
-    "innings": 97.3,
+    "ra9": 3.397,
+    "ip_per_start": 6.71,
+    "innings": 100.7,
     "starts": 15
    },
    "away_pitcher": {
@@ -16710,9 +16833,9 @@
    "away_pitcher": {
     "name": "Patrick Corbin",
     "id": 571578,
-    "ra9": 5.07,
-    "ip_per_start": 5.09,
-    "innings": 76.3,
+    "ra9": 5.33,
+    "ip_per_start": 5.18,
+    "innings": 77.7,
     "starts": 15
    }
   },
@@ -17010,10 +17133,10 @@
    "home_pitcher": {
     "name": "Peter Lambert",
     "id": 663567,
-    "ra9": 3.14,
-    "ip_per_start": 5.73,
-    "innings": 86.0,
-    "starts": 15
+    "ra9": 3.033,
+    "ip_per_start": 5.75,
+    "innings": 92.0,
+    "starts": 16
    },
    "away_pitcher": {
     "name": "Kyle Leahy",
@@ -17128,9 +17251,9 @@
    "away_pitcher": {
     "name": "Braydon Fisher",
     "id": 680755,
-    "ra9": 4.213,
-    "ip_per_start": 7.83,
-    "innings": 47.0,
+    "ra9": 4.343,
+    "ip_per_start": 7.94,
+    "innings": 47.7,
     "starts": 6
    }
   },
@@ -17252,10 +17375,10 @@
    "home_pitcher": {
     "name": "Cade Cavalli",
     "id": 676917,
-    "ra9": 4.652,
-    "ip_per_start": 4.93,
-    "innings": 98.7,
-    "starts": 20
+    "ra9": 4.557,
+    "ip_per_start": 4.98,
+    "innings": 104.7,
+    "starts": 21
    },
    "away_pitcher": {
     "name": "Adrian Houser",
@@ -17318,10 +17441,10 @@
    "home_pitcher": {
     "name": "Sandy Alcantara",
     "id": 645261,
-    "ra9": 4.339,
-    "ip_per_start": 6.53,
-    "innings": 130.7,
-    "starts": 20
+    "ra9": 4.215,
+    "ip_per_start": 6.51,
+    "innings": 136.7,
+    "starts": 21
    },
    "away_pitcher": {
     "name": "Brandon Woodruff",
@@ -17348,10 +17471,10 @@
    "away_pitcher": {
     "name": "Dean Kremer",
     "id": 665152,
-    "ra9": 4.909,
-    "ip_per_start": 5.5,
-    "innings": 22.0,
-    "starts": 4
+    "ra9": 4.846,
+    "ip_per_start": 5.2,
+    "innings": 26.0,
+    "starts": 5
    }
   },
   {
@@ -17414,10 +17537,10 @@
    "away_pitcher": {
     "name": "Chris Sale",
     "id": 519242,
-    "ra9": 2.663,
-    "ip_per_start": 5.76,
-    "innings": 98.0,
-    "starts": 17
+    "ra9": 2.486,
+    "ip_per_start": 5.83,
+    "innings": 105.0,
+    "starts": 18
    }
   },
   {
@@ -17626,18 +17749,18 @@
    "home_pitcher": {
     "name": "Bailey Ober",
     "id": 641927,
-    "ra9": 4.647,
-    "ip_per_start": 5.51,
-    "innings": 71.7,
-    "starts": 13
+    "ra9": 4.558,
+    "ip_per_start": 5.5,
+    "innings": 77.0,
+    "starts": 14
    },
    "away_pitcher": {
     "name": "Brady Singer",
     "id": 663903,
-    "ra9": 5.219,
-    "ip_per_start": 4.98,
-    "innings": 89.7,
-    "starts": 18
+    "ra9": 5.028,
+    "ip_per_start": 5.09,
+    "innings": 96.7,
+    "starts": 19
    }
   },
   {
@@ -17678,10 +17801,10 @@
    "away_pitcher": {
     "name": "Roki Sasaki",
     "id": 808963,
-    "ra9": 5.444,
-    "ip_per_start": 5.06,
-    "innings": 81.0,
-    "starts": 16
+    "ra9": 5.192,
+    "ip_per_start": 5.1,
+    "innings": 86.7,
+    "starts": 17
    }
   },
   {
@@ -17722,10 +17845,10 @@
    "away_pitcher": {
     "name": "Michael King",
     "id": 650633,
-    "ra9": 3.489,
-    "ip_per_start": 5.7,
-    "innings": 108.3,
-    "starts": 19
+    "ra9": 3.415,
+    "ip_per_start": 5.67,
+    "innings": 113.3,
+    "starts": 20
    }
   },
   {
@@ -17898,10 +18021,10 @@
    "away_pitcher": {
     "name": "Michael McGreevy",
     "id": 700241,
-    "ra9": 3.01,
-    "ip_per_start": 5.65,
-    "innings": 101.7,
-    "starts": 18
+    "ra9": 3.0,
+    "ip_per_start": 5.68,
+    "innings": 108.0,
+    "starts": 19
    }
   },
   {
@@ -17934,10 +18057,10 @@
    "home_pitcher": {
     "name": "Seth Lugo",
     "id": 607625,
-    "ra9": 5.159,
-    "ip_per_start": 5.51,
-    "innings": 104.7,
-    "starts": 19
+    "ra9": 5.042,
+    "ip_per_start": 5.53,
+    "innings": 110.7,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "Kyle Bradish",
@@ -17956,10 +18079,10 @@
    "home_pitcher": {
     "name": "Colin Rea",
     "id": 607067,
-    "ra9": 4.849,
-    "ip_per_start": 6.31,
-    "innings": 94.7,
-    "starts": 15
+    "ra9": 4.917,
+    "ip_per_start": 6.29,
+    "innings": 100.7,
+    "starts": 16
    },
    "away_pitcher": {
     "name": "Aaron Nola",
@@ -18000,10 +18123,10 @@
    "home_pitcher": {
     "name": "Reid Detmers",
     "id": 672282,
-    "ra9": 4.638,
-    "ip_per_start": 5.72,
-    "innings": 108.7,
-    "starts": 19
+    "ra9": 4.395,
+    "ip_per_start": 5.73,
+    "innings": 114.7,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "Dylan Cease",
@@ -18110,9 +18233,9 @@
    "home_pitcher": {
     "name": "Keider Montero",
     "id": 672456,
-    "ra9": 3.514,
-    "ip_per_start": 6.49,
-    "innings": 97.3,
+    "ra9": 3.397,
+    "ip_per_start": 6.71,
+    "innings": 100.7,
     "starts": 15
    },
    "away_pitcher": {
@@ -18264,9 +18387,9 @@
    "home_pitcher": {
     "name": "Jimmy Herget",
     "id": 623474,
-    "ra9": 4.32,
-    "ip_per_start": 8.33,
-    "innings": 25.0,
+    "ra9": 4.909,
+    "ip_per_start": 8.56,
+    "innings": 25.7,
     "starts": 3
    },
    "away_pitcher": {
@@ -18294,9 +18417,9 @@
    "away_pitcher": {
     "name": "Patrick Corbin",
     "id": 571578,
-    "ra9": 5.07,
-    "ip_per_start": 5.09,
-    "innings": 76.3,
+    "ra9": 5.33,
+    "ip_per_start": 5.18,
+    "innings": 77.7,
     "starts": 15
    }
   },
@@ -18330,10 +18453,10 @@
    "home_pitcher": {
     "name": "Merrill Kelly",
     "id": 518876,
-    "ra9": 5.381,
-    "ip_per_start": 5.85,
-    "innings": 93.7,
-    "starts": 16
+    "ra9": 5.382,
+    "ip_per_start": 5.8,
+    "innings": 98.7,
+    "starts": 17
    },
    "away_pitcher": {
     "name": "Sean Burke",
@@ -18352,10 +18475,10 @@
    "home_pitcher": {
     "name": "Landen Roupp",
     "id": 694738,
-    "ra9": 4.639,
-    "ip_per_start": 5.39,
-    "innings": 97.0,
-    "starts": 18
+    "ra9": 4.327,
+    "ip_per_start": 5.47,
+    "innings": 104.0,
+    "starts": 19
    },
    "away_pitcher": {
     "name": "Yoshinobu Yamamoto",
@@ -18404,10 +18527,10 @@
    "away_pitcher": {
     "name": "Peter Lambert",
     "id": 663567,
-    "ra9": 3.14,
-    "ip_per_start": 5.73,
-    "innings": 86.0,
-    "starts": 15
+    "ra9": 3.033,
+    "ip_per_start": 5.75,
+    "innings": 92.0,
+    "starts": 16
    }
   },
   {
@@ -18668,10 +18791,10 @@
    "away_pitcher": {
     "name": "Anthony Kay",
     "id": 641743,
-    "ra9": 4.634,
-    "ip_per_start": 5.25,
-    "innings": 89.3,
-    "starts": 17
+    "ra9": 4.629,
+    "ip_per_start": 5.19,
+    "innings": 93.3,
+    "starts": 18
    }
   },
   {
@@ -18704,10 +18827,10 @@
    "home_pitcher": {
     "name": "Cade Cavalli",
     "id": 676917,
-    "ra9": 4.652,
-    "ip_per_start": 4.93,
-    "innings": 98.7,
-    "starts": 20
+    "ra9": 4.557,
+    "ip_per_start": 4.98,
+    "innings": 104.7,
+    "starts": 21
    },
    "away_pitcher": {
     "name": "JR Ritchie",
@@ -19196,10 +19319,10 @@
    "away_pitcher": {
     "name": "Sandy Alcantara",
     "id": 645261,
-    "ra9": 4.339,
-    "ip_per_start": 6.53,
-    "innings": 130.7,
-    "starts": 20
+    "ra9": 4.215,
+    "ip_per_start": 6.51,
+    "innings": 136.7,
+    "starts": 21
    }
   },
   {
@@ -19306,10 +19429,10 @@
    "away_pitcher": {
     "name": "Bailey Ober",
     "id": 641927,
-    "ra9": 4.647,
-    "ip_per_start": 5.51,
-    "innings": 71.7,
-    "starts": 13
+    "ra9": 4.558,
+    "ip_per_start": 5.5,
+    "innings": 77.0,
+    "starts": 14
    }
   },
   {
@@ -19452,10 +19575,10 @@
    "home_pitcher": {
     "name": "Brady Singer",
     "id": 663903,
-    "ra9": 5.219,
-    "ip_per_start": 4.98,
-    "innings": 89.7,
-    "starts": 18
+    "ra9": 5.028,
+    "ip_per_start": 5.09,
+    "innings": 96.7,
+    "starts": 19
    },
    "away_pitcher": {
     "name": "Jack Flaherty",
@@ -19474,18 +19597,18 @@
    "home_pitcher": {
     "name": "Roki Sasaki",
     "id": 808963,
-    "ra9": 5.444,
-    "ip_per_start": 5.06,
-    "innings": 81.0,
-    "starts": 16
+    "ra9": 5.192,
+    "ip_per_start": 5.1,
+    "innings": 86.7,
+    "starts": 17
    },
    "away_pitcher": {
     "name": "Colin Rea",
     "id": 607067,
-    "ra9": 4.849,
-    "ip_per_start": 6.31,
-    "innings": 94.7,
-    "starts": 15
+    "ra9": 4.917,
+    "ip_per_start": 6.29,
+    "innings": 100.7,
+    "starts": 16
    }
   },
   {
@@ -19562,10 +19685,10 @@
    "home_pitcher": {
     "name": "Chris Sale",
     "id": 519242,
-    "ra9": 2.663,
-    "ip_per_start": 5.76,
-    "innings": 98.0,
-    "starts": 17
+    "ra9": 2.486,
+    "ip_per_start": 5.83,
+    "innings": 105.0,
+    "starts": 18
    },
    "away_pitcher": {
     "name": "Aaron Nola",
@@ -19584,9 +19707,9 @@
    "home_pitcher": {
     "name": "Patrick Corbin",
     "id": 571578,
-    "ra9": 5.07,
-    "ip_per_start": 5.09,
-    "innings": 76.3,
+    "ra9": 5.33,
+    "ip_per_start": 5.18,
+    "innings": 77.7,
     "starts": 15
    },
    "away_pitcher": {
@@ -19614,9 +19737,9 @@
    "away_pitcher": {
     "name": "Keider Montero",
     "id": 672456,
-    "ra9": 3.514,
-    "ip_per_start": 6.49,
-    "innings": 97.3,
+    "ra9": 3.397,
+    "ip_per_start": 6.71,
+    "innings": 100.7,
     "starts": 15
    }
   },
@@ -19760,10 +19883,10 @@
    "home_pitcher": {
     "name": "Michael McGreevy",
     "id": 700241,
-    "ra9": 3.01,
-    "ip_per_start": 5.65,
-    "innings": 101.7,
-    "starts": 18
+    "ra9": 3.0,
+    "ip_per_start": 5.68,
+    "innings": 108.0,
+    "starts": 19
    },
    "away_pitcher": {
     "name": "Emerson Hancock",
@@ -19812,10 +19935,10 @@
    "away_pitcher": {
     "name": "Michael King",
     "id": 650633,
-    "ra9": 3.489,
-    "ip_per_start": 5.7,
-    "innings": 108.3,
-    "starts": 19
+    "ra9": 3.415,
+    "ip_per_start": 5.67,
+    "innings": 113.3,
+    "starts": 20
    }
   },
   {
@@ -19826,10 +19949,10 @@
    "home_pitcher": {
     "name": "Landen Roupp",
     "id": 694738,
-    "ra9": 4.639,
-    "ip_per_start": 5.39,
-    "innings": 97.0,
-    "starts": 18
+    "ra9": 4.327,
+    "ip_per_start": 5.47,
+    "innings": 104.0,
+    "starts": 19
    },
    "away_pitcher": {
     "name": "Max Meyer",
@@ -19848,18 +19971,18 @@
    "home_pitcher": {
     "name": "Seth Lugo",
     "id": 607625,
-    "ra9": 5.159,
-    "ip_per_start": 5.51,
-    "innings": 104.7,
-    "starts": 19
+    "ra9": 5.042,
+    "ip_per_start": 5.53,
+    "innings": 110.7,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "Reid Detmers",
     "id": 672282,
-    "ra9": 4.638,
-    "ip_per_start": 5.72,
-    "innings": 108.7,
-    "starts": 19
+    "ra9": 4.395,
+    "ip_per_start": 5.73,
+    "innings": 114.7,
+    "starts": 20
    }
   },
   {
@@ -19980,10 +20103,10 @@
    "home_pitcher": {
     "name": "Anthony Kay",
     "id": 641743,
-    "ra9": 4.634,
-    "ip_per_start": 5.25,
-    "innings": 89.3,
-    "starts": 17
+    "ra9": 4.629,
+    "ip_per_start": 5.19,
+    "innings": 93.3,
+    "starts": 18
    },
    "away_pitcher": {
     "name": "Jack Kochanowicz",
@@ -20288,18 +20411,18 @@
    "home_pitcher": {
     "name": "Chad Patrick",
     "id": 694477,
-    "ra9": 3.559,
-    "ip_per_start": 12.22,
-    "innings": 73.3,
+    "ra9": 3.511,
+    "ip_per_start": 12.39,
+    "innings": 74.3,
     "starts": 6
    },
    "away_pitcher": {
     "name": "Merrill Kelly",
     "id": 518876,
-    "ra9": 5.381,
-    "ip_per_start": 5.85,
-    "innings": 93.7,
-    "starts": 16
+    "ra9": 5.382,
+    "ip_per_start": 5.8,
+    "innings": 98.7,
+    "starts": 17
    }
   },
   {
@@ -20516,10 +20639,10 @@
    "away_pitcher": {
     "name": "Sandy Alcantara",
     "id": 645261,
-    "ra9": 4.339,
-    "ip_per_start": 6.53,
-    "innings": 130.7,
-    "starts": 20
+    "ra9": 4.215,
+    "ip_per_start": 6.51,
+    "innings": 136.7,
+    "starts": 21
    }
   },
   {
@@ -20604,10 +20727,10 @@
    "away_pitcher": {
     "name": "Cade Cavalli",
     "id": 676917,
-    "ra9": 4.652,
-    "ip_per_start": 4.93,
-    "innings": 98.7,
-    "starts": 20
+    "ra9": 4.557,
+    "ip_per_start": 4.98,
+    "innings": 104.7,
+    "starts": 21
    }
   },
   {
@@ -20714,10 +20837,10 @@
    "away_pitcher": {
     "name": "Peter Lambert",
     "id": 663567,
-    "ra9": 3.14,
-    "ip_per_start": 5.73,
-    "innings": 86.0,
-    "starts": 15
+    "ra9": 3.033,
+    "ip_per_start": 5.75,
+    "innings": 92.0,
+    "starts": 16
    }
   },
   {
@@ -20758,10 +20881,10 @@
    "away_pitcher": {
     "name": "Peter Lambert",
     "id": 663567,
-    "ra9": 3.14,
-    "ip_per_start": 5.73,
-    "innings": 86.0,
-    "starts": 15
+    "ra9": 3.033,
+    "ip_per_start": 5.75,
+    "innings": 92.0,
+    "starts": 16
    }
   },
   {
@@ -20948,10 +21071,10 @@
    "home_pitcher": {
     "name": "Bailey Ober",
     "id": 641927,
-    "ra9": 4.647,
-    "ip_per_start": 5.51,
-    "innings": 71.7,
-    "starts": 13
+    "ra9": 4.558,
+    "ip_per_start": 5.5,
+    "innings": 77.0,
+    "starts": 14
    },
    "away_pitcher": {
     "name": "Kevin Gausman",
@@ -20970,10 +21093,10 @@
    "home_pitcher": {
     "name": "Colin Rea",
     "id": 607067,
-    "ra9": 4.849,
-    "ip_per_start": 6.31,
-    "innings": 94.7,
-    "starts": 15
+    "ra9": 4.917,
+    "ip_per_start": 6.29,
+    "innings": 100.7,
+    "starts": 16
    },
    "away_pitcher": {
     "name": "Zac Gallen",
@@ -21022,10 +21145,10 @@
    "away_pitcher": {
     "name": "Brady Singer",
     "id": 663903,
-    "ra9": 5.219,
-    "ip_per_start": 4.98,
-    "innings": 89.7,
-    "starts": 18
+    "ra9": 5.028,
+    "ip_per_start": 5.09,
+    "innings": 96.7,
+    "starts": 19
    }
   },
   {
@@ -21154,9 +21277,9 @@
    "away_pitcher": {
     "name": "Patrick Corbin",
     "id": 571578,
-    "ra9": 5.07,
-    "ip_per_start": 5.09,
-    "innings": 76.3,
+    "ra9": 5.33,
+    "ip_per_start": 5.18,
+    "innings": 77.7,
     "starts": 15
    }
   },
@@ -21484,10 +21607,10 @@
    "away_pitcher": {
     "name": "Landen Roupp",
     "id": 694738,
-    "ra9": 4.639,
-    "ip_per_start": 5.39,
-    "innings": 97.0,
-    "starts": 18
+    "ra9": 4.327,
+    "ip_per_start": 5.47,
+    "innings": 104.0,
+    "starts": 19
    }
   },
   {
@@ -21498,18 +21621,18 @@
    "home_pitcher": {
     "name": "Michael McGreevy",
     "id": 700241,
-    "ra9": 3.01,
-    "ip_per_start": 5.65,
-    "innings": 101.7,
-    "starts": 18
+    "ra9": 3.0,
+    "ip_per_start": 5.68,
+    "innings": 108.0,
+    "starts": 19
    },
    "away_pitcher": {
     "name": "Roki Sasaki",
     "id": 808963,
-    "ra9": 5.444,
-    "ip_per_start": 5.06,
-    "innings": 81.0,
-    "starts": 16
+    "ra9": 5.192,
+    "ip_per_start": 5.1,
+    "innings": 86.7,
+    "starts": 17
    }
   },
   {
@@ -21520,9 +21643,9 @@
    "home_pitcher": {
     "name": "Keider Montero",
     "id": 672456,
-    "ra9": 3.514,
-    "ip_per_start": 6.49,
-    "innings": 97.3,
+    "ra9": 3.397,
+    "ip_per_start": 6.71,
+    "innings": 100.7,
     "starts": 15
    },
    "away_pitcher": {
@@ -21550,10 +21673,10 @@
    "away_pitcher": {
     "name": "Chris Sale",
     "id": 519242,
-    "ra9": 2.663,
-    "ip_per_start": 5.76,
-    "innings": 98.0,
-    "starts": 17
+    "ra9": 2.486,
+    "ip_per_start": 5.83,
+    "innings": 105.0,
+    "starts": 18
    }
   },
   {
@@ -21564,10 +21687,10 @@
    "home_pitcher": {
     "name": "Michael King",
     "id": 650633,
-    "ra9": 3.489,
-    "ip_per_start": 5.7,
-    "innings": 108.3,
-    "starts": 19
+    "ra9": 3.415,
+    "ip_per_start": 5.67,
+    "innings": 113.3,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "Sean Burke",
@@ -21586,10 +21709,10 @@
    "home_pitcher": {
     "name": "Reid Detmers",
     "id": 672282,
-    "ra9": 4.638,
-    "ip_per_start": 5.72,
-    "innings": 108.7,
-    "starts": 19
+    "ra9": 4.395,
+    "ip_per_start": 5.73,
+    "innings": 114.7,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "Nolan McLean",
@@ -21616,10 +21739,10 @@
    "away_pitcher": {
     "name": "Seth Lugo",
     "id": 607625,
-    "ra9": 5.159,
-    "ip_per_start": 5.51,
-    "innings": 104.7,
-    "starts": 19
+    "ra9": 5.042,
+    "ip_per_start": 5.53,
+    "innings": 110.7,
+    "starts": 20
    }
   },
   {
@@ -21726,10 +21849,10 @@
    "away_pitcher": {
     "name": "Logan Henderson",
     "id": 701656,
-    "ra9": 3.176,
-    "ip_per_start": 4.72,
-    "innings": 28.3,
-    "starts": 6
+    "ra9": 2.97,
+    "ip_per_start": 4.76,
+    "innings": 33.3,
+    "starts": 7
    }
   },
   {
@@ -21814,10 +21937,10 @@
    "away_pitcher": {
     "name": "Merrill Kelly",
     "id": 518876,
-    "ra9": 5.381,
-    "ip_per_start": 5.85,
-    "innings": 93.7,
-    "starts": 16
+    "ra9": 5.382,
+    "ip_per_start": 5.8,
+    "innings": 98.7,
+    "starts": 17
    }
   },
   {
@@ -21924,10 +22047,10 @@
    "away_pitcher": {
     "name": "Anthony Kay",
     "id": 641743,
-    "ra9": 4.634,
-    "ip_per_start": 5.25,
-    "innings": 89.3,
-    "starts": 17
+    "ra9": 4.629,
+    "ip_per_start": 5.19,
+    "innings": 93.3,
+    "starts": 18
    }
   },
   {
@@ -22122,9 +22245,9 @@
    "away_pitcher": {
     "name": "Chad Patrick",
     "id": 694477,
-    "ra9": 3.559,
-    "ip_per_start": 12.22,
-    "innings": 73.3,
+    "ra9": 3.511,
+    "ip_per_start": 12.39,
+    "innings": 74.3,
     "starts": 6
    }
   },
@@ -22136,9 +22259,9 @@
    "home_pitcher": {
     "name": "Steven Okert",
     "id": 595345,
-    "ra9": 2.314,
-    "ip_per_start": 46.67,
-    "innings": 46.7,
+    "ra9": 2.266,
+    "ip_per_start": 47.67,
+    "innings": 47.7,
     "starts": 1
    },
    "away_pitcher": {
@@ -22232,9 +22355,9 @@
    "away_pitcher": {
     "name": "Jovani Morán",
     "id": 663558,
-    "ra9": 2.817,
-    "ip_per_start": 12.78,
-    "innings": 38.3,
+    "ra9": 2.678,
+    "ip_per_start": 13.44,
+    "innings": 40.3,
     "starts": 3
    }
   },
@@ -22290,10 +22413,10 @@
    "home_pitcher": {
     "name": "Sandy Alcantara",
     "id": 645261,
-    "ra9": 4.339,
-    "ip_per_start": 6.53,
-    "innings": 130.7,
-    "starts": 20
+    "ra9": 4.215,
+    "ip_per_start": 6.51,
+    "innings": 136.7,
+    "starts": 21
    },
    "away_pitcher": {
     "name": "Chris Bassitt",
@@ -22312,10 +22435,10 @@
    "home_pitcher": {
     "name": "Cade Cavalli",
     "id": 676917,
-    "ra9": 4.652,
-    "ip_per_start": 4.93,
-    "innings": 98.7,
-    "starts": 20
+    "ra9": 4.557,
+    "ip_per_start": 4.98,
+    "innings": 104.7,
+    "starts": 21
    },
    "away_pitcher": {
     "name": "Taj Bradley",
@@ -22400,10 +22523,10 @@
    "home_pitcher": {
     "name": "Peter Lambert",
     "id": 663567,
-    "ra9": 3.14,
-    "ip_per_start": 5.73,
-    "innings": 86.0,
-    "starts": 15
+    "ra9": 3.033,
+    "ip_per_start": 5.75,
+    "innings": 92.0,
+    "starts": 16
    },
    "away_pitcher": {
     "name": "Shohei Ohtani",
@@ -22562,9 +22685,9 @@
    "away_pitcher": {
     "name": "Patrick Corbin",
     "id": 571578,
-    "ra9": 5.07,
-    "ip_per_start": 5.09,
-    "innings": 76.3,
+    "ra9": 5.33,
+    "ip_per_start": 5.18,
+    "innings": 77.7,
     "starts": 15
    }
   },
@@ -22628,9 +22751,9 @@
    "away_pitcher": {
     "name": "Bradgley Rodriguez",
     "id": 699134,
-    "ra9": 2.901,
-    "ip_per_start": 13.44,
-    "innings": 40.3,
+    "ra9": 3.048,
+    "ip_per_start": 13.78,
+    "innings": 41.3,
     "starts": 3
    }
   },
@@ -22760,10 +22883,10 @@
    "away_pitcher": {
     "name": "Bailey Ober",
     "id": 641927,
-    "ra9": 4.647,
-    "ip_per_start": 5.51,
-    "innings": 71.7,
-    "starts": 13
+    "ra9": 4.558,
+    "ip_per_start": 5.5,
+    "innings": 77.0,
+    "starts": 14
    }
   },
   {
@@ -22796,18 +22919,18 @@
    "home_pitcher": {
     "name": "Colin Rea",
     "id": 607067,
-    "ra9": 4.849,
-    "ip_per_start": 6.31,
-    "innings": 94.7,
-    "starts": 15
+    "ra9": 4.917,
+    "ip_per_start": 6.29,
+    "innings": 100.7,
+    "starts": 16
    },
    "away_pitcher": {
     "name": "Brady Singer",
     "id": 663903,
-    "ra9": 5.219,
-    "ip_per_start": 4.98,
-    "innings": 89.7,
-    "starts": 18
+    "ra9": 5.028,
+    "ip_per_start": 5.09,
+    "innings": 96.7,
+    "starts": 19
    }
   },
   {
@@ -22884,9 +23007,9 @@
    "home_pitcher": {
     "name": "Paul Blackburn",
     "id": 621112,
-    "ra9": 2.404,
-    "ip_per_start": 24.33,
-    "innings": 48.7,
+    "ra9": 2.356,
+    "ip_per_start": 24.83,
+    "innings": 49.7,
     "starts": 2
    },
    "away_pitcher": {
@@ -22928,10 +23051,10 @@
    "home_pitcher": {
     "name": "Seth Lugo",
     "id": 607625,
-    "ra9": 5.159,
-    "ip_per_start": 5.51,
-    "innings": 104.7,
-    "starts": 19
+    "ra9": 5.042,
+    "ip_per_start": 5.53,
+    "innings": 110.7,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "Slade Cecconi",
@@ -23082,10 +23205,10 @@
    "home_pitcher": {
     "name": "Michael King",
     "id": 650633,
-    "ra9": 3.489,
-    "ip_per_start": 5.7,
-    "innings": 108.3,
-    "starts": 19
+    "ra9": 3.415,
+    "ip_per_start": 5.67,
+    "innings": 113.3,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "Matthew Liberatore",
@@ -23178,10 +23301,10 @@
    "away_pitcher": {
     "name": "Reid Detmers",
     "id": 672282,
-    "ra9": 4.638,
-    "ip_per_start": 5.72,
-    "innings": 108.7,
-    "starts": 19
+    "ra9": 4.395,
+    "ip_per_start": 5.73,
+    "innings": 114.7,
+    "starts": 20
    }
   },
   {
@@ -23266,9 +23389,9 @@
    "away_pitcher": {
     "name": "Keider Montero",
     "id": 672456,
-    "ra9": 3.514,
-    "ip_per_start": 6.49,
-    "innings": 97.3,
+    "ra9": 3.397,
+    "ip_per_start": 6.71,
+    "innings": 100.7,
     "starts": 15
    }
   },
@@ -23376,10 +23499,10 @@
    "away_pitcher": {
     "name": "Michael McGreevy",
     "id": 700241,
-    "ra9": 3.01,
-    "ip_per_start": 5.65,
-    "innings": 101.7,
-    "starts": 18
+    "ra9": 3.0,
+    "ip_per_start": 5.68,
+    "innings": 108.0,
+    "starts": 19
    }
   },
   {
@@ -23398,10 +23521,10 @@
    "away_pitcher": {
     "name": "Chris Sale",
     "id": 519242,
-    "ra9": 2.663,
-    "ip_per_start": 5.76,
-    "innings": 98.0,
-    "starts": 17
+    "ra9": 2.486,
+    "ip_per_start": 5.83,
+    "innings": 105.0,
+    "starts": 18
    }
   },
   {
@@ -23610,10 +23733,10 @@
    "home_pitcher": {
     "name": "Anthony Kay",
     "id": 641743,
-    "ra9": 4.634,
-    "ip_per_start": 5.25,
-    "innings": 89.3,
-    "starts": 17
+    "ra9": 4.629,
+    "ip_per_start": 5.19,
+    "innings": 93.3,
+    "starts": 18
    },
    "away_pitcher": {
     "name": "Luis Castillo",
@@ -23654,10 +23777,10 @@
    "home_pitcher": {
     "name": "Merrill Kelly",
     "id": 518876,
-    "ra9": 5.381,
-    "ip_per_start": 5.85,
-    "innings": 93.7,
-    "starts": 16
+    "ra9": 5.382,
+    "ip_per_start": 5.8,
+    "innings": 98.7,
+    "starts": 17
    },
    "away_pitcher": {
     "name": "Clay Holmes",
@@ -23698,10 +23821,10 @@
    "home_pitcher": {
     "name": "Landen Roupp",
     "id": 694738,
-    "ra9": 4.639,
-    "ip_per_start": 5.39,
-    "innings": 97.0,
-    "starts": 18
+    "ra9": 4.327,
+    "ip_per_start": 5.47,
+    "innings": 104.0,
+    "starts": 19
    },
    "away_pitcher": {
     "name": "Braxton Ashcraft",
@@ -23764,18 +23887,18 @@
    "home_pitcher": {
     "name": "Sandy Alcantara",
     "id": 645261,
-    "ra9": 4.339,
-    "ip_per_start": 6.53,
-    "innings": 130.7,
-    "starts": 20
+    "ra9": 4.215,
+    "ip_per_start": 6.51,
+    "innings": 136.7,
+    "starts": 21
    },
    "away_pitcher": {
     "name": "Cade Cavalli",
     "id": 676917,
-    "ra9": 4.652,
-    "ip_per_start": 4.93,
-    "innings": 98.7,
-    "starts": 20
+    "ra9": 4.557,
+    "ip_per_start": 4.98,
+    "innings": 104.7,
+    "starts": 21
    }
   },
   {
@@ -23852,10 +23975,10 @@
    "home_pitcher": {
     "name": "Spencer Miles",
     "id": 693686,
-    "ra9": 3.15,
-    "ip_per_start": 20.0,
-    "innings": 60.0,
-    "starts": 3
+    "ra9": 3.797,
+    "ip_per_start": 16.0,
+    "innings": 64.0,
+    "starts": 4
    },
    "away_pitcher": {
     "name": "José Soriano",
@@ -23904,9 +24027,9 @@
    "away_pitcher": {
     "name": "Andrew Morris",
     "id": 702193,
-    "ra9": 3.913,
-    "ip_per_start": 23.0,
-    "innings": 46.0,
+    "ra9": 3.83,
+    "ip_per_start": 23.5,
+    "innings": 47.0,
     "starts": 2
    }
   },
@@ -23940,10 +24063,10 @@
    "home_pitcher": {
     "name": "Logan Henderson",
     "id": 701656,
-    "ra9": 3.176,
-    "ip_per_start": 4.72,
-    "innings": 28.3,
-    "starts": 6
+    "ra9": 2.97,
+    "ip_per_start": 4.76,
+    "innings": 33.3,
+    "starts": 7
    },
    "away_pitcher": {
     "name": "Carlos Rodón",
@@ -24182,10 +24305,10 @@
    "home_pitcher": {
     "name": "Peter Lambert",
     "id": 663567,
-    "ra9": 3.14,
-    "ip_per_start": 5.73,
-    "innings": 86.0,
-    "starts": 15
+    "ra9": 3.033,
+    "ip_per_start": 5.75,
+    "innings": 92.0,
+    "starts": 16
    },
    "away_pitcher": {
     "name": "George Kirby",
@@ -24204,10 +24327,10 @@
    "home_pitcher": {
     "name": "Roki Sasaki",
     "id": 808963,
-    "ra9": 5.444,
-    "ip_per_start": 5.06,
-    "innings": 81.0,
-    "starts": 16
+    "ra9": 5.192,
+    "ip_per_start": 5.1,
+    "innings": 86.7,
+    "starts": 17
    },
    "away_pitcher": {
     "name": "Trevor McDonald",
@@ -24270,10 +24393,10 @@
    "home_pitcher": {
     "name": "Brady Singer",
     "id": 663903,
-    "ra9": 5.219,
-    "ip_per_start": 4.98,
-    "innings": 89.7,
-    "starts": 18
+    "ra9": 5.028,
+    "ip_per_start": 5.09,
+    "innings": 96.7,
+    "starts": 19
    },
    "away_pitcher": {
     "name": "Miles Mikolas",
@@ -24314,9 +24437,9 @@
    "home_pitcher": {
     "name": "Jovani Morán",
     "id": 663558,
-    "ra9": 2.817,
-    "ip_per_start": 12.78,
-    "innings": 38.3,
+    "ra9": 2.678,
+    "ip_per_start": 13.44,
+    "innings": 40.3,
     "starts": 3
    },
    "away_pitcher": {
@@ -24336,9 +24459,9 @@
    "home_pitcher": {
     "name": "Patrick Corbin",
     "id": 571578,
-    "ra9": 5.07,
-    "ip_per_start": 5.09,
-    "innings": 76.3,
+    "ra9": 5.33,
+    "ip_per_start": 5.18,
+    "innings": 77.7,
     "starts": 15
    },
    "away_pitcher": {
@@ -24388,10 +24511,10 @@
    "away_pitcher": {
     "name": "Colin Rea",
     "id": 607067,
-    "ra9": 4.849,
-    "ip_per_start": 6.31,
-    "innings": 94.7,
-    "starts": 15
+    "ra9": 4.917,
+    "ip_per_start": 6.29,
+    "innings": 100.7,
+    "starts": 16
    }
   },
   {
@@ -24424,10 +24547,10 @@
    "home_pitcher": {
     "name": "Bailey Ober",
     "id": 641927,
-    "ra9": 4.647,
-    "ip_per_start": 5.51,
-    "innings": 71.7,
-    "starts": 13
+    "ra9": 4.558,
+    "ip_per_start": 5.5,
+    "innings": 77.0,
+    "starts": 14
    },
    "away_pitcher": {
     "name": "Eury Pérez",
@@ -24454,9 +24577,9 @@
    "away_pitcher": {
     "name": "Bradgley Rodriguez",
     "id": 699134,
-    "ra9": 2.901,
-    "ip_per_start": 13.44,
-    "innings": 40.3,
+    "ra9": 3.048,
+    "ip_per_start": 13.78,
+    "innings": 41.3,
     "starts": 3
    }
   },
@@ -24586,10 +24709,10 @@
    "away_pitcher": {
     "name": "Reid Detmers",
     "id": 672282,
-    "ra9": 4.638,
-    "ip_per_start": 5.72,
-    "innings": 108.7,
-    "starts": 19
+    "ra9": 4.395,
+    "ip_per_start": 5.73,
+    "innings": 114.7,
+    "starts": 20
    }
   },
   {
@@ -24740,10 +24863,10 @@
    "away_pitcher": {
     "name": "Seth Lugo",
     "id": 607625,
-    "ra9": 5.159,
-    "ip_per_start": 5.51,
-    "innings": 104.7,
-    "starts": 19
+    "ra9": 5.042,
+    "ip_per_start": 5.53,
+    "innings": 110.7,
+    "starts": 20
    }
   },
   {
@@ -24784,10 +24907,10 @@
    "away_pitcher": {
     "name": "Michael King",
     "id": 650633,
-    "ra9": 3.489,
-    "ip_per_start": 5.7,
-    "innings": 108.3,
-    "starts": 19
+    "ra9": 3.415,
+    "ip_per_start": 5.67,
+    "innings": 113.3,
+    "starts": 20
    }
   },
   {
@@ -24828,10 +24951,10 @@
    "away_pitcher": {
     "name": "Bryce Miller",
     "id": 682243,
-    "ra9": 2.497,
-    "ip_per_start": 6.41,
-    "innings": 57.7,
-    "starts": 9
+    "ra9": 2.7,
+    "ip_per_start": 6.33,
+    "innings": 63.3,
+    "starts": 10
    }
   },
   {
@@ -24938,9 +25061,9 @@
    "away_pitcher": {
     "name": "Keider Montero",
     "id": 672456,
-    "ra9": 3.514,
-    "ip_per_start": 6.49,
-    "innings": 97.3,
+    "ra9": 3.397,
+    "ip_per_start": 6.71,
+    "innings": 100.7,
     "starts": 15
    }
   },
@@ -25026,10 +25149,10 @@
    "away_pitcher": {
     "name": "Michael McGreevy",
     "id": 700241,
-    "ra9": 3.01,
-    "ip_per_start": 5.65,
-    "innings": 101.7,
-    "starts": 18
+    "ra9": 3.0,
+    "ip_per_start": 5.68,
+    "innings": 108.0,
+    "starts": 19
    }
   },
   {
@@ -25062,10 +25185,10 @@
    "home_pitcher": {
     "name": "Chris Sale",
     "id": 519242,
-    "ra9": 2.663,
-    "ip_per_start": 5.76,
-    "innings": 98.0,
-    "starts": 17
+    "ra9": 2.486,
+    "ip_per_start": 5.83,
+    "innings": 105.0,
+    "starts": 18
    },
    "away_pitcher": {
     "name": "Ben Brown",
@@ -25084,10 +25207,10 @@
    "home_pitcher": {
     "name": "Anthony Kay",
     "id": 641743,
-    "ra9": 4.634,
-    "ip_per_start": 5.25,
-    "innings": 89.3,
-    "starts": 17
+    "ra9": 4.629,
+    "ip_per_start": 5.19,
+    "innings": 93.3,
+    "starts": 18
    },
    "away_pitcher": {
     "name": "Kris Bubic",
@@ -25114,10 +25237,10 @@
    "away_pitcher": {
     "name": "Landen Roupp",
     "id": 694738,
-    "ra9": 4.639,
-    "ip_per_start": 5.39,
-    "innings": 97.0,
-    "starts": 18
+    "ra9": 4.327,
+    "ip_per_start": 5.47,
+    "innings": 104.0,
+    "starts": 19
    }
   },
   {
@@ -25378,10 +25501,10 @@
    "away_pitcher": {
     "name": "Merrill Kelly",
     "id": 518876,
-    "ra9": 5.381,
-    "ip_per_start": 5.85,
-    "innings": 93.7,
-    "starts": 16
+    "ra9": 5.382,
+    "ip_per_start": 5.8,
+    "innings": 98.7,
+    "starts": 17
    }
   },
   {
@@ -25524,10 +25647,10 @@
    "home_pitcher": {
     "name": "Cade Cavalli",
     "id": 676917,
-    "ra9": 4.652,
-    "ip_per_start": 4.93,
-    "innings": 98.7,
-    "starts": 20
+    "ra9": 4.557,
+    "ip_per_start": 4.98,
+    "innings": 104.7,
+    "starts": 21
    },
    "away_pitcher": {
     "name": "Chris Bassitt",
@@ -25576,10 +25699,10 @@
    "away_pitcher": {
     "name": "Sandy Alcantara",
     "id": 645261,
-    "ra9": 4.339,
-    "ip_per_start": 6.53,
-    "innings": 130.7,
-    "starts": 20
+    "ra9": 4.215,
+    "ip_per_start": 6.51,
+    "innings": 136.7,
+    "starts": 21
    }
   },
   {
@@ -25664,10 +25787,10 @@
    "away_pitcher": {
     "name": "Logan Henderson",
     "id": 701656,
-    "ra9": 3.176,
-    "ip_per_start": 4.72,
-    "innings": 28.3,
-    "starts": 6
+    "ra9": 2.97,
+    "ip_per_start": 4.76,
+    "innings": 33.3,
+    "starts": 7
    }
   },
   {
@@ -25884,10 +26007,10 @@
    "away_pitcher": {
     "name": "Brady Singer",
     "id": 663903,
-    "ra9": 5.219,
-    "ip_per_start": 4.98,
-    "innings": 89.7,
-    "starts": 18
+    "ra9": 5.028,
+    "ip_per_start": 5.09,
+    "innings": 96.7,
+    "starts": 19
    }
   },
   {
@@ -25942,10 +26065,10 @@
    "home_pitcher": {
     "name": "Peter Lambert",
     "id": 663567,
-    "ra9": 3.14,
-    "ip_per_start": 5.73,
-    "innings": 86.0,
-    "starts": 15
+    "ra9": 3.033,
+    "ip_per_start": 5.75,
+    "innings": 92.0,
+    "starts": 16
    },
    "away_pitcher": {
     "name": "Nathan Eovaldi",
@@ -25972,10 +26095,10 @@
    "away_pitcher": {
     "name": "Colin Rea",
     "id": 607067,
-    "ra9": 4.849,
-    "ip_per_start": 6.31,
-    "innings": 94.7,
-    "starts": 15
+    "ra9": 4.917,
+    "ip_per_start": 6.29,
+    "innings": 100.7,
+    "starts": 16
    }
   },
   {
@@ -25986,10 +26109,10 @@
    "home_pitcher": {
     "name": "Bailey Ober",
     "id": 641927,
-    "ra9": 4.647,
-    "ip_per_start": 5.51,
-    "innings": 71.7,
-    "starts": 13
+    "ra9": 4.558,
+    "ip_per_start": 5.5,
+    "innings": 77.0,
+    "starts": 14
    },
    "away_pitcher": {
     "name": "Robert Gasser",
@@ -26082,10 +26205,10 @@
    "away_pitcher": {
     "name": "Roki Sasaki",
     "id": 808963,
-    "ra9": 5.444,
-    "ip_per_start": 5.06,
-    "innings": 81.0,
-    "starts": 16
+    "ra9": 5.192,
+    "ip_per_start": 5.1,
+    "innings": 86.7,
+    "starts": 17
    }
   },
   {
@@ -26236,9 +26359,9 @@
    "away_pitcher": {
     "name": "Patrick Corbin",
     "id": 571578,
-    "ra9": 5.07,
-    "ip_per_start": 5.09,
-    "innings": 76.3,
+    "ra9": 5.33,
+    "ip_per_start": 5.18,
+    "innings": 77.7,
     "starts": 15
    }
   },
@@ -26250,10 +26373,10 @@
    "home_pitcher": {
     "name": "Seth Lugo",
     "id": 607625,
-    "ra9": 5.159,
-    "ip_per_start": 5.51,
-    "innings": 104.7,
-    "starts": 19
+    "ra9": 5.042,
+    "ip_per_start": 5.53,
+    "innings": 110.7,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "Sonny Gray",
@@ -26360,10 +26483,10 @@
    "home_pitcher": {
     "name": "Michael King",
     "id": 650633,
-    "ra9": 3.489,
-    "ip_per_start": 5.7,
-    "innings": 108.3,
-    "starts": 19
+    "ra9": 3.415,
+    "ip_per_start": 5.67,
+    "innings": 113.3,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "Yoshinobu Yamamoto",
@@ -26448,9 +26571,9 @@
    "home_pitcher": {
     "name": "Keider Montero",
     "id": 672456,
-    "ra9": 3.514,
-    "ip_per_start": 6.49,
-    "innings": 97.3,
+    "ra9": 3.397,
+    "ip_per_start": 6.71,
+    "innings": 100.7,
     "starts": 15
    },
    "away_pitcher": {
@@ -26668,10 +26791,10 @@
    "home_pitcher": {
     "name": "Reid Detmers",
     "id": 672282,
-    "ra9": 4.638,
-    "ip_per_start": 5.72,
-    "innings": 108.7,
-    "starts": 19
+    "ra9": 4.395,
+    "ip_per_start": 5.73,
+    "innings": 114.7,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "Jacob Lopez",
@@ -26720,10 +26843,10 @@
    "away_pitcher": {
     "name": "Landen Roupp",
     "id": 694738,
-    "ra9": 4.639,
-    "ip_per_start": 5.39,
-    "innings": 97.0,
-    "starts": 18
+    "ra9": 4.327,
+    "ip_per_start": 5.47,
+    "innings": 104.0,
+    "starts": 19
    }
   },
   {
@@ -26734,18 +26857,18 @@
    "home_pitcher": {
     "name": "Bryce Miller",
     "id": 682243,
-    "ra9": 2.497,
-    "ip_per_start": 6.41,
-    "innings": 57.7,
-    "starts": 9
+    "ra9": 2.7,
+    "ip_per_start": 6.33,
+    "innings": 63.3,
+    "starts": 10
    },
    "away_pitcher": {
     "name": "Anthony Kay",
     "id": 641743,
-    "ra9": 4.634,
-    "ip_per_start": 5.25,
-    "innings": 89.3,
-    "starts": 17
+    "ra9": 4.629,
+    "ip_per_start": 5.19,
+    "innings": 93.3,
+    "starts": 18
    }
   },
   {
@@ -26844,10 +26967,10 @@
    "home_pitcher": {
     "name": "Merrill Kelly",
     "id": 518876,
-    "ra9": 5.381,
-    "ip_per_start": 5.85,
-    "innings": 93.7,
-    "starts": 16
+    "ra9": 5.382,
+    "ip_per_start": 5.8,
+    "innings": 98.7,
+    "starts": 17
    },
    "away_pitcher": {
     "name": "Tyler Mahle",
@@ -26911,10 +27034,10 @@
    "away_pitcher": {
     "name": "Chris Sale",
     "id": 519242,
-    "ra9": 2.663,
-    "ip_per_start": 5.76,
-    "innings": 98.0,
-    "starts": 17
+    "ra9": 2.486,
+    "ip_per_start": 5.83,
+    "innings": 105.0,
+    "starts": 18
    }
   },
   {
@@ -27013,10 +27136,10 @@
    "home_pitcher": {
     "name": "Michael McGreevy",
     "id": 700241,
-    "ra9": 3.01,
-    "ip_per_start": 5.65,
-    "innings": 101.7,
-    "starts": 18
+    "ra9": 3.0,
+    "ip_per_start": 5.68,
+    "innings": 108.0,
+    "starts": 19
    },
    "away_pitcher": {
     "name": "Carmen Mlodzinski",
@@ -27123,10 +27246,10 @@
    "home_pitcher": {
     "name": "Cade Cavalli",
     "id": 676917,
-    "ra9": 4.652,
-    "ip_per_start": 4.93,
-    "innings": 98.7,
-    "starts": 20
+    "ra9": 4.557,
+    "ip_per_start": 4.98,
+    "innings": 104.7,
+    "starts": 21
    },
    "away_pitcher": {
     "name": "David Peterson",
@@ -27145,10 +27268,10 @@
    "home_pitcher": {
     "name": "Sandy Alcantara",
     "id": 645261,
-    "ra9": 4.339,
-    "ip_per_start": 6.53,
-    "innings": 130.7,
-    "starts": 20
+    "ra9": 4.215,
+    "ip_per_start": 6.51,
+    "innings": 136.7,
+    "starts": 21
    },
    "away_pitcher": {
     "name": "Spencer Strider",
@@ -27175,9 +27298,9 @@
    "away_pitcher": {
     "name": "Braydon Fisher",
     "id": 680755,
-    "ra9": 4.213,
-    "ip_per_start": 7.83,
-    "innings": 47.0,
+    "ra9": 4.343,
+    "ip_per_start": 7.94,
+    "innings": 47.7,
     "starts": 6
    }
   },
@@ -27277,10 +27400,10 @@
    "home_pitcher": {
     "name": "Gerrit Cole",
     "id": 543037,
-    "ra9": 4.041,
-    "ip_per_start": 5.44,
-    "innings": 49.0,
-    "starts": 9
+    "ra9": 3.927,
+    "ip_per_start": 5.5,
+    "innings": 55.0,
+    "starts": 10
    },
    "away_pitcher": {
     "name": "Nick Martinez",
@@ -27431,10 +27554,10 @@
    "home_pitcher": {
     "name": "Logan Henderson",
     "id": 701656,
-    "ra9": 3.176,
-    "ip_per_start": 4.72,
-    "innings": 28.3,
-    "starts": 6
+    "ra9": 2.97,
+    "ip_per_start": 4.76,
+    "innings": 33.3,
+    "starts": 7
    },
    "away_pitcher": {
     "name": "Justin Wrobleski",
@@ -27607,10 +27730,10 @@
    "home_pitcher": {
     "name": "Colin Rea",
     "id": 607067,
-    "ra9": 4.849,
-    "ip_per_start": 6.31,
-    "innings": 94.7,
-    "starts": 15
+    "ra9": 4.917,
+    "ip_per_start": 6.29,
+    "innings": 100.7,
+    "starts": 16
    },
    "away_pitcher": {
     "name": "Kai-Wei Teng",
@@ -27629,9 +27752,9 @@
    "home_pitcher": {
     "name": "Patrick Corbin",
     "id": 571578,
-    "ra9": 5.07,
-    "ip_per_start": 5.09,
-    "innings": 76.3,
+    "ra9": 5.33,
+    "ip_per_start": 5.18,
+    "innings": 77.7,
     "starts": 15
    },
    "away_pitcher": {
@@ -27717,9 +27840,9 @@
    "home_pitcher": {
     "name": "Jovani Morán",
     "id": 663558,
-    "ra9": 2.817,
-    "ip_per_start": 12.78,
-    "innings": 38.3,
+    "ra9": 2.678,
+    "ip_per_start": 13.44,
+    "innings": 40.3,
     "starts": 3
    },
    "away_pitcher": {
@@ -27791,10 +27914,10 @@
    "away_pitcher": {
     "name": "Roki Sasaki",
     "id": 808963,
-    "ra9": 5.444,
-    "ip_per_start": 5.06,
-    "innings": 81.0,
-    "starts": 16
+    "ra9": 5.192,
+    "ip_per_start": 5.1,
+    "innings": 86.7,
+    "starts": 17
    }
   },
   {
@@ -27967,10 +28090,10 @@
    "away_pitcher": {
     "name": "Troy Melton",
     "id": 675512,
-    "ra9": 2.007,
-    "ip_per_start": 6.17,
-    "innings": 49.3,
-    "starts": 8
+    "ra9": 1.964,
+    "ip_per_start": 6.11,
+    "innings": 55.0,
+    "starts": 9
    }
   },
   {
@@ -27989,10 +28112,10 @@
    "away_pitcher": {
     "name": "Bailey Ober",
     "id": 641927,
-    "ra9": 4.647,
-    "ip_per_start": 5.51,
-    "innings": 71.7,
-    "starts": 13
+    "ra9": 4.558,
+    "ip_per_start": 5.5,
+    "innings": 77.0,
+    "starts": 14
    }
   },
   {
@@ -28069,10 +28192,10 @@
    "home_pitcher": {
     "name": "Seth Lugo",
     "id": 607625,
-    "ra9": 5.159,
-    "ip_per_start": 5.51,
-    "innings": 104.7,
-    "starts": 19
+    "ra9": 5.042,
+    "ip_per_start": 5.53,
+    "innings": 110.7,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "Bryan Woo",
@@ -28121,10 +28244,10 @@
    "away_pitcher": {
     "name": "Peter Lambert",
     "id": 663567,
-    "ra9": 3.14,
-    "ip_per_start": 5.73,
-    "innings": 86.0,
-    "starts": 15
+    "ra9": 3.033,
+    "ip_per_start": 5.75,
+    "innings": 92.0,
+    "starts": 16
    }
   },
   {
@@ -28179,10 +28302,10 @@
    "home_pitcher": {
     "name": "Michael King",
     "id": 650633,
-    "ra9": 3.489,
-    "ip_per_start": 5.7,
-    "innings": 108.3,
-    "starts": 19
+    "ra9": 3.415,
+    "ip_per_start": 5.67,
+    "innings": 113.3,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "Luis Medina",
@@ -28223,10 +28346,10 @@
    "home_pitcher": {
     "name": "Reid Detmers",
     "id": 672282,
-    "ra9": 4.638,
-    "ip_per_start": 5.72,
-    "innings": 108.7,
-    "starts": 19
+    "ra9": 4.395,
+    "ip_per_start": 5.73,
+    "innings": 114.7,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "MacKenzie Gore",
@@ -28245,10 +28368,10 @@
    "home_pitcher": {
     "name": "Brady Singer",
     "id": 663903,
-    "ra9": 5.219,
-    "ip_per_start": 4.98,
-    "innings": 89.7,
-    "starts": 18
+    "ra9": 5.028,
+    "ip_per_start": 5.09,
+    "innings": 96.7,
+    "starts": 19
    },
    "away_pitcher": {
     "name": "Brycen Mautz",
@@ -28311,10 +28434,10 @@
    "home_pitcher": {
     "name": "Anthony Kay",
     "id": 641743,
-    "ra9": 4.634,
-    "ip_per_start": 5.25,
-    "innings": 89.3,
-    "starts": 17
+    "ra9": 4.629,
+    "ip_per_start": 5.19,
+    "innings": 93.3,
+    "starts": 18
    },
    "away_pitcher": {
     "name": "Zebby Matthews",
@@ -28399,18 +28522,18 @@
    "home_pitcher": {
     "name": "Landen Roupp",
     "id": 694738,
-    "ra9": 4.639,
-    "ip_per_start": 5.39,
-    "innings": 97.0,
-    "starts": 18
+    "ra9": 4.327,
+    "ip_per_start": 5.47,
+    "innings": 104.0,
+    "starts": 19
    },
    "away_pitcher": {
     "name": "Merrill Kelly",
     "id": 518876,
-    "ra9": 5.381,
-    "ip_per_start": 5.85,
-    "innings": 93.7,
-    "starts": 16
+    "ra9": 5.382,
+    "ip_per_start": 5.8,
+    "innings": 98.7,
+    "starts": 17
    }
   },
   {
@@ -28561,10 +28684,10 @@
    "away_pitcher": {
     "name": "Cade Cavalli",
     "id": 676917,
-    "ra9": 4.652,
-    "ip_per_start": 4.93,
-    "innings": 98.7,
-    "starts": 20
+    "ra9": 4.557,
+    "ip_per_start": 4.98,
+    "innings": 104.7,
+    "starts": 21
    }
   },
   {
@@ -28597,9 +28720,9 @@
    "home_pitcher": {
     "name": "Keider Montero",
     "id": 672456,
-    "ra9": 3.514,
-    "ip_per_start": 6.49,
-    "innings": 97.3,
+    "ra9": 3.397,
+    "ip_per_start": 6.71,
+    "innings": 100.7,
     "starts": 15
    },
    "away_pitcher": {
@@ -28663,18 +28786,18 @@
    "home_pitcher": {
     "name": "Braydon Fisher",
     "id": 680755,
-    "ra9": 4.213,
-    "ip_per_start": 7.83,
-    "innings": 47.0,
+    "ra9": 4.343,
+    "ip_per_start": 7.94,
+    "innings": 47.7,
     "starts": 6
    },
    "away_pitcher": {
     "name": "Sandy Alcantara",
     "id": 645261,
-    "ra9": 4.339,
-    "ip_per_start": 6.53,
-    "innings": 130.7,
-    "starts": 20
+    "ra9": 4.215,
+    "ip_per_start": 6.51,
+    "innings": 136.7,
+    "starts": 21
    }
   },
   {
@@ -28759,10 +28882,10 @@
    "away_pitcher": {
     "name": "Michael McGreevy",
     "id": 700241,
-    "ra9": 3.01,
-    "ip_per_start": 5.65,
-    "innings": 101.7,
-    "starts": 18
+    "ra9": 3.0,
+    "ip_per_start": 5.68,
+    "innings": 108.0,
+    "starts": 19
    }
   },
   {
@@ -28795,10 +28918,10 @@
    "home_pitcher": {
     "name": "Gage Jump",
     "id": 695611,
-    "ra9": 3.699,
-    "ip_per_start": 5.41,
-    "innings": 48.7,
-    "starts": 9
+    "ra9": 4.127,
+    "ip_per_start": 5.23,
+    "innings": 52.3,
+    "starts": 10
    },
    "away_pitcher": {
     "name": "Emerson Hancock",
@@ -28927,9 +29050,9 @@
    "home_pitcher": {
     "name": "Chad Patrick",
     "id": 694477,
-    "ra9": 3.559,
-    "ip_per_start": 12.22,
-    "innings": 73.3,
+    "ra9": 3.511,
+    "ip_per_start": 12.39,
+    "innings": 74.3,
     "starts": 6
    },
    "away_pitcher": {
@@ -29155,10 +29278,10 @@
    "away_pitcher": {
     "name": "Gerrit Cole",
     "id": 543037,
-    "ra9": 4.041,
-    "ip_per_start": 5.44,
-    "innings": 49.0,
-    "starts": 9
+    "ra9": 3.927,
+    "ip_per_start": 5.5,
+    "innings": 55.0,
+    "starts": 10
    }
   },
   {
@@ -29265,10 +29388,10 @@
    "away_pitcher": {
     "name": "Chris Sale",
     "id": 519242,
-    "ra9": 2.663,
-    "ip_per_start": 5.76,
-    "innings": 98.0,
-    "starts": 17
+    "ra9": 2.486,
+    "ip_per_start": 5.83,
+    "innings": 105.0,
+    "starts": 18
    }
   },
   {
@@ -29287,9 +29410,9 @@
    "away_pitcher": {
     "name": "Patrick Corbin",
     "id": 571578,
-    "ra9": 5.07,
-    "ip_per_start": 5.09,
-    "innings": 76.3,
+    "ra9": 5.33,
+    "ip_per_start": 5.18,
+    "innings": 77.7,
     "starts": 15
    }
   },
@@ -29309,10 +29432,10 @@
    "away_pitcher": {
     "name": "Colin Rea",
     "id": 607067,
-    "ra9": 4.849,
-    "ip_per_start": 6.31,
-    "innings": 94.7,
-    "starts": 15
+    "ra9": 4.917,
+    "ip_per_start": 6.29,
+    "innings": 100.7,
+    "starts": 16
    }
   },
   {
@@ -29419,9 +29542,9 @@
    "away_pitcher": {
     "name": "Adam Macko",
     "id": 671936,
-    "ra9": 4.339,
-    "ip_per_start": 18.67,
-    "innings": 18.7,
+    "ra9": 5.034,
+    "ip_per_start": 19.67,
+    "innings": 19.7,
     "starts": 1
    }
   },
@@ -29529,10 +29652,10 @@
    "away_pitcher": {
     "name": "Troy Melton",
     "id": 675512,
-    "ra9": 2.007,
-    "ip_per_start": 6.17,
-    "innings": 49.3,
-    "starts": 8
+    "ra9": 1.964,
+    "ip_per_start": 6.11,
+    "innings": 55.0,
+    "starts": 9
    }
   },
   {
@@ -29675,10 +29798,10 @@
    "home_pitcher": {
     "name": "Anthony Kay",
     "id": 641743,
-    "ra9": 4.634,
-    "ip_per_start": 5.25,
-    "innings": 89.3,
-    "starts": 17
+    "ra9": 4.629,
+    "ip_per_start": 5.19,
+    "innings": 93.3,
+    "starts": 18
    },
    "away_pitcher": {
     "name": "Framber Valdez",
@@ -29705,10 +29828,10 @@
    "away_pitcher": {
     "name": "Michael King",
     "id": 650633,
-    "ra9": 3.489,
-    "ip_per_start": 5.7,
-    "innings": 108.3,
-    "starts": 19
+    "ra9": 3.415,
+    "ip_per_start": 5.67,
+    "innings": 113.3,
+    "starts": 20
    }
   },
   {
@@ -29727,10 +29850,10 @@
    "away_pitcher": {
     "name": "Seth Lugo",
     "id": 607625,
-    "ra9": 5.159,
-    "ip_per_start": 5.51,
-    "innings": 104.7,
-    "starts": 19
+    "ra9": 5.042,
+    "ip_per_start": 5.53,
+    "innings": 110.7,
+    "starts": 20
    }
   },
   {
@@ -29771,10 +29894,10 @@
    "away_pitcher": {
     "name": "Bailey Ober",
     "id": 641927,
-    "ra9": 4.647,
-    "ip_per_start": 5.51,
-    "innings": 71.7,
-    "starts": 13
+    "ra9": 4.558,
+    "ip_per_start": 5.5,
+    "innings": 77.0,
+    "starts": 14
    }
   },
   {
@@ -29815,10 +29938,10 @@
    "away_pitcher": {
     "name": "Reid Detmers",
     "id": 672282,
-    "ra9": 4.638,
-    "ip_per_start": 5.72,
-    "innings": 108.7,
-    "starts": 19
+    "ra9": 4.395,
+    "ip_per_start": 5.73,
+    "innings": 114.7,
+    "starts": 20
    }
   },
   {
@@ -29851,10 +29974,10 @@
    "home_pitcher": {
     "name": "Peter Lambert",
     "id": 663567,
-    "ra9": 3.14,
-    "ip_per_start": 5.73,
-    "innings": 86.0,
-    "starts": 15
+    "ra9": 3.033,
+    "ip_per_start": 5.75,
+    "innings": 92.0,
+    "starts": 16
    },
    "away_pitcher": {
     "name": "Brandon Sproat",
@@ -29895,10 +30018,10 @@
    "home_pitcher": {
     "name": "Brady Singer",
     "id": 663903,
-    "ra9": 5.219,
-    "ip_per_start": 4.98,
-    "innings": 89.7,
-    "starts": 18
+    "ra9": 5.028,
+    "ip_per_start": 5.09,
+    "innings": 96.7,
+    "starts": 19
    },
    "away_pitcher": {
     "name": "Martín Pérez",
@@ -29983,10 +30106,10 @@
    "home_pitcher": {
     "name": "Roki Sasaki",
     "id": 808963,
-    "ra9": 5.444,
-    "ip_per_start": 5.06,
-    "innings": 81.0,
-    "starts": 16
+    "ra9": 5.192,
+    "ip_per_start": 5.1,
+    "innings": 86.7,
+    "starts": 17
    },
    "away_pitcher": {
     "name": "Jesús Luzardo",
@@ -30013,10 +30136,10 @@
    "away_pitcher": {
     "name": "Spencer Miles",
     "id": 693686,
-    "ra9": 3.15,
-    "ip_per_start": 20.0,
-    "innings": 60.0,
-    "starts": 3
+    "ra9": 3.797,
+    "ip_per_start": 16.0,
+    "innings": 64.0,
+    "starts": 4
    }
   },
   {
@@ -30167,9 +30290,9 @@
    "away_pitcher": {
     "name": "Keider Montero",
     "id": 672456,
-    "ra9": 3.514,
-    "ip_per_start": 6.49,
-    "innings": 97.3,
+    "ra9": 3.397,
+    "ip_per_start": 6.71,
+    "innings": 100.7,
     "starts": 15
    }
   },
@@ -30269,18 +30392,18 @@
    "home_pitcher": {
     "name": "Bryce Miller",
     "id": 682243,
-    "ra9": 2.497,
-    "ip_per_start": 6.41,
-    "innings": 57.7,
-    "starts": 9
+    "ra9": 2.7,
+    "ip_per_start": 6.33,
+    "innings": 63.3,
+    "starts": 10
    },
    "away_pitcher": {
     "name": "Merrill Kelly",
     "id": 518876,
-    "ra9": 5.381,
-    "ip_per_start": 5.85,
-    "innings": 93.7,
-    "starts": 16
+    "ra9": 5.382,
+    "ip_per_start": 5.8,
+    "innings": 98.7,
+    "starts": 17
    }
   },
   {
@@ -30357,18 +30480,18 @@
    "home_pitcher": {
     "name": "Cade Cavalli",
     "id": 676917,
-    "ra9": 4.652,
-    "ip_per_start": 4.93,
-    "innings": 98.7,
-    "starts": 20
+    "ra9": 4.557,
+    "ip_per_start": 4.98,
+    "innings": 104.7,
+    "starts": 21
    },
    "away_pitcher": {
     "name": "Sandy Alcantara",
     "id": 645261,
-    "ra9": 4.339,
-    "ip_per_start": 6.53,
-    "innings": 130.7,
-    "starts": 20
+    "ra9": 4.215,
+    "ip_per_start": 6.51,
+    "innings": 136.7,
+    "starts": 21
    }
   },
   {
@@ -30431,10 +30554,10 @@
    "away_pitcher": {
     "name": "Landen Roupp",
     "id": 694738,
-    "ra9": 4.639,
-    "ip_per_start": 5.39,
-    "innings": 97.0,
-    "starts": 18
+    "ra9": 4.327,
+    "ip_per_start": 5.47,
+    "innings": 104.0,
+    "starts": 19
    }
   },
   {
@@ -30445,10 +30568,10 @@
    "home_pitcher": {
     "name": "Michael McGreevy",
     "id": 700241,
-    "ra9": 3.01,
-    "ip_per_start": 5.65,
-    "innings": 101.7,
-    "starts": 18
+    "ra9": 3.0,
+    "ip_per_start": 5.68,
+    "innings": 108.0,
+    "starts": 19
    },
    "away_pitcher": {
     "name": "Jacob deGrom",
@@ -30607,9 +30730,9 @@
    "away_pitcher": {
     "name": "Lake Bachar",
     "id": 669199,
-    "ra9": 3.755,
-    "ip_per_start": 12.58,
-    "innings": 50.3,
+    "ra9": 3.882,
+    "ip_per_start": 12.75,
+    "innings": 51.0,
     "starts": 4
    }
   },
@@ -30761,10 +30884,10 @@
    "away_pitcher": {
     "name": "Gage Jump",
     "id": 695611,
-    "ra9": 3.699,
-    "ip_per_start": 5.41,
-    "innings": 48.7,
-    "starts": 9
+    "ra9": 4.127,
+    "ip_per_start": 5.23,
+    "innings": 52.3,
+    "starts": 10
    }
   },
   {
@@ -30893,10 +31016,10 @@
    "away_pitcher": {
     "name": "Troy Melton",
     "id": 675512,
-    "ra9": 2.007,
-    "ip_per_start": 6.17,
-    "innings": 49.3,
-    "starts": 8
+    "ra9": 1.964,
+    "ip_per_start": 6.11,
+    "innings": 55.0,
+    "starts": 9
    }
   },
   {
@@ -30995,10 +31118,10 @@
    "home_pitcher": {
     "name": "Gerrit Cole",
     "id": 543037,
-    "ra9": 4.041,
-    "ip_per_start": 5.44,
-    "innings": 49.0,
-    "starts": 9
+    "ra9": 3.927,
+    "ip_per_start": 5.5,
+    "innings": 55.0,
+    "starts": 10
    },
    "away_pitcher": {
     "name": "Gavin Williams",
@@ -31047,9 +31170,9 @@
    "away_pitcher": {
     "name": "Patrick Corbin",
     "id": 571578,
-    "ra9": 5.07,
-    "ip_per_start": 5.09,
-    "innings": 76.3,
+    "ra9": 5.33,
+    "ip_per_start": 5.18,
+    "innings": 77.7,
     "starts": 15
    }
   },
@@ -31105,10 +31228,10 @@
    "home_pitcher": {
     "name": "Colin Rea",
     "id": 607067,
-    "ra9": 4.849,
-    "ip_per_start": 6.31,
-    "innings": 94.7,
-    "starts": 15
+    "ra9": 4.917,
+    "ip_per_start": 6.29,
+    "innings": 100.7,
+    "starts": 16
    },
    "away_pitcher": {
     "name": "Jeffrey Springs",
@@ -31281,10 +31404,10 @@
    "home_pitcher": {
     "name": "Chris Sale",
     "id": 519242,
-    "ra9": 2.663,
-    "ip_per_start": 5.76,
-    "innings": 98.0,
-    "starts": 17
+    "ra9": 2.486,
+    "ip_per_start": 5.83,
+    "innings": 105.0,
+    "starts": 18
    },
    "away_pitcher": {
     "name": "Mason Fluharty",
@@ -31303,18 +31426,18 @@
    "home_pitcher": {
     "name": "Andrew Morris",
     "id": 702193,
-    "ra9": 3.913,
-    "ip_per_start": 23.0,
-    "innings": 46.0,
+    "ra9": 3.83,
+    "ip_per_start": 23.5,
+    "innings": 47.0,
     "starts": 2
    },
    "away_pitcher": {
     "name": "Seth Lugo",
     "id": 607625,
-    "ra9": 5.159,
-    "ip_per_start": 5.51,
-    "innings": 104.7,
-    "starts": 19
+    "ra9": 5.042,
+    "ip_per_start": 5.53,
+    "innings": 110.7,
+    "starts": 20
    }
   },
   {
@@ -31443,10 +31566,10 @@
    "away_pitcher": {
     "name": "Anthony Kay",
     "id": 641743,
-    "ra9": 4.634,
-    "ip_per_start": 5.25,
-    "innings": 89.3,
-    "starts": 17
+    "ra9": 4.629,
+    "ip_per_start": 5.19,
+    "innings": 93.3,
+    "starts": 18
    }
   },
   {
@@ -31545,10 +31668,10 @@
    "home_pitcher": {
     "name": "Peter Lambert",
     "id": 663567,
-    "ra9": 3.14,
-    "ip_per_start": 5.73,
-    "innings": 86.0,
-    "starts": 15
+    "ra9": 3.033,
+    "ip_per_start": 5.75,
+    "innings": 92.0,
+    "starts": 16
    },
    "away_pitcher": {
     "name": "Jack Perkins",
@@ -31575,10 +31698,10 @@
    "away_pitcher": {
     "name": "Brady Singer",
     "id": 663903,
-    "ra9": 5.219,
-    "ip_per_start": 4.98,
-    "innings": 89.7,
-    "starts": 18
+    "ra9": 5.028,
+    "ip_per_start": 5.09,
+    "innings": 96.7,
+    "starts": 19
    }
   },
   {
@@ -31655,10 +31778,10 @@
    "home_pitcher": {
     "name": "Merrill Kelly",
     "id": 518876,
-    "ra9": 5.381,
-    "ip_per_start": 5.85,
-    "innings": 93.7,
-    "starts": 16
+    "ra9": 5.382,
+    "ip_per_start": 5.8,
+    "innings": 98.7,
+    "starts": 17
    },
    "away_pitcher": {
     "name": "Foster Griffin",
@@ -31677,10 +31800,10 @@
    "home_pitcher": {
     "name": "Michael King",
     "id": 650633,
-    "ra9": 3.489,
-    "ip_per_start": 5.7,
-    "innings": 108.3,
-    "starts": 19
+    "ra9": 3.415,
+    "ip_per_start": 5.67,
+    "innings": 113.3,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "Christian Scott",
@@ -31699,18 +31822,18 @@
    "home_pitcher": {
     "name": "Roki Sasaki",
     "id": 808963,
-    "ra9": 5.444,
-    "ip_per_start": 5.06,
-    "innings": 81.0,
-    "starts": 16
+    "ra9": 5.192,
+    "ip_per_start": 5.1,
+    "innings": 86.7,
+    "starts": 17
    },
    "away_pitcher": {
     "name": "Reid Detmers",
     "id": 672282,
-    "ra9": 4.638,
-    "ip_per_start": 5.72,
-    "innings": 108.7,
-    "starts": 19
+    "ra9": 4.395,
+    "ip_per_start": 5.73,
+    "innings": 114.7,
+    "starts": 20
    }
   },
   {
@@ -31721,18 +31844,18 @@
    "home_pitcher": {
     "name": "Keider Montero",
     "id": 672456,
-    "ra9": 3.514,
-    "ip_per_start": 6.49,
-    "innings": 97.3,
+    "ra9": 3.397,
+    "ip_per_start": 6.71,
+    "innings": 100.7,
     "starts": 15
    },
    "away_pitcher": {
     "name": "Bryce Miller",
     "id": 682243,
-    "ra9": 2.497,
-    "ip_per_start": 6.41,
-    "innings": 57.7,
-    "starts": 9
+    "ra9": 2.7,
+    "ip_per_start": 6.33,
+    "innings": 63.3,
+    "starts": 10
    }
   },
   {
@@ -31795,10 +31918,10 @@
    "away_pitcher": {
     "name": "Landen Roupp",
     "id": 694738,
-    "ra9": 4.639,
-    "ip_per_start": 5.39,
-    "innings": 97.0,
-    "starts": 18
+    "ra9": 4.327,
+    "ip_per_start": 5.47,
+    "innings": 104.0,
+    "starts": 19
    }
   },
   {
@@ -31809,9 +31932,9 @@
    "home_pitcher": {
     "name": "Braydon Fisher",
     "id": 680755,
-    "ra9": 4.213,
-    "ip_per_start": 7.83,
-    "innings": 47.0,
+    "ra9": 4.343,
+    "ip_per_start": 7.94,
+    "innings": 47.7,
     "starts": 6
    },
    "away_pitcher": {
@@ -31919,9 +32042,9 @@
    "home_pitcher": {
     "name": "Lake Bachar",
     "id": 669199,
-    "ra9": 3.755,
-    "ip_per_start": 12.58,
-    "innings": 50.3,
+    "ra9": 3.882,
+    "ip_per_start": 12.75,
+    "innings": 51.0,
     "starts": 4
    },
    "away_pitcher": {
@@ -32161,10 +32284,10 @@
    "home_pitcher": {
     "name": "Sandy Alcantara",
     "id": 645261,
-    "ra9": 4.339,
-    "ip_per_start": 6.53,
-    "innings": 130.7,
-    "starts": 20
+    "ra9": 4.215,
+    "ip_per_start": 6.51,
+    "innings": 136.7,
+    "starts": 21
    },
    "away_pitcher": {
     "name": "Griffin Jax",
@@ -32191,10 +32314,10 @@
    "away_pitcher": {
     "name": "Gage Jump",
     "id": 695611,
-    "ra9": 3.699,
-    "ip_per_start": 5.41,
-    "innings": 48.7,
-    "starts": 9
+    "ra9": 4.127,
+    "ip_per_start": 5.23,
+    "innings": 52.3,
+    "starts": 10
    }
   },
   {
@@ -32227,10 +32350,10 @@
    "home_pitcher": {
     "name": "Michael McGreevy",
     "id": 700241,
-    "ra9": 3.01,
-    "ip_per_start": 5.65,
-    "innings": 101.7,
-    "starts": 18
+    "ra9": 3.0,
+    "ip_per_start": 5.68,
+    "innings": 108.0,
+    "starts": 19
    },
    "away_pitcher": {
     "name": "Rhett Lowder",
@@ -32301,10 +32424,10 @@
    "away_pitcher": {
     "name": "Cade Cavalli",
     "id": 676917,
-    "ra9": 4.652,
-    "ip_per_start": 4.93,
-    "innings": 98.7,
-    "starts": 20
+    "ra9": 4.557,
+    "ip_per_start": 4.98,
+    "innings": 104.7,
+    "starts": 21
    }
   },
   {
@@ -32447,9 +32570,9 @@
    "home_pitcher": {
     "name": "Patrick Corbin",
     "id": 571578,
-    "ra9": 5.07,
-    "ip_per_start": 5.09,
-    "innings": 76.3,
+    "ra9": 5.33,
+    "ip_per_start": 5.18,
+    "innings": 77.7,
     "starts": 15
    },
    "away_pitcher": {
@@ -32623,10 +32746,10 @@
    "home_pitcher": {
     "name": "Troy Melton",
     "id": 675512,
-    "ra9": 2.007,
-    "ip_per_start": 6.17,
-    "innings": 49.3,
-    "starts": 8
+    "ra9": 1.964,
+    "ip_per_start": 6.11,
+    "innings": 55.0,
+    "starts": 9
    },
    "away_pitcher": {
     "name": "Taj Bradley",
@@ -32675,10 +32798,10 @@
    "away_pitcher": {
     "name": "Gerrit Cole",
     "id": 543037,
-    "ra9": 4.041,
-    "ip_per_start": 5.44,
-    "innings": 49.0,
-    "starts": 9
+    "ra9": 3.927,
+    "ip_per_start": 5.5,
+    "innings": 55.0,
+    "starts": 10
    }
   },
   {
@@ -32785,10 +32908,10 @@
    "away_pitcher": {
     "name": "Colin Rea",
     "id": 607067,
-    "ra9": 4.849,
-    "ip_per_start": 6.31,
-    "innings": 94.7,
-    "starts": 15
+    "ra9": 4.917,
+    "ip_per_start": 6.29,
+    "innings": 100.7,
+    "starts": 16
    }
   },
   {
@@ -32953,18 +33076,18 @@
    "home_pitcher": {
     "name": "Michael King",
     "id": 650633,
-    "ra9": 3.489,
-    "ip_per_start": 5.7,
-    "innings": 108.3,
-    "starts": 19
+    "ra9": 3.415,
+    "ip_per_start": 5.67,
+    "innings": 113.3,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "Brady Singer",
     "id": 663903,
-    "ra9": 5.219,
-    "ip_per_start": 4.98,
-    "innings": 89.7,
-    "starts": 18
+    "ra9": 5.028,
+    "ip_per_start": 5.09,
+    "innings": 96.7,
+    "starts": 19
    }
   },
   {
@@ -33107,10 +33230,10 @@
    "home_pitcher": {
     "name": "Seth Lugo",
     "id": 607625,
-    "ra9": 5.159,
-    "ip_per_start": 5.51,
-    "innings": 104.7,
-    "starts": 19
+    "ra9": 5.042,
+    "ip_per_start": 5.53,
+    "innings": 110.7,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "MacKenzie Gore",
@@ -33137,10 +33260,10 @@
    "away_pitcher": {
     "name": "Chris Sale",
     "id": 519242,
-    "ra9": 2.663,
-    "ip_per_start": 5.76,
-    "innings": 98.0,
-    "starts": 17
+    "ra9": 2.486,
+    "ip_per_start": 5.83,
+    "innings": 105.0,
+    "starts": 18
    }
   },
   {
@@ -33195,18 +33318,18 @@
    "home_pitcher": {
     "name": "Reid Detmers",
     "id": 672282,
-    "ra9": 4.638,
-    "ip_per_start": 5.72,
-    "innings": 108.7,
-    "starts": 19
+    "ra9": 4.395,
+    "ip_per_start": 5.73,
+    "innings": 114.7,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "Peter Lambert",
     "id": 663567,
-    "ra9": 3.14,
-    "ip_per_start": 5.73,
-    "innings": 86.0,
-    "starts": 15
+    "ra9": 3.033,
+    "ip_per_start": 5.75,
+    "innings": 92.0,
+    "starts": 16
    }
   },
   {
@@ -33239,9 +33362,9 @@
    "home_pitcher": {
     "name": "Keider Montero",
     "id": 672456,
-    "ra9": 3.514,
-    "ip_per_start": 6.49,
-    "innings": 97.3,
+    "ra9": 3.397,
+    "ip_per_start": 6.71,
+    "innings": 100.7,
     "starts": 15
    },
    "away_pitcher": {
@@ -33269,10 +33392,10 @@
    "away_pitcher": {
     "name": "Merrill Kelly",
     "id": 518876,
-    "ra9": 5.381,
-    "ip_per_start": 5.85,
-    "innings": 93.7,
-    "starts": 16
+    "ra9": 5.382,
+    "ip_per_start": 5.8,
+    "innings": 98.7,
+    "starts": 17
    }
   },
   {
@@ -33371,10 +33494,10 @@
    "home_pitcher": {
     "name": "Anthony Kay",
     "id": 641743,
-    "ra9": 4.634,
-    "ip_per_start": 5.25,
-    "innings": 89.3,
-    "starts": 17
+    "ra9": 4.629,
+    "ip_per_start": 5.19,
+    "innings": 93.3,
+    "starts": 18
    },
    "away_pitcher": {
     "name": "Martín Pérez",
@@ -33401,10 +33524,10 @@
    "away_pitcher": {
     "name": "Sandy Alcantara",
     "id": 645261,
-    "ra9": 4.339,
-    "ip_per_start": 6.53,
-    "innings": 130.7,
-    "starts": 20
+    "ra9": 4.215,
+    "ip_per_start": 6.51,
+    "innings": 136.7,
+    "starts": 21
    }
   },
   {
@@ -33423,10 +33546,10 @@
    "away_pitcher": {
     "name": "Bryce Miller",
     "id": 682243,
-    "ra9": 2.497,
-    "ip_per_start": 6.41,
-    "innings": 57.7,
-    "starts": 9
+    "ra9": 2.7,
+    "ip_per_start": 6.33,
+    "innings": 63.3,
+    "starts": 10
    }
   },
   {
@@ -33569,18 +33692,18 @@
    "home_pitcher": {
     "name": "Anthony Kay",
     "id": 641743,
-    "ra9": 4.634,
-    "ip_per_start": 5.25,
-    "innings": 89.3,
-    "starts": 17
+    "ra9": 4.629,
+    "ip_per_start": 5.19,
+    "innings": 93.3,
+    "starts": 18
    },
    "away_pitcher": {
     "name": "Roki Sasaki",
     "id": 808963,
-    "ra9": 5.444,
-    "ip_per_start": 5.06,
-    "innings": 81.0,
-    "starts": 16
+    "ra9": 5.192,
+    "ip_per_start": 5.1,
+    "innings": 86.7,
+    "starts": 17
    }
   },
   {
@@ -33679,10 +33802,10 @@
    "home_pitcher": {
     "name": "Gage Jump",
     "id": 695611,
-    "ra9": 3.699,
-    "ip_per_start": 5.41,
-    "innings": 48.7,
-    "starts": 9
+    "ra9": 4.127,
+    "ip_per_start": 5.23,
+    "innings": 52.3,
+    "starts": 10
    },
    "away_pitcher": {
     "name": "Sean Sullivan",
@@ -33701,10 +33824,10 @@
    "home_pitcher": {
     "name": "Landen Roupp",
     "id": 694738,
-    "ra9": 4.639,
-    "ip_per_start": 5.39,
-    "innings": 97.0,
-    "starts": 18
+    "ra9": 4.327,
+    "ip_per_start": 5.47,
+    "innings": 104.0,
+    "starts": 19
    },
    "away_pitcher": {
     "name": "Javier Assad",
@@ -33789,10 +33912,10 @@
    "home_pitcher": {
     "name": "Cade Cavalli",
     "id": 676917,
-    "ra9": 4.652,
-    "ip_per_start": 4.93,
-    "innings": 98.7,
-    "starts": 20
+    "ra9": 4.557,
+    "ip_per_start": 4.98,
+    "innings": 104.7,
+    "starts": 21
    },
    "away_pitcher": {
     "name": "Luis Castillo",
@@ -33819,9 +33942,9 @@
    "away_pitcher": {
     "name": "Lake Bachar",
     "id": 669199,
-    "ra9": 3.755,
-    "ip_per_start": 12.58,
-    "innings": 50.3,
+    "ra9": 3.882,
+    "ip_per_start": 12.75,
+    "innings": 51.0,
     "starts": 4
    }
   },
@@ -34119,9 +34242,9 @@
    "home_pitcher": {
     "name": "Patrick Corbin",
     "id": 571578,
-    "ra9": 5.07,
-    "ip_per_start": 5.09,
-    "innings": 76.3,
+    "ra9": 5.33,
+    "ip_per_start": 5.18,
+    "innings": 77.7,
     "starts": 15
    },
    "away_pitcher": {
@@ -34215,10 +34338,10 @@
    "away_pitcher": {
     "name": "Michael McGreevy",
     "id": 700241,
-    "ra9": 3.01,
-    "ip_per_start": 5.65,
-    "innings": 101.7,
-    "starts": 18
+    "ra9": 3.0,
+    "ip_per_start": 5.68,
+    "innings": 108.0,
+    "starts": 19
    }
   },
   {
@@ -34303,9 +34426,9 @@
    "away_pitcher": {
     "name": "Ryan Rolison",
     "id": 669020,
-    "ra9": 3.311,
-    "ip_per_start": 17.67,
-    "innings": 35.3,
+    "ra9": 3.22,
+    "ip_per_start": 18.17,
+    "innings": 36.3,
     "starts": 2
    }
   },
@@ -34669,10 +34792,10 @@
    "home_pitcher": {
     "name": "Gerrit Cole",
     "id": 543037,
-    "ra9": 4.041,
-    "ip_per_start": 5.44,
-    "innings": 49.0,
-    "starts": 9
+    "ra9": 3.927,
+    "ip_per_start": 5.5,
+    "innings": 55.0,
+    "starts": 10
    },
    "away_pitcher": {
     "name": "Davis Martin",
@@ -34691,10 +34814,10 @@
    "home_pitcher": {
     "name": "Brady Singer",
     "id": 663903,
-    "ra9": 5.219,
-    "ip_per_start": 4.98,
-    "innings": 89.7,
-    "starts": 18
+    "ra9": 5.028,
+    "ip_per_start": 5.09,
+    "innings": 96.7,
+    "starts": 19
    },
    "away_pitcher": {
     "name": "Kodai Senga",
@@ -34765,10 +34888,10 @@
    "away_pitcher": {
     "name": "Michael King",
     "id": 650633,
-    "ra9": 3.489,
-    "ip_per_start": 5.7,
-    "innings": 108.3,
-    "starts": 19
+    "ra9": 3.415,
+    "ip_per_start": 5.67,
+    "innings": 113.3,
+    "starts": 20
    }
   },
   {
@@ -34845,18 +34968,18 @@
    "home_pitcher": {
     "name": "Merrill Kelly",
     "id": 518876,
-    "ra9": 5.381,
-    "ip_per_start": 5.85,
-    "innings": 93.7,
-    "starts": 16
+    "ra9": 5.382,
+    "ip_per_start": 5.8,
+    "innings": 98.7,
+    "starts": 17
    },
    "away_pitcher": {
     "name": "Reid Detmers",
     "id": 672282,
-    "ra9": 4.638,
-    "ip_per_start": 5.72,
-    "innings": 108.7,
-    "starts": 19
+    "ra9": 4.395,
+    "ip_per_start": 5.73,
+    "innings": 114.7,
+    "starts": 20
    }
   },
   {
@@ -34985,10 +35108,10 @@
    "away_pitcher": {
     "name": "Sandy Alcantara",
     "id": 645261,
-    "ra9": 4.339,
-    "ip_per_start": 6.53,
-    "innings": 130.7,
-    "starts": 20
+    "ra9": 4.215,
+    "ip_per_start": 6.51,
+    "innings": 136.7,
+    "starts": 21
    }
   },
   {
@@ -35021,10 +35144,10 @@
    "home_pitcher": {
     "name": "Peter Lambert",
     "id": 663567,
-    "ra9": 3.14,
-    "ip_per_start": 5.73,
-    "innings": 86.0,
-    "starts": 15
+    "ra9": 3.033,
+    "ip_per_start": 5.75,
+    "innings": 92.0,
+    "starts": 16
    },
    "away_pitcher": {
     "name": "Casey Mize",
@@ -35051,9 +35174,9 @@
    "away_pitcher": {
     "name": "Bradgley Rodriguez",
     "id": 699134,
-    "ra9": 2.901,
-    "ip_per_start": 13.44,
-    "innings": 40.3,
+    "ra9": 3.048,
+    "ip_per_start": 13.78,
+    "innings": 41.3,
     "starts": 3
    }
   },
@@ -35117,9 +35240,9 @@
    "away_pitcher": {
     "name": "Braydon Fisher",
     "id": 680755,
-    "ra9": 4.213,
-    "ip_per_start": 7.83,
-    "innings": 47.0,
+    "ra9": 4.343,
+    "ip_per_start": 7.94,
+    "innings": 47.7,
     "starts": 6
    }
   },
@@ -35139,10 +35262,10 @@
    "away_pitcher": {
     "name": "Anthony Kay",
     "id": 641743,
-    "ra9": 4.634,
-    "ip_per_start": 5.25,
-    "innings": 89.3,
-    "starts": 17
+    "ra9": 4.629,
+    "ip_per_start": 5.19,
+    "innings": 93.3,
+    "starts": 18
    }
   },
   {
@@ -35417,10 +35540,10 @@
    "home_pitcher": {
     "name": "Gage Jump",
     "id": 695611,
-    "ra9": 3.699,
-    "ip_per_start": 5.41,
-    "innings": 48.7,
-    "starts": 9
+    "ra9": 4.127,
+    "ip_per_start": 5.23,
+    "innings": 52.3,
+    "starts": 10
    },
    "away_pitcher": {
     "name": "Ryan Johnson",
@@ -35447,10 +35570,10 @@
    "away_pitcher": {
     "name": "Landen Roupp",
     "id": 694738,
-    "ra9": 4.639,
-    "ip_per_start": 5.39,
-    "innings": 97.0,
-    "starts": 18
+    "ra9": 4.327,
+    "ip_per_start": 5.47,
+    "innings": 104.0,
+    "starts": 19
    }
   },
   {
@@ -35549,18 +35672,18 @@
    "home_pitcher": {
     "name": "Lake Bachar",
     "id": 669199,
-    "ra9": 3.755,
-    "ip_per_start": 12.58,
-    "innings": 50.3,
+    "ra9": 3.882,
+    "ip_per_start": 12.75,
+    "innings": 51.0,
     "starts": 4
    },
    "away_pitcher": {
     "name": "Landen Roupp",
     "id": 694738,
-    "ra9": 4.639,
-    "ip_per_start": 5.39,
-    "innings": 97.0,
-    "starts": 18
+    "ra9": 4.327,
+    "ip_per_start": 5.47,
+    "innings": 104.0,
+    "starts": 19
    }
   },
   {
@@ -35637,18 +35760,18 @@
    "home_pitcher": {
     "name": "Seth Lugo",
     "id": 607625,
-    "ra9": 5.159,
-    "ip_per_start": 5.51,
-    "innings": 104.7,
-    "starts": 19
+    "ra9": 5.042,
+    "ip_per_start": 5.53,
+    "innings": 110.7,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "Michael McGreevy",
     "id": 700241,
-    "ra9": 3.01,
-    "ip_per_start": 5.65,
-    "innings": 101.7,
-    "starts": 18
+    "ra9": 3.0,
+    "ip_per_start": 5.68,
+    "innings": 108.0,
+    "starts": 19
    }
   },
   {
@@ -35725,10 +35848,10 @@
    "home_pitcher": {
     "name": "Roki Sasaki",
     "id": 808963,
-    "ra9": 5.444,
-    "ip_per_start": 5.06,
-    "innings": 81.0,
-    "starts": 16
+    "ra9": 5.192,
+    "ip_per_start": 5.1,
+    "innings": 86.7,
+    "starts": 17
    },
    "away_pitcher": {
     "name": "Trey Gibson",
@@ -35747,10 +35870,10 @@
    "home_pitcher": {
     "name": "Bryce Miller",
     "id": 682243,
-    "ra9": 2.497,
-    "ip_per_start": 6.41,
-    "innings": 57.7,
-    "starts": 9
+    "ra9": 2.7,
+    "ip_per_start": 6.33,
+    "innings": 63.3,
+    "starts": 10
    },
    "away_pitcher": {
     "name": "Ranger Suarez",
@@ -35769,10 +35892,10 @@
    "home_pitcher": {
     "name": "Troy Melton",
     "id": 675512,
-    "ra9": 2.007,
-    "ip_per_start": 6.17,
-    "innings": 49.3,
-    "starts": 8
+    "ra9": 1.964,
+    "ip_per_start": 6.11,
+    "innings": 55.0,
+    "starts": 9
    },
    "away_pitcher": {
     "name": "Sean Newcomb",
@@ -35813,17 +35936,17 @@
    "home_pitcher": {
     "name": "Colin Rea",
     "id": 607067,
-    "ra9": 4.849,
-    "ip_per_start": 6.31,
-    "innings": 94.7,
-    "starts": 15
+    "ra9": 4.917,
+    "ip_per_start": 6.29,
+    "innings": 100.7,
+    "starts": 16
    },
    "away_pitcher": {
     "name": "Patrick Corbin",
     "id": 571578,
-    "ra9": 5.07,
-    "ip_per_start": 5.09,
-    "innings": 76.3,
+    "ra9": 5.33,
+    "ip_per_start": 5.18,
+    "innings": 77.7,
     "starts": 15
    }
   },
@@ -35865,10 +35988,10 @@
    "away_pitcher": {
     "name": "Cade Cavalli",
     "id": 676917,
-    "ra9": 4.652,
-    "ip_per_start": 4.93,
-    "innings": 98.7,
-    "starts": 20
+    "ra9": 4.557,
+    "ip_per_start": 4.98,
+    "innings": 104.7,
+    "starts": 21
    }
   },
   {
@@ -35901,10 +36024,10 @@
    "home_pitcher": {
     "name": "Chris Sale",
     "id": 519242,
-    "ra9": 2.663,
-    "ip_per_start": 5.76,
-    "innings": 98.0,
-    "starts": 17
+    "ra9": 2.486,
+    "ip_per_start": 5.83,
+    "innings": 105.0,
+    "starts": 18
    },
    "away_pitcher": {
     "name": "Kyle Harrison",
@@ -36143,9 +36266,9 @@
    "home_pitcher": {
     "name": "Keider Montero",
     "id": 672456,
-    "ra9": 3.514,
-    "ip_per_start": 6.49,
-    "innings": 97.3,
+    "ra9": 3.397,
+    "ip_per_start": 6.71,
+    "innings": 100.7,
     "starts": 15
    },
    "away_pitcher": {
@@ -36305,10 +36428,10 @@
    "away_pitcher": {
     "name": "Reid Detmers",
     "id": 672282,
-    "ra9": 4.638,
-    "ip_per_start": 5.72,
-    "innings": 108.7,
-    "starts": 19
+    "ra9": 4.395,
+    "ip_per_start": 5.73,
+    "innings": 114.7,
+    "starts": 20
    }
   },
   {
@@ -36415,10 +36538,10 @@
    "away_pitcher": {
     "name": "Gerrit Cole",
     "id": 543037,
-    "ra9": 4.041,
-    "ip_per_start": 5.44,
-    "innings": 49.0,
-    "starts": 9
+    "ra9": 3.927,
+    "ip_per_start": 5.5,
+    "innings": 55.0,
+    "starts": 10
    }
   },
   {
@@ -36517,10 +36640,10 @@
    "home_pitcher": {
     "name": "Brady Singer",
     "id": 663903,
-    "ra9": 5.219,
-    "ip_per_start": 4.98,
-    "innings": 89.7,
-    "starts": 18
+    "ra9": 5.028,
+    "ip_per_start": 5.09,
+    "innings": 96.7,
+    "starts": 19
    },
    "away_pitcher": {
     "name": "Brandon Woodruff",
@@ -36561,10 +36684,10 @@
    "home_pitcher": {
     "name": "Anthony Kay",
     "id": 641743,
-    "ra9": 4.634,
-    "ip_per_start": 5.25,
-    "innings": 89.3,
-    "starts": 17
+    "ra9": 4.629,
+    "ip_per_start": 5.19,
+    "innings": 93.3,
+    "starts": 18
    },
    "away_pitcher": {
     "name": "Gavin Williams",
@@ -36591,10 +36714,10 @@
    "away_pitcher": {
     "name": "Merrill Kelly",
     "id": 518876,
-    "ra9": 5.381,
-    "ip_per_start": 5.85,
-    "innings": 93.7,
-    "starts": 16
+    "ra9": 5.382,
+    "ip_per_start": 5.8,
+    "innings": 98.7,
+    "starts": 17
    }
   },
   {
@@ -36649,10 +36772,10 @@
    "home_pitcher": {
     "name": "Michael King",
     "id": 650633,
-    "ra9": 3.489,
-    "ip_per_start": 5.7,
-    "innings": 108.3,
-    "starts": 19
+    "ra9": 3.415,
+    "ip_per_start": 5.67,
+    "innings": 113.3,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "Grant Holmes",
@@ -36701,10 +36824,10 @@
    "away_pitcher": {
     "name": "Peter Lambert",
     "id": 663567,
-    "ra9": 3.14,
-    "ip_per_start": 5.73,
-    "innings": 86.0,
-    "starts": 15
+    "ra9": 3.033,
+    "ip_per_start": 5.75,
+    "innings": 92.0,
+    "starts": 16
    }
   },
   {
@@ -36759,18 +36882,18 @@
    "home_pitcher": {
     "name": "Sandy Alcantara",
     "id": 645261,
-    "ra9": 4.339,
-    "ip_per_start": 6.53,
-    "innings": 130.7,
-    "starts": 20
+    "ra9": 4.215,
+    "ip_per_start": 6.51,
+    "innings": 136.7,
+    "starts": 21
    },
    "away_pitcher": {
     "name": "Cal Quantrill",
     "id": 615698,
-    "ra9": 3.885,
-    "ip_per_start": 11.58,
-    "innings": 46.3,
-    "starts": 4
+    "ra9": 4.649,
+    "ip_per_start": 10.07,
+    "innings": 50.3,
+    "starts": 5
    }
   },
   {
@@ -37361,10 +37484,10 @@
    "away_pitcher": {
     "name": "Gage Jump",
     "id": 695611,
-    "ra9": 3.699,
-    "ip_per_start": 5.41,
-    "innings": 48.7,
-    "starts": 9
+    "ra9": 4.127,
+    "ip_per_start": 5.23,
+    "innings": 52.3,
+    "starts": 10
    }
   },
   {
@@ -37383,10 +37506,10 @@
    "away_pitcher": {
     "name": "Seth Lugo",
     "id": 607625,
-    "ra9": 5.159,
-    "ip_per_start": 5.51,
-    "innings": 104.7,
-    "starts": 19
+    "ra9": 5.042,
+    "ip_per_start": 5.53,
+    "innings": 110.7,
+    "starts": 20
    }
   },
   {
@@ -37405,10 +37528,10 @@
    "away_pitcher": {
     "name": "Bryce Miller",
     "id": 682243,
-    "ra9": 2.497,
-    "ip_per_start": 6.41,
-    "innings": 57.7,
-    "starts": 9
+    "ra9": 2.7,
+    "ip_per_start": 6.33,
+    "innings": 63.3,
+    "starts": 10
    }
   },
   {
@@ -37419,10 +37542,10 @@
    "home_pitcher": {
     "name": "Landen Roupp",
     "id": 694738,
-    "ra9": 4.639,
-    "ip_per_start": 5.39,
-    "innings": 97.0,
-    "starts": 18
+    "ra9": 4.327,
+    "ip_per_start": 5.47,
+    "innings": 104.0,
+    "starts": 19
    },
    "away_pitcher": {
     "name": "Jeffrey Springs",
@@ -37441,10 +37564,10 @@
    "home_pitcher": {
     "name": "Troy Melton",
     "id": 675512,
-    "ra9": 2.007,
-    "ip_per_start": 6.17,
-    "innings": 49.3,
-    "starts": 8
+    "ra9": 1.964,
+    "ip_per_start": 6.11,
+    "innings": 55.0,
+    "starts": 9
    },
    "away_pitcher": {
     "name": "Tatsuya Imai",
@@ -37463,10 +37586,10 @@
    "home_pitcher": {
     "name": "Cade Cavalli",
     "id": 676917,
-    "ra9": 4.652,
-    "ip_per_start": 4.93,
-    "innings": 98.7,
-    "starts": 20
+    "ra9": 4.557,
+    "ip_per_start": 4.98,
+    "innings": 104.7,
+    "starts": 21
    },
    "away_pitcher": {
     "name": "Cristopher Sánchez",
@@ -37551,10 +37674,10 @@
    "home_pitcher": {
     "name": "Michael McGreevy",
     "id": 700241,
-    "ra9": 3.01,
-    "ip_per_start": 5.65,
-    "innings": 101.7,
-    "starts": 18
+    "ra9": 3.0,
+    "ip_per_start": 5.68,
+    "innings": 108.0,
+    "starts": 19
    },
    "away_pitcher": {
     "name": "Zac Gallen",
@@ -37573,9 +37696,9 @@
    "home_pitcher": {
     "name": "Keider Montero",
     "id": 672456,
-    "ra9": 3.514,
-    "ip_per_start": 6.49,
-    "innings": 97.3,
+    "ra9": 3.397,
+    "ip_per_start": 6.71,
+    "innings": 100.7,
     "starts": 15
    },
    "away_pitcher": {
@@ -37639,9 +37762,9 @@
    "home_pitcher": {
     "name": "Patrick Corbin",
     "id": 571578,
-    "ra9": 5.07,
-    "ip_per_start": 5.09,
-    "innings": 76.3,
+    "ra9": 5.33,
+    "ip_per_start": 5.18,
+    "innings": 77.7,
     "starts": 15
    },
    "away_pitcher": {
@@ -37757,9 +37880,9 @@
    "away_pitcher": {
     "name": "Steven Cruz",
     "id": 674444,
-    "ra9": 5.17,
-    "ip_per_start": 15.67,
-    "innings": 31.3,
+    "ra9": 5.01,
+    "ip_per_start": 16.17,
+    "innings": 32.3,
     "starts": 2
    }
   },
@@ -37779,10 +37902,10 @@
    "away_pitcher": {
     "name": "Colin Rea",
     "id": 607067,
-    "ra9": 4.849,
-    "ip_per_start": 6.31,
-    "innings": 94.7,
-    "starts": 15
+    "ra9": 4.917,
+    "ip_per_start": 6.29,
+    "innings": 100.7,
+    "starts": 16
    }
   },
   {
@@ -37815,10 +37938,10 @@
    "home_pitcher": {
     "name": "Michael McGreevy",
     "id": 700241,
-    "ra9": 3.01,
-    "ip_per_start": 5.65,
-    "innings": 101.7,
-    "starts": 18
+    "ra9": 3.0,
+    "ip_per_start": 5.68,
+    "innings": 108.0,
+    "starts": 19
    },
    "away_pitcher": {
     "name": "Max Meyer",
@@ -37867,10 +37990,10 @@
    "away_pitcher": {
     "name": "Roki Sasaki",
     "id": 808963,
-    "ra9": 5.444,
-    "ip_per_start": 5.06,
-    "innings": 81.0,
-    "starts": 16
+    "ra9": 5.192,
+    "ip_per_start": 5.1,
+    "innings": 86.7,
+    "starts": 17
    }
   },
   {
@@ -37933,10 +38056,10 @@
    "away_pitcher": {
     "name": "Gerrit Cole",
     "id": 543037,
-    "ra9": 4.041,
-    "ip_per_start": 5.44,
-    "innings": 49.0,
-    "starts": 9
+    "ra9": 3.927,
+    "ip_per_start": 5.5,
+    "innings": 55.0,
+    "starts": 10
    }
   },
   {
@@ -37955,10 +38078,10 @@
    "away_pitcher": {
     "name": "Cal Quantrill",
     "id": 615698,
-    "ra9": 3.885,
-    "ip_per_start": 11.58,
-    "innings": 46.3,
-    "starts": 4
+    "ra9": 4.649,
+    "ip_per_start": 10.07,
+    "innings": 50.3,
+    "starts": 5
    }
   },
   {
@@ -38035,9 +38158,9 @@
    "home_pitcher": {
     "name": "Cole Sulser",
     "id": 642121,
-    "ra9": 5.975,
-    "ip_per_start": 20.33,
-    "innings": 40.7,
+    "ra9": 5.832,
+    "ip_per_start": 20.83,
+    "innings": 41.7,
     "starts": 2
    },
    "away_pitcher": {
@@ -38167,9 +38290,9 @@
    "home_pitcher": {
     "name": "Kyle Hart",
     "id": 606996,
-    "ra9": 5.347,
-    "ip_per_start": 33.67,
-    "innings": 33.7,
+    "ra9": 6.353,
+    "ip_per_start": 34.0,
+    "innings": 34.0,
     "starts": 1
    },
    "away_pitcher": {
@@ -38211,10 +38334,10 @@
    "home_pitcher": {
     "name": "Reid Detmers",
     "id": 672282,
-    "ra9": 4.638,
-    "ip_per_start": 5.72,
-    "innings": 108.7,
-    "starts": 19
+    "ra9": 4.395,
+    "ip_per_start": 5.73,
+    "innings": 114.7,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "Jack Perkins",
@@ -38263,10 +38386,10 @@
    "away_pitcher": {
     "name": "Brady Singer",
     "id": 663903,
-    "ra9": 5.219,
-    "ip_per_start": 4.98,
-    "innings": 89.7,
-    "starts": 18
+    "ra9": 5.028,
+    "ip_per_start": 5.09,
+    "innings": 96.7,
+    "starts": 19
    }
   },
   {
@@ -38351,10 +38474,10 @@
    "away_pitcher": {
     "name": "Merrill Kelly",
     "id": 518876,
-    "ra9": 5.381,
-    "ip_per_start": 5.85,
-    "innings": 93.7,
-    "starts": 16
+    "ra9": 5.382,
+    "ip_per_start": 5.8,
+    "innings": 98.7,
+    "starts": 17
    }
   },
   {
@@ -38409,10 +38532,10 @@
    "home_pitcher": {
     "name": "Anthony Kay",
     "id": 641743,
-    "ra9": 4.634,
-    "ip_per_start": 5.25,
-    "innings": 89.3,
-    "starts": 17
+    "ra9": 4.629,
+    "ip_per_start": 5.19,
+    "innings": 93.3,
+    "starts": 18
    },
    "away_pitcher": {
     "name": "Luinder Avila",
@@ -38439,9 +38562,9 @@
    "away_pitcher": {
     "name": "Ryan Rolison",
     "id": 669020,
-    "ra9": 3.311,
-    "ip_per_start": 17.67,
-    "innings": 35.3,
+    "ra9": 3.22,
+    "ip_per_start": 18.17,
+    "innings": 36.3,
     "starts": 2
    }
   },
@@ -38505,10 +38628,10 @@
    "away_pitcher": {
     "name": "Chris Sale",
     "id": 519242,
-    "ra9": 2.663,
-    "ip_per_start": 5.76,
-    "innings": 98.0,
-    "starts": 17
+    "ra9": 2.486,
+    "ip_per_start": 5.83,
+    "innings": 105.0,
+    "starts": 18
    }
   },
   {
@@ -38519,10 +38642,10 @@
    "home_pitcher": {
     "name": "Michael King",
     "id": 650633,
-    "ra9": 3.489,
-    "ip_per_start": 5.7,
-    "innings": 108.3,
-    "starts": 19
+    "ra9": 3.415,
+    "ip_per_start": 5.67,
+    "innings": 113.3,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "Emmet Sheehan",
@@ -38739,10 +38862,10 @@
    "home_pitcher": {
     "name": "Peter Lambert",
     "id": 663567,
-    "ra9": 3.14,
-    "ip_per_start": 5.73,
-    "innings": 86.0,
-    "starts": 15
+    "ra9": 3.033,
+    "ip_per_start": 5.75,
+    "innings": 92.0,
+    "starts": 16
    },
    "away_pitcher": {
     "name": "Zebby Matthews",
@@ -38769,10 +38892,10 @@
    "away_pitcher": {
     "name": "Sandy Alcantara",
     "id": 645261,
-    "ra9": 4.339,
-    "ip_per_start": 6.53,
-    "innings": 130.7,
-    "starts": 20
+    "ra9": 4.215,
+    "ip_per_start": 6.51,
+    "innings": 136.7,
+    "starts": 21
    }
   },
   {
@@ -38783,10 +38906,10 @@
    "home_pitcher": {
     "name": "Gage Jump",
     "id": 695611,
-    "ra9": 3.699,
-    "ip_per_start": 5.41,
-    "innings": 48.7,
-    "starts": 9
+    "ra9": 4.127,
+    "ip_per_start": 5.23,
+    "innings": 52.3,
+    "starts": 10
    },
    "away_pitcher": {
     "name": "Eric Lauer",
@@ -38967,10 +39090,10 @@
    "away_pitcher": {
     "name": "Cade Cavalli",
     "id": 676917,
-    "ra9": 4.652,
-    "ip_per_start": 4.93,
-    "innings": 98.7,
-    "starts": 20
+    "ra9": 4.557,
+    "ip_per_start": 4.98,
+    "innings": 104.7,
+    "starts": 21
    }
   },
   {
@@ -39165,10 +39288,10 @@
    "away_pitcher": {
     "name": "Landen Roupp",
     "id": 694738,
-    "ra9": 4.639,
-    "ip_per_start": 5.39,
-    "innings": 97.0,
-    "starts": 18
+    "ra9": 4.327,
+    "ip_per_start": 5.47,
+    "innings": 104.0,
+    "starts": 19
    }
   },
   {
@@ -39179,10 +39302,10 @@
    "home_pitcher": {
     "name": "Dean Kremer",
     "id": 665152,
-    "ra9": 4.909,
-    "ip_per_start": 5.5,
-    "innings": 22.0,
-    "starts": 4
+    "ra9": 4.846,
+    "ip_per_start": 5.2,
+    "innings": 26.0,
+    "starts": 5
    },
    "away_pitcher": {
     "name": "Noah Schultz",
@@ -39253,10 +39376,10 @@
    "away_pitcher": {
     "name": "Troy Melton",
     "id": 675512,
-    "ra9": 2.007,
-    "ip_per_start": 6.17,
-    "innings": 49.3,
-    "starts": 8
+    "ra9": 1.964,
+    "ip_per_start": 6.11,
+    "innings": 55.0,
+    "starts": 9
    }
   },
   {
@@ -39267,10 +39390,10 @@
    "home_pitcher": {
     "name": "Colin Rea",
     "id": 607067,
-    "ra9": 4.849,
-    "ip_per_start": 6.31,
-    "innings": 94.7,
-    "starts": 15
+    "ra9": 4.917,
+    "ip_per_start": 6.29,
+    "innings": 100.7,
+    "starts": 16
    },
    "away_pitcher": {
     "name": "Walker Buehler",
@@ -39289,9 +39412,9 @@
    "home_pitcher": {
     "name": "Braydon Fisher",
     "id": 680755,
-    "ra9": 4.213,
-    "ip_per_start": 7.83,
-    "innings": 47.0,
+    "ra9": 4.343,
+    "ip_per_start": 7.94,
+    "innings": 47.7,
     "starts": 6
    },
    "away_pitcher": {
@@ -39341,10 +39464,10 @@
    "away_pitcher": {
     "name": "Michael McGreevy",
     "id": 700241,
-    "ra9": 3.01,
-    "ip_per_start": 5.65,
-    "innings": 101.7,
-    "starts": 18
+    "ra9": 3.0,
+    "ip_per_start": 5.68,
+    "innings": 108.0,
+    "starts": 19
    }
   },
   {
@@ -39355,10 +39478,10 @@
    "home_pitcher": {
     "name": "Seth Lugo",
     "id": 607625,
-    "ra9": 5.159,
-    "ip_per_start": 5.51,
-    "innings": 104.7,
-    "starts": 19
+    "ra9": 5.042,
+    "ip_per_start": 5.53,
+    "innings": 110.7,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "Shane McClanahan",
@@ -39634,10 +39757,10 @@
    "home_pitcher": {
     "name": "Bryce Miller",
     "id": 682243,
-    "ra9": 2.497,
-    "ip_per_start": 6.41,
-    "innings": 57.7,
-    "starts": 9
+    "ra9": 2.7,
+    "ip_per_start": 6.33,
+    "innings": 63.3,
+    "starts": 10
    },
    "away_pitcher": {
     "name": "Walbert Ureña",
@@ -39656,10 +39779,10 @@
    "home_pitcher": {
     "name": "Roki Sasaki",
     "id": 808963,
-    "ra9": 5.444,
-    "ip_per_start": 5.06,
-    "innings": 81.0,
-    "starts": 16
+    "ra9": 5.192,
+    "ip_per_start": 5.1,
+    "innings": 86.7,
+    "starts": 17
    },
    "away_pitcher": {
     "name": "Randy Vásquez",
@@ -39722,10 +39845,10 @@
    "home_pitcher": {
     "name": "Gerrit Cole",
     "id": 543037,
-    "ra9": 4.041,
-    "ip_per_start": 5.44,
-    "innings": 49.0,
-    "starts": 9
+    "ra9": 3.927,
+    "ip_per_start": 5.5,
+    "innings": 55.0,
+    "starts": 10
    },
    "away_pitcher": {
     "name": "Mike Paredes",
@@ -39744,10 +39867,10 @@
    "home_pitcher": {
     "name": "Brady Singer",
     "id": 663903,
-    "ra9": 5.219,
-    "ip_per_start": 4.98,
-    "innings": 89.7,
-    "starts": 18
+    "ra9": 5.028,
+    "ip_per_start": 5.09,
+    "innings": 96.7,
+    "starts": 19
    },
    "away_pitcher": {
     "name": "Trevor Rogers",
@@ -39774,10 +39897,10 @@
    "away_pitcher": {
     "name": "Anthony Kay",
     "id": 641743,
-    "ra9": 4.634,
-    "ip_per_start": 5.25,
-    "innings": 89.3,
-    "starts": 17
+    "ra9": 4.629,
+    "ip_per_start": 5.19,
+    "innings": 93.3,
+    "starts": 18
    }
   },
   {
@@ -39854,10 +39977,10 @@
    "home_pitcher": {
     "name": "Reid Detmers",
     "id": 672282,
-    "ra9": 4.638,
-    "ip_per_start": 5.72,
-    "innings": 108.7,
-    "starts": 19
+    "ra9": 4.395,
+    "ip_per_start": 5.73,
+    "innings": 114.7,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "Jake Bennett",
@@ -39928,10 +40051,10 @@
    "away_pitcher": {
     "name": "Michael King",
     "id": 650633,
-    "ra9": 3.489,
-    "ip_per_start": 5.7,
-    "innings": 108.3,
-    "starts": 19
+    "ra9": 3.415,
+    "ip_per_start": 5.67,
+    "innings": 113.3,
+    "starts": 20
    }
   },
   {
@@ -40008,10 +40131,10 @@
    "home_pitcher": {
     "name": "Cal Quantrill",
     "id": 615698,
-    "ra9": 3.885,
-    "ip_per_start": 11.58,
-    "innings": 46.3,
-    "starts": 4
+    "ra9": 4.649,
+    "ip_per_start": 10.07,
+    "innings": 50.3,
+    "starts": 5
    },
    "away_pitcher": {
     "name": "Jack Flaherty",
@@ -40140,10 +40263,10 @@
    "home_pitcher": {
     "name": "Chris Sale",
     "id": 519242,
-    "ra9": 2.663,
-    "ip_per_start": 5.76,
-    "innings": 98.0,
-    "starts": 17
+    "ra9": 2.486,
+    "ip_per_start": 5.83,
+    "innings": 105.0,
+    "starts": 18
    },
    "away_pitcher": {
     "name": "Sean Manaea",
@@ -40236,10 +40359,10 @@
    "away_pitcher": {
     "name": "Sandy Alcantara",
     "id": 645261,
-    "ra9": 4.339,
-    "ip_per_start": 6.53,
-    "innings": 130.7,
-    "starts": 20
+    "ra9": 4.215,
+    "ip_per_start": 6.51,
+    "innings": 136.7,
+    "starts": 21
    }
   },
   {
@@ -40250,10 +40373,10 @@
    "home_pitcher": {
     "name": "Merrill Kelly",
     "id": 518876,
-    "ra9": 5.381,
-    "ip_per_start": 5.85,
-    "innings": 93.7,
-    "starts": 16
+    "ra9": 5.382,
+    "ip_per_start": 5.8,
+    "innings": 98.7,
+    "starts": 17
    },
    "away_pitcher": {
     "name": "Brandon Woodruff",
@@ -40316,10 +40439,10 @@
    "home_pitcher": {
     "name": "Cade Cavalli",
     "id": 676917,
-    "ra9": 4.652,
-    "ip_per_start": 4.93,
-    "innings": 98.7,
-    "starts": 20
+    "ra9": 4.557,
+    "ip_per_start": 4.98,
+    "innings": 104.7,
+    "starts": 21
    },
    "away_pitcher": {
     "name": "Bubba Chandler",
@@ -40448,18 +40571,18 @@
    "home_pitcher": {
     "name": "Peter Lambert",
     "id": 663567,
-    "ra9": 3.14,
-    "ip_per_start": 5.73,
-    "innings": 86.0,
-    "starts": 15
+    "ra9": 3.033,
+    "ip_per_start": 5.75,
+    "innings": 92.0,
+    "starts": 16
    },
    "away_pitcher": {
     "name": "Mason Englert",
     "id": 669438,
-    "ra9": 4.109,
-    "ip_per_start": 15.33,
-    "innings": 30.7,
-    "starts": 2
+    "ra9": 4.794,
+    "ip_per_start": 11.89,
+    "innings": 35.7,
+    "starts": 3
    }
   },
   {
@@ -40536,10 +40659,10 @@
    "home_pitcher": {
     "name": "Gage Jump",
     "id": 695611,
-    "ra9": 3.699,
-    "ip_per_start": 5.41,
-    "innings": 48.7,
-    "starts": 9
+    "ra9": 4.127,
+    "ip_per_start": 5.23,
+    "innings": 52.3,
+    "starts": 10
    },
    "away_pitcher": {
     "name": "Eury Pérez",
@@ -40756,10 +40879,10 @@
    "home_pitcher": {
     "name": "Landen Roupp",
     "id": 694738,
-    "ra9": 4.639,
-    "ip_per_start": 5.39,
-    "innings": 97.0,
-    "starts": 18
+    "ra9": 4.327,
+    "ip_per_start": 5.47,
+    "innings": 104.0,
+    "starts": 19
    },
    "away_pitcher": {
     "name": "Kevin Gausman",
@@ -40984,10 +41107,10 @@
    "away_pitcher": {
     "name": "Seth Lugo",
     "id": 607625,
-    "ra9": 5.159,
-    "ip_per_start": 5.51,
-    "innings": 104.7,
-    "starts": 19
+    "ra9": 5.042,
+    "ip_per_start": 5.53,
+    "innings": 110.7,
+    "starts": 20
    }
   },
   {
@@ -41116,10 +41239,10 @@
    "away_pitcher": {
     "name": "Spencer Miles",
     "id": 693686,
-    "ra9": 3.15,
-    "ip_per_start": 20.0,
-    "innings": 60.0,
-    "starts": 3
+    "ra9": 3.797,
+    "ip_per_start": 16.0,
+    "innings": 64.0,
+    "starts": 4
    }
   },
   {
@@ -41174,18 +41297,18 @@
    "home_pitcher": {
     "name": "Dean Kremer",
     "id": 665152,
-    "ra9": 4.909,
-    "ip_per_start": 5.5,
-    "innings": 22.0,
-    "starts": 4
+    "ra9": 4.846,
+    "ip_per_start": 5.2,
+    "innings": 26.0,
+    "starts": 5
    },
    "away_pitcher": {
     "name": "Colin Rea",
     "id": 607067,
-    "ra9": 4.849,
-    "ip_per_start": 6.31,
-    "innings": 94.7,
-    "starts": 15
+    "ra9": 4.917,
+    "ip_per_start": 6.29,
+    "innings": 100.7,
+    "starts": 16
    }
   },
   {
@@ -41196,10 +41319,10 @@
    "home_pitcher": {
     "name": "Troy Melton",
     "id": 675512,
-    "ra9": 2.007,
-    "ip_per_start": 6.17,
-    "innings": 49.3,
-    "starts": 8
+    "ra9": 1.964,
+    "ip_per_start": 6.11,
+    "innings": 55.0,
+    "starts": 9
    },
    "away_pitcher": {
     "name": "Jeffrey Springs",
@@ -41270,10 +41393,10 @@
    "away_pitcher": {
     "name": "Gerrit Cole",
     "id": 543037,
-    "ra9": 4.041,
-    "ip_per_start": 5.44,
-    "innings": 49.0,
-    "starts": 9
+    "ra9": 3.927,
+    "ip_per_start": 5.5,
+    "innings": 55.0,
+    "starts": 10
    }
   },
   {
@@ -41314,9 +41437,9 @@
    "away_pitcher": {
     "name": "Steven Cruz",
     "id": 674444,
-    "ra9": 5.17,
-    "ip_per_start": 15.67,
-    "innings": 31.3,
+    "ra9": 5.01,
+    "ip_per_start": 16.17,
+    "innings": 32.3,
     "starts": 2
    }
   },
@@ -41394,10 +41517,10 @@
    "home_pitcher": {
     "name": "Michael McGreevy",
     "id": 700241,
-    "ra9": 3.01,
-    "ip_per_start": 5.65,
-    "innings": 101.7,
-    "starts": 18
+    "ra9": 3.0,
+    "ip_per_start": 5.68,
+    "innings": 108.0,
+    "starts": 19
    },
    "away_pitcher": {
     "name": "Kyle Harrison",
@@ -41438,18 +41561,18 @@
    "home_pitcher": {
     "name": "Roki Sasaki",
     "id": 808963,
-    "ra9": 5.444,
-    "ip_per_start": 5.06,
-    "innings": 81.0,
-    "starts": 16
+    "ra9": 5.192,
+    "ip_per_start": 5.1,
+    "innings": 86.7,
+    "starts": 17
    },
    "away_pitcher": {
     "name": "Gabriel Hughes",
     "id": 687312,
-    "ra9": 3.0,
-    "ip_per_start": 9.0,
-    "innings": 9.0,
-    "starts": 1
+    "ra9": 3.14,
+    "ip_per_start": 7.17,
+    "innings": 14.3,
+    "starts": 2
    }
   },
   {
@@ -41460,10 +41583,10 @@
    "home_pitcher": {
     "name": "Michael King",
     "id": 650633,
-    "ra9": 3.489,
-    "ip_per_start": 5.7,
-    "innings": 108.3,
-    "starts": 19
+    "ra9": 3.415,
+    "ip_per_start": 5.67,
+    "innings": 113.3,
+    "starts": 20
    },
    "away_pitcher": {
     "name": "Jose Cabrera",
@@ -41534,9 +41657,9 @@
    "away_pitcher": {
     "name": "Paul Blackburn",
     "id": 621112,
-    "ra9": 2.404,
-    "ip_per_start": 24.33,
-    "innings": 48.7,
+    "ra9": 2.356,
+    "ip_per_start": 24.83,
+    "innings": 49.7,
     "starts": 2
    }
   },
@@ -41570,10 +41693,10 @@
    "home_pitcher": {
     "name": "Bailey Ober",
     "id": 641927,
-    "ra9": 4.647,
-    "ip_per_start": 5.51,
-    "innings": 71.7,
-    "starts": 13
+    "ra9": 4.558,
+    "ip_per_start": 5.5,
+    "innings": 77.0,
+    "starts": 14
    },
    "away_pitcher": {
     "name": "Gavin Williams",
@@ -41592,10 +41715,10 @@
    "home_pitcher": {
     "name": "Anthony Kay",
     "id": 641743,
-    "ra9": 4.634,
-    "ip_per_start": 5.25,
-    "innings": 89.3,
-    "starts": 17
+    "ra9": 4.629,
+    "ip_per_start": 5.19,
+    "innings": 93.3,
+    "starts": 18
    },
    "away_pitcher": {
     "name": "Patrick Sandoval",
@@ -41622,9 +41745,9 @@
    "away_pitcher": {
     "name": "José Suarez",
     "id": 660761,
-    "ra9": 4.649,
-    "ip_per_start": 25.17,
-    "innings": 50.3,
+    "ra9": 4.909,
+    "ip_per_start": 25.67,
+    "innings": 51.3,
     "starts": 2
    }
   },
@@ -41644,10 +41767,10 @@
    "away_pitcher": {
     "name": "Bryce Miller",
     "id": 682243,
-    "ra9": 2.497,
-    "ip_per_start": 6.41,
-    "innings": 57.7,
-    "starts": 9
+    "ra9": 2.7,
+    "ip_per_start": 6.33,
+    "innings": 63.3,
+    "starts": 10
    }
   },
   {
@@ -41658,10 +41781,10 @@
    "home_pitcher": {
     "name": "Brady Singer",
     "id": 663903,
-    "ra9": 5.219,
-    "ip_per_start": 4.98,
-    "innings": 89.7,
-    "starts": 18
+    "ra9": 5.028,
+    "ip_per_start": 5.09,
+    "innings": 96.7,
+    "starts": 19
    },
    "away_pitcher": {
     "name": "Jesús Luzardo",
@@ -41688,10 +41811,10 @@
    "away_pitcher": {
     "name": "Logan Henderson",
     "id": 701656,
-    "ra9": 3.176,
-    "ip_per_start": 4.72,
-    "innings": 28.3,
-    "starts": 6
+    "ra9": 2.97,
+    "ip_per_start": 4.76,
+    "innings": 33.3,
+    "starts": 7
    }
   },
   {
@@ -41710,10 +41833,10 @@
    "away_pitcher": {
     "name": "Reid Detmers",
     "id": 672282,
-    "ra9": 4.638,
-    "ip_per_start": 5.72,
-    "innings": 108.7,
-    "starts": 19
+    "ra9": 4.395,
+    "ip_per_start": 5.73,
+    "innings": 114.7,
+    "starts": 20
    }
   },
   {
@@ -41732,10 +41855,10 @@
    "away_pitcher": {
     "name": "Merrill Kelly",
     "id": 518876,
-    "ra9": 5.381,
-    "ip_per_start": 5.85,
-    "innings": 93.7,
-    "starts": 16
+    "ra9": 5.382,
+    "ip_per_start": 5.8,
+    "innings": 98.7,
+    "starts": 17
    }
   },
   {
@@ -41878,10 +42001,10 @@
    "home_pitcher": {
     "name": "Sandy Alcantara",
     "id": 645261,
-    "ra9": 4.339,
-    "ip_per_start": 6.53,
-    "innings": 130.7,
-    "starts": 20
+    "ra9": 4.215,
+    "ip_per_start": 6.51,
+    "innings": 136.7,
+    "starts": 21
    },
    "away_pitcher": {
     "name": "Parker Messick",
@@ -41944,10 +42067,10 @@
    "home_pitcher": {
     "name": "Cal Quantrill",
     "id": 615698,
-    "ra9": 3.885,
-    "ip_per_start": 11.58,
-    "innings": 46.3,
-    "starts": 4
+    "ra9": 4.649,
+    "ip_per_start": 10.07,
+    "innings": 50.3,
+    "starts": 5
    },
    "away_pitcher": {
     "name": "Hunter Brown",
@@ -41996,10 +42119,10 @@
    "away_pitcher": {
     "name": "Chris Sale",
     "id": 519242,
-    "ra9": 2.663,
-    "ip_per_start": 5.76,
-    "innings": 98.0,
-    "starts": 17
+    "ra9": 2.486,
+    "ip_per_start": 5.83,
+    "innings": 105.0,
+    "starts": 18
    }
   },
   {
@@ -42172,10 +42295,10 @@
    "away_pitcher": {
     "name": "Gage Jump",
     "id": 695611,
-    "ra9": 3.699,
-    "ip_per_start": 5.41,
-    "innings": 48.7,
-    "starts": 9
+    "ra9": 4.127,
+    "ip_per_start": 5.23,
+    "innings": 52.3,
+    "starts": 10
    }
   },
   {
@@ -42238,10 +42361,10 @@
    "away_pitcher": {
     "name": "Eduardo Rivera",
     "id": 700842,
-    "ra9": 0.0,
-    "ip_per_start": 7.0,
-    "innings": 7.0,
-    "starts": 1
+    "ra9": 2.893,
+    "ip_per_start": 4.67,
+    "innings": 9.3,
+    "starts": 2
    }
   },
   {
@@ -42348,10 +42471,10 @@
    "away_pitcher": {
     "name": "Peter Lambert",
     "id": 663567,
-    "ra9": 3.14,
-    "ip_per_start": 5.73,
-    "innings": 86.0,
-    "starts": 15
+    "ra9": 3.033,
+    "ip_per_start": 5.75,
+    "innings": 92.0,
+    "starts": 16
    }
   },
   {
@@ -42480,10 +42603,10 @@
    "away_pitcher": {
     "name": "Seth Lugo",
     "id": 607625,
-    "ra9": 5.159,
-    "ip_per_start": 5.51,
-    "innings": 104.7,
-    "starts": 19
+    "ra9": 5.042,
+    "ip_per_start": 5.53,
+    "innings": 110.7,
+    "starts": 20
    }
   },
   {
@@ -42494,10 +42617,10 @@
    "home_pitcher": {
     "name": "Cade Cavalli",
     "id": 676917,
-    "ra9": 4.652,
-    "ip_per_start": 4.93,
-    "innings": 98.7,
-    "starts": 20
+    "ra9": 4.557,
+    "ip_per_start": 4.98,
+    "innings": 104.7,
+    "starts": 21
    },
    "away_pitcher": {
     "name": "Will Warren",
@@ -42821,14 +42944,21 @@
    "gamePk": 824737,
    "home": "Boston Red Sox",
    "away": "Tampa Bay Rays",
-   "home_pitcher": null,
+   "home_pitcher": {
+    "name": "Eduardo Rivera",
+    "id": 700842,
+    "ra9": 2.893,
+    "ip_per_start": 4.67,
+    "innings": 9.3,
+    "starts": 2
+   },
    "away_pitcher": {
     "name": "Mason Englert",
     "id": 669438,
-    "ra9": 4.109,
-    "ip_per_start": 15.33,
-    "innings": 30.7,
-    "starts": 2
+    "ra9": 4.794,
+    "ip_per_start": 11.89,
+    "innings": 35.7,
+    "starts": 3
    }
   },
   {
@@ -42839,18 +42969,260 @@
    "home_pitcher": {
     "name": "Gerrit Cole",
     "id": 543037,
-    "ra9": 4.041,
-    "ip_per_start": 5.44,
-    "innings": 49.0,
-    "starts": 9
+    "ra9": 3.927,
+    "ip_per_start": 5.5,
+    "innings": 55.0,
+    "starts": 10
    },
    "away_pitcher": {
     "name": "Roki Sasaki",
     "id": 808963,
-    "ra9": 5.444,
-    "ip_per_start": 5.06,
-    "innings": 81.0,
+    "ra9": 5.192,
+    "ip_per_start": 5.1,
+    "innings": 86.7,
+    "starts": 17
+   }
+  },
+  {
+   "date": "2026-07-17",
+   "gamePk": 824901,
+   "home": "Atlanta Braves",
+   "away": "Texas Rangers",
+   "home_pitcher": {
+    "name": "Chris Sale",
+    "id": 519242,
+    "ra9": 2.486,
+    "ip_per_start": 5.83,
+    "innings": 105.0,
+    "starts": 18
+   },
+   "away_pitcher": {
+    "name": "Cal Quantrill",
+    "id": 615698,
+    "ra9": 4.649,
+    "ip_per_start": 10.07,
+    "innings": 50.3,
+    "starts": 5
+   }
+  },
+  {
+   "date": "2026-07-17",
+   "gamePk": 822789,
+   "home": "Toronto Blue Jays",
+   "away": "Chicago White Sox",
+   "home_pitcher": {
+    "name": "Spencer Miles",
+    "id": 693686,
+    "ra9": 3.797,
+    "ip_per_start": 16.0,
+    "innings": 64.0,
+    "starts": 4
+   },
+   "away_pitcher": {
+    "name": "Anthony Kay",
+    "id": 641743,
+    "ra9": 4.629,
+    "ip_per_start": 5.19,
+    "innings": 93.3,
+    "starts": 18
+   }
+  },
+  {
+   "date": "2026-07-17",
+   "gamePk": 823766,
+   "home": "Milwaukee Brewers",
+   "away": "Miami Marlins",
+   "home_pitcher": {
+    "name": "Logan Henderson",
+    "id": 701656,
+    "ra9": 2.97,
+    "ip_per_start": 4.76,
+    "innings": 33.3,
+    "starts": 7
+   },
+   "away_pitcher": {
+    "name": "Sandy Alcantara",
+    "id": 645261,
+    "ra9": 4.215,
+    "ip_per_start": 6.51,
+    "innings": 136.7,
+    "starts": 21
+   }
+  },
+  {
+   "date": "2026-07-17",
+   "gamePk": 824655,
+   "home": "Chicago Cubs",
+   "away": "Minnesota Twins",
+   "home_pitcher": {
+    "name": "Colin Rea",
+    "id": 607067,
+    "ra9": 4.917,
+    "ip_per_start": 6.29,
+    "innings": 100.7,
     "starts": 16
+   },
+   "away_pitcher": {
+    "name": "Bailey Ober",
+    "id": 641927,
+    "ra9": 4.558,
+    "ip_per_start": 5.5,
+    "innings": 77.0,
+    "starts": 14
+   }
+  },
+  {
+   "date": "2026-07-17",
+   "gamePk": 824170,
+   "home": "Houston Astros",
+   "away": "Baltimore Orioles",
+   "home_pitcher": {
+    "name": "Peter Lambert",
+    "id": 663567,
+    "ra9": 3.033,
+    "ip_per_start": 5.75,
+    "innings": 92.0,
+    "starts": 16
+   },
+   "away_pitcher": {
+    "name": "Dean Kremer",
+    "id": 665152,
+    "ra9": 4.846,
+    "ip_per_start": 5.2,
+    "innings": 26.0,
+    "starts": 5
+   }
+  },
+  {
+   "date": "2026-07-17",
+   "gamePk": 824090,
+   "home": "Kansas City Royals",
+   "away": "San Diego Padres",
+   "home_pitcher": {
+    "name": "Seth Lugo",
+    "id": 607625,
+    "ra9": 5.042,
+    "ip_per_start": 5.53,
+    "innings": 110.7,
+    "starts": 20
+   },
+   "away_pitcher": {
+    "name": "Michael King",
+    "id": 650633,
+    "ra9": 3.415,
+    "ip_per_start": 5.67,
+    "innings": 113.3,
+    "starts": 20
+   }
+  },
+  {
+   "date": "2026-07-17",
+   "gamePk": 824332,
+   "home": "Colorado Rockies",
+   "away": "Cincinnati Reds",
+   "home_pitcher": {
+    "name": "Gabriel Hughes",
+    "id": 687312,
+    "ra9": 3.14,
+    "ip_per_start": 7.17,
+    "innings": 14.3,
+    "starts": 2
+   },
+   "away_pitcher": {
+    "name": "Brady Singer",
+    "id": 663903,
+    "ra9": 5.028,
+    "ip_per_start": 5.09,
+    "innings": 96.7,
+    "starts": 19
+   }
+  },
+  {
+   "date": "2026-07-17",
+   "gamePk": 824009,
+   "home": "Los Angeles Angels",
+   "away": "Detroit Tigers",
+   "home_pitcher": {
+    "name": "Reid Detmers",
+    "id": 672282,
+    "ra9": 4.395,
+    "ip_per_start": 5.73,
+    "innings": 114.7,
+    "starts": 20
+   },
+   "away_pitcher": {
+    "name": "Troy Melton",
+    "id": 675512,
+    "ra9": 1.964,
+    "ip_per_start": 6.11,
+    "innings": 55.0,
+    "starts": 9
+   }
+  },
+  {
+   "date": "2026-07-17",
+   "gamePk": 824981,
+   "home": "Athletics",
+   "away": "Washington Nationals",
+   "home_pitcher": {
+    "name": "Gage Jump",
+    "id": 695611,
+    "ra9": 4.127,
+    "ip_per_start": 5.23,
+    "innings": 52.3,
+    "starts": 10
+   },
+   "away_pitcher": {
+    "name": "Cade Cavalli",
+    "id": 676917,
+    "ra9": 4.557,
+    "ip_per_start": 4.98,
+    "innings": 104.7,
+    "starts": 21
+   }
+  },
+  {
+   "date": "2026-07-17",
+   "gamePk": 825060,
+   "home": "Arizona Diamondbacks",
+   "away": "St. Louis Cardinals",
+   "home_pitcher": {
+    "name": "Merrill Kelly",
+    "id": 518876,
+    "ra9": 5.382,
+    "ip_per_start": 5.8,
+    "innings": 98.7,
+    "starts": 17
+   },
+   "away_pitcher": {
+    "name": "Michael McGreevy",
+    "id": 700241,
+    "ra9": 3.0,
+    "ip_per_start": 5.68,
+    "innings": 108.0,
+    "starts": 19
+   }
+  },
+  {
+   "date": "2026-07-17",
+   "gamePk": 823115,
+   "home": "Seattle Mariners",
+   "away": "San Francisco Giants",
+   "home_pitcher": {
+    "name": "Bryce Miller",
+    "id": 682243,
+    "ra9": 2.7,
+    "ip_per_start": 6.33,
+    "innings": 63.3,
+    "starts": 10
+   },
+   "away_pitcher": {
+    "name": "Landen Roupp",
+    "id": 694738,
+    "ra9": 4.327,
+    "ip_per_start": 5.47,
+    "innings": 104.0,
+    "starts": 19
    }
   },
   {
@@ -42876,246 +43248,41 @@
    }
   },
   {
-   "date": "2026-07-17",
-   "gamePk": 824901,
-   "home": "Atlanta Braves",
-   "away": "Texas Rangers",
+   "date": "2026-07-18",
+   "gamePk": 824414,
+   "home": "Cleveland Guardians",
+   "away": "Pittsburgh Pirates",
    "home_pitcher": {
-    "name": "Chris Sale",
-    "id": 519242,
-    "ra9": 2.663,
-    "ip_per_start": 5.76,
-    "innings": 98.0,
-    "starts": 17
-   },
-   "away_pitcher": {
-    "name": "Cal Quantrill",
-    "id": 615698,
-    "ra9": 3.885,
-    "ip_per_start": 11.58,
-    "innings": 46.3,
-    "starts": 4
-   }
-  },
-  {
-   "date": "2026-07-17",
-   "gamePk": 822789,
-   "home": "Toronto Blue Jays",
-   "away": "Chicago White Sox",
-   "home_pitcher": {
-    "name": "Spencer Miles",
-    "id": 693686,
-    "ra9": 3.15,
-    "ip_per_start": 20.0,
-    "innings": 60.0,
-    "starts": 3
-   },
-   "away_pitcher": {
-    "name": "Anthony Kay",
-    "id": 641743,
-    "ra9": 4.634,
-    "ip_per_start": 5.25,
-    "innings": 89.3,
-    "starts": 17
-   }
-  },
-  {
-   "date": "2026-07-17",
-   "gamePk": 823766,
-   "home": "Milwaukee Brewers",
-   "away": "Miami Marlins",
-   "home_pitcher": {
-    "name": "Logan Henderson",
-    "id": 701656,
-    "ra9": 3.176,
-    "ip_per_start": 4.72,
-    "innings": 28.3,
-    "starts": 6
-   },
-   "away_pitcher": {
-    "name": "Sandy Alcantara",
-    "id": 645261,
-    "ra9": 4.339,
-    "ip_per_start": 6.53,
-    "innings": 130.7,
-    "starts": 20
-   }
-  },
-  {
-   "date": "2026-07-17",
-   "gamePk": 824655,
-   "home": "Chicago Cubs",
-   "away": "Minnesota Twins",
-   "home_pitcher": {
-    "name": "Colin Rea",
-    "id": 607067,
-    "ra9": 4.849,
-    "ip_per_start": 6.31,
-    "innings": 94.7,
-    "starts": 15
-   },
-   "away_pitcher": {
-    "name": "Bailey Ober",
-    "id": 641927,
-    "ra9": 4.647,
-    "ip_per_start": 5.51,
-    "innings": 71.7,
-    "starts": 13
-   }
-  },
-  {
-   "date": "2026-07-17",
-   "gamePk": 824170,
-   "home": "Houston Astros",
-   "away": "Baltimore Orioles",
-   "home_pitcher": {
-    "name": "Peter Lambert",
-    "id": 663567,
-    "ra9": 3.14,
-    "ip_per_start": 5.73,
-    "innings": 86.0,
-    "starts": 15
-   },
-   "away_pitcher": {
-    "name": "Dean Kremer",
-    "id": 665152,
-    "ra9": 4.909,
-    "ip_per_start": 5.5,
-    "innings": 22.0,
-    "starts": 4
-   }
-  },
-  {
-   "date": "2026-07-17",
-   "gamePk": 824090,
-   "home": "Kansas City Royals",
-   "away": "San Diego Padres",
-   "home_pitcher": {
-    "name": "Seth Lugo",
-    "id": 607625,
-    "ra9": 5.159,
-    "ip_per_start": 5.51,
-    "innings": 104.7,
+    "name": "Gavin Williams",
+    "id": 668909,
+    "ra9": 4.05,
+    "ip_per_start": 5.96,
+    "innings": 113.3,
     "starts": 19
    },
    "away_pitcher": {
-    "name": "Michael King",
-    "id": 650633,
-    "ra9": 3.489,
-    "ip_per_start": 5.7,
-    "innings": 108.3,
-    "starts": 19
-   }
-  },
-  {
-   "date": "2026-07-17",
-   "gamePk": 824332,
-   "home": "Colorado Rockies",
-   "away": "Cincinnati Reds",
-   "home_pitcher": {
-    "name": "Gabriel Hughes",
-    "id": 687312,
-    "ra9": 3.0,
-    "ip_per_start": 9.0,
-    "innings": 9.0,
-    "starts": 1
-   },
-   "away_pitcher": {
-    "name": "Brady Singer",
-    "id": 663903,
-    "ra9": 5.219,
-    "ip_per_start": 4.98,
-    "innings": 89.7,
-    "starts": 18
-   }
-  },
-  {
-   "date": "2026-07-17",
-   "gamePk": 824009,
-   "home": "Los Angeles Angels",
-   "away": "Detroit Tigers",
-   "home_pitcher": {
-    "name": "Reid Detmers",
-    "id": 672282,
-    "ra9": 4.638,
-    "ip_per_start": 5.72,
-    "innings": 108.7,
-    "starts": 19
-   },
-   "away_pitcher": {
-    "name": "Troy Melton",
-    "id": 675512,
-    "ra9": 2.007,
-    "ip_per_start": 6.17,
-    "innings": 49.3,
+    "name": "Jared Jones",
+    "id": 683003,
+    "ra9": 4.629,
+    "ip_per_start": 4.38,
+    "innings": 35.0,
     "starts": 8
    }
   },
   {
-   "date": "2026-07-17",
-   "gamePk": 824981,
-   "home": "Athletics",
-   "away": "Washington Nationals",
+   "date": "2026-07-18",
+   "gamePk": 824412,
+   "home": "Cleveland Guardians",
+   "away": "Pittsburgh Pirates",
    "home_pitcher": {
-    "name": "Gage Jump",
-    "id": 695611,
-    "ra9": 3.699,
-    "ip_per_start": 5.41,
-    "innings": 48.7,
-    "starts": 9
+    "name": "Logan Allen",
+    "id": 671106,
+    "ra9": 4.5,
+    "ip_per_start": null,
+    "innings": 4.0,
+    "starts": 0
    },
-   "away_pitcher": {
-    "name": "Cade Cavalli",
-    "id": 676917,
-    "ra9": 4.652,
-    "ip_per_start": 4.93,
-    "innings": 98.7,
-    "starts": 20
-   }
-  },
-  {
-   "date": "2026-07-17",
-   "gamePk": 825060,
-   "home": "Arizona Diamondbacks",
-   "away": "St. Louis Cardinals",
-   "home_pitcher": {
-    "name": "Merrill Kelly",
-    "id": 518876,
-    "ra9": 5.381,
-    "ip_per_start": 5.85,
-    "innings": 93.7,
-    "starts": 16
-   },
-   "away_pitcher": {
-    "name": "Michael McGreevy",
-    "id": 700241,
-    "ra9": 3.01,
-    "ip_per_start": 5.65,
-    "innings": 101.7,
-    "starts": 18
-   }
-  },
-  {
-   "date": "2026-07-17",
-   "gamePk": 823115,
-   "home": "Seattle Mariners",
-   "away": "San Francisco Giants",
-   "home_pitcher": {
-    "name": "Bryce Miller",
-    "id": 682243,
-    "ra9": 2.497,
-    "ip_per_start": 6.41,
-    "innings": 57.7,
-    "starts": 9
-   },
-   "away_pitcher": {
-    "name": "Landen Roupp",
-    "id": 694738,
-    "ra9": 4.639,
-    "ip_per_start": 5.39,
-    "innings": 97.0,
-    "starts": 18
-   }
+   "away_pitcher": null
   },
   {
    "date": "2026-07-18",
@@ -43166,7 +43333,14 @@
    "gamePk": 824331,
    "home": "Colorado Rockies",
    "away": "Cincinnati Reds",
-   "home_pitcher": null,
+   "home_pitcher": {
+    "name": "Tomoyuki Sugano",
+    "id": 608372,
+    "ra9": 5.016,
+    "ip_per_start": 5.27,
+    "innings": 84.3,
+    "starts": 16
+   },
    "away_pitcher": {
     "name": "Rhett Lowder",
     "id": 695076,
@@ -43222,32 +43396,17 @@
   },
   {
    "date": "2026-07-18",
-   "gamePk": 824412,
-   "home": "Cleveland Guardians",
-   "away": "Pittsburgh Pirates",
-   "home_pitcher": {
-    "name": "Joey Cantillo",
-    "id": 676282,
-    "ra9": 4.099,
-    "ip_per_start": 5.05,
-    "innings": 101.0,
-    "starts": 20
-   },
-   "away_pitcher": {
-    "name": "Braxton Ashcraft",
-    "id": 677952,
-    "ra9": 3.812,
-    "ip_per_start": 5.96,
-    "innings": 113.3,
-    "starts": 19
-   }
-  },
-  {
-   "date": "2026-07-18",
    "gamePk": 824088,
    "home": "Kansas City Royals",
    "away": "San Diego Padres",
-   "home_pitcher": null,
+   "home_pitcher": {
+    "name": "Randy Dobnak",
+    "id": 677976,
+    "ra9": 1.862,
+    "ip_per_start": null,
+    "innings": 9.7,
+    "starts": 0
+   },
    "away_pitcher": {
     "name": "Griffin Canning",
     "id": 656288,
@@ -43431,6 +43590,329 @@
     "ip_per_start": 5.82,
     "innings": 75.7,
     "starts": 13
+   }
+  },
+  {
+   "date": "2026-07-19",
+   "gamePk": 822786,
+   "home": "Toronto Blue Jays",
+   "away": "Chicago White Sox",
+   "home_pitcher": {
+    "name": "Trey Yesavage",
+    "id": 702056,
+    "ra9": 3.84,
+    "ip_per_start": 5.36,
+    "innings": 75.0,
+    "starts": 14
+   },
+   "away_pitcher": {
+    "name": "Sean Burke",
+    "id": 680732,
+    "ra9": 3.492,
+    "ip_per_start": 7.04,
+    "innings": 105.7,
+    "starts": 15
+   }
+  },
+  {
+   "date": "2026-07-19",
+   "gamePk": 824739,
+   "home": "Boston Red Sox",
+   "away": "Tampa Bay Rays",
+   "home_pitcher": {
+    "name": "Sonny Gray",
+    "id": 543243,
+    "ra9": 2.634,
+    "ip_per_start": 5.63,
+    "innings": 95.7,
+    "starts": 17
+   },
+   "away_pitcher": {
+    "name": "Shane McClanahan",
+    "id": 663556,
+    "ra9": 3.453,
+    "ip_per_start": 5.06,
+    "innings": 86.0,
+    "starts": 17
+   }
+  },
+  {
+   "date": "2026-07-19",
+   "gamePk": 823439,
+   "home": "Philadelphia Phillies",
+   "away": "New York Mets",
+   "home_pitcher": {
+    "name": "Alan Rangel",
+    "id": 660604,
+    "ra9": 4.19,
+    "ip_per_start": 9.67,
+    "innings": 19.3,
+    "starts": 2
+   },
+   "away_pitcher": {
+    "name": "Nolan McLean",
+    "id": 690997,
+    "ra9": 4.276,
+    "ip_per_start": 5.65,
+    "innings": 107.3,
+    "starts": 19
+   }
+  },
+  {
+   "date": "2026-07-19",
+   "gamePk": 824897,
+   "home": "Atlanta Braves",
+   "away": "Texas Rangers",
+   "home_pitcher": {
+    "name": "Grant Holmes",
+    "id": 656550,
+    "ra9": 3.813,
+    "ip_per_start": 5.14,
+    "innings": 87.3,
+    "starts": 17
+   },
+   "away_pitcher": null
+  },
+  {
+   "date": "2026-07-19",
+   "gamePk": 824411,
+   "home": "Cleveland Guardians",
+   "away": "Pittsburgh Pirates",
+   "home_pitcher": {
+    "name": "Tanner Bibee",
+    "id": 676440,
+    "ra9": 4.062,
+    "ip_per_start": 5.65,
+    "innings": 113.0,
+    "starts": 20
+   },
+   "away_pitcher": {
+    "name": "Paul Skenes",
+    "id": 694973,
+    "ra9": 4.154,
+    "ip_per_start": 5.42,
+    "innings": 108.3,
+    "starts": 20
+   }
+  },
+  {
+   "date": "2026-07-19",
+   "gamePk": 824168,
+   "home": "Houston Astros",
+   "away": "Baltimore Orioles",
+   "home_pitcher": {
+    "name": "Hunter Brown",
+    "id": 686613,
+    "ra9": 4.075,
+    "ip_per_start": 5.05,
+    "innings": 35.3,
+    "starts": 7
+   },
+   "away_pitcher": {
+    "name": "Kyle Bradish",
+    "id": 680694,
+    "ra9": 4.109,
+    "ip_per_start": 5.65,
+    "innings": 107.3,
+    "starts": 19
+   }
+  },
+  {
+   "date": "2026-07-19",
+   "gamePk": 824086,
+   "home": "Kansas City Royals",
+   "away": "San Diego Padres",
+   "home_pitcher": {
+    "name": "Noah Cameron",
+    "id": 702070,
+    "ra9": 5.362,
+    "ip_per_start": 5.31,
+    "innings": 95.7,
+    "starts": 18
+   },
+   "away_pitcher": {
+    "name": "Germán Márquez",
+    "id": 608566,
+    "ra9": 5.4,
+    "ip_per_start": 5.21,
+    "innings": 41.7,
+    "starts": 8
+   }
+  },
+  {
+   "date": "2026-07-19",
+   "gamePk": 823764,
+   "home": "Milwaukee Brewers",
+   "away": "Miami Marlins",
+   "home_pitcher": {
+    "name": "Robert Gasser",
+    "id": 688107,
+    "ra9": 5.439,
+    "ip_per_start": 5.15,
+    "innings": 46.3,
+    "starts": 9
+   },
+   "away_pitcher": {
+    "name": "Eury Pérez",
+    "id": 691587,
+    "ra9": 4.202,
+    "ip_per_start": 5.35,
+    "innings": 85.7,
+    "starts": 16
+   }
+  },
+  {
+   "date": "2026-07-19",
+   "gamePk": 824653,
+   "home": "Chicago Cubs",
+   "away": "Minnesota Twins",
+   "home_pitcher": {
+    "name": "Shota Imanaga",
+    "id": 684007,
+    "ra9": 4.25,
+    "ip_per_start": 5.68,
+    "innings": 108.0,
+    "starts": 19
+   },
+   "away_pitcher": {
+    "name": "Zebby Matthews",
+    "id": 805673,
+    "ra9": 4.567,
+    "ip_per_start": 6.09,
+    "innings": 67.0,
+    "starts": 11
+   }
+  },
+  {
+   "date": "2026-07-19",
+   "gamePk": 824330,
+   "home": "Colorado Rockies",
+   "away": "Cincinnati Reds",
+   "home_pitcher": {
+    "name": "Ryan Feltner",
+    "id": 663372,
+    "ra9": 4.974,
+    "ip_per_start": 4.87,
+    "innings": 63.3,
+    "starts": 13
+   },
+   "away_pitcher": {
+    "name": "Hunter Greene",
+    "id": 668881,
+    "ra9": 6.968,
+    "ip_per_start": 5.17,
+    "innings": 10.3,
+    "starts": 2
+   }
+  },
+  {
+   "date": "2026-07-19",
+   "gamePk": 824978,
+   "home": "Athletics",
+   "away": "Washington Nationals",
+   "home_pitcher": {
+    "name": "Jacob Lopez",
+    "id": 682052,
+    "ra9": 6.994,
+    "ip_per_start": 5.03,
+    "innings": 55.3,
+    "starts": 11
+   },
+   "away_pitcher": {
+    "name": "Foster Griffin",
+    "id": 656492,
+    "ra9": 3.181,
+    "ip_per_start": 5.81,
+    "innings": 110.3,
+    "starts": 19
+   }
+  },
+  {
+   "date": "2026-07-19",
+   "gamePk": 824007,
+   "home": "Los Angeles Angels",
+   "away": "Detroit Tigers",
+   "home_pitcher": {
+    "name": "Ryan Johnson",
+    "id": 696270,
+    "ra9": 8.1,
+    "ip_per_start": 5.56,
+    "innings": 33.3,
+    "starts": 6
+   },
+   "away_pitcher": {
+    "name": "Casey Mize",
+    "id": 663554,
+    "ra9": 2.909,
+    "ip_per_start": 5.52,
+    "innings": 77.3,
+    "starts": 14
+   }
+  },
+  {
+   "date": "2026-07-19",
+   "gamePk": 823113,
+   "home": "Seattle Mariners",
+   "away": "San Francisco Giants",
+   "home_pitcher": {
+    "name": "Logan Gilbert",
+    "id": 669302,
+    "ra9": 3.316,
+    "ip_per_start": 6.0,
+    "innings": 114.0,
+    "starts": 19
+   },
+   "away_pitcher": {
+    "name": "Robbie Ray",
+    "id": 592662,
+    "ra9": 3.881,
+    "ip_per_start": 5.93,
+    "innings": 106.7,
+    "starts": 18
+   }
+  },
+  {
+   "date": "2026-07-19",
+   "gamePk": 825057,
+   "home": "Arizona Diamondbacks",
+   "away": "St. Louis Cardinals",
+   "home_pitcher": {
+    "name": "Eduardo Rodriguez",
+    "id": 593958,
+    "ra9": 2.447,
+    "ip_per_start": 6.0,
+    "innings": 114.0,
+    "starts": 19
+   },
+   "away_pitcher": {
+    "name": "Andre Pallante",
+    "id": 669467,
+    "ra9": 4.14,
+    "ip_per_start": 5.56,
+    "innings": 100.0,
+    "starts": 18
+   }
+  },
+  {
+   "date": "2026-07-19",
+   "gamePk": 823521,
+   "home": "New York Yankees",
+   "away": "Los Angeles Dodgers",
+   "home_pitcher": {
+    "name": "Cam Schlittler",
+    "id": 693645,
+    "ra9": 2.579,
+    "ip_per_start": 5.93,
+    "innings": 118.7,
+    "starts": 20
+   },
+   "away_pitcher": {
+    "name": "Yoshinobu Yamamoto",
+    "id": 808967,
+    "ra9": 2.928,
+    "ip_per_start": 6.51,
+    "innings": 110.7,
+    "starts": 17
    }
   }
  ]
