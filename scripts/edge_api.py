@@ -1388,7 +1388,13 @@ def tennis_games(req: TennisGamesReq):
 
 @app.get("/health")
 def health():
-    return {"status":"ok","models":list(BUNDLES.keys()),"ratings":list(ALL_RATINGS.keys())}
+    import data_freshness as dfr
+    try:
+        fresh = dfr.audit()
+    except Exception as e:                                     # noqa: BLE001
+        fresh = {"error": str(e)}
+    return {"status": "ok", "models": list(BUNDLES.keys()),
+            "ratings": list(ALL_RATINGS.keys()), "data_freshness": fresh}
 
 @app.get("/teams/{sport}")
 def teams(sport: str):
