@@ -4285,16 +4285,32 @@ app.post('/api/player-prop', async (req: express.Request, res: express.Response)
 // Pulls the OFFICIAL ATP+WTA ranks via ESPN (free, 0 Odds-API quota) into
 // all_ratings.json and stamps data/ratings_meta.json so stale ranks can be flagged.
 const TENNIS_RANKS_FETCH = path.resolve(process.cwd(), 'scripts/fetch_tennis_ratings.py');
+// Form + serve stats rot too (found 2026-07-18: form file built Jul 1 missed the
+// Badosa comeback and the model faded her) — same weekly refresh, same free sources.
+const TENNIS_FORM_FETCH = path.resolve(process.cwd(), 'scripts/fetch_tennis_form.py');
+const TENNIS_SERVE_FETCH = path.resolve(process.cwd(), 'scripts/fetch_tennis_serve_stats.py');
 
-function refreshTennisRanks(): Promise<{ ok: boolean; out: string }> {
+function runPyFetch(script: string, timeoutMs: number): Promise<{ ok: boolean; out: string }> {
   return new Promise((resolve) => {
-    const py = spawn('python3', [TENNIS_RANKS_FETCH]);
+    const py = spawn('python3', [script]);
     let out = '';
     py.stdout.on('data', (c: Buffer) => { out += c.toString(); });
     py.stderr.on('data', (c: Buffer) => { out += c.toString(); });
-    const timer = setTimeout(() => { py.kill(); resolve({ ok: false, out: 'timeout' }); }, 30_000);
+    const timer = setTimeout(() => { py.kill(); resolve({ ok: false, out: 'timeout' }); }, timeoutMs);
     py.on('close', (code) => { clearTimeout(timer); resolve({ ok: code === 0, out: out.slice(-400) }); });
   });
+}
+
+async function refreshTennisRanks(): Promise<{ ok: boolean; out: string }> {
+  const ranks = await runPyFetch(TENNIS_RANKS_FETCH, 30_000);
+  // form/serve are best-effort: a slow xlsx mirror must not fail the rank refresh
+  const form = await runPyFetch(TENNIS_FORM_FETCH, 180_000);
+  const serve = await runPyFetch(TENNIS_SERVE_FETCH, 180_000);
+  return {
+    ok: ranks.ok,
+    out: `ranks:${ranks.ok ? 'ok' : 'FAIL'} form:${form.ok ? 'ok' : 'FAIL'} ` +
+         `serve:${serve.ok ? 'ok' : 'FAIL'} | ${ranks.out.slice(-160)}`,
+  };
 }
 
 // Manual trigger — the weekly cron handles the routine refresh.

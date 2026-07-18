@@ -133,6 +133,7 @@ def aggregate(rows: list) -> dict:
     dec_played = defaultdict(float); dec_won = defaultdict(float)   # deciding set
     tb_played = defaultdict(float); tb_won = defaultdict(float)     # tiebreak sets
     seq = defaultdict(list)                                          # chronological W/L for streak
+    full_name: dict = {}                                             # key -> last seen display name
     # H2H: hh[(player, opp)][surface] = weighted wins of player over opp.
     hh = defaultdict(lambda: defaultdict(float))
     hh_n = defaultdict(float)
@@ -165,6 +166,8 @@ def aggregate(rows: list) -> dict:
 
         wins[kw] += wt; losses[kl] += wt
         seq[kw].append(1); seq[kl].append(0)
+        full_name[kw] = str(m.get("Winner")).strip()
+        full_name[kl] = str(m.get("Loser")).strip()
 
         if sets:
             # Comeback after dropping set 1 (winner's view, then loser's view).
@@ -195,7 +198,8 @@ def aggregate(rows: list) -> dict:
         tot = wins[k] + losses[k]
         if tot < MIN_MATCHES:
             continue
-        rec = {"name": None, "n": round(tot, 1), "form": round(wins[k] / tot - 0.5, 3)}
+        rec = {"name": full_name.get(k), "n": round(tot, 1),
+               "form": round(wins[k] / tot - 0.5, 3)}
         if cb_chance[k] >= 3:
             rec["comeback"] = round(cb_win[k] / cb_chance[k], 3)
         if dec_played[k] >= MIN_DECIDER:
