@@ -263,6 +263,7 @@ LOCK_PROB = 0.70   # high enough to carry a parlay
 PICK_PROB = 0.62   # solid favourite with a real edge
 
 STALE_RANK_GAP = 0.15   # model-vs-market gap where tennis ranks become the suspect
+MODEL_SPLIT_GAP = 0.12  # points-vs-serve engine gap that makes a match NO BET
 
 
 def stale_rank_guard(picked_prob: float, market_prob: float,
@@ -639,6 +640,23 @@ def predict(req: PredictReq):
                                             "(POST /api/refresh-rankings); ATP/WTA update Mondays")
             except (ValueError, TypeError):
                 pass
+        # ── Serve-model second opinion (Darderi lesson, 2026-07-19): the points
+        # model called Rublev-Darderi 53/47 while serve stats said 69/31; the leg
+        # died 6-4 6-3. Triangulation is now automatic: if the two engines split
+        # by more than MODEL_SPLIT_GAP, flag it — a split match is a NO BET zone,
+        # same rule that (manually) cut the Collignon leg in Gstaad.
+        try:
+            sm2 = tgm.predict(req.home_team, req.away_team)
+            serve_hp = list(sm2.get("match_prob", {}).values())
+            if len(serve_hp) == 2:
+                extra["serve_model_home_prob"] = round(serve_hp[0], 3)
+                gap = abs(serve_hp[0] - hcp)
+                if gap > MODEL_SPLIT_GAP:
+                    extra["model_split"] = (
+                        f"points model {hcp:.2f} vs serve model {serve_hp[0]:.2f} "
+                        f"(gap {gap:.2f}) — engines disagree, treat as NO BET")
+        except Exception:                                      # noqa: BLE001
+            pass  # no serve stats (most WTA) — points model stands alone
         model_used = False
     else:
         # ── Run model only when it adds real signal (MAE < 95% of sigma) ──────
