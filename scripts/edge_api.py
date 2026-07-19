@@ -652,9 +652,28 @@ def predict(req: PredictReq):
                 extra["serve_model_home_prob"] = round(serve_hp[0], 3)
                 gap = abs(serve_hp[0] - hcp)
                 if gap > MODEL_SPLIT_GAP:
+                    # Split = REROUTE, never a bare no-bet (Gstaad lesson: both
+                    # user markets won while the match sat "cut"). Price every
+                    # derivative under BOTH engines; a market is split-robust
+                    # when its WORST lens clears the book price. floor = min
+                    # odds at which the worst-case lens is still +EV.
+                    robust = {}
+                    for mkt, fn in {
+                        "home_ml": lambda p: p,
+                        "away_ml": lambda p: 1 - p,
+                        "home_wins_a_set": lambda p: 1 - tlive.implied_set_prob(1-p, req.best_of)**2,
+                        "away_wins_a_set": lambda p: 1 - tlive.implied_set_prob(p, req.best_of)**2,
+                    }.items():
+                        pp, ps = fn(hcp), fn(serve_hp[0])
+                        worst = min(pp, ps)
+                        robust[mkt] = {"points": round(pp, 3), "serve": round(ps, 3),
+                                       "worst": round(worst, 3),
+                                       "floor_odds": round(1.0 / worst, 2) if worst > 0 else None}
                     extra["model_split"] = (
-                        f"points model {hcp:.2f} vs serve model {serve_hp[0]:.2f} "
-                        f"(gap {gap:.2f}) — engines disagree, treat as NO BET")
+                        f"points {hcp:.2f} vs serve {serve_hp[0]:.2f} (gap {gap:.2f}) — "
+                        "REROUTE: skip split-sensitive sides, bet only markets whose "
+                        "book price >= floor_odds (worst-lens +EV)")
+                    extra["split_robust_markets"] = robust
         except Exception:                                      # noqa: BLE001
             pass  # no serve stats (most WTA) — points model stands alone
         model_used = False
