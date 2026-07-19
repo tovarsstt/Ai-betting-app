@@ -666,9 +666,12 @@ def predict(req: PredictReq):
                     }.items():
                         pp, ps = fn(hcp), fn(serve_hp[0])
                         worst = min(pp, ps)
+                        blend = (pp + ps) / 2
                         robust[mkt] = {"points": round(pp, 3), "serve": round(ps, 3),
+                                       "blend": round(blend, 3),
                                        "worst": round(worst, 3),
-                                       "floor_odds": round(1.0 / worst, 2) if worst > 0 else None}
+                                       "floor_odds": round(1.0 / worst, 2) if worst > 0 else None,
+                                       "blend_floor_odds": round(1.0 / blend, 2) if blend > 0 else None}
                     extra["model_split"] = (
                         f"points {hcp:.2f} vs serve {serve_hp[0]:.2f} (gap {gap:.2f}) — "
                         "REROUTE: skip split-sensitive sides, bet only markets whose "
