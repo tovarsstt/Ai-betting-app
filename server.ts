@@ -48,6 +48,36 @@ const port = Number(process.env.PORT) || 3001;
 app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 
+// ── Remote-access gate (phone away from home wifi) ───────────────────────────
+// Opt-in: set APP_TOKEN in .env before exposing the app through a tunnel.
+// Unlock once per device at /unlock?token=XXX (sets a cookie the SPA rides on);
+// API calls may also send Authorization: Bearer XXX. LAN use (no APP_TOKEN
+// set) is completely unchanged.
+const APP_TOKEN = process.env.APP_TOKEN || '';
+const TOKEN_COOKIE = 'caveman_key';
+function cookieVal(req: express.Request, name: string): string | null {
+  const raw = req.headers.cookie;
+  if (!raw) return null;
+  for (const part of raw.split(';')) {
+    const [k, ...v] = part.trim().split('=');
+    if (k === name) return decodeURIComponent(v.join('='));
+  }
+  return null;
+}
+app.get('/unlock', (req: express.Request, res: express.Response) => {
+  if (!APP_TOKEN) return res.status(200).send('no APP_TOKEN set — app is open on LAN');
+  if (req.query.token !== APP_TOKEN) return res.status(401).send('wrong token');
+  res.setHeader('Set-Cookie',
+    `${TOKEN_COOKIE}=${encodeURIComponent(APP_TOKEN)}; Path=/; Max-Age=2592000; HttpOnly; SameSite=Lax`);
+  return res.redirect('/');
+});
+app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+  if (!APP_TOKEN || !req.path.startsWith('/api')) return next();
+  const bearer = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
+  if (bearer === APP_TOKEN || cookieVal(req, TOKEN_COOKIE) === APP_TOKEN) return next();
+  return res.status(401).json({ error: 'LOCKED', hint: 'visit /unlock?token=... once on this device' });
+});
+
 // ── Simple in-memory rate limit ───────────────────────────────────────────────
 const rateCounts = new Map<string, { count: number; reset: number }>();
 function rateLimit(req: express.Request, max: number, windowMs: number): boolean {
@@ -4100,6 +4130,7 @@ app.post('/api/ledger/capture-clv', async (req: express.Request, res: express.Re
 const SLIP_LINTER   = path.resolve(process.cwd(), 'scripts/slip_linter.py');
 const LEDGER_REPORT = path.resolve(process.cwd(), 'scripts/ledger_report.py');
 const BANK_BUILDER  = path.resolve(process.cwd(), 'scripts/bank_builder.py');
+const KILL_TEST     = path.resolve(process.cwd(), 'scripts/kill_test.py');
 // Live day-card cache — repeat clicks must not burn Odds API quota.
 const dayCardCache = new Map<string, { at: number; data: unknown }>();
 const DAY_CARD_TTL_MS = 10 * 60_000;
@@ -4128,6 +4159,36 @@ async function lintLegs(legs: LintLeg[]): Promise<unknown | null> {
   try { return await spawnPythonJson(SLIP_LINTER, ['--json'], JSON.stringify({ legs })); }
   catch { return null; }
 }
+
+// KILL-TEST — the full every-engine pick report (scripts/kill_test.py --json).
+// One endpoint = no forgotten engine: points+context, serve second opinion,
+// split router w/ floors (tennis); Poisson/Keener full board (soccer);
+// NB matrix + probables (mlb). Pure local compute — zero Odds API quota.
+app.post('/api/kill-test', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 12, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  const { sport, home, away, surface, bestOf, crowd, setsHome, setsAway,
+          priceHome, priceDraw, priceAway, totalLine, homeVenue } = req.body ?? {};
+  if (!sport || !home || !away) return res.status(400).json({ error: 'sport, home, away required' });
+  if (!['tennis', 'soccer', 'mlb'].includes(sport)) return res.status(400).json({ error: 'sport must be tennis|soccer|mlb' });
+  const args: string[] = [sport, String(home), String(away), '--json'];
+  if (surface)   args.push('--surface', String(surface));
+  if (bestOf)    args.push('--best-of', String(bestOf));
+  if (crowd)     args.push('--crowd', String(crowd));
+  if (setsHome != null) args.push('--sets-home', String(setsHome));
+  if (setsAway != null) args.push('--sets-away', String(setsAway));
+  if (priceHome) args.push('--price-home', String(priceHome));
+  if (priceDraw) args.push('--price-draw', String(priceDraw));
+  if (priceAway) args.push('--price-away', String(priceAway));
+  if (totalLine) args.push('--total-line', String(totalLine));
+  if (homeVenue) args.push('--home-venue');
+  try {
+    const report = await spawnPythonJson(KILL_TEST, args, null, 90_000);
+    return res.json({ success: true, data: report });
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : 'kill-test failed';
+    return res.status(500).json({ success: false, error: msg });
+  }
+});
 
 // SLIP LINTER — pre-bet gate. Scores a proposed ticket against the user's OWN
 // settled record (data/slips_raw.txt): ACCEPT / TRIM / REJECT with real ROI cited.

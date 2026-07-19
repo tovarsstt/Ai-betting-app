@@ -20,6 +20,7 @@ when nothing clears its floor, the floors themselves are the report.
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -48,6 +49,10 @@ def tennis(a: argparse.Namespace) -> None:
         surface=a.surface, best_of=a.best_of, crowd=a.crowd,
         recent_sets_home=a.sets_home, recent_sets_away=a.sets_away)
     out = ea.predict(req)
+    if a.json:
+        print(json.dumps({"sport": "tennis", "home": a.home, "away": a.away,
+                          "surface": a.surface, "report": out}, default=str))
+        return
     if out.get("bet_signal") == "NO_DATA":
         print(f"NO DATA: {out.get('model_note')}")
         return
@@ -93,6 +98,10 @@ def soccer(a: argparse.Namespace) -> None:
         draw_odds=dec2am(a.price_draw) if a.price_draw else None,
         away_odds=dec2am(a.price_away) if a.price_away else None)
     out = ea.predict_soccer(req)
+    if a.json:
+        print(json.dumps({"sport": "soccer", "home": a.home, "away": a.away,
+                          "report": out}, default=str))
+        return
     if out.get("status") != "OK":
         print(f"NO DATA: {out}")
         return
@@ -119,6 +128,10 @@ def soccer(a: argparse.Namespace) -> None:
 def mlb(a: argparse.Namespace) -> None:
     out = ea.predict_mlb(ea.MLBGameReq(home=a.home, away=a.away,
                                        total_line=a.total_line))
+    if a.json:
+        print(json.dumps({"sport": "mlb", "home": a.home, "away": a.away,
+                          "report": out}, default=str))
+        return
     print(f"== MLB KILL-TEST: {a.away} @ {a.home} ==")
     er = out.get("expected_runs", {})
     print(f"expected runs: home {er.get('home')} away {er.get('away')} "
@@ -156,8 +169,16 @@ def main() -> int:
     ap.add_argument("--total-line", type=float, default=None)
     ap.add_argument("--home-venue", action="store_true",
                     help="soccer: real home venue (default neutral)")
+    ap.add_argument("--json", action="store_true",
+                    help="emit raw engine JSON (server bridge mode)")
     a = ap.parse_args()
-    ea.load_all()
+    if a.json:
+        # bridge mode: stdout must be pure JSON — engine banners go to stderr
+        import contextlib
+        with contextlib.redirect_stdout(sys.stderr):
+            ea.load_all()
+    else:
+        ea.load_all()
     {"tennis": tennis, "soccer": soccer, "mlb": mlb}[a.sport](a)
     return 0
 

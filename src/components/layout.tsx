@@ -5,10 +5,11 @@ import {
   SidebarGroupContent, SidebarMenu, SidebarMenuItem,
   SidebarMenuButton, SidebarTrigger, SidebarHeader
 } from "@/components/ui/sidebar";
-import { Swords, TrendingUp, BarChart3, Zap, Shield, Trophy, Radar } from "lucide-react";
+import { Swords, TrendingUp, BarChart3, Zap, Shield, Trophy, Radar, Crosshair } from "lucide-react";
 
 const navigation = [
   { name: "Game Breakdown", href: "/", icon: Swords },
+  { name: "Pick Report", href: "/pick-report", icon: Crosshair },
   { name: "Parlays", href: "/parlays", icon: TrendingUp },
   { name: "Alpha Sheets", href: "/alpha-sheets", icon: BarChart3 },
   { name: "Sharp Scanner", href: "/sharp-scanner", icon: Zap },
