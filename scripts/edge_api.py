@@ -310,6 +310,10 @@ class PredictReq(BaseModel):
     sets_won_home: Optional[int] = None
     sets_won_away: Optional[int] = None
     best_of: int = 3  # 3 = WTA / most ATP, 5 = ATP majors
+    # Tennis context — observed facts only, never guessed (rule 13).
+    crowd: Optional[str] = None            # "home" | "away" — whose crowd it is
+    recent_sets_home: Optional[int] = None  # sets ground in last ~48h of this event
+    recent_sets_away: Optional[int] = None
 
 def _formula_margin(sport: str, h_r: dict, a_r: dict) -> float:
     """Pure-formula margin prediction — used when model is missing or degenerate."""
@@ -340,6 +344,29 @@ def _model_is_usable(bundle: dict, sigma: float) -> bool:
 # winning-priority rule: don't let noisy form overrule a strong points edge).
 TENNIS_AUX_CAP = 0.8
 W_H2H, W_FORM, W_PSYCH, W_CLUTCH, W_STREAK = 0.7, 0.6, 0.4, 0.4, 0.02
+
+# ── Tennis context nudges (fatigue / home crowd) — caller supplies OBSERVED
+# facts (sets ground through the event, whose crowd it is); the model never
+# guesses them. Sized small and capped: crowd worth ~2.5% at evens, fatigue
+# ~1.2% per extra recent set, ceiling ~3.7% — they tilt coin flips, not locks.
+TENNIS_CROWD_LOGIT = 0.10       # home-crowd edge (Athens-for-Sakkari sized)
+TENNIS_FATIGUE_PER_SET = 0.05   # logit per set of recent-workload differential
+TENNIS_FATIGUE_CAP = 0.15
+
+def _tennis_context_logit(crowd: Optional[str],
+                          sets_home: Optional[int],
+                          sets_away: Optional[int]):
+    """(total nudge from home player's side, breakdown) — 0 when nothing supplied."""
+    crowd_adj = {"home": TENNIS_CROWD_LOGIT, "away": -TENNIS_CROWD_LOGIT}.get(crowd or "", 0.0)
+    fatigue_adj = 0.0
+    if sets_home is not None and sets_away is not None:
+        raw = -TENNIS_FATIGUE_PER_SET * (sets_home - sets_away)
+        fatigue_adj = max(-TENNIS_FATIGUE_CAP, min(TENNIS_FATIGUE_CAP, raw))
+    total = crowd_adj + fatigue_adj
+    detail = {}
+    if crowd_adj: detail["crowd_adj"] = round(crowd_adj, 3)
+    if fatigue_adj: detail["fatigue_adj"] = round(fatigue_adj, 3)
+    return total, detail
 
 def _tennis_key(name: str) -> Optional[str]:
     """(last surname, first initial) key — mirrors fetch_tennis_form.name_key.
@@ -564,15 +591,22 @@ def predict(req: PredictReq):
         surf_adj = sb_h - sb_a
         # ── Comparative profile: H2H + recent form + psych + partial clutch ──────
         aux, aux_detail = _tennis_aux_logit(req.home_team, req.away_team, surf)
-        hcp = 1.0 / (1.0 + math.exp(-(logit + surf_adj + aux)))
+        # ── Context: fatigue + home crowd (caller-observed facts, capped) ───────
+        ctx, ctx_detail = _tennis_context_logit(req.crowd, req.recent_sets_home,
+                                                req.recent_sets_away)
+        hcp = 1.0 / (1.0 + math.exp(-(logit + surf_adj + aux + ctx)))
         acp = 1.0 - hcp
         pred_margin = (hcp - 0.5) * 10  # proxy for display/edge
-        method = base + ("+Surface" if surf_adj else "") + ("+Profile" if aux else "")
+        method = (base + ("+Surface" if surf_adj else "") + ("+Profile" if aux else "")
+                  + ("+Context" if ctx else ""))
         extra = {"method": method, "surface": surf,
                  "surface_adj_logit": round(surf_adj, 3),
                  "profile_adj_logit": round(aux, 3)}
         if aux_detail:
             extra["profile"] = aux_detail
+        if ctx_detail:
+            extra["context_adj_logit"] = round(ctx, 3)
+            extra["context"] = ctx_detail
         # ── Live/in-play: re-price off the current set score ──────────────────
         # Pre-match hcp above stays the PREGAME number (method/profile/surface all
         # keep working off it). If the caller supplies a live set score, invert it
