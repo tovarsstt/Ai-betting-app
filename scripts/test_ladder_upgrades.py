@@ -145,3 +145,15 @@ def test_retirement_tracking_aggregates_from_comment_column():
     two = out["players"]["two|p"]
     assert two["ret_recent"] == 1 and two["ret_last"] == "2026-07-11"
     assert "ret_recent" not in out["players"]["one|p"]
+
+
+def test_market_ladder_always_present_and_ranked():
+    out = ea.predict(ea.PredictReq(sport="TENNIS", home_team="Antonia Ruzic",
+                                   away_team="Dominika Salkova", home_odds=-100,
+                                   away_odds=-100, surface="Clay"))
+    lad = out["market_ladder"]
+    probs = [r["prob"] for r in lad]
+    assert probs == sorted(probs, reverse=True)       # win-prob ranked
+    assert {"home_ml", "away_ml", "home_wins_a_set", "away_wins_a_set"} <= {r["market"] for r in lad}
+    top = lad[0]
+    assert abs(top["min_odds"] - round(1.05 / top["prob"], 2)) < 0.01

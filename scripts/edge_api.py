@@ -676,6 +676,7 @@ def predict(req: PredictReq):
         # router below still fires off the RAW lens gap.
         points_prob = hcp
         serve_prob: Optional[float] = None
+        _sm: Optional[dict] = None
         try:
             _sm = tgm.predict(req.home_team, req.away_team)
             _shp = list(_sm.get("match_prob", {}).values())
@@ -700,6 +701,34 @@ def predict(req: PredictReq):
             extra["context"] = ctx_detail
         if cond_detail:
             extra["day_of_condition"] = cond_detail
+        # ── Market ladder (user rule: NEVER a bare no-bet — when the obvious
+        # pick fails its floor, the best bet in the MATCH is the answer).
+        # Every pregame tennis call ranks ALL priceable markets by win prob
+        # with the min odds each needs (+5% EV): coin-flip match -> overs and
+        # sets rise to the top exactly when the MLs fail.
+        try:
+            _ps = tlive.implied_set_prob(hcp, req.best_of)
+            ladder = {
+                "home_ml": hcp, "away_ml": 1 - hcp,
+                "home_wins_a_set": 1 - (1 - _ps) ** 2,
+                "away_wins_a_set": 1 - _ps ** 2,
+            }
+            if serve_prob is not None and isinstance(_sm, dict):
+                s1 = _sm.get("set1") or {}
+                w = s1.get("winner") or {}
+                if len(w) == 2:
+                    vals = list(w.values())
+                    ladder["home_set1"], ladder["away_set1"] = vals[0], vals[1]
+                gt = _sm.get("games_total") or {}
+                if gt:
+                    ladder[f"over_{gt['line']}_games"] = gt["p_over"]
+                    ladder[f"under_{gt['line']}_games"] = gt["p_under"]
+            extra["market_ladder"] = [
+                {"market": k, "prob": round(p, 3),
+                 "min_odds": round(1.05 / p, 2) if p > 0 else None}
+                for k, p in sorted(ladder.items(), key=lambda kv: -kv[1])]
+        except Exception:                                      # noqa: BLE001
+            pass
         # ── Auto availability warning: retirements/walkovers conceded in the
         # last 60 days of results (fetch_tennis_form Comment column) ──────────
         _fp = TENNIS_FORM.get("players") or {}

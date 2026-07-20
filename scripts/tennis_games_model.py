@@ -224,13 +224,16 @@ def predict(player_a: str, player_b: str, games_line: float | None = None,
                                         "; level calibrated to supplied match prob"),
         "source": f"tennis_serve.json built {doc.get('built')}",
     }
-    if games_line is not None:
-        over = sum(1 for t in totals if t > games_line)
-        push = sum(1 for t in totals if t == games_line)
-        out["games_total"] = {"line": games_line,
-                              "p_over": round(over / n, 4),
-                              "p_under": round((n - over - push) / n, 4),
-                              "p_push": round(push / n, 4)}
+    if games_line is None:
+        # no line supplied -> price the half-line nearest the sim's own mean,
+        # so every report carries a bettable games market by default
+        games_line = int(sum(totals) / n) + 0.5
+    over = sum(1 for t in totals if t > games_line)
+    push = sum(1 for t in totals if t == games_line)
+    out["games_total"] = {"line": games_line,
+                          "p_over": round(over / n, 4),
+                          "p_under": round((n - over - push) / n, 4),
+                          "p_push": round(push / n, 4)}
     if handicap_a is not None:
         margins = sim["margins"]
         cover = sum(1 for m in margins if m + handicap_a > 0)
