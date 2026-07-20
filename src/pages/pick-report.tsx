@@ -43,10 +43,11 @@ interface MlbReport {
   total?: { line: number; p_over: number; p_under: number; p_push: number };
   context?: { probable_starters?: Record<string, { name?: string; ra9?: number; starts?: number }> };
 }
+interface LadderRow { market: string; prob: number; min_odds: number | null }
 interface KillTestPayload {
   success: boolean;
   data?: { sport: Sport; home: string; away: string; surface?: string;
-           report: TennisReport & SoccerReport & MlbReport };
+           report: TennisReport & SoccerReport & MlbReport & { market_ladder?: LadderRow[] } };
   error?: string;
 }
 
@@ -67,6 +68,34 @@ function Row({ label, prob, note, hot }: { label: string; prob: number; note?: s
         <span className="ml-3 text-xs text-foreground/50">bet ≥ {floor(prob)}</span>
         {note && <span className="ml-2 text-xs text-foreground/40">{note}</span>}
       </span>
+    </div>
+  );
+}
+
+function MarketLadder({ rows }: { rows?: LadderRow[] }) {
+  if (!rows?.length) return null;
+  return (
+    <div className="mt-5">
+      <h2 className="text-xl">Market ladder — best bet in the match</h2>
+      <p className="text-xs text-foreground/50 mt-1">
+        Ranked by win probability. Bet a market only when the book price ≥ its floor.
+      </p>
+      <div className="mt-2 font-mono text-sm">
+        <div className="grid grid-cols-3 gap-1 text-[10px] uppercase text-foreground/40 border-b border-white/10 pb-1">
+          <span>market</span><span className="text-right">win P</span><span className="text-right">bet at ≥</span>
+        </div>
+        {rows.map((r, i) => (
+          <div key={r.market}
+            className={cn("grid grid-cols-3 gap-1 py-2 border-b border-white/5 tabular-nums",
+              i === 0 && "cave-border-ochre px-2 -mx-1 border-b-0 my-1")}>
+            <span className={cn("uppercase text-xs", i === 0 && "text-primary font-bold")}>
+              {r.market.replace(/_/g, " ")}
+            </span>
+            <span className={cn("text-right", i === 0 && "text-primary font-bold")}>{pct(r.prob)}</span>
+            <span className="text-right">{r.min_odds ?? "—"}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -192,6 +221,7 @@ export default function PickReportPage() {
                   </div>
                 )
               )}
+              <MarketLadder rows={r.market_ladder} />
             </>
           )}
         </div>
@@ -236,6 +266,7 @@ export default function PickReportPage() {
               </p>
             ) : null,
           )}
+          <MarketLadder rows={r.market_ladder} />
         </div>
       )}
     </div>

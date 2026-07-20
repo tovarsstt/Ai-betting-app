@@ -41,6 +41,15 @@ def _tier_line(name: str, prob: float, price: float | None) -> str:
     return f"  {name:28s} P {prob:5.1%}  @ {price:.2f}  EV {ev:+6.1%}  {verdict}"
 
 
+def _print_ladder(rows: list | None) -> None:
+    if not rows:
+        return
+    print("\nMARKET LADDER (best bet in the match — compare book price vs floor):")
+    print(f"  {'market':26s} {'P':>7} {'bet at >=':>9}")
+    for r in rows:
+        print(f"  {r['market']:26s} {r['prob']:7.1%} {r['min_odds']:9.2f}")
+
+
 def tennis(a: argparse.Namespace) -> None:
     req = ea.PredictReq(
         sport="TENNIS", home_team=a.home, away_team=a.away,
@@ -85,6 +94,7 @@ def tennis(a: argparse.Namespace) -> None:
         print(_tier_line(f"{a.away} ML", 1 - hcp, a.price_away))
         print(_tier_line(f"{a.home} wins a set", 1 - (1 - ps) ** 2, None))
         print(_tier_line(f"{a.away} wins a set", 1 - ps ** 2, None))
+    _print_ladder(out.get("market_ladder"))
     if a.price_home:
         print(f"\nmarket devig check: {a.home} implied "
               f"{1/a.price_home:.1%} vs model {hcp:.1%}"
@@ -149,6 +159,7 @@ def mlb(a: argparse.Namespace) -> None:
         if isinstance(p, dict) and p.get("starts", 99) < 8:
             print(f"WARNING: {side} starter {p.get('name')} ra9 {p.get('ra9')} on "
                   f"only {p.get('starts')} starts — small sample, haircut the edge")
+    _print_ladder(out.get("market_ladder"))
     print("REMINDER: devig Pinnacle board for the sharp-anchor lens before betting")
 
 

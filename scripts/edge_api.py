@@ -880,14 +880,26 @@ def predict(req: PredictReq):
                 pace_scale = league_total / (2 * la_)
                 h_pts = h_r.get("off_rtg", la_) * a_r.get("def_rtg", la_) / la_ * pace_scale
                 a_pts = a_r.get("off_rtg", la_) * h_r.get("def_rtg", la_) / la_ * pace_scale
+                p1h = float(norm.cdf((pred_margin / 2) / (sigma / np.sqrt(2))))
+                p1q = float(norm.cdf((pred_margin / 4) / (sigma / 2)))
                 extra["periods"] = {
-                    "p_home_wins_1h": round(float(norm.cdf((pred_margin / 2) / (sigma / np.sqrt(2)))), 4),
-                    "p_home_wins_1q": round(float(norm.cdf((pred_margin / 4) / (sigma / 2))), 4),
+                    "p_home_wins_1h": round(p1h, 4),
+                    "p_home_wins_1q": round(p1q, 4),
                     "expected_total": round(h_pts + a_pts, 1),
                     "expected_1h_total": round((h_pts + a_pts) / 2, 1),
                     "note": "derived from full-game model (independent-increments proxy) — "
                             "no fitted per-quarter pace yet; treat totals as expectations, not lines",
                 }
+                # market ladder (all-sports rule) — ML + periods, both sides
+                # (spread-free ML prob — hcp above covers the REQUESTED spread)
+                p_ml = float(norm.cdf(pred_margin / sigma))
+                blad = {"home_ml": p_ml, "away_ml": 1 - p_ml,
+                        "home_1h": p1h, "away_1h": 1 - p1h,
+                        "home_1q": p1q, "away_1q": 1 - p1q}
+                extra["market_ladder"] = [
+                    {"market": k, "prob": round(p, 3),
+                     "min_odds": round(1.05 / p, 2) if p > 0 else None}
+                    for k, p in sorted(blad.items(), key=lambda kv: -kv[1])]
         acp = 1.0 - hcp
 
     # ── Devig + EV + Kelly ─────────────────────────────────────────────────────
@@ -1583,8 +1595,38 @@ def predict_mlb(req: MLBGameReq):
     """MLB ML / run line / total / team totals — NB matrix (phi fitted on this
     season's games) + probable-starter adjustment. Backtested 2026-05-15+:
     59.0% ML acc with pitchers vs 52.8% without (see mlb_game_model.backtest)."""
-    return mgm.predict(req.home, req.away, req.total_line,
-                       req.spread_home, req.use_probables)
+    out = mgm.predict(req.home, req.away, req.total_line,
+                      req.spread_home, req.use_probables)
+    # ── Market ladder (all-sports rule: never a bare pass — rank every
+    # priceable market by win prob with its +5% EV floor) ─────────────────────
+    try:
+        ladder: dict = {}
+        ml = out.get("ml") or {}
+        if ml:
+            ladder["home_ml"], ladder["away_ml"] = ml.get("home"), ml.get("away")
+        rl = out.get("run_line") or {}
+        for k, v in rl.items():
+            if k != "push" and v is not None:
+                ladder[f"run_line {k}"] = v
+        t = out.get("total") or {}
+        if t.get("line") is not None:
+            ladder[f"over_{t['line']}"] = t.get("p_over")
+            ladder[f"under_{t['line']}"] = t.get("p_under")
+        # team totals: the half-line nearest a coin flip is the bettable one
+        for side, cdf in (out.get("team_total_cdf") or {}).items():
+            if not cdf:
+                continue
+            line, p_under = min(cdf.items(), key=lambda kv: abs(kv[1] - 0.5))
+            ladder[f"{side}_team_under_{line}"] = float(p_under)
+            ladder[f"{side}_team_over_{line}"] = 1.0 - float(p_under)
+        out["market_ladder"] = [
+            {"market": k, "prob": round(float(p), 3),
+             "min_odds": round(1.05 / float(p), 2) if p else None}
+            for k, p in sorted(ladder.items(), key=lambda kv: -(kv[1] or 0))
+            if p is not None]
+    except Exception:                                          # noqa: BLE001
+        pass
+    return out
 
 
 class VolleyReq(BaseModel):

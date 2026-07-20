@@ -157,3 +157,21 @@ def test_market_ladder_always_present_and_ranked():
     assert {"home_ml", "away_ml", "home_wins_a_set", "away_wins_a_set"} <= {r["market"] for r in lad}
     top = lad[0]
     assert abs(top["min_odds"] - round(1.05 / top["prob"], 2)) < 0.01
+
+
+def test_mlb_market_ladder_present_and_ranked():
+    out = ea.predict_mlb(ea.MLBGameReq(home="Toronto Blue Jays",
+                                       away="Chicago White Sox", total_line=8.5))
+    lad = out.get("market_ladder")
+    assert lad and [r["prob"] for r in lad] == sorted((r["prob"] for r in lad), reverse=True)
+    assert any(r["market"].startswith("run_line") for r in lad)
+    assert any("team" in r["market"] for r in lad)
+
+def test_wnba_market_ladder_present():
+    teams = list((ea.WNBA_FORM.get("teams") or {}).keys())
+    if len(teams) < 2:
+        return
+    out = ea.predict(ea.PredictReq(sport="WNBA", home_team=teams[0], away_team=teams[1],
+                                   home_odds=-110, away_odds=-110))
+    lad = out.get("market_ladder")
+    assert lad and {"home_ml", "away_ml", "home_1h", "home_1q"} <= {r["market"] for r in lad}
