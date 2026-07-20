@@ -76,18 +76,30 @@ def home_scoring_split(games: list[dict]) -> tuple[float, float]:
     return mh / mid, ma / mid
 
 
+SHRINK_STARTS = 8  # starts of team-average prior a starter's ra9 is shrunk toward
+
 def pitcher_defense_factor(starter: dict | None, team_ra_pg: float) -> tuple[float, dict | None]:
     """Scale on the OPPONENT's expected runs from the probable starter's real
-    line. No starter listed -> 1.0 (team average), stated."""
+    line. No starter listed -> 1.0 (team average), stated.
+
+    Small-sample shrinkage (Bieber lesson, 2026-07-19): a 7.6 ra9 over 4
+    starts was taken at face value and inflated a game total by ~2 runs.
+    Starter ra9 is now regressed toward the team's RA with a prior worth
+    SHRINK_STARTS starts — 4 starts keeps only a third of the deviation."""
     if not starter or starter.get("ra9") is None or team_ra_pg <= 0:
         return 1.0, None
+    starts = max(float(starter.get("starts") or 0), 0.0)
+    raw_ra9 = float(starter["ra9"])
+    shrunk_ra9 = (starts * raw_ra9 + SHRINK_STARTS * team_ra_pg) / (starts + SHRINK_STARTS)
     ip_share = min(float(starter.get("ip_per_start") or 5.5) / 9.0, 1.0)
-    eff_ra9 = ip_share * float(starter["ra9"]) + (1.0 - ip_share) * team_ra_pg
+    eff_ra9 = ip_share * shrunk_ra9 + (1.0 - ip_share) * team_ra_pg
     return eff_ra9 / team_ra_pg, {
-        "name": starter.get("name"), "ra9": starter.get("ra9"),
+        "name": starter.get("name"), "ra9": raw_ra9,
+        "ra9_shrunk": round(shrunk_ra9, 3),
         "ip_per_start": starter.get("ip_per_start"), "starts": starter.get("starts"),
         "factor_on_opp_runs": round(eff_ra9 / team_ra_pg, 4),
-        "note": "bullpen approximated at team average RA",
+        "note": f"ra9 shrunk toward team RA over {SHRINK_STARTS}-start prior; "
+                "bullpen approximated at team average RA",
     }
 
 

@@ -519,6 +519,44 @@ def _wnba_team_key(name: str, teams: dict) -> Optional[str]:
             return t
     return None
 
+"""WNBA context margin adjustment — fixed 2026-07-20: rest/B2B/recent-form sat
+in wnba_form.json as display-only while the model priced pure season ratings.
+Now they nudge the margin, small and capped (user directive: model fatigue and
+schedule for every sport). All inputs are observed facts from real games."""
+WNBA_B2B_PTS = 2.5       # documented back-to-back penalty (points of margin)
+WNBA_REST_PTS = 0.6      # per rest-day differential
+WNBA_FORM_W = 0.15       # weight on recent-vs-season margin gap
+WNBA_ADJ_CAP = 3.5       # total cap: ~15% win-prob swing at sigma 9.5
+
+def _wnba_margin_adj(home: str, away: str):
+    teams = WNBA_FORM.get("teams") or {}
+    hk, ak = _wnba_team_key(home, teams), _wnba_team_key(away, teams)
+    if not hk or not ak:
+        return 0.0, None
+    h, a = teams[hk], teams[ak]
+    detail = {}
+    adj = 0.0
+    b2b = (WNBA_B2B_PTS if a.get("b2b") else 0.0) - (WNBA_B2B_PTS if h.get("b2b") else 0.0)
+    if b2b:
+        adj += b2b; detail["b2b_pts"] = round(b2b, 2)
+    try:
+        rest = (float(h.get("rest_days", 0)) - float(a.get("rest_days", 0))) * WNBA_REST_PTS
+        rest = max(-2.0, min(2.0, rest))
+        if rest:
+            adj += rest; detail["rest_pts"] = round(rest, 2)
+    except (TypeError, ValueError):
+        pass
+    try:
+        form = ((float(h.get("recent_margin", 0)) - float(h.get("avg_margin", 0)))
+                - (float(a.get("recent_margin", 0)) - float(a.get("avg_margin", 0)))) * WNBA_FORM_W
+        form = max(-2.0, min(2.0, form))
+        if form:
+            adj += form; detail["form_pts"] = round(form, 2)
+    except (TypeError, ValueError):
+        pass
+    adj = max(-WNBA_ADJ_CAP, min(WNBA_ADJ_CAP, adj))
+    return adj, (detail or None)
+
 def _wnba_profile(home: str, away: str):
     teams = WNBA_FORM.get("teams") or {}
     h2h = WNBA_FORM.get("h2h") or {}
@@ -596,13 +634,30 @@ def predict(req: PredictReq):
         ctx, ctx_detail = _tennis_context_logit(req.crowd, req.recent_sets_home,
                                                 req.recent_sets_away)
         hcp = 1.0 / (1.0 + math.exp(-(logit + surf_adj + aux + ctx)))
+        # ── Engine FUSION (post-mortem 2026-07-19): the blend lens called both
+        # Gstaad and Bastad right while each single engine missed one. When the
+        # serve model has both players, the headline price IS the 50/50 fuse of
+        # points and serve engines; each lens stays visible, and the split
+        # router below still fires off the RAW lens gap.
+        points_prob = hcp
+        serve_prob: Optional[float] = None
+        try:
+            _sm = tgm.predict(req.home_team, req.away_team)
+            _shp = list(_sm.get("match_prob", {}).values())
+            if len(_shp) == 2:
+                serve_prob = float(_shp[0])
+                hcp = (points_prob + serve_prob) / 2.0
+        except Exception:                                      # noqa: BLE001
+            pass  # no serve stats — points engine stands alone
         acp = 1.0 - hcp
         pred_margin = (hcp - 0.5) * 10  # proxy for display/edge
         method = (base + ("+Surface" if surf_adj else "") + ("+Profile" if aux else "")
-                  + ("+Context" if ctx else ""))
+                  + ("+Context" if ctx else "")
+                  + ("+ServeFused" if serve_prob is not None else ""))
         extra = {"method": method, "surface": surf,
                  "surface_adj_logit": round(surf_adj, 3),
-                 "profile_adj_logit": round(aux, 3)}
+                 "profile_adj_logit": round(aux, 3),
+                 "points_model_home_prob": round(points_prob, 3)}
         if aux_detail:
             extra["profile"] = aux_detail
         if ctx_detail:
@@ -645,12 +700,9 @@ def predict(req: PredictReq):
         # died 6-4 6-3. Triangulation is now automatic: if the two engines split
         # by more than MODEL_SPLIT_GAP, flag it — a split match is a NO BET zone,
         # same rule that (manually) cut the Collignon leg in Gstaad.
-        try:
-            sm2 = tgm.predict(req.home_team, req.away_team)
-            serve_hp = list(sm2.get("match_prob", {}).values())
-            if len(serve_hp) == 2:
-                extra["serve_model_home_prob"] = round(serve_hp[0], 3)
-                gap = abs(serve_hp[0] - hcp)
+        if serve_prob is not None:
+                extra["serve_model_home_prob"] = round(serve_prob, 3)
+                gap = abs(serve_prob - points_prob)
                 if gap > MODEL_SPLIT_GAP:
                     # Split = REROUTE, never a bare no-bet (Gstaad lesson: both
                     # user markets won while the match sat "cut"). Price every
@@ -664,7 +716,7 @@ def predict(req: PredictReq):
                         "home_wins_a_set": lambda p: 1 - tlive.implied_set_prob(1-p, req.best_of)**2,
                         "away_wins_a_set": lambda p: 1 - tlive.implied_set_prob(p, req.best_of)**2,
                     }.items():
-                        pp, ps = fn(hcp), fn(serve_hp[0])
+                        pp, ps = fn(points_prob), fn(serve_prob)
                         worst = min(pp, ps)
                         blend = (pp + ps) / 2
                         robust[mkt] = {"points": round(pp, 3), "serve": round(ps, 3),
@@ -673,12 +725,10 @@ def predict(req: PredictReq):
                                        "floor_odds": round(1.0 / worst, 2) if worst > 0 else None,
                                        "blend_floor_odds": round(1.0 / blend, 2) if blend > 0 else None}
                     extra["model_split"] = (
-                        f"points {hcp:.2f} vs serve {serve_hp[0]:.2f} (gap {gap:.2f}) — "
-                        "REROUTE: skip split-sensitive sides, bet only markets whose "
-                        "book price >= floor_odds (worst-lens +EV)")
+                        f"points {points_prob:.2f} vs serve {serve_prob:.2f} (gap {gap:.2f}) — "
+                        "REROUTE: headline price is the fuse, but skip split-sensitive "
+                        "sides unless book price >= floor_odds (worst-lens +EV)")
                     extra["split_robust_markets"] = robust
-        except Exception:                                      # noqa: BLE001
-            pass  # no serve stats (most WTA) — points model stands alone
         model_used = False
     else:
         # ── Run model only when it adds real signal (MAE < 95% of sigma) ──────
@@ -706,9 +756,17 @@ def predict(req: PredictReq):
             hcp = poisson_cover(lh, la, req.spread)
             extra = {"lambda_home": round(lh,2), "lambda_away": round(la,2), "method": "Poisson"}
         else:
+            extra = {}
+            # WNBA schedule/form context — rest, B2B, recent form now PRICED,
+            # not just displayed (they lived in wnba_form.json unused).
+            if sport == "WNBA":
+                wadj, wdetail = _wnba_margin_adj(req.home_team, req.away_team)
+                if wadj:
+                    pred_margin += wadj
+                    extra["wnba_context_pts"] = round(wadj, 2)
+                    extra["wnba_context"] = wdetail
             # Cover condition: margin + spread > 0 (same sign fix as poisson_cover)
             hcp = float(norm.cdf((pred_margin + req.spread) / sigma))
-            extra = {}
         acp = 1.0 - hcp
 
     # ── Devig + EV + Kelly ─────────────────────────────────────────────────────
