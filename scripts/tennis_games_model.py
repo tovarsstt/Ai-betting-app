@@ -143,22 +143,30 @@ def simulate_match(pa: float, pb: float, best_of: int = 3,
     rng = random.Random(seed)
     need = best_of // 2 + 1
     wins_a = 0
+    set1_a = 0
     totals: list[int] = []
     margins: list[int] = []
+    set1_games: list[int] = []
     for _ in range(n_sims):
         sets = [0, 0]
         games = [0, 0]
         server = rng.randint(0, 1)       # toss unknown pre-match — randomized
+        first_set = True
         while max(sets) < need:
             w, ga, gb, server = _sim_set(pa, pb, rng, server)
             sets[w] += 1
             games[0] += ga
             games[1] += gb
+            if first_set:
+                set1_a += 1 - w
+                set1_games.append(ga + gb)
+                first_set = False
         totals.append(games[0] + games[1])
         margins.append(games[0] - games[1])
         if sets[0] == need:
             wins_a += 1
-    return {"match_prob_a": wins_a / n_sims, "totals": totals, "margins": margins}
+    return {"match_prob_a": wins_a / n_sims, "totals": totals, "margins": margins,
+            "set1_prob_a": set1_a / n_sims, "set1_games": set1_games}
 
 
 def predict(player_a: str, player_b: str, games_line: float | None = None,
@@ -201,6 +209,14 @@ def predict(player_a: str, player_b: str, games_line: float | None = None,
         "match_prob": {ka: round(sim["match_prob_a"], 4),
                        kb: round(1 - sim["match_prob_a"], 4)},
         "expected_total_games": round(sum(totals) / n, 2),
+        # ── Set 1 ("period") markets — WTA/ATP, from the same game-level sim ──
+        "set1": {
+            "winner": {ka: round(sim["set1_prob_a"], 4),
+                       kb: round(1 - sim["set1_prob_a"], 4)},
+            "expected_games": round(sum(sim["set1_games"]) / n, 2),
+            "games_over_9_5": round(sum(1 for g in sim["set1_games"] if g > 9.5) / n, 4),
+            "games_under_9_5": round(sum(1 for g in sim["set1_games"] if g < 9.5) / n, 4),
+        },
         "calibration_delta": round(delta, 4),
         "n_sims": n,
         "note": "serve stats are vs tour-average returners (no per-opponent "

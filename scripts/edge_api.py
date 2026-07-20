@@ -760,6 +760,23 @@ def predict(req: PredictReq):
             # WNBA schedule/form context — rest, B2B, recent form now PRICED,
             # not just displayed (they lived in wnba_form.json unused).
             if sport == "WNBA":
+                # Stub-ratings fix (found 2026-07-20): every WNBA team carried
+                # the NBA default 114/114 rating — the "model" was a coin flip.
+                # When ratings are stubs, the margin comes from REAL season
+                # point differentials (wnba_form avg_margin), shrunk 0.7 as a
+                # predictor, plus standard WNBA home edge.
+                stub = (h_r.get("off_rtg") == 114.0 and h_r.get("def_rtg") == 114.0
+                        and a_r.get("off_rtg") == 114.0 and a_r.get("def_rtg") == 114.0)
+                if stub:
+                    wteams = WNBA_FORM.get("teams") or {}
+                    hk_, ak_ = _wnba_team_key(req.home_team, wteams), _wnba_team_key(req.away_team, wteams)
+                    if hk_ and ak_:
+                        h_m = float(wteams[hk_].get("avg_margin", 0.0))
+                        a_m = float(wteams[ak_].get("avg_margin", 0.0))
+                        pred_margin = (h_m - a_m) * 0.7 + 2.2
+                        extra["wnba_margin_source"] = (
+                            f"season point-diff (avg_margin {h_m:+.1f} vs {a_m:+.1f}, "
+                            "shrunk 0.7) + 2.2 home — team ratings are stubs")
                 wadj, wdetail = _wnba_margin_adj(req.home_team, req.away_team)
                 if wadj:
                     pred_margin += wadj
@@ -767,6 +784,26 @@ def predict(req: PredictReq):
                     extra["wnba_context"] = wdetail
             # Cover condition: margin + spread > 0 (same sign fix as poisson_cover)
             hcp = float(norm.cdf((pred_margin + req.spread) / sigma))
+            # ── Period ("quarter/half") markets for basketball ────────────────
+            # Derived from the full-game margin: half margin ~ m/2 with sigma/sqrt2,
+            # quarter ~ m/4 with sigma/2 (independent-increments approximation —
+            # a proxy, stated as such; no fitted per-quarter pace data yet).
+            if sport in ("NBA", "WNBA"):
+                la_ = 114.0 if sport == "NBA" else 107.0
+                # ratings are per-100-possession; scale to real scoreboard points
+                # by league-average game total (NBA pace ~ 100 poss, WNBA ~ 75)
+                league_total = 228.0 if sport == "NBA" else 161.0
+                pace_scale = league_total / (2 * la_)
+                h_pts = h_r.get("off_rtg", la_) * a_r.get("def_rtg", la_) / la_ * pace_scale
+                a_pts = a_r.get("off_rtg", la_) * h_r.get("def_rtg", la_) / la_ * pace_scale
+                extra["periods"] = {
+                    "p_home_wins_1h": round(float(norm.cdf((pred_margin / 2) / (sigma / np.sqrt(2)))), 4),
+                    "p_home_wins_1q": round(float(norm.cdf((pred_margin / 4) / (sigma / 2))), 4),
+                    "expected_total": round(h_pts + a_pts, 1),
+                    "expected_1h_total": round((h_pts + a_pts) / 2, 1),
+                    "note": "derived from full-game model (independent-increments proxy) — "
+                            "no fitted per-quarter pace yet; treat totals as expectations, not lines",
+                }
         acp = 1.0 - hcp
 
     # ── Devig + EV + Kelly ─────────────────────────────────────────────────────

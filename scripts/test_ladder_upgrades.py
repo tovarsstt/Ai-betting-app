@@ -62,3 +62,28 @@ def test_wnba_adj_is_capped_and_directional():
 def test_wnba_unknown_team_is_neutral():
     adj, detail = ea._wnba_margin_adj("Cave Rocks", "Stone Hurlers")
     assert adj == 0.0 and detail is None
+
+
+# ── Period markets (2026-07-20 round 2) ───────────────────────────────────────
+def test_tennis_set1_markets_present_and_consistent():
+    import tennis_games_model as tgm
+    out = tgm.predict("Aryna Sabalenka", "Maria Sakkari")
+    s1 = out["set1"]
+    ka = out["player_a"]
+    # set-1 favorite prob sits between 0.5 and full match prob (less time = closer)
+    assert 0.5 < s1["winner"][ka] < out["match_prob"][ka]
+    assert abs(s1["games_over_9_5"] + s1["games_under_9_5"] - 1.0) < 1e-6
+
+def test_wnba_stub_ratings_replaced_by_real_point_diff():
+    teams = ea.WNBA_FORM.get("teams") or {}
+    if len(teams) < 2:
+        return
+    srt = sorted(teams.items(), key=lambda kv: -float(kv[1].get("avg_margin", 0)))
+    best, worst = srt[0][0], srt[-1][0]
+    out = ea.predict(ea.PredictReq(sport="WNBA", home_team=best, away_team=worst,
+                                   home_odds=-110, away_odds=-110))
+    assert out["home_cover_prob"] > 0.75          # best vs worst is NOT a coin flip
+    assert "wnba_margin_source" in out
+    p = out["periods"]
+    # shorter period -> prob compresses toward 0.5, ordering must hold
+    assert 0.5 < p["p_home_wins_1q"] < p["p_home_wins_1h"] < out["home_cover_prob"]
