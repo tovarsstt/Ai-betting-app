@@ -81,7 +81,8 @@ def load_year(url: str, year: int) -> pd.DataFrame:
     with urllib.request.urlopen(req, timeout=30) as r, open(tmp, "wb") as f:
         f.write(r.read())
     df = pd.read_excel(tmp)
-    keep = ["Date", "Surface", "Winner", "Loser", "Best of"] + [c for p in SET_COLS for c in p]
+    keep = (["Date", "Surface", "Winner", "Loser", "Best of", "Comment"]
+            + [c for p in SET_COLS for c in p])
     have = [c for c in keep if c in df.columns]
     return df[have]
 
@@ -192,6 +193,31 @@ def aggregate(rows: list) -> dict:
                     tb_played[kw] += wt; tb_won[kw] += wt
                     tb_played[kl] += wt
 
+    # Availability: retirements / walkovers CONCEDED (the loser's body gave
+    # out) inside the last 60 days of the data — a real, observable day-of
+    # physical signal. "now" = newest match date in the data (pure function).
+    ret_recent = defaultdict(int)
+    ret_last: dict = {}
+    # "newest" = 99.9th-percentile date, not max — tennis-data has typo rows
+    # (a 2029-dated match) that would push the 60-day window into the future.
+    dates = sorted(m.get("Date") for m in rows
+                   if m.get("Date") is not None and not pd.isna(m.get("Date")))
+    newest = dates[min(int(len(dates) * 0.999), len(dates) - 1)] if dates else None
+    if newest is not None:
+        cutoff = newest - datetime.timedelta(days=60)
+        for m in rows:
+            comment = str(m.get("Comment") or "").strip().lower()
+            d = m.get("Date")
+            if d is None or d < cutoff:
+                continue
+            if comment.startswith("retired") or comment.startswith("walkover"):
+                kl = name_key(m.get("Loser"))
+                if kl:
+                    ret_recent[kl] += 1
+                    prev = ret_last.get(kl)
+                    if prev is None or d > prev:
+                        ret_last[kl] = d
+
     players = {}
     everyone = set(wins) | set(losses)
     for k in everyone:
@@ -219,6 +245,10 @@ def aggregate(rows: list) -> dict:
             else:
                 break
         rec["streak"] = streak
+        if ret_recent.get(k):
+            rec["ret_recent"] = ret_recent[k]
+            if k in ret_last:
+                rec["ret_last"] = ret_last[k].strftime("%Y-%m-%d")
         players["%s|%s" % k] = rec
 
     h2h = defaultdict(dict)

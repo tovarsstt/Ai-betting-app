@@ -87,3 +87,61 @@ def test_wnba_stub_ratings_replaced_by_real_point_diff():
     p = out["periods"]
     # shorter period -> prob compresses toward 0.5, ordering must hold
     assert 0.5 < p["p_home_wins_1q"] < p["p_home_wins_1h"] < out["home_cover_prob"]
+
+
+# ── Day-of condition layer (all sports, cited facts only) ─────────────────────
+def test_condition_without_citation_is_ignored():
+    out = ea.predict(ea.PredictReq(sport="TENNIS", home_team="Andrey Rublev",
+                                   away_team="Luciano Darderi", home_odds=-100,
+                                   away_odds=-100, surface="Clay",
+                                   condition_home="major"))     # no note!
+    base = ea.predict(ea.PredictReq(sport="TENNIS", home_team="Andrey Rublev",
+                                    away_team="Luciano Darderi", home_odds=-100,
+                                    away_odds=-100, surface="Clay"))
+    assert out["home_cover_prob"] == base["home_cover_prob"]
+    assert "ignored" in out["day_of_condition"]
+
+def test_cited_condition_moves_the_line_against_the_hurt_side():
+    base = ea.predict(ea.PredictReq(sport="TENNIS", home_team="Andrey Rublev",
+                                    away_team="Luciano Darderi", home_odds=-100,
+                                    away_odds=-100, surface="Clay"))
+    out = ea.predict(ea.PredictReq(sport="TENNIS", home_team="Andrey Rublev",
+                                   away_team="Luciano Darderi", home_odds=-100,
+                                   away_odds=-100, surface="Clay",
+                                   condition_home="major",
+                                   condition_note="ATP: treated for illness overnight (example)"))
+    assert out["home_cover_prob"] < base["home_cover_prob"]
+
+def test_wnba_cited_condition_moves_margin():
+    teams = list((ea.WNBA_FORM.get("teams") or {}).keys())
+    if len(teams) < 2:
+        return
+    base = ea.predict(ea.PredictReq(sport="WNBA", home_team=teams[0], away_team=teams[1],
+                                    home_odds=-110, away_odds=-110))
+    out = ea.predict(ea.PredictReq(sport="WNBA", home_team=teams[0], away_team=teams[1],
+                                   home_odds=-110, away_odds=-110,
+                                   condition_away="major",
+                                   condition_note="team injury report: starter OUT (example)"))
+    assert out["home_cover_prob"] > base["home_cover_prob"]
+
+
+def test_retirement_tracking_aggregates_from_comment_column():
+    import datetime as dt
+    from fetch_tennis_form import aggregate
+    rows = []
+    base_day = dt.datetime(2026, 7, 1)
+    # 6 completed matches so both players clear MIN_MATCHES, then a retirement
+    for i in range(6):
+        rows.append({"Winner": "Player One", "Loser": "Player Two",
+                     "Date": base_day + dt.timedelta(days=i), "Surface": "Hard",
+                     "Best of": 3, "Comment": "Completed", "__wt": 1.0, "__h2h_wt": 1.0})
+        rows.append({"Winner": "Player Two", "Loser": "Player One",
+                     "Date": base_day + dt.timedelta(days=i), "Surface": "Hard",
+                     "Best of": 3, "Comment": "Completed", "__wt": 1.0, "__h2h_wt": 1.0})
+    rows.append({"Winner": "Player One", "Loser": "Player Two",
+                 "Date": base_day + dt.timedelta(days=10), "Surface": "Hard",
+                 "Best of": 3, "Comment": "Retired", "__wt": 1.0, "__h2h_wt": 1.0})
+    out = aggregate(rows)
+    two = out["players"]["two|p"]
+    assert two["ret_recent"] == 1 and two["ret_last"] == "2026-07-11"
+    assert "ret_recent" not in out["players"]["one|p"]

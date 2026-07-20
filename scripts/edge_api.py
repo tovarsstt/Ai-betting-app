@@ -315,6 +315,12 @@ class PredictReq(BaseModel):
     crowd: Optional[str] = None            # "home" | "away" — whose crowd it is
     recent_sets_home: Optional[int] = None  # sets ground in last ~48h of this event
     recent_sets_away: Optional[int] = None
+    # Day-of physical condition (ALL sports) — a CITED public fact only:
+    # player/team statement, injury report, MTO, illness in the press.
+    # Ignored without condition_note (uncited = doesn't exist, rule 13).
+    condition_home: Optional[str] = None   # "minor" | "major"
+    condition_away: Optional[str] = None
+    condition_note: Optional[str] = None   # the citation (source + what was said)
 
 def _formula_margin(sport: str, h_r: dict, a_r: dict) -> float:
     """Pure-formula margin prediction — used when model is missing or degenerate."""
@@ -353,6 +359,33 @@ W_H2H, W_FORM, W_PSYCH, W_CLUTCH, W_STREAK = 0.7, 0.6, 0.4, 0.4, 0.02
 TENNIS_CROWD_LOGIT = 0.10       # home-crowd edge (Athens-for-Sakkari sized)
 TENNIS_FATIGUE_PER_SET = 0.05   # logit per set of recent-workload differential
 TENNIS_FATIGUE_CAP = 0.15
+
+# Day-of condition penalties — cited public facts only. Sized from injury-
+# report literature bands: "minor"/questionable ~2-3% win prob, "major"/
+# playing-hurt ~5-7%. A condition WITHOUT a citation is ignored entirely.
+CONDITION_LOGIT = {"minor": 0.10, "major": 0.28}          # tennis, per side
+CONDITION_MARGIN_PTS = {                                   # margin sports, per side
+    "NBA": {"minor": 1.5, "major": 3.5}, "WNBA": {"minor": 1.5, "major": 3.5},
+    "NFL": {"minor": 1.5, "major": 3.5}, "MLB": {"minor": 0.25, "major": 0.6},
+}
+
+def _condition_adjust(req: "PredictReq", scale: dict):
+    """Signed penalty from the HOME side's perspective + echo detail.
+    Returns (0, None) when nothing is set or the note (citation) is missing."""
+    if not (req.condition_home or req.condition_away):
+        return 0.0, None
+    if not req.condition_note:
+        return 0.0, {"ignored": "condition set without condition_note — "
+                                "uncited facts don't move the line (rule 13)"}
+    adj = 0.0
+    detail = {"note": req.condition_note}
+    if req.condition_home in scale:
+        adj -= scale[req.condition_home]
+        detail["home"] = req.condition_home
+    if req.condition_away in scale:
+        adj += scale[req.condition_away]
+        detail["away"] = req.condition_away
+    return adj, detail
 
 def _tennis_context_logit(crowd: Optional[str],
                           sets_home: Optional[int],
@@ -633,7 +666,9 @@ def predict(req: PredictReq):
         # ── Context: fatigue + home crowd (caller-observed facts, capped) ───────
         ctx, ctx_detail = _tennis_context_logit(req.crowd, req.recent_sets_home,
                                                 req.recent_sets_away)
-        hcp = 1.0 / (1.0 + math.exp(-(logit + surf_adj + aux + ctx)))
+        # ── Day-of condition: cited public facts (statement/MTO/press) only ────
+        cond, cond_detail = _condition_adjust(req, CONDITION_LOGIT)
+        hcp = 1.0 / (1.0 + math.exp(-(logit + surf_adj + aux + ctx + cond)))
         # ── Engine FUSION (post-mortem 2026-07-19): the blend lens called both
         # Gstaad and Bastad right while each single engine missed one. When the
         # serve model has both players, the headline price IS the 50/50 fuse of
@@ -663,6 +698,19 @@ def predict(req: PredictReq):
         if ctx_detail:
             extra["context_adj_logit"] = round(ctx, 3)
             extra["context"] = ctx_detail
+        if cond_detail:
+            extra["day_of_condition"] = cond_detail
+        # ── Auto availability warning: retirements/walkovers conceded in the
+        # last 60 days of results (fetch_tennis_form Comment column) ──────────
+        _fp = TENNIS_FORM.get("players") or {}
+        for side, nm in (("home", req.home_team), ("away", req.away_team)):
+            k = _resolve_tennis_key(nm, _fp)
+            rec = _fp.get(k) if k else None
+            if rec and rec.get("ret_recent"):
+                extra.setdefault("availability_warnings", {})[side] = (
+                    f"{nm}: {rec['ret_recent']} retirement/walkover conceded in last 60d"
+                    + (f" (last {rec.get('ret_last')})" if rec.get("ret_last") else "")
+                    + " — body already failed once recently; check day-of news")
         # ── Live/in-play: re-price off the current set score ──────────────────
         # Pre-match hcp above stays the PREGAME number (method/profile/surface all
         # keep working off it). If the caller supplies a live set score, invert it
@@ -782,6 +830,13 @@ def predict(req: PredictReq):
                     pred_margin += wadj
                     extra["wnba_context_pts"] = round(wadj, 2)
                     extra["wnba_context"] = wdetail
+            # Day-of condition (cited public facts) — margin sports.
+            if sport in CONDITION_MARGIN_PTS:
+                cadj, cdetail = _condition_adjust(req, CONDITION_MARGIN_PTS[sport])
+                if cdetail:
+                    extra["day_of_condition"] = cdetail
+                if cadj:
+                    pred_margin += cadj
             # Cover condition: margin + spread > 0 (same sign fix as poisson_cover)
             hcp = float(norm.cdf((pred_margin + req.spread) / sigma))
             # ── Period ("quarter/half") markets for basketball ────────────────
