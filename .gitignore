@@ -68,3 +68,6 @@ scripts/kronos/
 .pytest_cache/
 # Third-party claude-bridge repos — nested git clones, never tracked here
 integrations/
+
+# runtime odds cache (persistent, do not commit)
+data/.cache.json

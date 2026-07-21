@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { spawn } from 'child_process';
 import Anthropic from '@anthropic-ai/sdk';
+import { GoogleGenAI } from '@google/genai';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { readFileSync, writeFileSync } from 'fs';
@@ -294,6 +295,37 @@ async function fetchHistoricalContext(sport: string, matchup: string): Promise<s
 const ODDS_API_KEY = process.env.ODDS_API_KEY || "";
 const ODDS_API_BASE = "https://api.the-odds-api.com/v4";
 
+// ── Odds API quota tracking + floor guard ────────────────────────────────────
+// The free tier is ~500 requests/month. We read the quota the API reports on
+// every response header and refuse paid calls once a floor is hit — returning a
+// synthetic 429 so the existing skip-on-error paths serve the (now persistent)
+// cache instead of spending the last credits and hard-failing the whole app.
+const ODDS_QUOTA_FLOOR = Number(process.env.ODDS_QUOTA_FLOOR) || 15;
+const oddsQuota: { remaining: number | null; used: number | null; updated: string | null } = {
+  remaining: null,
+  used: null,
+  updated: null,
+};
+
+async function oddsFetch(url: string, timeoutMs = 6000): Promise<Response> {
+  if (oddsQuota.remaining !== null && oddsQuota.remaining <= ODDS_QUOTA_FLOOR) {
+    // Budget floor reached — don't spend the last credits; caller falls back to cache.
+    return new Response(null, { status: 429, statusText: 'ODDS_QUOTA_FLOOR' });
+  }
+  const res = await fetch(url, { signal: AbortSignal.timeout(timeoutMs) });
+  const rem = res.headers.get('x-requests-remaining');
+  if (rem !== null) {
+    oddsQuota.remaining = Number(rem);
+    const used = res.headers.get('x-requests-used');
+    if (used !== null) oddsQuota.used = Number(used);
+    oddsQuota.updated = new Date().toISOString();
+    if (oddsQuota.remaining <= ODDS_QUOTA_FLOOR) {
+      console.warn(`⚠️  Odds API quota low: ${oddsQuota.remaining} left (floor ${ODDS_QUOTA_FLOOR}) — serving cache until reset.`);
+    }
+  }
+  return res;
+}
+
 // SPORT_KEYS — imported from src/services/oddsService.ts
 
 interface OddsEvent {
@@ -318,6 +350,15 @@ async function getActiveSportKeys(): Promise<Set<string> | null> {
   if (cached) return cached as Set<string>;
   try {
     const res = await fetch(`${ODDS_API_BASE}/sports/?apiKey=${ODDS_API_KEY}`, { signal: AbortSignal.timeout(6000) });
+    // The free /sports endpoint still reports quota — seed it on boot (no floor
+    // guard here: this call is free and needed to know which leagues are live).
+    const rem = res.headers.get('x-requests-remaining');
+    if (rem !== null) {
+      oddsQuota.remaining = Number(rem);
+      const used = res.headers.get('x-requests-used');
+      if (used !== null) oddsQuota.used = Number(used);
+      oddsQuota.updated = new Date().toISOString();
+    }
     if (!res.ok) return null;
     const sports = await res.json() as Array<{ key: string; active: boolean }>;
     const activeSet = new Set(sports.filter(s => s.active).map(s => s.key));
@@ -408,7 +449,7 @@ async function fetchLiveOdds(sport: string, gameQuery?: string): Promise<string>
       // NOTE: alternate_spreads/alternate_totals are NOT supported on the bulk
       // /sports/{key}/odds endpoint (422 INVALID_MARKET) — only per-event endpoint.
       const url = `${ODDS_API_BASE}/sports/${key}/odds?apiKey=${ODDS_API_KEY}&regions=us&markets=h2h,spreads,totals&bookmakers=pinnacle,draftkings,fanduel&dateFormat=iso&oddsFormat=american`;
-      const res = await fetch(url, { signal: AbortSignal.timeout(6000) });
+      const res = await oddsFetch(url, 6000);
       if (!res.ok) {
         const body = await res.text().catch(() => '');
         console.error(`Odds API ${res.status} for ${key}: ${body.slice(0, 200)}`);
@@ -1403,7 +1444,7 @@ async function fetchChampionshipPrior(sport: string): Promise<string> {
     if (activeKeys && !activeKeys.has(outright.key)) return '';
 
     const url = `${ODDS_API_BASE}/sports/${outright.key}/odds?apiKey=${ODDS_API_KEY}&regions=us&markets=outrights&oddsFormat=american`;
-    const res = await fetch(url, { signal: AbortSignal.timeout(6000) });
+    const res = await oddsFetch(url, 6000);
     if (!res.ok) {
       console.error(`Outrights fetch failed for ${sport}: HTTP ${res.status}`);
       return '';
@@ -1815,7 +1856,7 @@ async function fetchSharpSignals(sport: string): Promise<string> {
   const signals: string[] = [];
   try {
     const url = `${ODDS_API_BASE}/sports/${sportKeys[0]}/odds?apiKey=${ODDS_API_KEY}&regions=us&markets=h2h,spreads&bookmakers=pinnacle,draftkings,fanduel&dateFormat=iso&oddsFormat=american`;
-    const res = await fetch(url, { signal: AbortSignal.timeout(6000) });
+    const res = await oddsFetch(url, 6000);
     if (!res.ok) return "";
     const events = await res.json() as OddsEvent[];
     for (const ev of events.slice(0, 6)) {
@@ -1890,6 +1931,20 @@ const SHARP_IDENTITY = () => getSharpIdentity(
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const DEEPSEEK_KEY = process.env.DEEPSEEK_API_KEY || "";
 
+// Free fallback: Gemini's free tier keeps ANALYZE/PROPHET alive when the
+// Anthropic account runs out of credits (400 "credit balance too low") or is
+// rate-limited — no paid dependency, same prompt, same anti-hallucination rules.
+const GEMINI_KEY = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || "";
+const genai = GEMINI_KEY ? new GoogleGenAI({ apiKey: GEMINI_KEY }) : null;
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash"; // free-tier model
+
+async function askGemini(prompt: string): Promise<string> {
+  if (!genai) throw new Error("GEMINI_NOT_CONFIGURED");
+  const resp = await genai.models.generateContent({ model: GEMINI_MODEL, contents: prompt });
+  const text = resp.text ?? "";
+  return text.replace(/```json|```/g, "").trim();
+}
+
 async function ask(prompt: string, model = "claude-fable-5"): Promise<string> {
   try {
     const msg = await anthropic.beta.messages.create({
@@ -1910,12 +1965,30 @@ async function ask(prompt: string, model = "claude-fable-5"): Promise<string> {
     const text = textBlock?.type === "text" ? textBlock.text : "";
     return text.replace(/```json|```/g, "").trim();
   } catch (err: unknown) {
-    // Typed retryable check (429/5xx/refusal) → try DeepSeek V3
-    const isRateLimit =
+    // Fallback triggers: overload (429/5xx), safety refusal, OR the account
+    // being out of credits / payment required (400 "credit balance too low", 402).
+    const isOutOfCredits =
+      err instanceof Anthropic.APIError &&
+      (Number(err.status) === 402 ||
+        (Number(err.status) === 400 && /credit balance|too low|billing|payment/i.test(err.message)));
+    const shouldFallback =
+      isOutOfCredits ||
       (err instanceof Anthropic.APIError && [429, 500, 529].includes(Number(err.status))) ||
       (err instanceof Error && err.message === "CLAUDE_REFUSAL");
-    if (isRateLimit && DEEPSEEK_KEY) {
-      console.warn("Anthropic overloaded → falling back to DeepSeek V3");
+
+    // Free tier first — keeps the app running at zero cost.
+    if (shouldFallback && genai) {
+      console.warn(`Anthropic unavailable (${isOutOfCredits ? "out of credits" : "overloaded"}) → falling back to free Gemini (${GEMINI_MODEL})`);
+      try {
+        return await askGemini(prompt);
+      } catch (gemErr: unknown) {
+        console.error("Gemini fallback failed:", gemErr instanceof Error ? gemErr.message : gemErr);
+        // fall through to DeepSeek if configured
+      }
+    }
+
+    if (shouldFallback && DEEPSEEK_KEY) {
+      console.warn("→ falling back to DeepSeek V3");
       const res = await fetch("https://api.deepseek.com/v1/chat/completions", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${DEEPSEEK_KEY}` },
@@ -3620,7 +3693,7 @@ app.get('/api/line-gaps', async (req: express.Request, res: express.Response) =>
     // Wimbledon/US Open for tennis, every non-WC league for soccer, etc.).
     for (const key of sportKeys) {
       const url = `${ODDS_API_BASE}/sports/${key}/odds?apiKey=${ODDS_API_KEY}&regions=us&markets=h2h,spreads&bookmakers=pinnacle,draftkings,fanduel&dateFormat=iso&oddsFormat=american`;
-      const r = await fetch(url, { signal: AbortSignal.timeout(8000) });
+      const r = await oddsFetch(url, 8000);
       if (!r.ok) continue;                      // out-of-season key → skip, don't abort the scan
       const events = await r.json() as OddsEvent[];
       if (!Array.isArray(events)) continue;
@@ -3723,7 +3796,7 @@ app.get('/api/arbitrage', async (req: express.Request, res: express.Response) =>
 
     for (const key of sportKeys) {
       const url = `${ODDS_API_BASE}/sports/${key}/odds?apiKey=${ODDS_API_KEY}&regions=us&markets=h2h&bookmakers=pinnacle,draftkings,fanduel,betmgm,caesars&dateFormat=iso&oddsFormat=american`;
-      const arbRes = await fetch(url, { signal: AbortSignal.timeout(6000) });
+      const arbRes = await oddsFetch(url, 6000);
       if (!arbRes.ok) continue;
 
       const events = await arbRes.json() as OddsEvent[];
@@ -3942,7 +4015,7 @@ app.get('/api/upset-radar', async (req: express.Request, res: express.Response) 
 
       try {
         const url = `${ODDS_API_BASE}/sports/${key}/odds?apiKey=${ODDS_API_KEY}&regions=us&markets=h2h&bookmakers=pinnacle,draftkings,fanduel,betmgm,caesars&oddsFormat=american`;
-        const r = await fetch(url, { signal: AbortSignal.timeout(6000) });
+        const r = await oddsFetch(url, 6000);
         if (!r.ok) { console.error(`Upset radar ${sport} HTTP ${r.status}`); continue; }
         const events = await r.json() as OddsEvent[];
 
@@ -4056,6 +4129,19 @@ app.post('/api/ledger/settle', async (req: express.Request, res: express.Respons
   }
 });
 
+// Live Odds API quota — so "the app stopped working" is never a mystery: it
+// shows exactly how many of the ~500 monthly free-tier credits remain.
+app.get('/api/odds-quota', (req: express.Request, res: express.Response) => {
+  res.json({
+    success: true,
+    remaining: oddsQuota.remaining,
+    used: oddsQuota.used,
+    floor: ODDS_QUOTA_FLOOR,
+    serving_cache: oddsQuota.remaining !== null && oddsQuota.remaining <= ODDS_QUOTA_FLOOR,
+    updated: oddsQuota.updated,
+  });
+});
+
 app.get('/api/ledger/stats', async (req: express.Request, res: express.Response) => {
   if (rateLimit(req, 30, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
   try {
@@ -4081,7 +4167,7 @@ app.get('/api/ledger/picks', async (req: express.Request, res: express.Response)
 // Only ML/spread picks with a clean identity are captured; AH/props stay manual.
 async function fetchRawEvents(sportKey: string): Promise<OddsEvent[]> {
   const url = `${ODDS_API_BASE}/sports/${sportKey}/odds?apiKey=${ODDS_API_KEY}&regions=us&markets=h2h,spreads&bookmakers=pinnacle,draftkings,fanduel&dateFormat=iso&oddsFormat=american`;
-  const r = await fetch(url, { signal: AbortSignal.timeout(8000) });
+  const r = await oddsFetch(url, 8000);
   if (!r.ok) return [];
   const events = await r.json();
   return Array.isArray(events) ? events as OddsEvent[] : [];
