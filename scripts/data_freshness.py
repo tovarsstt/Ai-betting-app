@@ -108,7 +108,10 @@ def status_for(sport: str, stamp: datetime | None, today: date) -> dict:
         return {"status": "MISSING", "note": "data file not found"}
     if stamp.tzinfo is None:
         stamp = stamp.replace(tzinfo=timezone.utc)
-    age = (datetime.now(timezone.utc) - stamp).days
+    # Age is measured against the caller's reference date `today`, not the wall
+    # clock — otherwise age and the season checks below use two different "now"s,
+    # and STALE fires days early (non-deterministic, untestable).
+    age = (today - stamp.date()).days
     out = {"stamp": stamp.date().isoformat(), "age_days": age}
     season = in_season(key, today)
     starts = season_start(key, today)
