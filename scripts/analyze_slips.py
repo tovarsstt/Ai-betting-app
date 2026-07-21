@@ -37,13 +37,26 @@ SOCCER_MARKERS = ("1x2", "Ambos equipos marcan", "Totales asiáticos",
 TENNIS_MARKERS = ("Hándicap de Set", "Total sets", "juego")
 # "Surname, Firstname Ganador <odds>" — a tennis match-winner leg.
 TENNIS_ML = re.compile(r"[^\W\d_][^\s,]*,\s+[^\W\d_][^\s]*\s+Ganador", re.U)
+# Baseball: "(incl. extra innings)" is on every MLB market; hits props too.
+BASEBALL_MARKERS = ("extra innings", "Hits")
+# Basketball (WNBA/NBA): winner "(incl. prórroga)" = overtime. Checked after
+# soccer so a soccer knockout tie doesn't get miscounted as hoops.
+BASKETBALL_MARKERS = ("prórroga", "prorroga")
 
 
 def ticket_type(block: str) -> str:
-    """Heuristic sport/shape tag for one ticket's raw block text."""
+    """Heuristic sport/shape tag for one ticket's raw block text.
+
+    Previously only soccer/tennis were tagged, so MLB/WNBA/NBA tickets — the bulk
+    of the user's volume — all fell into "unknown" and the by-type P/L breakdown
+    was blind to them. Baseball ("extra innings", hits props) and basketball
+    ("prórroga" OT) are now recognized too.
+    """
     is_soccer = any(m in block for m in SOCCER_MARKERS)
-    is_tennis = any(m in block for m in TENNIS_MARKERS) or TENNIS_ML.search(block)
-    if is_soccer and is_tennis:
+    is_tennis = bool(any(m in block for m in TENNIS_MARKERS) or TENNIS_ML.search(block))
+    is_baseball = any(m in block for m in BASEBALL_MARKERS)
+    is_basketball = any(m in block for m in BASKETBALL_MARKERS)
+    if sum([is_soccer, is_tennis, is_baseball, is_basketball]) > 1:
         return "mixed sports"
     if is_tennis:
         return "tennis stack" if MULTI_TRAMO.search(block) else "tennis single"
@@ -53,6 +66,10 @@ def ticket_type(block: str) -> str:
         if SGM.search(block):
             return "soccer same-game (1 match)"
         return "soccer single"
+    if is_baseball:
+        return "baseball stack" if MULTI_TRAMO.search(block) else "baseball single"
+    if is_basketball:
+        return "basketball stack" if MULTI_TRAMO.search(block) else "basketball single"
     return "unknown"
 
 

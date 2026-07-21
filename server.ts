@@ -1111,8 +1111,11 @@ async function fetchMLBPitcherStats(matchup: string): Promise<string> {
 
 // ── Weather via wttr.in (completely free, no auth) ────────────────────────────
 // Only called for outdoor sports: MLB, NFL. Indoor (NBA/NHL) = skip.
-const STADIUM_CITIES: Record<string, string> = {
-  // MLB
+// Split by sport: 'giants' and 'cardinals' are BOTH MLB and NFL nicknames, so a
+// single flat map silently overwrote the MLB cities with the NFL ones (SF Giants
+// got New Jersey weather, StL Cardinals got Arizona). fetchWeather already knows
+// the sport — key off it so each league resolves to the right stadium city.
+const STADIUM_CITIES_MLB: Record<string, string> = {
   'yankees': 'New York', 'mets': 'New York', 'red sox': 'Boston',
   'cubs': 'Chicago', 'white sox': 'Chicago', 'dodgers': 'Los Angeles',
   'angels': 'Anaheim', 'giants': 'San Francisco', 'athletics': 'Oakland',
@@ -1123,7 +1126,8 @@ const STADIUM_CITIES: Record<string, string> = {
   'blue jays': 'Toronto', 'rays': 'St. Petersburg', 'tigers': 'Detroit',
   'guardians': 'Cleveland', 'royals': 'Kansas City', 'twins': 'Minneapolis',
   'astros': 'Houston', 'rangers': 'Arlington', 'mariners': 'Seattle',
-  // NFL
+};
+const STADIUM_CITIES_NFL: Record<string, string> = {
   'patriots': 'Foxborough', 'bills': 'Orchard Park', 'dolphins': 'Miami Gardens',
   'jets': 'East Rutherford', 'ravens': 'Baltimore', 'bengals': 'Cincinnati',
   'browns': 'Cleveland', 'steelers': 'Pittsburgh', 'texans': 'Houston',
@@ -1146,7 +1150,8 @@ async function fetchWeather(matchup: string, sport: string): Promise<string> {
   const homeStr = (parts[parts.length - 1] ?? parts[0]).trim();
 
   let city = '';
-  for (const [kw, c] of Object.entries(STADIUM_CITIES)) {
+  const stadiumCities = s === 'MLB' ? STADIUM_CITIES_MLB : STADIUM_CITIES_NFL;
+  for (const [kw, c] of Object.entries(stadiumCities)) {
     if (homeStr.includes(kw)) { city = c; break; }
   }
   if (!city) return "";

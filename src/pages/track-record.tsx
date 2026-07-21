@@ -16,7 +16,7 @@ interface LedgerPick {
   odds: number;
   stake_units: number;
   closing_odds: number | null;
-  result: "W" | "L" | "P" | "PENDING";
+  result: "W" | "L" | "P" | "PENDING" | "PASS" | string;
 }
 
 interface LedgerStats {
@@ -63,8 +63,14 @@ const RESULT_STYLE: Record<string, { color: string; label: string }> = {
   W: { color: "#22c55e", label: "WIN" },
   L: { color: "#f87171", label: "LOSS" },
   P: { color: "#9ca3af", label: "PUSH" },
+  PASS: { color: "#9ca3af", label: "PASS" },
   PENDING: { color: OCHRE, label: "PENDING" },
 };
+// Any result the ledger emits that isn't styled above (legacy/unknown) must
+// render as a neutral chip, never crash the whole page. Was a hard crash: a
+// single pick with result "PASS" made RESULT_STYLE[result] undefined and the
+// blank-screen took down the entire app (no error boundary).
+const FALLBACK_STYLE = { color: "#9ca3af", label: "—" };
 
 export default function TrackRecordPage() {
   const qc = useQueryClient();
@@ -215,7 +221,7 @@ export default function TrackRecordPage() {
       {/* ── Picks list ── */}
       <div className="space-y-2">
         {picks.map(p => {
-          const rs = RESULT_STYLE[p.result];
+          const rs = RESULT_STYLE[p.result] ?? { ...FALLBACK_STYLE, label: p.result || "—" };
           return (
             <div key={p.id} className="flex flex-wrap items-center gap-3 border border-white/10 bg-white/[0.02] px-4 py-3">
               <span className="text-[10px] font-black px-2 py-0.5 uppercase tracking-widest"
