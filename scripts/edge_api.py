@@ -1,0 +1,1702 @@
+"""
+Caveman Edge API — port 8001
+Unified model server for NBA, WNBA, NFL, MLB, Tennis, Soccer.
+Spawned automatically by server.ts on startup.
+
+POST /predict  {"sport","home_team","away_team","spread","home_odds","away_odds"}
+GET  /health
+GET  /teams/{sport}
+"""
+import json, pickle, numpy as np
+from pathlib import Path
+from typing import Optional
+from scipy.stats import norm, poisson as sp_poisson
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+import uvicorn
+
+import failure_modes as fmod
+import narrative as nv
+import soccer_markets as sm
+import poisson_model as pm
+import poisson_regression as psreg
+import ufc_markets as um
+import chaos_engine as ce
+import staking as stk
+import tennis_live as tlive
+import sofascore as sofa
+import player_props as props
+import team_off_def as tod
+import mlb_game_model as mgm
+import volleyball_model as vbm
+import lmb_model as lmbm
+import cricket_model as ckm
+import tennis_games_model as tgm
+from typing import List
+
+BASE = Path(__file__).parent.parent / "data"
+app = FastAPI(title="Caveman Edge API", version="2.0")
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+
+BUNDLES: dict = {}
+ALL_RATINGS: dict = {}
+RATINGS_META: dict = {}   # freshness stamps (ratings_meta.json) — flag stale ranks
+TENNIS_FORM: dict = {}   # H2H / form / psych / clutch — built by fetch_tennis_form.py
+TENNIS_SERVE: dict = {}  # ATP+WTA serve/break-point stats — built by fetch_tennis_serve_stats.py
+SOCCER_FORM: dict = {}   # national-team form / goals / H2H — built by fetch_soccer_form.py
+WNBA_FORM: dict = {}     # form / rest / B2B / H2H — built by fetch_wnba_form.py
+INTL_SOCCER_RATINGS: dict = {}  # data-fit national-team attack/defense/eigen — fit_soccer_ratings.py
+CLUB_SOCCER_RATINGS: dict = {}  # data-fit big-5-league club attack/defense/eigen — fit_club_ratings.py
+SIGMA = {"NBA": 11.5, "WNBA": 9.5, "NFL": 13.5, "MLB": 3.0, "TENNIS": 30.0, "SOCCER": 2.0, "Tennis": 30.0, "Soccer": 2.0}
+
+
+def _intl_lambdas(home: str, away: str, neutral: bool):
+    """
+    (lambda_home, lambda_away) from the Poisson-regression national-team fit
+    (fit_soccer_ratings.py — real match data, not a hand-tuned heuristic).
+    Returns None if either team is missing from the fit (never invents one).
+    """
+    teams = INTL_SOCCER_RATINGS.get("teams", {})
+    h, a = teams.get(home), teams.get(away)
+    if not h or not a or h.get("attack") is None or a.get("attack") is None:
+        return None
+    mu = INTL_SOCCER_RATINGS.get("mu", 0.0)
+    home_adv = 0.0 if neutral else INTL_SOCCER_RATINGS.get("home_advantage", 0.0)
+    lh = float(np.exp(mu + home_adv + h["attack"] - a["defense"]))
+    la = float(np.exp(mu + a["attack"] - h["defense"]))
+    return max(0.15, lh), max(0.15, la)
+
+
+def _club_lambdas(home: str, away: str, neutral: bool):
+    """
+    (lambda_home, lambda_away) from the Poisson-regression CLUB-league fit
+    (fit_club_ratings.py — big-5 domestic leagues, real match data). Fit is
+    PER LEAGUE (see fit_club_ratings.py docstring for why), so both teams
+    must resolve to the SAME league's pool — cross-league attack/defense
+    values aren't on a comparable scale. Returns (lambdas, league_name) or
+    (None, None) if no single league has both teams (never invents one).
+    """
+    for league, data in (CLUB_SOCCER_RATINGS.get("leagues") or {}).items():
+        teams = data.get("teams", {})
+        h, a = teams.get(home), teams.get(away)
+        if not h or not a or h.get("attack") is None or a.get("attack") is None:
+            continue
+        mu = data.get("mu", 0.0)
+        home_adv = 0.0 if neutral else data.get("home_advantage", 0.0)
+        lh = float(np.exp(mu + home_adv + h["attack"] - a["defense"]))
+        la = float(np.exp(mu + a["attack"] - h["defense"]))
+        return (max(0.15, lh), max(0.15, la)), league
+    return None, None
+
+@app.on_event("startup")
+def load_all():
+    for sport in ["nba", "wnba", "nfl", "mlb", "tennis", "soccer"]:
+        p = BASE / f"edge_model_{sport}.pkl"
+        if p.exists():
+            with open(p, "rb") as f:
+                BUNDLES[sport.upper()] = pickle.load(f)
+    if (BASE / "all_ratings.json").exists():
+        with open(BASE / "all_ratings.json") as f:
+            ALL_RATINGS.update(json.load(f))
+    # Sanitize NaN values from training output — they poison predictions and
+    # crash JSON serialization. A field with NaN is treated as missing.
+    for sport_key, teams_map in list(ALL_RATINGS.items()):
+        if isinstance(teams_map, dict):
+            ALL_RATINGS[sport_key] = {
+                team: {k: v for k, v in (ratings or {}).items()
+                       if not (isinstance(v, float) and v != v)}
+                for team, ratings in teams_map.items()
+            }
+    if (BASE / "mlb_ratings.json").exists():
+        with open(BASE / "mlb_ratings.json") as f:
+            ALL_RATINGS["MLB"] = json.load(f)
+    if (BASE / "ratings_meta.json").exists():
+        with open(BASE / "ratings_meta.json") as f:
+            RATINGS_META.update(json.load(f))
+    if (BASE / "soccer" / "international_ratings.json").exists():
+        with open(BASE / "soccer" / "international_ratings.json") as f:
+            INTL_SOCCER_RATINGS.update(json.load(f))
+    if (BASE / "soccer" / "club_ratings.json").exists():
+        with open(BASE / "soccer" / "club_ratings.json") as f:
+            CLUB_SOCCER_RATINGS.update(json.load(f))
+    if (BASE / "tennis_form.json").exists():
+        with open(BASE / "tennis_form.json") as f:
+            TENNIS_FORM.update(json.load(f))
+    if (BASE / "tennis_serve.json").exists():
+        with open(BASE / "tennis_serve.json") as f:
+            TENNIS_SERVE.update(json.load(f))
+    if (BASE / "soccer_form.json").exists():
+        with open(BASE / "soccer_form.json") as f:
+            SOCCER_FORM.update(json.load(f))
+    if (BASE / "wnba_form.json").exists():
+        with open(BASE / "wnba_form.json") as f:
+            WNBA_FORM.update(json.load(f))
+    nfp = len((TENNIS_FORM.get("players") or {}))
+    nts = len((TENNIS_SERVE.get("players") or {}))
+    nsf = len((SOCCER_FORM.get("teams") or {}))
+    ncr = sum(len(l.get("teams", {})) for l in (CLUB_SOCCER_RATINGS.get("leagues") or {}).values())
+    nwf = len((WNBA_FORM.get("teams") or {}))
+    print(f"[EdgeAPI] {len(BUNDLES)} models: {list(BUNDLES.keys())} | "
+          f"tennis {nfp} (serve {nts} ATP) | soccer {nsf} (club {ncr}) | wnba {nwf}")
+
+# ── Team resolution ───────────────────────────────────────────────────────────
+NBA_IDS = {
+    "atlanta hawks":1610612737,"boston celtics":1610612738,"brooklyn nets":1610612751,
+    "charlotte hornets":1610612766,"chicago bulls":1610612741,"cleveland cavaliers":1610612739,
+    "dallas mavericks":1610612742,"denver nuggets":1610612743,"detroit pistons":1610612765,
+    "golden state warriors":1610612744,"houston rockets":1610612745,"indiana pacers":1610612754,
+    "la clippers":1610612746,"los angeles clippers":1610612746,"los angeles lakers":1610612747,
+    "memphis grizzlies":1610612763,"miami heat":1610612748,"milwaukee bucks":1610612749,
+    "minnesota timberwolves":1610612750,"new orleans pelicans":1610612740,"new york knicks":1610612752,
+    "oklahoma city thunder":1610612760,"orlando magic":1610612753,"philadelphia 76ers":1610612755,
+    "phoenix suns":1610612756,"portland trail blazers":1610612757,"sacramento kings":1610612758,
+    "san antonio spurs":1610612759,"toronto raptors":1610612761,"utah jazz":1610612762,
+    "washington wizards":1610612764,
+    "hawks":1610612737,"celtics":1610612738,"nets":1610612751,"hornets":1610612766,
+    "bulls":1610612741,"cavs":1610612739,"cavaliers":1610612739,"mavs":1610612742,
+    "mavericks":1610612742,"nuggets":1610612743,"pistons":1610612765,"warriors":1610612744,
+    "gsw":1610612744,"rockets":1610612745,"pacers":1610612754,"clippers":1610612746,
+    "lakers":1610612747,"grizzlies":1610612763,"heat":1610612748,"bucks":1610612749,
+    "timberwolves":1610612750,"twolves":1610612750,"pelicans":1610612740,"knicks":1610612752,
+    "thunder":1610612760,"okc":1610612760,"magic":1610612753,"76ers":1610612755,
+    "sixers":1610612755,"suns":1610612756,"blazers":1610612757,"kings":1610612758,
+    "spurs":1610612759,"raptors":1610612761,"jazz":1610612762,"wizards":1610612764,
+}
+
+def resolve_nba_id(name: str):
+    k = name.lower().strip()
+    if k in NBA_IDS: return str(NBA_IDS[k])
+    for alias, tid in NBA_IDS.items():
+        if k in alias or alias in k: return str(tid)
+    return None
+
+def get_ratings(sport: str, name: str) -> dict:
+    su = sport.upper()
+    # all_ratings.json uses mixed-case keys ("Tennis", "Soccer") — find case-insensitively
+    src = ALL_RATINGS.get(su) or next(
+        (v for k, v in ALL_RATINGS.items() if k.upper() == su), {}
+    )
+    if su in ("NBA", "WNBA"):
+        tid = resolve_nba_id(name)
+        r = src.get(tid or "", {})
+        return r or {"off_rtg":114.0,"def_rtg":114.0,"net_rtg":0.0,"pace":100.0,"ts_pct":0.565}
+    k = name.strip()
+    if k in src: return src[k]
+    kl = k.lower()
+    for ck, cv in src.items():
+        if kl in ck.lower() or ck.lower() in kl: return cv
+    defaults = {
+        "NFL":    {"ppg":22.5,"pag":22.5,"net":0.0},
+        "MLB":    {"rs":4.5,"ra":4.5,"net":0.0},
+        "Soccer": {"attack":1.4,"defense":1.2},
+        "Tennis": {"rank":100},
+    }
+    return defaults.get(su, {})
+
+# ── Feature builders ──────────────────────────────────────────────────────────
+def feats_nba(h, a, la=114.0, ha=2.8):
+    pa = (h.get("pace",100) + a.get("pace",100)) / 2
+    fm = ((h.get("off_rtg",la)*a.get("def_rtg",la)/la - a.get("off_rtg",la)*h.get("def_rtg",la)/la) * (pa/100) + ha)
+    return [h.get("off_rtg",la)-a.get("off_rtg",la), h.get("def_rtg",la)-a.get("def_rtg",la),
+            h.get("net_rtg",0)-a.get("net_rtg",0), pa,
+            h.get("off_rtg",la)-a.get("def_rtg",la), a.get("off_rtg",la)-h.get("def_rtg",la),
+            h.get("ts_pct",0.565)-a.get("ts_pct",0.565), ha, fm,
+            h.get("off_rtg",la), h.get("def_rtg",la), a.get("off_rtg",la), a.get("def_rtg",la)]
+
+def feats_nfl(h, a):
+    hp,ap,hpa,apa = h.get("ppg",22.5),a.get("ppg",22.5),h.get("pag",22.5),a.get("pag",22.5)
+    return [hp,hpa,ap,apa,hp-ap,hpa-apa,hp-apa,ap-hpa,2.5]
+
+def feats_mlb(h, a):
+    hrs,hra,ars,ara = h.get("rs",4.5),h.get("ra",4.5),a.get("rs",4.5),a.get("ra",4.5)
+    return [hrs,hra,ars,ara,hrs-ars,hra-ara,hrs-ara,ars-hra,0.15]
+
+def feats_soccer(h, a):
+    ha,hd,aa,ad = h.get("attack",1.4),h.get("defense",1.2),a.get("attack",1.4),a.get("defense",1.2)
+    return [ha,hd,aa,ad,ha-aa,hd-ad,ha*ad,aa*hd,0.3]
+
+def feats_tennis(h, a):
+    # Features match new train_tennis: abs_rank_gap, surface (0=Hard default)
+    gap = abs(a.get("rank",100) - h.get("rank",100))
+    return [gap, 0]  # surface=0 (Hard) — unknown at prediction time
+
+BUILDERS = {"NBA":feats_nba,"WNBA":lambda h,a:feats_nba(h,a,107.0,2.2),
+            "NFL":feats_nfl,"MLB":feats_mlb,"SOCCER":feats_soccer,"TENNIS":feats_tennis,
+            "Soccer":feats_soccer,"Tennis":feats_tennis}
+
+# ── Poisson for Soccer ────────────────────────────────────────────────────────
+def poisson_cover(lh: float, la: float, spread: float) -> float:
+    # Home covers when margin + spread > 0 (spread is negative for favorites).
+    # The old `margin > spread` test had the sign flipped: Swiss -1.75 was
+    # scored as "lose by 1 or less" instead of "win by 2+" → 92% vs real ~40%.
+    prob = 0.0
+    for hg in range(20):
+        for ag in range(20):
+            if (hg - ag) + spread > 0:
+                prob += sp_poisson.pmf(hg, lh) * sp_poisson.pmf(ag, la)
+    return prob
+
+# ── Math helpers ──────────────────────────────────────────────────────────────
+def implied_prob(o: float) -> float:
+    return (-o)/(-o+100) if o < 0 else 100/(o+100)
+
+def ev(mp: float, o: float) -> float:
+    d = (o/100+1) if o>=0 else (100/(-o)+1)
+    return round(mp*(d-1)-(1-mp), 4)
+
+def kelly(mp: float, o: float, br: float) -> float:
+    d = (o/100+1) if o>=0 else (100/(-o)+1)
+    b = d - 1
+    if b<=0 or mp<=0: return 0
+    f = (b*mp-(1-mp))/b
+    return round(max(0,min(f/2,0.25))*br, 2)
+
+# ── Pick-quality grade — WIN-PROBABILITY FIRST ────────────────────────────────
+# edge_strength (below) scores the EDGE only; it has no win-prob lens, so a thin-edge
+# soft favourite reads the same as a lock. This folds in the picked side's WIN
+# PROBABILITY (the priority directive) so the two can't be confused. Calibrated from
+# the user's settled tennis legs (2026-06-25): <1.50 locks went 6/6, 1.50-1.90 soft
+# favs 6/8 — and BOTH misses (Kecmanovic 1.78 ≈56%, Navarro 1.66 ≈60%) were sub-62%
+# soft favourites the engine had called safe. A LEAN is never a parlay anchor.
+LOCK_PROB = 0.70   # high enough to carry a parlay
+PICK_PROB = 0.62   # solid favourite with a real edge
+
+STALE_RANK_GAP = 0.15   # model-vs-market gap where tennis ranks become the suspect
+MODEL_SPLIT_GAP = 0.12  # points-vs-serve engine gap that makes a match NO BET
+
+
+def stale_rank_guard(picked_prob: float, market_prob: float,
+                     quality: str, note: str) -> tuple:
+    """Tennis-only confidence cap (Jul 18 2026: model faded Badosa at 49% while
+    the market had her 79% — official ranking points lag comebacks/injuries by
+    months, so a hard model-vs-market split on ranks is a DATA smell, not an
+    edge). Returns (quality, note, flag|None); grade drops one step, never up."""
+    gap = picked_prob - market_prob
+    if abs(gap) < STALE_RANK_GAP:
+        return quality, note, None
+    flag = (f"model {picked_prob:.0%} vs market {market_prob:.0%} ({gap:+.0%}) — "
+            f"ranking points lag form/comebacks; trust the market number unless "
+            f"you know why the model disagrees")
+    capped = {"LOCK": "PICK", "PICK": "LEAN"}.get(quality, quality)
+    if capped != quality:
+        note += " [capped: stale-rank suspect]"
+    return capped, note, flag
+
+
+def pick_quality(win_prob: Optional[float], best_ev: float, has_edge: bool) -> tuple:
+    """Grade a pick by win-prob first, then value. Returns (grade, note).
+    LOCK = anchor-grade · PICK = parlay-eligible · LEAN = single/small only · PASS."""
+    if not has_edge or win_prob is None:
+        return "PASS", "no edge vs the devigged price — force nothing"
+    if win_prob >= LOCK_PROB and best_ev > 0:
+        return "LOCK", f"~{win_prob*100:.0f}% to win + value — anchor-grade"
+    if win_prob >= PICK_PROB and best_ev > 0:
+        return "PICK", f"~{win_prob*100:.0f}% favourite with real edge — parlay-eligible"
+    return "LEAN", (f"only ~{win_prob*100:.0f}% to win — soft favourite, NOT a lock; "
+                    f"single/small stake, never a parlay anchor")
+
+# ── Predict endpoint ──────────────────────────────────────────────────────────
+class PredictReq(BaseModel):
+    sport: str = "NBA"
+    home_team: str
+    away_team: str
+    spread: float = 0.0
+    home_odds: float = -110.0
+    away_odds: float = -110.0
+    bankroll: float = 1000.0
+    neutral: bool = False  # neutral venue (World Cup) — no home boost
+    surface: Optional[str] = None  # tennis: Hard | Clay | Grass (for surface affinity)
+    # Live/in-play tennis — omit both for a pre-match price.
+    sets_won_home: Optional[int] = None
+    sets_won_away: Optional[int] = None
+    best_of: int = 3  # 3 = WTA / most ATP, 5 = ATP majors
+    # Tennis context — observed facts only, never guessed (rule 13).
+    crowd: Optional[str] = None            # "home" | "away" — whose crowd it is
+    recent_sets_home: Optional[int] = None  # sets ground in last ~48h of this event
+    recent_sets_away: Optional[int] = None
+    # Day-of physical condition (ALL sports) — a CITED public fact only:
+    # player/team statement, injury report, MTO, illness in the press.
+    # Ignored without condition_note (uncited = doesn't exist, rule 13).
+    condition_home: Optional[str] = None   # "minor" | "major"
+    condition_away: Optional[str] = None
+    condition_note: Optional[str] = None   # the citation (source + what was said)
+
+def _formula_margin(sport: str, h_r: dict, a_r: dict) -> float:
+    """Pure-formula margin prediction — used when model is missing or degenerate."""
+    if sport in ("NBA", "WNBA"):
+        la = 114.0 if sport == "NBA" else 107.0
+        ha = 2.8   if sport == "NBA" else 2.2
+        return ((h_r.get("off_rtg",la)*a_r.get("def_rtg",la)/la
+                 - a_r.get("off_rtg",la)*h_r.get("def_rtg",la)/la) + ha)
+    if sport == "NFL":
+        return ((h_r.get("ppg",22.5)-h_r.get("pag",22.5))
+                - (a_r.get("ppg",22.5)-a_r.get("pag",22.5)) + 2.5)
+    if sport == "MLB":
+        return ((h_r.get("rs",4.5)-h_r.get("ra",4.5))
+                - (a_r.get("rs",4.5)-a_r.get("ra",4.5)) + 0.15)
+    return 0.0
+
+def _model_is_usable(bundle: dict, sigma: float) -> bool:
+    """Model is usable only when CV MAE is meaningfully below sigma (adds real signal)."""
+    if bundle is None: return False
+    mae = bundle.get("avg_mae", sigma)
+    # Must beat sigma by at least 5% to be considered useful
+    return mae < sigma * 0.95
+
+# ── Tennis comparative-profile nudges (H2H / form / psych / clutch) ───────────
+# Built by fetch_tennis_form.py from real results. Each signal is centered, so we
+# difference home-away and add ONE small, capped logit nudge. The cap means these
+# REFINE the points+surface line — they cannot flip a clear favorite (the
+# winning-priority rule: don't let noisy form overrule a strong points edge).
+TENNIS_AUX_CAP = 0.8
+W_H2H, W_FORM, W_PSYCH, W_CLUTCH, W_STREAK = 0.7, 0.6, 0.4, 0.4, 0.02
+
+# ── Tennis context nudges (fatigue / home crowd) — caller supplies OBSERVED
+# facts (sets ground through the event, whose crowd it is); the model never
+# guesses them. Sized small and capped: crowd worth ~2.5% at evens, fatigue
+# ~1.2% per extra recent set, ceiling ~3.7% — they tilt coin flips, not locks.
+TENNIS_CROWD_LOGIT = 0.10       # home-crowd edge (Athens-for-Sakkari sized)
+TENNIS_FATIGUE_PER_SET = 0.05   # logit per set of recent-workload differential
+TENNIS_FATIGUE_CAP = 0.15
+
+# Day-of condition penalties — cited public facts only. Sized from injury-
+# report literature bands: "minor"/questionable ~2-3% win prob, "major"/
+# playing-hurt ~5-7%. A condition WITHOUT a citation is ignored entirely.
+CONDITION_LOGIT = {"minor": 0.10, "major": 0.28}          # tennis, per side
+CONDITION_MARGIN_PTS = {                                   # margin sports, per side
+    "NBA": {"minor": 1.5, "major": 3.5}, "WNBA": {"minor": 1.5, "major": 3.5},
+    "NFL": {"minor": 1.5, "major": 3.5}, "MLB": {"minor": 0.25, "major": 0.6},
+}
+
+def _condition_adjust(req: "PredictReq", scale: dict):
+    """Signed penalty from the HOME side's perspective + echo detail.
+    Returns (0, None) when nothing is set or the note (citation) is missing."""
+    if not (req.condition_home or req.condition_away):
+        return 0.0, None
+    if not req.condition_note:
+        return 0.0, {"ignored": "condition set without condition_note — "
+                                "uncited facts don't move the line (rule 13)"}
+    adj = 0.0
+    detail = {"note": req.condition_note}
+    if req.condition_home in scale:
+        adj -= scale[req.condition_home]
+        detail["home"] = req.condition_home
+    if req.condition_away in scale:
+        adj += scale[req.condition_away]
+        detail["away"] = req.condition_away
+    return adj, detail
+
+def _tennis_context_logit(crowd: Optional[str],
+                          sets_home: Optional[int],
+                          sets_away: Optional[int]):
+    """(total nudge from home player's side, breakdown) — 0 when nothing supplied."""
+    crowd_adj = {"home": TENNIS_CROWD_LOGIT, "away": -TENNIS_CROWD_LOGIT}.get(crowd or "", 0.0)
+    fatigue_adj = 0.0
+    if sets_home is not None and sets_away is not None:
+        raw = -TENNIS_FATIGUE_PER_SET * (sets_home - sets_away)
+        fatigue_adj = max(-TENNIS_FATIGUE_CAP, min(TENNIS_FATIGUE_CAP, raw))
+    total = crowd_adj + fatigue_adj
+    detail = {}
+    if crowd_adj: detail["crowd_adj"] = round(crowd_adj, 3)
+    if fatigue_adj: detail["fatigue_adj"] = round(fatigue_adj, 3)
+    return total, detail
+
+def _tennis_key(name: str) -> Optional[str]:
+    """(last surname, first initial) key — mirrors fetch_tennis_form.name_key.
+    Assumes Western given-first order; use _resolve_tennis_key for a full
+    display name that might be surname-first (see its docstring)."""
+    toks = str(name).replace(".", "").split()
+    if len(toks) < 2:
+        return None
+    if len(toks[-1]) == 1:
+        return f"{toks[-2].lower()}|{toks[-1][0].lower()}"
+    return f"{toks[-1].lower()}|{toks[0][0].lower()}"
+
+
+def _tennis_key_candidates(name: str) -> list:
+    """Both possible keys for a full display name. tennis-data.co.uk always
+    stores 'Surname Initial.' unambiguously, so the BUILD side (name_key in
+    fetch_tennis_form.py / fetch_tennis_surface.py) is always correct. But a
+    full display name like "Zhang Shuai" is ambiguous at LOOKUP time: Western
+    order assumes the LAST token is the surname, which is wrong for
+    surname-first names (Chinese, Korean, Vietnamese, Hungarian, ...) —
+    "Zhang" genuinely IS her surname, so guessing "Shuai" silently breaks
+    every H2H/profile lookup for her. Try both orderings."""
+    given_first = _tennis_key(name)
+    if not given_first:
+        return []
+    toks = str(name).replace(".", "").split()
+    surname_first = f"{toks[0].lower()}|{toks[-1][0].lower()}"
+    return [given_first] if given_first == surname_first else [given_first, surname_first]
+
+
+def _resolve_tennis_key(name: str, *data: dict) -> Optional[str]:
+    """Pick whichever key candidate actually exists in the given data dicts
+    (checked in order); falls back to the given-first guess when neither
+    candidate is present (keeps the old None-safe behaviour for genuinely
+    unknown players)."""
+    candidates = _tennis_key_candidates(name)
+    if not candidates:
+        return None
+    for cand in candidates:
+        if any(cand in d for d in data):
+            return cand
+    return candidates[0]
+
+def _tennis_aux_logit(home: str, away: str, surf: str):
+    """H2H + form + psych + clutch folded into one capped, home-positive logit nudge."""
+    players = TENNIS_FORM.get("players") or {}
+    h2h = TENNIS_FORM.get("h2h") or {}
+    hk, ak = _resolve_tennis_key(home, players, h2h), _resolve_tennis_key(away, players, h2h)
+    if not hk or not ak:
+        return 0.0, {}
+    h, a = players.get(hk) or {}, players.get(ak) or {}
+    detail: dict = {}
+    nudge = 0.0
+
+    # H2H — surface-specific share if we have it, else overall. Already home-relative.
+    pair = (h2h.get(hk) or {}).get(ak)
+    if pair:
+        share = pair.get(surf, pair.get("all"))
+        if share is not None:
+            nudge += W_H2H * float(share)
+            detail["h2h"] = round(float(share), 3)
+
+    # Differential dims — applied only when BOTH players carry the field.
+    def diff(field: str) -> Optional[float]:
+        if field in h and field in a:
+            return float(h[field]) - float(a[field])
+        return None
+
+    d = diff("form")
+    if d is not None:
+        nudge += W_FORM * d; detail["form_diff"] = round(d, 3)
+    d = diff("comeback")
+    if d is not None:
+        nudge += W_PSYCH * d; detail["psych_diff"] = round(d, 3)
+    clutch = [x for x in (diff("decider"), diff("tb")) if x is not None]
+    # Real break-point stats (ATP + WTA — fetch_tennis_serve_stats.py) enrich
+    # the same clutch bucket: bp_save_pct = held up serving under pressure,
+    # bp_convert_pct = won the point returning under pressure. Cross-tour
+    # ambiguous keys are dropped at build time, so a hit here is unambiguous.
+    serve_players = TENNIS_SERVE.get("players") or {}
+    hs, as_ = serve_players.get(hk) or {}, serve_players.get(ak) or {}
+    for field in ("bp_save_pct", "bp_convert_pct"):
+        if field in hs and field in as_:
+            clutch.append(float(hs[field]) - float(as_[field]))
+    if clutch:
+        cd = sum(clutch) / len(clutch)
+        nudge += W_CLUTCH * cd; detail["clutch_diff"] = round(cd, 3)
+    if "streak" in h and "streak" in a:
+        sd = int(h["streak"]) - int(a["streak"])
+        nudge += W_STREAK * sd; detail["streak_diff"] = sd
+
+    if not detail:                      # both known but no profile signal → neutral
+        return 0.0, {}
+    nudge = max(-TENNIS_AUX_CAP, min(TENNIS_AUX_CAP, nudge))
+    detail["aux_logit"] = round(nudge, 3)
+    return nudge, detail
+
+# ── Soccer / WC national-team comparative profile (real results, no math change) ─
+# The Poisson markets stay market-calibrated; this only ATTACHES the sharp read
+# (form, goals trend, H2H) so the analysis layer can use real numbers, not vibes.
+SOCCER_ALIASES = {
+    "usa": "United States", "united states of america": "United States",
+    "korea republic": "South Korea", "korea dpr": "North Korea",
+    "cote d'ivoire": "Ivory Coast", "côte d'ivoire": "Ivory Coast",
+    "dr congo": "DR Congo", "congo dr": "DR Congo", "czechia": "Czech Republic",
+    "türkiye": "Turkey", "turkiye": "Turkey", "china pr": "China",
+}
+
+def _soccer_team_key(name: str, teams: dict) -> Optional[str]:
+    if name in teams:
+        return name
+    nl = name.strip().lower()
+    al = SOCCER_ALIASES.get(nl)
+    if al and al in teams:
+        return al
+    for t in teams:
+        if t.lower() == nl:
+            return t
+    for t in teams:                       # last resort: substring either direction
+        if len(nl) >= 4 and (nl in t.lower() or t.lower() in nl):
+            return t
+    return None
+
+def _soccer_profile(home: str, away: str):
+    teams = SOCCER_FORM.get("teams") or {}
+    h2h = SOCCER_FORM.get("h2h") or {}
+    hk, ak = _soccer_team_key(home, teams), _soccer_team_key(away, teams)
+    out: dict = {}
+    if hk:
+        out["home"] = {"team": hk, **teams[hk]}
+    if ak:
+        out["away"] = {"team": ak, **teams[ak]}
+    if hk and ak:
+        rec = (h2h.get(hk) or {}).get(ak)
+        if rec:
+            out["h2h"] = rec
+    return out or None
+
+# ── WNBA comparative profile (form / rest / B2B / H2H — real game results) ──────
+def _wnba_team_key(name: str, teams: dict) -> Optional[str]:
+    if name in teams:
+        return name
+    nl = name.strip().lower()
+    for t in teams:
+        if t.lower() == nl:
+            return t
+    for t in teams:                       # match on nickname (last word), e.g. "Aces"
+        if nl in t.lower() or t.lower().split()[-1] == nl.split()[-1]:
+            return t
+    return None
+
+"""WNBA context margin adjustment — fixed 2026-07-20: rest/B2B/recent-form sat
+in wnba_form.json as display-only while the model priced pure season ratings.
+Now they nudge the margin, small and capped (user directive: model fatigue and
+schedule for every sport). All inputs are observed facts from real games."""
+WNBA_B2B_PTS = 2.5       # documented back-to-back penalty (points of margin)
+WNBA_REST_PTS = 0.6      # per rest-day differential
+WNBA_FORM_W = 0.15       # weight on recent-vs-season margin gap
+WNBA_ADJ_CAP = 3.5       # total cap: ~15% win-prob swing at sigma 9.5
+
+def _wnba_margin_adj(home: str, away: str):
+    teams = WNBA_FORM.get("teams") or {}
+    hk, ak = _wnba_team_key(home, teams), _wnba_team_key(away, teams)
+    if not hk or not ak:
+        return 0.0, None
+    h, a = teams[hk], teams[ak]
+    detail = {}
+    adj = 0.0
+    b2b = (WNBA_B2B_PTS if a.get("b2b") else 0.0) - (WNBA_B2B_PTS if h.get("b2b") else 0.0)
+    if b2b:
+        adj += b2b; detail["b2b_pts"] = round(b2b, 2)
+    try:
+        rest = (float(h.get("rest_days", 0)) - float(a.get("rest_days", 0))) * WNBA_REST_PTS
+        rest = max(-2.0, min(2.0, rest))
+        if rest:
+            adj += rest; detail["rest_pts"] = round(rest, 2)
+    except (TypeError, ValueError):
+        pass
+    try:
+        form = ((float(h.get("recent_margin", 0)) - float(h.get("avg_margin", 0)))
+                - (float(a.get("recent_margin", 0)) - float(a.get("avg_margin", 0)))) * WNBA_FORM_W
+        form = max(-2.0, min(2.0, form))
+        if form:
+            adj += form; detail["form_pts"] = round(form, 2)
+    except (TypeError, ValueError):
+        pass
+    adj = max(-WNBA_ADJ_CAP, min(WNBA_ADJ_CAP, adj))
+    return adj, (detail or None)
+
+def _wnba_profile(home: str, away: str):
+    teams = WNBA_FORM.get("teams") or {}
+    h2h = WNBA_FORM.get("h2h") or {}
+    hk, ak = _wnba_team_key(home, teams), _wnba_team_key(away, teams)
+    out: dict = {}
+    if hk:
+        out["home"] = {"team": hk, **teams[hk]}
+    if ak:
+        out["away"] = {"team": ak, **teams[ak]}
+    if hk and ak:
+        rec = (h2h.get(hk) or {}).get(ak)
+        if rec:
+            out["h2h"] = rec
+    return out or None
+
+@app.post("/predict")
+def predict(req: PredictReq):
+    sport = req.sport.upper()
+    bundle = BUNDLES.get(sport)
+    # Use model's own MAE as sigma if available, else fall back to industry-standard
+    sigma = bundle.get("avg_mae", SIGMA.get(sport, 11.5)) if bundle else SIGMA.get(sport, 11.5)
+
+    h_r = get_ratings(sport, req.home_team)
+    a_r = get_ratings(sport, req.away_team)
+
+    # ── Data gate: unknown teams → NO prediction. With default ratings the
+    # model's prob is pure noise; comparing noise to market odds fabricates
+    # "EV" and Kelly recommendations from nothing. Refuse honestly instead.
+    if not h_r or not a_r:
+        hr_i, ar_i = implied_prob(req.home_odds), implied_prob(req.away_odds)
+        ht_i, at_i = hr_i / (hr_i + ar_i), ar_i / (hr_i + ar_i)
+        return {
+            "sport": sport, "home_team": req.home_team, "away_team": req.away_team,
+            "predicted_margin": None, "spread": req.spread, "model_edge": None,
+            "home_cover_prob": None, "away_cover_prob": None,
+            "home_ev_pct": None, "away_ev_pct": None,
+            "home_kelly_usd": 0.0, "away_kelly_usd": 0.0,
+            "home_true_prob": round(ht_i, 4), "away_true_prob": round(at_i, 4),
+            "vig_pct": round((hr_i + ar_i - 1) * 100, 2),
+            "bet_signal": "NO_DATA", "edge_strength": "NO_DATA",
+            "home_ratings": h_r, "away_ratings": a_r,
+            "model_mae": None, "trained_on": 0, "model_loaded": False,
+            "model_note": "teams not in training data — only market-implied probs returned, no model opinion",
+        }
+
+    # ── Tennis: points-based logistic win-probability model ────────────────────
+    # Ranking POINTS carry far more signal than the rank NUMBER (rank-diff was too
+    # flat — a 67-spot gap barely moved the line). Use a logistic on the log-points
+    # gap; fall back to rank only when a player has no points (off-tour / stale).
+    if sport == "TENNIS":
+        import math
+        h_pts = float(h_r.get("points") or 0)
+        a_pts = float(a_r.get("points") or 0)
+        if h_pts > 0 and a_pts > 0:
+            # SCALE 0.9 on log-points: ~2x points -> 65%, 5x -> 80%, 10x -> 86%.
+            logit = (math.log(h_pts) - math.log(a_pts)) * 0.9
+            base = "LogisticPoints"
+        else:
+            h_rank = float(h_r.get("rank", 100))
+            a_rank = float(a_r.get("rank", 100))
+            logit = (a_rank - h_rank) * 0.010
+            base = "LogisticRank_fallback"
+        # ── Surface affinity (niche stat — fixes "blind to where it's played") ──
+        # surface_aff[surface] is a per-player logit nudge: how much better/worse
+        # the player is on THIS surface vs baseline (built by fetch_tennis_surface.py).
+        # Grass specialists (e.g. Maria) get a +Grass nudge so the model stops
+        # misreading them. No surface data -> nudge 0 (degrades to points-only).
+        surf = (req.surface or "Hard").title()
+        sb_h = float((h_r.get("surface_aff") or {}).get(surf, 0.0))
+        sb_a = float((a_r.get("surface_aff") or {}).get(surf, 0.0))
+        surf_adj = sb_h - sb_a
+        # ── Comparative profile: H2H + recent form + psych + partial clutch ──────
+        aux, aux_detail = _tennis_aux_logit(req.home_team, req.away_team, surf)
+        # ── Context: fatigue + home crowd (caller-observed facts, capped) ───────
+        ctx, ctx_detail = _tennis_context_logit(req.crowd, req.recent_sets_home,
+                                                req.recent_sets_away)
+        # ── Day-of condition: cited public facts (statement/MTO/press) only ────
+        cond, cond_detail = _condition_adjust(req, CONDITION_LOGIT)
+        hcp = 1.0 / (1.0 + math.exp(-(logit + surf_adj + aux + ctx + cond)))
+        # ── Engine FUSION (post-mortem 2026-07-19): the blend lens called both
+        # Gstaad and Bastad right while each single engine missed one. When the
+        # serve model has both players, the headline price IS the 50/50 fuse of
+        # points and serve engines; each lens stays visible, and the split
+        # router below still fires off the RAW lens gap.
+        points_prob = hcp
+        serve_prob: Optional[float] = None
+        _sm: Optional[dict] = None
+        try:
+            _sm = tgm.predict(req.home_team, req.away_team)
+            _shp = list(_sm.get("match_prob", {}).values())
+            if len(_shp) == 2:
+                serve_prob = float(_shp[0])
+                hcp = (points_prob + serve_prob) / 2.0
+        except Exception:                                      # noqa: BLE001
+            pass  # no serve stats — points engine stands alone
+        acp = 1.0 - hcp
+        pred_margin = (hcp - 0.5) * 10  # proxy for display/edge
+        method = (base + ("+Surface" if surf_adj else "") + ("+Profile" if aux else "")
+                  + ("+Context" if ctx else "")
+                  + ("+ServeFused" if serve_prob is not None else ""))
+        extra = {"method": method, "surface": surf,
+                 "surface_adj_logit": round(surf_adj, 3),
+                 "profile_adj_logit": round(aux, 3),
+                 "points_model_home_prob": round(points_prob, 3)}
+        if aux_detail:
+            extra["profile"] = aux_detail
+        if ctx_detail:
+            extra["context_adj_logit"] = round(ctx, 3)
+            extra["context"] = ctx_detail
+        if cond_detail:
+            extra["day_of_condition"] = cond_detail
+        # ── Market ladder (user rule: NEVER a bare no-bet — when the obvious
+        # pick fails its floor, the best bet in the MATCH is the answer).
+        # Every pregame tennis call ranks ALL priceable markets by win prob
+        # with the min odds each needs (+5% EV): coin-flip match -> overs and
+        # sets rise to the top exactly when the MLs fail.
+        try:
+            _ps = tlive.implied_set_prob(hcp, req.best_of)
+            ladder = {
+                "home_ml": hcp, "away_ml": 1 - hcp,
+                "home_wins_a_set": 1 - (1 - _ps) ** 2,
+                "away_wins_a_set": 1 - _ps ** 2,
+            }
+            if serve_prob is not None and isinstance(_sm, dict):
+                s1 = _sm.get("set1") or {}
+                w = s1.get("winner") or {}
+                if len(w) == 2:
+                    vals = list(w.values())
+                    ladder["home_set1"], ladder["away_set1"] = vals[0], vals[1]
+                gt = _sm.get("games_total") or {}
+                if gt:
+                    ladder[f"over_{gt['line']}_games"] = gt["p_over"]
+                    ladder[f"under_{gt['line']}_games"] = gt["p_under"]
+            extra["market_ladder"] = [
+                {"market": k, "prob": round(p, 3),
+                 "min_odds": round(1.05 / p, 2) if p > 0 else None}
+                for k, p in sorted(ladder.items(), key=lambda kv: -kv[1])]
+        except Exception:                                      # noqa: BLE001
+            pass
+        # ── Auto availability warning: retirements/walkovers conceded in the
+        # last 60 days of results (fetch_tennis_form Comment column) ──────────
+        _fp = TENNIS_FORM.get("players") or {}
+        for side, nm in (("home", req.home_team), ("away", req.away_team)):
+            k = _resolve_tennis_key(nm, _fp)
+            rec = _fp.get(k) if k else None
+            if rec and rec.get("ret_recent"):
+                extra.setdefault("availability_warnings", {})[side] = (
+                    f"{nm}: {rec['ret_recent']} retirement/walkover conceded in last 60d"
+                    + (f" (last {rec.get('ret_last')})" if rec.get("ret_last") else "")
+                    + " — body already failed once recently; check day-of news")
+        # ── Live/in-play: re-price off the current set score ──────────────────
+        # Pre-match hcp above stays the PREGAME number (method/profile/surface all
+        # keep working off it). If the caller supplies a live set score, invert it
+        # into a per-set win prob (tennis_live.py) and recompute — the model was
+        # blind to match state before this; now a 2-0 leader prices near 1.0
+        # instead of showing their pregame number all match long.
+        if req.sets_won_home is not None and req.sets_won_away is not None:
+            try:
+                live = tlive.live_win_prob(hcp, req.sets_won_home, req.sets_won_away,
+                                           best_of=req.best_of)
+                hcp = live["live_match_prob_home"]
+                acp = 1.0 - hcp
+                pred_margin = (hcp - 0.5) * 10  # re-proxy off the live prob
+                method += "+Live"
+                extra["method"] = method
+                extra["live"] = live
+            except ValueError as e:
+                extra["live_error"] = str(e)
+        # Rank freshness — honest about stale data; ATP/WTA ranks publish weekly.
+        meta = RATINGS_META.get("tennis") or {}
+        if meta.get("updated"):
+            try:
+                from datetime import datetime, timezone
+                age = (datetime.now(timezone.utc)
+                       - datetime.fromisoformat(meta["updated"])).days
+                extra["ranks_updated"] = meta["updated"]
+                extra["ranks_age_days"] = age
+                if age > 8:
+                    extra["ranks_stale"] = (f"ranks {age}d old — refresh "
+                                            "(POST /api/refresh-rankings); ATP/WTA update Mondays")
+            except (ValueError, TypeError):
+                pass
+        # ── Serve-model second opinion (Darderi lesson, 2026-07-19): the points
+        # model called Rublev-Darderi 53/47 while serve stats said 69/31; the leg
+        # died 6-4 6-3. Triangulation is now automatic: if the two engines split
+        # by more than MODEL_SPLIT_GAP, flag it — a split match is a NO BET zone,
+        # same rule that (manually) cut the Collignon leg in Gstaad.
+        if serve_prob is not None:
+                extra["serve_model_home_prob"] = round(serve_prob, 3)
+                gap = abs(serve_prob - points_prob)
+                if gap > MODEL_SPLIT_GAP:
+                    # Split = REROUTE, never a bare no-bet (Gstaad lesson: both
+                    # user markets won while the match sat "cut"). Price every
+                    # derivative under BOTH engines; a market is split-robust
+                    # when its WORST lens clears the book price. floor = min
+                    # odds at which the worst-case lens is still +EV.
+                    robust = {}
+                    for mkt, fn in {
+                        "home_ml": lambda p: p,
+                        "away_ml": lambda p: 1 - p,
+                        "home_wins_a_set": lambda p: 1 - tlive.implied_set_prob(1-p, req.best_of)**2,
+                        "away_wins_a_set": lambda p: 1 - tlive.implied_set_prob(p, req.best_of)**2,
+                    }.items():
+                        pp, ps = fn(points_prob), fn(serve_prob)
+                        worst = min(pp, ps)
+                        blend = (pp + ps) / 2
+                        robust[mkt] = {"points": round(pp, 3), "serve": round(ps, 3),
+                                       "blend": round(blend, 3),
+                                       "worst": round(worst, 3),
+                                       "floor_odds": round(1.0 / worst, 2) if worst > 0 else None,
+                                       "blend_floor_odds": round(1.0 / blend, 2) if blend > 0 else None}
+                    extra["model_split"] = (
+                        f"points {points_prob:.2f} vs serve {serve_prob:.2f} (gap {gap:.2f}) — "
+                        "REROUTE: headline price is the fuse, but skip split-sensitive "
+                        "sides unless book price >= floor_odds (worst-lens +EV)")
+                    extra["split_robust_markets"] = robust
+        model_used = False
+    else:
+        # ── Run model only when it adds real signal (MAE < 95% of sigma) ──────
+        pred_margin = 0.0
+        model_used  = False
+        if _model_is_usable(bundle, sigma) and sport in BUILDERS:
+            try:
+                feats = BUILDERS[sport](h_r, a_r)
+                n     = len(bundle["feature_cols"])
+                feats = (feats + [0.0]*n)[:n]
+                X_sc  = bundle["scaler"].transform(np.array(feats).reshape(1,-1))
+                pred_margin = float(bundle["model"].predict(X_sc)[0])
+                model_used  = True
+            except Exception as e:
+                print(f"[EdgeAPI] model error for {sport}: {e}")
+
+        if not model_used:
+            pred_margin = _formula_margin(sport, h_r, a_r)
+
+        # ── Cover probability ──────────────────────────────────────────────────
+        if sport in ("Soccer", "SOCCER"):
+            home_boost = 1.0 if req.neutral else 1.3
+            lh = max(0.3, h_r.get("attack",1.4) * a_r.get("defense",1.2) * home_boost)
+            la = max(0.3, a_r.get("attack",1.4) * h_r.get("defense",1.2))
+            hcp = poisson_cover(lh, la, req.spread)
+            extra = {"lambda_home": round(lh,2), "lambda_away": round(la,2), "method": "Poisson"}
+        else:
+            extra = {}
+            # WNBA schedule/form context — rest, B2B, recent form now PRICED,
+            # not just displayed (they lived in wnba_form.json unused).
+            if sport == "WNBA":
+                # Stub-ratings fix (found 2026-07-20): every WNBA team carried
+                # the NBA default 114/114 rating — the "model" was a coin flip.
+                # When ratings are stubs, the margin comes from REAL season
+                # point differentials (wnba_form avg_margin), shrunk 0.7 as a
+                # predictor, plus standard WNBA home edge.
+                stub = (h_r.get("off_rtg") == 114.0 and h_r.get("def_rtg") == 114.0
+                        and a_r.get("off_rtg") == 114.0 and a_r.get("def_rtg") == 114.0)
+                if stub:
+                    wteams = WNBA_FORM.get("teams") or {}
+                    hk_, ak_ = _wnba_team_key(req.home_team, wteams), _wnba_team_key(req.away_team, wteams)
+                    if hk_ and ak_:
+                        h_m = float(wteams[hk_].get("avg_margin", 0.0))
+                        a_m = float(wteams[ak_].get("avg_margin", 0.0))
+                        pred_margin = (h_m - a_m) * 0.7 + 2.2
+                        extra["wnba_margin_source"] = (
+                            f"season point-diff (avg_margin {h_m:+.1f} vs {a_m:+.1f}, "
+                            "shrunk 0.7) + 2.2 home — team ratings are stubs")
+                wadj, wdetail = _wnba_margin_adj(req.home_team, req.away_team)
+                if wadj:
+                    pred_margin += wadj
+                    extra["wnba_context_pts"] = round(wadj, 2)
+                    extra["wnba_context"] = wdetail
+            # Day-of condition (cited public facts) — margin sports.
+            if sport in CONDITION_MARGIN_PTS:
+                cadj, cdetail = _condition_adjust(req, CONDITION_MARGIN_PTS[sport])
+                if cdetail:
+                    extra["day_of_condition"] = cdetail
+                if cadj:
+                    pred_margin += cadj
+            # Cover condition: margin + spread > 0 (same sign fix as poisson_cover)
+            hcp = float(norm.cdf((pred_margin + req.spread) / sigma))
+            # ── Period ("quarter/half") markets for basketball ────────────────
+            # Derived from the full-game margin: half margin ~ m/2 with sigma/sqrt2,
+            # quarter ~ m/4 with sigma/2 (independent-increments approximation —
+            # a proxy, stated as such; no fitted per-quarter pace data yet).
+            if sport in ("NBA", "WNBA"):
+                la_ = 114.0 if sport == "NBA" else 107.0
+                # ratings are per-100-possession; scale to real scoreboard points
+                # by league-average game total (NBA pace ~ 100 poss, WNBA ~ 75)
+                league_total = 228.0 if sport == "NBA" else 161.0
+                pace_scale = league_total / (2 * la_)
+                h_pts = h_r.get("off_rtg", la_) * a_r.get("def_rtg", la_) / la_ * pace_scale
+                a_pts = a_r.get("off_rtg", la_) * h_r.get("def_rtg", la_) / la_ * pace_scale
+                p1h = float(norm.cdf((pred_margin / 2) / (sigma / np.sqrt(2))))
+                p1q = float(norm.cdf((pred_margin / 4) / (sigma / 2)))
+                extra["periods"] = {
+                    "p_home_wins_1h": round(p1h, 4),
+                    "p_home_wins_1q": round(p1q, 4),
+                    "expected_total": round(h_pts + a_pts, 1),
+                    "expected_1h_total": round((h_pts + a_pts) / 2, 1),
+                    "note": "derived from full-game model (independent-increments proxy) — "
+                            "no fitted per-quarter pace yet; treat totals as expectations, not lines",
+                }
+                # market ladder (all-sports rule) — ML + periods, both sides
+                # (spread-free ML prob — hcp above covers the REQUESTED spread)
+                p_ml = float(norm.cdf(pred_margin / sigma))
+                blad = {"home_ml": p_ml, "away_ml": 1 - p_ml,
+                        "home_1h": p1h, "away_1h": 1 - p1h,
+                        "home_1q": p1q, "away_1q": 1 - p1q}
+                extra["market_ladder"] = [
+                    {"market": k, "prob": round(p, 3),
+                     "min_odds": round(1.05 / p, 2) if p > 0 else None}
+                    for k, p in sorted(blad.items(), key=lambda kv: -kv[1])]
+        acp = 1.0 - hcp
+
+    # ── Devig + EV + Kelly ─────────────────────────────────────────────────────
+    hr, ar = implied_prob(req.home_odds), implied_prob(req.away_odds)
+    vig = round((hr+ar-1)*100, 2)
+    ht, at = hr/(hr+ar), ar/(hr+ar)  # devigged true probs
+    hev, aev = ev(hcp, req.home_odds), ev(acp, req.away_odds)
+    hk,  ak  = kelly(hcp, req.home_odds, req.bankroll), kelly(acp, req.away_odds, req.bankroll)
+
+    # ── Signal ─────────────────────────────────────────────────────────────────
+    if sport == "TENNIS":
+        # Win-probability sport (ATP + WTA): the margin proxy is too compressed for
+        # the point-spread thresholds (a 61/39 match → edge ~1.1 → false NO_EDGE).
+        # Score off the PROBABILITY edge = model win-prob − devigged market prob,
+        # gated by EV. Winning-side-first: pick the side the model rates higher.
+        home_edge_p = hcp - ht
+        away_edge_p = acp - at
+        best_edge_p = max(home_edge_p, away_edge_p)
+        best_ev = max(hev, aev)
+        edge = round(best_edge_p * 100, 2)  # reported in percentage points
+        strength = ("STRONG"   if best_edge_p>=0.10 and best_ev>0.05
+                    else "MODERATE" if best_edge_p>=0.05 and best_ev>0.02
+                    else "WEAK"     if best_edge_p>=0.02 and best_ev>0
+                    else "NO_EDGE")
+        signal   = ("HOME_WIN" if home_edge_p>=away_edge_p and home_edge_p>=0.02 and hev>0
+                    else "AWAY_WIN" if away_edge_p>home_edge_p and away_edge_p>=0.02 and aev>0
+                    else "NO_EDGE")
+    else:
+        # Edge vs market = predicted margin minus market-expected margin (-spread)
+        edge = round(pred_margin + req.spread, 2)
+        ea   = abs(edge)
+        best_ev = max(hev, aev)
+        strength = ("STRONG" if ea>=5.0 and best_ev>0.05
+                    else "MODERATE" if ea>=3.0 and best_ev>0.025
+                    else "WEAK" if ea>=1.5 and best_ev>0.01
+                    else "NO_EDGE")
+        signal   = ("HOME_COVER" if edge>1.5 and hev>0 and hev>=aev
+                    else "AWAY_COVER" if edge<-1.5 and aev>0 and aev>=hev
+                    else "NO_EDGE")
+
+    # ── Pick-quality grade (win-probability first) ───────────────────────────────
+    # picked_prob = the model's win/cover prob for the side we're actually backing.
+    picked_prob = (hcp if signal in ("HOME_WIN", "HOME_COVER")
+                   else acp if signal in ("AWAY_WIN", "AWAY_COVER") else None)
+    quality, quality_note = pick_quality(picked_prob, best_ev, signal != "NO_EDGE")
+    if sport == "TENNIS" and picked_prob is not None:
+        market_side = ht if signal == "HOME_WIN" else at
+        quality, quality_note, stale_flag = stale_rank_guard(
+            picked_prob, market_side, quality, quality_note)
+        if stale_flag:
+            extra["stale_rank_suspect"] = stale_flag
+
+    return {
+        "sport": sport, "home_team": req.home_team, "away_team": req.away_team,
+        "predicted_margin": round(pred_margin,2), "spread": req.spread,
+        "model_edge": edge,
+        "home_cover_prob": round(hcp,4), "away_cover_prob": round(acp,4),
+        "home_ev_pct": round(hev*100,2), "away_ev_pct": round(aev*100,2),
+        "home_kelly_usd": hk, "away_kelly_usd": ak,
+        "home_true_prob": round(ht,4), "away_true_prob": round(at,4),
+        "vig_pct": vig,
+        "bet_signal": signal, "edge_strength": strength,
+        "pick_quality": quality, "quality_note": quality_note,
+        "home_ratings": h_r, "away_ratings": a_r,
+        "model_mae": round(bundle["avg_mae"] if (bundle and model_used) else sigma, 2),
+        "trained_on": bundle["trained_on"] if bundle else 0,
+        "model_loaded": model_used,
+        "profile": _wnba_profile(req.home_team, req.away_team) if sport == "WNBA" else None,
+        # verified-coincidence ledger — tie-breaker display only, never math
+        "omens": nv.omens_for(req.home_team, req.away_team, sport=sport.lower()),
+        **extra,
+    }
+
+# ── Full soccer market board (1X2 / DC / DNB / O-U / BTTS / corners) ───────────
+class SoccerMarketReq(BaseModel):
+    home_team: str
+    away_team: str
+    neutral: bool = True          # World Cup = neutral venue, no home boost
+    rho: float = sm.DEFAULT_RHO   # Dixon-Coles draw/low-score correction
+    simulate: bool = True         # Monte Carlo cross-check + correlated same-game markets
+    n_sims: int = 120_000
+    # Optional book prices (American). Provide to get EV/edge per market.
+    home_odds: Optional[float] = None
+    draw_odds: Optional[float] = None
+    away_odds: Optional[float] = None
+    dc_home_draw_odds: Optional[float] = None
+    dc_away_draw_odds: Optional[float] = None
+    dnb_home_odds: Optional[float] = None
+    dnb_away_odds: Optional[float] = None
+    over_2_5_odds: Optional[float] = None
+    under_2_5_odds: Optional[float] = None
+    btts_yes_odds: Optional[float] = None
+    btts_no_odds: Optional[float] = None
+
+
+@app.post("/predict-soccer")
+def predict_soccer(req: SoccerMarketReq):
+    """
+    Full World-Cup-ready soccer board. Unlike /predict (which devigged soccer
+    as a 2-way market and ignored the draw), this prices every market from one
+    bivariate Poisson + Dixon-Coles score matrix, then recommends draw-insured
+    plays (Double Chance / Draw No Bet) when the favourite is better but the
+    draw is live.
+    """
+    h_r = get_ratings("Soccer", req.home_team)
+    a_r = get_ratings("Soccer", req.away_team)
+    have_odds = None not in (req.home_odds, req.draw_odds, req.away_odds)
+    intl = _intl_lambdas(req.home_team, req.away_team, req.neutral) if not have_odds else None
+    club, club_league = (_club_lambdas(req.home_team, req.away_team, req.neutral)
+                          if not have_odds and intl is None else (None, None))
+    intl_teams = INTL_SOCCER_RATINGS.get("teams", {})
+    # Ratings are ONLY needed for the no-odds fallback. With full 1X2 odds we
+    # market-calibrate the lambdas (the sharp price beats any model), so a name
+    # mismatch must NOT kill the board — common for WC nations (e.g. odds feed
+    # "USA" vs ratings' "United States"). Refuse only when we have neither odds
+    # nor ANY ratings source (data-fit or heuristic) to work from.
+    if not have_odds and intl is None and club is None and (not h_r or not a_r):
+        return {"status": "NO_DATA",
+                "note": "no odds and team(s) not in soccer ratings — no model opinion",
+                "home_ratings": h_r, "away_ratings": a_r}
+
+    # Goal rates, in priority order:
+    #   1. MARKET-CALIBRATED — fit to the devigged 1X2 when full odds exist.
+    #      The sharp market beats any model; nothing below this is used if we have odds.
+    #   2. DATA-FIT POISSON REGRESSION (INTERNATIONAL) — real match results
+    #      (fit_soccer_ratings.py), not a hand-tuned heuristic. National teams only.
+    #   3. DATA-FIT POISSON REGRESSION (CLUB) — same fitter, big-5 domestic
+    #      leagues (fit_club_ratings.py). Only used when BOTH teams resolve to
+    #      the same league's pool — see _club_lambdas docstring.
+    #   4. HEURISTIC RATINGS — the old {"attack":1.4,"defense":1.2}-style default,
+    #      last resort for a team with no real match history in either fit.
+    calibrated = False
+    lambda_source = "ratings_heuristic"
+    if have_odds:
+        dv0 = sm.devig_3way(req.home_odds, req.draw_odds, req.away_odds)
+        lh, la, _resid = sm.solve_lambdas_from_1x2(dv0["home"], dv0["draw"], dv0["away"])
+        calibrated = True
+        lambda_source = "market_calibrated"
+    elif intl is not None:
+        lh, la = intl
+        lambda_source = "data_fit_poisson_regression"
+    elif club is not None:
+        lh, la = club
+        lambda_source = f"data_fit_poisson_regression_club({club_league})"
+    else:
+        home_boost = 1.0 if req.neutral else 1.3
+        lh = max(0.3, h_r.get("attack", 1.4) * a_r.get("defense", 1.2) * home_boost)
+        la = max(0.3, a_r.get("attack", 1.4) * h_r.get("defense", 1.2))
+
+    matrix = sm.score_matrix(lh, la, rho=req.rho)
+    book = sm.derive_markets(matrix)
+    market_odds = sm.MarketOdds(
+        home=req.home_odds, draw=req.draw_odds, away=req.away_odds,
+        dc_home_draw=req.dc_home_draw_odds, dc_away_draw=req.dc_away_draw_odds,
+        dnb_home=req.dnb_home_odds, dnb_away=req.dnb_away_odds,
+        over_2_5=req.over_2_5_odds, under_2_5=req.under_2_5_odds,
+        btts_yes=req.btts_yes_odds, btts_no=req.btts_no_odds,
+    )
+    rec = sm.recommend(book, req.home_team, req.away_team, market_odds)
+
+    # 3-way devig + model-vs-market edge when full 1X2 odds are supplied.
+    # market_recommendation runs the draw-insurance logic on the SHARP MARKET
+    # probabilities — authoritative when ratings are unreliable (WC nat. teams).
+    market_3way = None
+    market_recommendation = None
+    upset = None
+    chaos = None
+    if None not in (req.home_odds, req.draw_odds, req.away_odds):
+        dv = sm.devig_3way(req.home_odds, req.draw_odds, req.away_odds)
+        market_3way = {
+            "devigged": {k: round(v, 4) for k, v in dv.items() if k != "vig_pct"},
+            "vig_pct": dv["vig_pct"],
+            "model_edge": {
+                "home": round(book.home_win - dv["home"], 4),
+                "draw": round(book.draw - dv["draw"], 4),
+                "away": round(book.away_win - dv["away"], 4),
+            },
+        }
+        market_recommendation = sm.recommend_1x2(
+            dv["home"], dv["draw"], dv["away"], req.home_team, req.away_team,
+            req.home_odds, req.draw_odds, req.away_odds,
+        )
+        fav_dec = sm.american_to_decimal(
+            req.home_odds if dv["home"] >= dv["away"] else req.away_odds
+        )
+        upset = sm.upset_risk(dv["home"], dv["draw"], dv["away"], fav_decimal_odds=fav_dec)
+        # Chaos engine read (per-match draw/upset grade + DRAW SCORE) on the
+        # devigged market vs the Dixon-Coles model — wires the chaos engine into
+        # the live soccer pick. Form (GF/GA) is omitted in this call, so those
+        # components are skipped and the score renormalizes; nothing is invented.
+        _draw_dec = sm.american_to_decimal(req.draw_odds)
+        _ci = ce.MatchInput(
+            home=ce.TeamForm(req.home_team, 0, 0, 0),
+            away=ce.TeamForm(req.away_team, 0, 0, 0),
+            market_home=dv["home"], market_draw=dv["draw"], market_away=dv["away"],
+            fav_decimal_odds=fav_dec, draw_decimal_odds=_draw_dec,
+            model_home=book.home_win, model_draw=book.draw, model_away=book.away_win,
+        )
+        _cr = ce.assess_match(_ci)
+        chaos = {
+            "grade": _cr.grade, "draw_score": _cr.draw_score,
+            "favourite": _cr.favourite, "side": _cr.side, "market": _cr.market,
+            "value_ok": _cr.value_ok, "evidence": _cr.evidence,
+        }
+
+    return {
+        "status": "OK",
+        "home_team": req.home_team, "away_team": req.away_team,
+        "neutral_venue": req.neutral,
+        "lambda_home": round(lh, 3), "lambda_away": round(la, 3),
+        "lambda_source": lambda_source,
+        "method": f"{'MarketCalibrated' if calibrated else 'Ratings'}Poisson+DixonColes(rho={req.rho})",
+        "data_fit_ratings": ({
+            "home": intl_teams.get(req.home_team), "away": intl_teams.get(req.away_team),
+            "note": "eigen_rating = Keener eigenvector strength (higher = stronger); "
+                    "attack/defense = Poisson regression coefficients on the log scale",
+        } if (intl_teams.get(req.home_team) or intl_teams.get(req.away_team)) else
+        {
+            "league": club_league,
+            "home": (CLUB_SOCCER_RATINGS.get("leagues", {}).get(club_league, {})
+                     .get("teams", {}).get(req.home_team)),
+            "away": (CLUB_SOCCER_RATINGS.get("leagues", {}).get(club_league, {})
+                     .get("teams", {}).get(req.away_team)),
+            "note": "eigen_rating = Keener eigenvector strength (higher = stronger); "
+                    "attack/defense = Poisson regression coefficients on the log scale, "
+                    "fit within this league only — not comparable across leagues",
+        } if club_league else None),
+        "markets": {
+            "1x2": {"home": round(book.home_win, 4), "draw": round(book.draw, 4),
+                    "away": round(book.away_win, 4)},
+            "double_chance": {"1X": round(book.dc_home_draw, 4),
+                              "X2": round(book.dc_away_draw, 4),
+                              "12": round(book.dc_home_away, 4)},
+            "draw_no_bet": {"home": round(book.dnb_home, 4),
+                            "away": round(book.dnb_away, 4)},
+            "totals": {str(ln): {"over": round(v["over"], 4),
+                                 "under": round(v["under"], 4)}
+                       for ln, v in book.over_under.items()},
+            "btts": {"yes": round(book.btts_yes, 4), "no": round(book.btts_no, 4)},
+            "expected_total_goals": round(book.expected_total_goals, 3),
+            "corners": sm.estimate_corners(lh, la),
+            "correct_score": book.correct_score,
+        },
+        "simulation": sm.simulate_match(lh, la, rho=req.rho, n_sims=req.n_sims) if req.simulate else None,
+        "market_3way": market_3way,
+        "market_recommendation": market_recommendation,
+        "upset_risk": upset,
+        "chaos": chaos,
+        "failure_modes": {
+            "kill_paths": {mk: fmod.match_kill_paths(matrix, mk)
+                           for mk in ("ml_home", "ml_away", "under_2_5",
+                                      "over_2_5", "btts_no", "dc_1x", "dc_x2")},
+            "unmodelled": fmod.unmodelled("soccer"),
+        },
+        # verified-coincidence ledger — tie-breaker display only, never math
+        "omens": nv.omens_for(req.home_team, req.away_team, sport="soccer"),
+        "recommendation": rec,
+        "profile": _soccer_profile(req.home_team, req.away_team),
+        "home_ratings": h_r, "away_ratings": a_r,
+    }
+
+
+# ── Generic Poisson simulator: any sport, given two scoring rates ──────────────
+# Sport-agnostic — soccer has its own /predict-soccer wiring above. This is for
+# any other low/moderate-count two-team market (hockey goals, corners, cards...)
+# where the CALLER supplies the lambdas (we never fabricate a rate for a sport
+# with no data feed here — see global "no invented stats" rule).
+class SimulateMatchReq(BaseModel):
+    lambda_home: float
+    lambda_away: float
+    rho: float = 0.0        # Dixon-Coles low-score correction; 0 = plain independent Poisson
+    n_sims: int = 120_000
+    max_count: int = 10     # highest home/away count the score matrix covers
+    seed: Optional[int] = None
+    sport: str = "GENERIC"  # label only, no sport-specific behavior
+
+
+@app.post("/simulate-match")
+def simulate_match_generic(req: SimulateMatchReq):
+    """
+    Sport-agnostic Poisson score matrix + Monte Carlo cross-check. Returns
+    correct-score probabilities and simulated 1x2/BTTS/totals from two supplied
+    scoring rates — no ratings lookup, no odds required, works for any sport
+    with a caller-supplied lambda pair.
+    """
+    matrix = pm.score_matrix(req.lambda_home, req.lambda_away, max_count=req.max_count, rho=req.rho)
+    home, drawp, away = pm.win_draw_loss(matrix)
+    sim = pm.simulate_matches(matrix, n_sims=req.n_sims, seed=req.seed)
+    return {
+        "status": "OK",
+        "sport": req.sport,
+        "lambda_home": req.lambda_home, "lambda_away": req.lambda_away,
+        "rho": req.rho,
+        "method": f"Poisson+DixonColes(rho={req.rho})" if req.rho else "Poisson(independent)",
+        "closed_form_1x2": {"home": round(home, 4), "draw": round(drawp, 4), "away": round(away, 4)},
+        "correct_score": pm.correct_score_probs(matrix, top_n=10),
+        "simulation": {
+            "n_sims": req.n_sims,
+            "simulated_1x2": {
+                "home": pm.hit_rate(sim, pm.home_win),
+                "draw": pm.hit_rate(sim, pm.draw),
+                "away": pm.hit_rate(sim, pm.away_win),
+            },
+            "simulated_btts_yes": pm.hit_rate(sim, pm.btts_yes),
+            "simulated_over_2_5": pm.hit_rate(sim, pm.over(2.5)),
+        },
+    }
+
+
+# ── Chaos slate: per-match chaos grades + slate weather + tiered card ──────────
+class ChaosTeam(BaseModel):
+    name: str
+    gf: float
+    ga: float
+    gp: int
+    strength: Optional[float] = None
+
+
+class ChaosMatch(BaseModel):
+    home: ChaosTeam
+    away: ChaosTeam
+    market_home: float
+    market_draw: float
+    market_away: float
+    fav_decimal_odds: float
+    draw_decimal_odds: Optional[float] = None
+    model_home: Optional[float] = None
+    model_draw: Optional[float] = None
+    model_away: Optional[float] = None
+    home_tag: Optional[str] = None
+    away_tag: Optional[str] = None
+    injury_draw_nudge: Optional[float] = None
+    injury_note: Optional[str] = None
+    # candidate fields for staking (the pick the engine wants to size)
+    win_prob: Optional[float] = None
+    decimal_odds: Optional[float] = None
+    market: Optional[str] = None
+    side: Optional[str] = None
+
+
+class ChaosSlateReq(BaseModel):
+    matches: List[ChaosMatch]
+    bankroll: float = 200.0
+
+
+@app.post("/chaos-slate")
+def chaos_slate(req: ChaosSlateReq):
+    """
+    Deterministic chaos pass over a whole slate: per-match chaos grade + DRAW
+    SCORE (cited evidence), the soft slate-weather tilt, and a bankroll-tiered
+    card (Normal/Mild/Wild) for the candidates supplied. No invented numbers —
+    every score derives from the real inputs passed in.
+    """
+    results = []
+    candidates = []
+    for mm in req.matches:
+        match = ce.MatchInput(
+            home=ce.TeamForm(**mm.home.model_dump()),
+            away=ce.TeamForm(**mm.away.model_dump()),
+            market_home=mm.market_home, market_draw=mm.market_draw,
+            market_away=mm.market_away, fav_decimal_odds=mm.fav_decimal_odds,
+            draw_decimal_odds=mm.draw_decimal_odds,
+            model_home=mm.model_home, model_draw=mm.model_draw, model_away=mm.model_away,
+            home_tag=mm.home_tag, away_tag=mm.away_tag,
+            injury_draw_nudge=mm.injury_draw_nudge, injury_note=mm.injury_note,
+        )
+        res = ce.assess_match(match)
+        results.append(res)
+        if mm.win_prob is not None and mm.market and mm.side:
+            candidates.append(stk.Candidate(
+                market=mm.market, side=mm.side, win_prob=mm.win_prob,
+                decimal_odds=mm.decimal_odds, chaos_grade=res.grade,
+                evidence="; ".join(res.evidence),
+            ))
+
+    weather = ce.slate_weather(results)
+    card = stk.size_card(candidates, stk.TierConfig(bankroll=req.bankroll))
+    return {
+        "status": "OK",
+        "weather": weather,
+        "chaos": [
+            {"favourite": r.favourite, "underdog": r.underdog, "grade": r.grade,
+             "draw_score": r.draw_score, "side": r.side, "market": r.market,
+             "value_ok": r.value_ok, "upset_level": r.upset_level,
+             "evidence": r.evidence}
+            for r in results
+        ],
+        "card": [
+            {"tier": p.tier, "market": p.candidate.market, "side": p.candidate.side,
+             "win_prob": p.candidate.win_prob, "stake_units": p.stake_units,
+             "stake_usd": p.stake_usd, "evidence": p.candidate.evidence}
+            for p in card
+        ],
+    }
+
+
+# ── UFC / MMA full board (ML / method / rounds / distance) ─────────────────────
+class UFCReq(BaseModel):
+    fighter_a: str
+    fighter_b: str
+    scheduled_rounds: int = 3       # 3 = prelim/main-card, 5 = main event / title
+    # Win-prob source (priority: explicit probs → moneyline → 50/50)
+    a_win_prob: Optional[float] = None
+    b_win_prob: Optional[float] = None
+    ml_a: Optional[float] = None
+    ml_b: Optional[float] = None
+    # Fighter finish profiles (omit → documented UFC empirical priors, flagged)
+    a_finish_rate: Optional[float] = None
+    a_ko_share: Optional[float] = None
+    a_sub_share: Optional[float] = None
+    b_finish_rate: Optional[float] = None
+    b_ko_share: Optional[float] = None
+    b_sub_share: Optional[float] = None
+    # Optional derivative odds for EV
+    fav_ko_odds: Optional[float] = None
+    fav_dec_odds: Optional[float] = None
+    not_distance_odds: Optional[float] = None
+    goes_distance_odds: Optional[float] = None
+
+
+@app.post("/predict-ufc")
+def predict_ufc(req: UFCReq):
+    """
+    Full UFC board from one fight model. No ratings file needed — win prob comes
+    from explicit estimates or the devigged moneyline; method/round/distance
+    markets use fighter finish profiles when supplied, else documented UFC-wide
+    empirical priors (flagged in data_note).
+    """
+    a = um.Fighter(req.fighter_a, req.a_win_prob, req.a_finish_rate,
+                   req.a_ko_share, req.a_sub_share)
+    b = um.Fighter(req.fighter_b, req.b_win_prob, req.b_finish_rate,
+                   req.b_ko_share, req.b_sub_share)
+    moneyline = (req.ml_a, req.ml_b) if None not in (req.ml_a, req.ml_b) else None
+    rounds = 5 if req.scheduled_rounds == 5 else 3
+
+    fb = um.build_fight(a, b, scheduled_rounds=rounds, moneyline=moneyline)
+    odds = um.UFCOdds(ml_a=req.ml_a, ml_b=req.ml_b, fav_ko=req.fav_ko_odds,
+                      fav_dec=req.fav_dec_odds, not_distance=req.not_distance_odds,
+                      goes_distance=req.goes_distance_odds)
+    rec = um.recommend(fb, odds)
+
+    return {
+        "status": "OK",
+        "fighter_a": fb.name_a, "fighter_b": fb.name_b,
+        "scheduled_rounds": fb.scheduled_rounds,
+        "method": "FightModel(finish_split+round_decay)",
+        "markets": {
+            "moneyline": {fb.name_a: round(fb.p_a, 4), fb.name_b: round(fb.p_b, 4)},
+            "method": {
+                fb.name_a: {"ko": round(fb.a_ko, 4), "sub": round(fb.a_sub, 4),
+                            "dec": round(fb.a_dec, 4)},
+                fb.name_b: {"ko": round(fb.b_ko, 4), "sub": round(fb.b_sub, 4),
+                            "dec": round(fb.b_dec, 4)},
+                "grouped": {"ko_any": round(fb.ko_any, 4),
+                            "sub_any": round(fb.sub_any, 4),
+                            "decision_any": round(fb.decision_any, 4)},
+            },
+            "distance": {"goes_distance": round(fb.goes_distance, 4),
+                         "not_distance": round(fb.not_distance, 4)},
+            "round_totals": fb.round_totals,
+            "finish_by_round": fb.finish_by_round,
+        },
+        "recommendation": rec,
+        "used_empirical_priors": fb.used_empirical,
+        "failure_modes": {"unmodelled": fmod.unmodelled("ufc")},
+        # verified-coincidence ledger — tie-breaker display only, never math
+        "omens": nv.omens_for(req.fighter_a, req.fighter_b, sport="ufc"),
+    }
+
+
+# ── Full board (every priceable market) + slate auto-scan ─────────────────────
+import scan_slate as ss
+
+
+def _d2a(d: float) -> float:
+    return (d - 1) * 100 if d >= 2 else -100 / (d - 1)
+
+
+def _to_fair(obj):
+    """Turn every model probability in a board into its fair decimal price, so
+    the user can compare to the book and fire when the book is >= fair. Only
+    real probabilities get a number — nothing is invented."""
+    if isinstance(obj, dict):
+        return {k: _to_fair(v) for k, v in obj.items()}
+    if isinstance(obj, (int, float)) and 0 < obj <= 1:
+        return round(1.0 / obj, 2)
+    return obj
+
+
+class FullBoardReq(BaseModel):
+    home_team: str = "Home"
+    away_team: str = "Away"
+    home_odds: float           # decimal 1X2
+    draw_odds: float
+    away_odds: float
+    rho: float = sm.DEFAULT_RHO
+
+
+@app.post("/full-board")
+def full_board(req: FullBoardReq):
+    """Every market the engine can HONESTLY price from the 1X2, plus a flagged
+    corners proxy and explicit NO-DATA markers for cards/props (no invention)."""
+    dv = sm.devig_3way(_d2a(req.home_odds), _d2a(req.draw_odds), _d2a(req.away_odds))
+    lh, la, _ = sm.solve_lambdas_from_1x2(dv["home"], dv["draw"], dv["away"])
+    mat = sm.score_matrix(lh, la, rho=req.rho)
+    N, M = len(mat), len(mat[0])
+    b = sm.derive_markets(mat)
+    P = lambda c: round(sum(mat[h][a] for h in range(N) for a in range(M) if c(h, a)), 4)
+    return {
+        "status": "OK", "home": req.home_team, "away": req.away_team,
+        "expected_total_goals": round(b.expected_total_goals, 3),
+        "markets_priced": {
+            "1x2": {"home": round(b.home_win, 4), "draw": round(b.draw, 4), "away": round(b.away_win, 4)},
+            "double_chance": {"1X": round(b.dc_home_draw, 4), "X2": round(b.dc_away_draw, 4), "12": round(b.dc_home_away, 4)},
+            "draw_no_bet": {"home": round(b.dnb_home, 4), "away": round(b.dnb_away, 4)},
+            "btts": {"yes": round(b.btts_yes, 4), "no": round(b.btts_no, 4)},
+            "totals": {str(ln): v for ln, v in b.over_under.items()},
+            "team_goals": {"home_1plus": P(lambda h, a: h >= 1), "home_2plus": P(lambda h, a: h >= 2),
+                           "away_1plus": P(lambda h, a: a >= 1), "away_2plus": P(lambda h, a: a >= 2)},
+            "handicap": {"home_-1": P(lambda h, a: h - a > 1), "home_+1": P(lambda h, a: h - a > -1),
+                         "away_-1": P(lambda h, a: a - h > 1), "away_+1": P(lambda h, a: a - h > -1)},
+        },
+        "corners_proxy": sm.estimate_corners(lh, la),
+        "fair_odds": _to_fair({
+            "1x2": {"home": b.home_win, "draw": b.draw, "away": b.away_win},
+            "double_chance": {"1X": b.dc_home_draw, "X2": b.dc_away_draw, "12": b.dc_home_away},
+            "draw_no_bet": {"home": b.dnb_home, "away": b.dnb_away},
+            "btts": {"yes": b.btts_yes, "no": b.btts_no},
+            "totals": {str(ln): v for ln, v in b.over_under.items()},
+            "team_goals": {"home_1plus": P(lambda h, a: h >= 1), "home_2plus": P(lambda h, a: h >= 2),
+                           "away_1plus": P(lambda h, a: a >= 1), "away_2plus": P(lambda h, a: a >= 2)},
+            "handicap": {"home_-1": P(lambda h, a: h - a > 1), "home_+1": P(lambda h, a: h - a > -1),
+                         "away_-1": P(lambda h, a: a - h > 1), "away_+1": P(lambda h, a: a - h > -1)},
+        }),
+        "how_to_fire": ("book decimal >= fair_odds = +EV, fire it. within ~3% of "
+                        "fair = roughly fair, your call. corners are a PROXY fair "
+                        "(wide error). cards/props have NO fair number — never fire "
+                        "off an invented one."),
+        "needs_data": {
+            "cards_bookings": "no per-team card-rate feed — Phase 2 (no fair odds, never invented)",
+            "player_props": "no per-90 player feed — Phase 2 (no fair odds, never invented)",
+        },
+    }
+
+
+class SlateGameReq(BaseModel):
+    name: str
+    h2h: List[float]
+    totals: Optional[List[List[float]]] = None
+    btts: Optional[List[float]] = None
+    dc_x2: Optional[float] = None
+    dc_1x: Optional[float] = None
+
+
+class SlateReq(BaseModel):
+    games: List[SlateGameReq]
+
+
+@app.post("/scan-slate")
+def scan_slate_endpoint(req: SlateReq):
+    """Rank the best +EV edge per game across a whole slate (same engine)."""
+    out = []
+    for g in req.games:
+        r = ss.scan_game(g.model_dump())
+        out.append({
+            "name": r["name"], "xg_total": r["xg_total"], "vig_pct": r["devig"]["vig_pct"],
+            "edges": [{"market": m, "ev": round(ev, 4), "model_prob": round(p, 4)}
+                      for m, ev, p in r["edges"]],
+        })
+    plays = sorted(
+        ({"name": o["name"], **o["edges"][0]} for o in out),
+        key=lambda x: x["ev"], reverse=True)
+    return {"status": "OK", "value_gate": ss.VALUE_GATE,
+            "games": out, "plays": [p for p in plays if p["ev"] >= ss.VALUE_GATE]}
+
+
+# ── Sofascore — on-demand cross-check tool (unofficial API, see sofascore.py) ──
+# NOT wired into the automatic pick pipeline — this is a verification tool for
+# spot-checking a model read against a second real source (found valuable
+# 2026-07-01 confirming/correcting real H2H claims), not a silent replacement
+# for the app's own data-fit models. Every route is best-effort: Sofascore's
+# API is unofficial/undocumented and may block datacenter IPs or change
+# shape without notice — a failure here means check connectivity/schema
+# drift, not that the underlying fact is wrong.
+@app.get("/sofascore/player")
+def sofascore_player(name: str, pages: int = 2):
+    """Search + recent form + current streak for a tennis player."""
+    try:
+        profile = sofa.player_profile(name, pages=pages)
+        if profile is None:
+            return {"status": "NOT_FOUND", "note": f"no tennis player matched '{name}'"}
+        return {"status": "OK", **profile}
+    except Exception as e:
+        return {"status": "ERROR", "error": str(e),
+                "note": "Sofascore call failed — unofficial API, may be blocked/rate-limited/changed"}
+
+
+@app.get("/sofascore/h2h")
+def sofascore_h2h(home: str, away: str, max_pages: int = 5):
+    """Head-to-head record between two players — found by scanning the home
+    player's recent match history for a meeting with the away player, then
+    pulling that event's career H2H summary."""
+    try:
+        h_entity = sofa.search_player(home)
+        if not h_entity:
+            return {"status": "NOT_FOUND", "note": f"no tennis player matched '{home}'"}
+        event = sofa.find_shared_event(h_entity["id"], away, max_pages=max_pages)
+        if not event:
+            return {"status": "NO_MEETING_FOUND",
+                     "note": f"no meeting between '{home}' and '{away}' in the last "
+                             f"{max_pages} page(s) of {home}'s match history"}
+        summary = sofa.h2h_summary(event["id"])
+        return {"status": "OK", "event_id": event["id"], **summary}
+    except Exception as e:
+        return {"status": "ERROR", "error": str(e),
+                "note": "Sofascore call failed — unofficial API, may be blocked/rate-limited/changed"}
+
+
+@app.get("/sofascore/odds/{event_id}")
+def sofascore_odds(event_id: int):
+    """Pre-match markets (decimal odds) for a specific Sofascore event id —
+    get the id from /sofascore/h2h's response for a known matchup."""
+    try:
+        return {"status": "OK", "markets": sofa.match_odds(event_id)}
+    except Exception as e:
+        return {"status": "ERROR", "error": str(e),
+                "note": "Sofascore call failed — unofficial API, may be blocked/rate-limited/changed"}
+
+
+@app.get("/sofascore/stats/{event_id}")
+def sofascore_stats(event_id: int):
+    """Per-match statistics (aces, serve %, points, games) for a specific
+    Sofascore event id."""
+    try:
+        return {"status": "OK", "statistics": sofa.match_statistics(event_id)}
+    except Exception as e:
+        return {"status": "ERROR", "error": str(e),
+                "note": "Sofascore call failed — unofficial API, may be blocked/rate-limited/changed"}
+
+
+class PlayerPropReq(BaseModel):
+    sport: str            # nba | wnba | nfl | soccer | mlb (statsapi game logs)
+    player: str
+    stat: str             # points/rebounds/assists, shots/shots_on_target, *_yards/tackles/sacks...
+    line: float
+    odds_over: Optional[float] = None    # offered decimal price, if user has one
+    odds_under: Optional[float] = None
+    teammates_out: Optional[List[str]] = None  # ruled-out teammates -> vacuum model
+    opponent: Optional[str] = None             # opposing team -> defense-allowed factor
+
+
+@app.post("/player-prop")
+def player_prop(req: PlayerPropReq):
+    """Simulate one player prop from REAL game logs (ESPN / Sofascore, free —
+    no quota keys). Live network per call: real usage only, never debug."""
+    try:
+        return props.simulate_player_prop(
+            req.sport, req.player, req.stat, req.line,
+            odds_over=req.odds_over, odds_under=req.odds_under,
+            teammates_out=req.teammates_out, opponent=req.opponent)
+    except Exception as e:
+        return {"status": "ERROR", "error": str(e),
+                "note": "game-log fetch failed — free public API, may be blocked/changed"}
+
+
+@app.get("/team-ratings/{sport}")
+def team_ratings(sport: str):
+    """Offensive/defensive ratings per team (off_rating >1 = strong offense,
+    def_rating <1 = strong defense). Served from data/team_off_def.json,
+    rebuilt from ESPN when older than 24h."""
+    sport = sport.lower()
+    if sport not in tod.SPORTS:
+        return {"status": "UNSUPPORTED", "known": list(tod.SPORTS)}
+    try:
+        table = tod.get_table(sport)
+        return {"status": "OK", "sport": sport, **table}
+    except Exception as e:
+        return {"status": "ERROR", "error": str(e)}
+
+
+# ── New-coverage models (Jul 17 2026 — sports the coverage gate used to block).
+# All pure-local reads of fetched data files; refetch via their fetch_* scripts.
+class MLBGameReq(BaseModel):
+    home: str
+    away: str
+    total_line: Optional[float] = None
+    spread_home: float = -1.5
+    use_probables: bool = True
+
+
+@app.post("/predict-mlb")
+def predict_mlb(req: MLBGameReq):
+    """MLB ML / run line / total / team totals — NB matrix (phi fitted on this
+    season's games) + probable-starter adjustment. Backtested 2026-05-15+:
+    59.0% ML acc with pitchers vs 52.8% without (see mlb_game_model.backtest)."""
+    out = mgm.predict(req.home, req.away, req.total_line,
+                      req.spread_home, req.use_probables)
+    # ── Market ladder (all-sports rule: never a bare pass — rank every
+    # priceable market by win prob with its +5% EV floor) ─────────────────────
+    try:
+        ladder: dict = {}
+        ml = out.get("ml") or {}
+        if ml:
+            ladder["home_ml"], ladder["away_ml"] = ml.get("home"), ml.get("away")
+        rl = out.get("run_line") or {}
+        for k, v in rl.items():
+            if k != "push" and v is not None:
+                ladder[f"run_line {k}"] = v
+        t = out.get("total") or {}
+        if t.get("line") is not None:
+            ladder[f"over_{t['line']}"] = t.get("p_over")
+            ladder[f"under_{t['line']}"] = t.get("p_under")
+        # team totals: the half-line nearest a coin flip is the bettable one
+        for side, cdf in (out.get("team_total_cdf") or {}).items():
+            if not cdf:
+                continue
+            line, p_under = min(cdf.items(), key=lambda kv: abs(kv[1] - 0.5))
+            ladder[f"{side}_team_under_{line}"] = float(p_under)
+            ladder[f"{side}_team_over_{line}"] = 1.0 - float(p_under)
+        out["market_ladder"] = [
+            {"market": k, "prob": round(float(p), 3),
+             "min_odds": round(1.05 / float(p), 2) if p else None}
+            for k, p in sorted(ladder.items(), key=lambda kv: -(kv[1] or 0))
+            if p is not None]
+    except Exception:                                          # noqa: BLE001
+        pass
+    return out
+
+
+class VolleyReq(BaseModel):
+    team_a: str
+    team_b: str
+    gender: str = "men"           # men | women
+
+
+@app.post("/predict-volleyball")
+def predict_volleyball(req: VolleyReq):
+    """FIVB WR logistic (scale MLE-fitted on real results) + set markets."""
+    return vbm.predict(req.team_a, req.team_b, req.gender)
+
+
+class LMBReq(BaseModel):
+    home: str
+    away: str
+
+
+@app.post("/predict-lmb")
+def predict_lmb(req: LMBReq):
+    """LMB ML + expected runs from statsapi run rates (fitted pyth + real HFA)."""
+    return lmbm.predict(req.home, req.away)
+
+
+class CricketReq(BaseModel):
+    team_a: str
+    team_b: str
+    fmt: str = "t20i"             # t20i | odi | test
+
+
+@app.post("/cricket-context")
+def cricket_context(req: CricketReq):
+    """ICC ratings + win prob (logistic MLE-fitted on real results per format;
+    a format without a fit still refuses the number and says why)."""
+    return ckm.compare(req.team_a, req.team_b, req.fmt)
+
+
+class TennisGamesReq(BaseModel):
+    player_a: str
+    player_b: str
+    games_line: Optional[float] = None
+    handicap_a: Optional[float] = None
+    best_of: int = 3
+    target_match_prob_a: Optional[float] = None   # pass /predict's prob to calibrate level
+
+
+@app.post("/tennis-games")
+def tennis_games(req: TennisGamesReq):
+    """Games totals / game handicap simulated from measured serve stats."""
+    return tgm.predict(req.player_a, req.player_b, req.games_line,
+                       req.handicap_a, req.best_of, req.target_match_prob_a)
+
+
+@app.get("/health")
+def health():
+    import data_freshness as dfr
+    try:
+        fresh = dfr.audit()
+    except Exception as e:                                     # noqa: BLE001
+        fresh = {"error": str(e)}
+    return {"status": "ok", "models": list(BUNDLES.keys()),
+            "ratings": list(ALL_RATINGS.keys()), "data_freshness": fresh}
+
+@app.get("/teams/{sport}")
+def teams(sport: str):
+    # Ratings keys are mixed-case ("Tennis", "Soccer") — match case-insensitively
+    su = sport.upper()
+    return ALL_RATINGS.get(su) or next(
+        (v for k, v in ALL_RATINGS.items() if k.upper() == su), {})
+
+if __name__ == "__main__":
+    uvicorn.run("edge_api:app", host="127.0.0.1", port=8001, reload=False, log_level="warning")

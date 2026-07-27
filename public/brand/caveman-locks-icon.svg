@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Caveman Locks icon v2 — clean geometric padlock, horn shackle -->
+  <defs>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.045 0"/>
+      <feComposite operator="over" in2="SourceGraphic"/>
+    </filter>
+  </defs>
+
+  <!-- dark stone slab, subtle grain only on background -->
+  <rect width="512" height="512" rx="96" fill="#1A1A1A" filter="url(#grain)"/>
+
+  <!-- horn shackle: symmetric, even 30px stroke, smooth taper -->
+  <path d="M168 250 C150 168, 190 104, 256 104 C322 104, 362 168, 344 250"
+        fill="none" stroke="#C8860A" stroke-width="30" stroke-linecap="round"/>
+  <!-- horn tips flick outward — the caveman signature, controlled -->
+  <path d="M196 116 C176 100, 162 84, 156 64" fill="none" stroke="#C8860A" stroke-width="26" stroke-linecap="round"/>
+  <path d="M316 116 C336 100, 350 84, 356 64" fill="none" stroke="#C8860A" stroke-width="26" stroke-linecap="round"/>
+
+  <!-- lock body: clean tapered slab, 2° cut on top edge for stone character -->
+  <path d="M140 252 L372 246 L380 428 Q380 444 364 444 L148 444 Q132 444 132 428 Z" fill="#C8860A"/>
+
+  <!-- keyhole -->
+  <circle cx="256" cy="324" r="28" fill="#1A1A1A"/>
+  <path d="M244 340 L238 404 L274 404 L268 340 Z" fill="#1A1A1A"/>
+</svg>

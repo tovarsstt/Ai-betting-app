@@ -1,6 +1,14 @@
 {
-    "math_weight": 0.7,
-    "sentiment_weight": 0.3,
-    "dissonance_threshold": 8.0,
-    "last_updated": "2026-W09"
+  "math_weight": 0.75,
+  "sentiment_weight": 0.25,
+  "dissonance_threshold": 7.0,
+  "sport_confidence": {
+    "NBA":    { "trained_games": 4915,  "mae": 11.05, "reliable": true  },
+    "WNBA":   { "trained_games": 888,   "mae": 10.06, "reliable": true  },
+    "NFL":    { "trained_games": 1200,  "mae": 11.63, "reliable": true  },
+    "MLB":    { "trained_games": 13070, "mae": 3.50,  "reliable": true  },
+    "Tennis": { "trained_games": 12518, "mae": 14.2,  "reliable": true  },
+    "Soccer": { "trained_games": 1200,  "mae": 1.35,  "reliable": true  }
+  },
+  "last_updated": "2026-05-07"
 }

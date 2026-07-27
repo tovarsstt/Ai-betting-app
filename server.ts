@@ -2,13 +2,46 @@ import express from 'express';
 // @ts-expect-error - no types
 import cors from 'cors';
 import dotenv from 'dotenv';
+import { spawn } from 'child_process';
 import Anthropic from '@anthropic-ai/sdk';
+import { GoogleGenAI } from '@google/genai';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { readFileSync, writeFileSync } from 'fs';
+import { impliedProb, devig, toDecimal, marginToWinProb, normalCDF } from './src/utils/mathUtils.js';
+import { parseJSON, parseOddsForTeams, parseMatchupsFromOdds, parseSelectionIdentity } from './src/utils/parsers.js';
+import { getCached, setCache } from './src/utils/cache.js';
+import { loadLedger, addPick, settlePick, stampClosingOdds, computeStats, hasPendingDuplicate } from './src/utils/ledger.js';
+import { findClose, pendingNeedingClose, inCaptureWindow, type CaptureEvent } from './src/utils/clvCapture.js';
+import cron from 'node-cron';
+import { getBettingHeuristics, getSportBetContext, getShortHeuristics } from './src/prompts/heuristics.js';
+import { getSharpIdentity } from './src/prompts/identity.js';
+import { SPORT_KEYS } from './src/services/oddsService.js';
+import { ArbitrageService, type ArbitrageOpportunity } from './src/services/arbitrageService.js';
+import type { SGPLeg, SwarmAgentData, SwarmFinalPayload, PoissonBoard, SimHitRate, TeamFitRating, PickGrade, AlphaSheetItem, AlphaSheetContainer, ParlayLeg, ParlayBlock, ParlaysPayload } from './src/types/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, '.env'), override: true });
+
+// ── Model weights — hot-reloaded every 30 min ─────────────────────────────────
+interface ModelWeights {
+  math_weight: number;
+  sentiment_weight: number;
+  dissonance_threshold: number;
+  sport_confidence: Record<string, unknown>;
+  last_updated: string;
+}
+function loadModelWeights(): ModelWeights {
+  try {
+    const raw = readFileSync(path.resolve(__dirname, 'data/model_weights.json'), 'utf8');
+    return JSON.parse(raw) as ModelWeights;
+  } catch {
+    return { math_weight: 0.7, sentiment_weight: 0.3, dissonance_threshold: 8.0, sport_confidence: {}, last_updated: 'default' };
+  }
+}
+let MODEL_WEIGHTS = loadModelWeights();
+setInterval(() => { MODEL_WEIGHTS = loadModelWeights(); }, 30 * 60 * 1000);
 
 const app = express();
 const port = Number(process.env.PORT) || 3001;
@@ -16,57 +49,35 @@ const port = Number(process.env.PORT) || 3001;
 app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 
-// ── Pure betting math utilities ──────────────────────────────────────────────
-
-// American odds → raw implied probability (vig included)
-function impliedProb(americanOdds: number): number {
-  if (americanOdds < 0) return (-americanOdds) / (-americanOdds + 100);
-  return 100 / (americanOdds + 100);
+// ── Remote-access gate (phone away from home wifi) ───────────────────────────
+// Opt-in: set APP_TOKEN in .env before exposing the app through a tunnel.
+// Unlock once per device at /unlock?token=XXX (sets a cookie the SPA rides on);
+// API calls may also send Authorization: Bearer XXX. LAN use (no APP_TOKEN
+// set) is completely unchanged.
+const APP_TOKEN = process.env.APP_TOKEN || '';
+const TOKEN_COOKIE = 'caveman_key';
+function cookieVal(req: express.Request, name: string): string | null {
+  const raw = req.headers.cookie;
+  if (!raw) return null;
+  for (const part of raw.split(';')) {
+    const [k, ...v] = part.trim().split('=');
+    if (k === name) return decodeURIComponent(v.join('='));
+  }
+  return null;
 }
-
-// Remove bookmaker vig from a 2-way market → fair (true) probabilities
-function devig(p1Raw: number, p2Raw: number): { p1: number; p2: number; vig: number } {
-  const sum = p1Raw + p2Raw;
-  return { p1: p1Raw / sum, p2: p2Raw / sum, vig: (sum - 1) * 100 };
-}
-
-// American odds → decimal odds
-function toDecimal(americanOdds: number): number {
-  return americanOdds >= 0 ? americanOdds / 100 + 1 : 100 / (-americanOdds) + 1;
-}
-
-// Half-Kelly fraction — how much of bankroll to bet (capped 0–25% for ruin prevention)
-// p = true win probability, americanOdds = line being bet
-function halfKelly(p: number, americanOdds: number): number {
-  const b = toDecimal(americanOdds) - 1;
-  if (b <= 0 || p <= 0) return 0;
-  const fullKelly = (b * p - (1 - p)) / b;
-  return Math.max(0, Math.min(fullKelly / 2, 0.25));
-}
-
-// Expected Value as decimal (positive = +EV)
-function ev(p: number, americanOdds: number): number {
-  const b = toDecimal(americanOdds) - 1;
-  return p * b - (1 - p);
-}
-
-// Standard normal CDF — Hart approximation, accurate to 5 decimal places
-function normalCDF(z: number): number {
-  if (z < -8) return 0;
-  if (z >  8) return 1;
-  const p = 0.2316419;
-  const b = [0.319381530, -0.356563782, 1.781477937, -1.821255978, 1.330274429];
-  const t   = 1 / (1 + p * Math.abs(z));
-  const y   = ((((b[4]*t + b[3])*t + b[2])*t + b[1])*t + b[0]) * t;
-  const pdf = Math.exp(-0.5 * z * z) / Math.sqrt(2 * Math.PI);
-  return z >= 0 ? 1 - pdf * y : pdf * y;
-}
-
-// Point margin → win probability via normal distribution
-// sigma: std-dev of final margin (NBA ~11.5, NFL ~13.5, MLB ~3.0 runs)
-function marginToWinProb(margin: number, sigma = 11.5): number {
-  return normalCDF(margin / sigma);
-}
+app.get('/unlock', (req: express.Request, res: express.Response) => {
+  if (!APP_TOKEN) return res.status(200).send('no APP_TOKEN set — app is open on LAN');
+  if (req.query.token !== APP_TOKEN) return res.status(401).send('wrong token');
+  res.setHeader('Set-Cookie',
+    `${TOKEN_COOKIE}=${encodeURIComponent(APP_TOKEN)}; Path=/; Max-Age=2592000; HttpOnly; SameSite=Lax`);
+  return res.redirect('/');
+});
+app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+  if (!APP_TOKEN || !req.path.startsWith('/api')) return next();
+  const bearer = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
+  if (bearer === APP_TOKEN || cookieVal(req, TOKEN_COOKIE) === APP_TOKEN) return next();
+  return res.status(401).json({ error: 'LOCKED', hint: 'visit /unlock?token=... once on this device' });
+});
 
 // ── Simple in-memory rate limit ───────────────────────────────────────────────
 const rateCounts = new Map<string, { count: number; reset: number }>();
@@ -82,372 +93,240 @@ function rateLimit(req: express.Request, max: number, windowMs: number): boolean
   return entry.count > max;
 }
 
-// ── Response cache (30-min TTL) — Fix #1 ─────────────────────────────────────
-const responseCache = new Map<string, { data: unknown; expires: number }>();
-function getCached(key: string): unknown | null {
-  const entry = responseCache.get(key);
-  if (!entry) return null;
-  if (Date.now() > entry.expires) { responseCache.delete(key); return null; }
-  return entry.data;
-}
-function setCache(key: string, data: unknown, ttlMs = 30 * 60 * 1000): void {
-  // Evict oldest if cache grows too large
-  if (responseCache.size > 200) {
-    const oldest = [...responseCache.entries()].sort((a, b) => a[1].expires - b[1].expires)[0];
-    if (oldest) responseCache.delete(oldest[0]);
-  }
-  responseCache.set(key, { data, expires: Date.now() + ttlMs });
-}
+// ── ESPN Historical Data — 100% free, no API key, no signup ──────────────────
+// Uses ESPN's undocumented public JSON endpoints (same ones powering espn.com)
+// Returns W/L records, home/away splits, recent form, standings — all real data.
 
-// ── Dynamic Heuristic Framework ───────────────────────────────────────────────
-function getBettingHeuristics(sport: string): string {
-  const GLOBAL = `
-GLOBAL HEURISTICS (apply to every pick):
-1. EV OVER NARRATIVE: Never pick "who will win." Find where the bookmaker's implied probability is LOWER than the true statistical probability. That gap is the edge.
-2. CORRELATION STRESS TEST (SGPs): Only pair legs with MATHEMATICAL multiplier effect. If Leg A hits, does it make Leg B statistically more likely — or just emotionally more likely? Reject emotional correlation.
-3. JUICE FILTER: Reject any parlay where cumulative vig exceeds 15%.
-4. CLV (CLOSING LINE VALUE): Evaluate whether the current line is better or worse than it was 4-8 hours ago. If line moved heavily toward a team, ask: "Is value still here or did sharps already close the window?" If line moves AGAINST your logic without obvious reason, flag as SHARP_OPPOSITION — possible injury news missed.
-5. DERIVATIVE MARKET PIVOT: If the main market (game spread/total) looks efficient (heavy juice, sharp action already priced in), pivot to derivative markets. NBA: 1st quarter spread for fast-starters. NFL: team totals instead of game total. MLB: F5 line instead of full game. These are softer, less surveilled.
-6. INJURY IMPACT QUANTIFIER: Missing player = structural team change. NBA: high-usage star out → analyze usage increase for backup → backup's Over props are often highest EV in the game. MLB: high-leverage reliever pitched 2 nights in a row → assume unavailable → lean Over on 7th-9th innings total.
-7. CONTRARIAN FILTER: If >75% public betting volume is on one side but the line is NOT moving (or moving the opposite direction = RLM), flag as CONTRARIAN_SIGNAL. The underdog or Under usually holds statistical edge in public traps.
-8. SHARP CHECK (final step before any output): (a) CLV Check: Is this line better than 4hrs ago? (b) Correlation: Is this SGP statistically grounded or "perfect world" logic? (c) Derivative: Is there a softer market with cleaner EV? (d) Fragility: If one player gets hurt/foul trouble early, does the whole thesis collapse? If yes, reduce unit size to 0.5u.
-9. FLAG HIGH-RISK: If a bet violates any rule above, label it [HIGH-RISK] and provide a PIVOT that aligns with statistical reality.`.trim();
+const ESPN_BASE = 'https://site.api.espn.com/apis/site/v2/sports';
+const ESPN_CORE = 'https://sports.core.api.espn.com/v2/sports';
 
-  const SPORT_RULES: Record<string, string> = {
-    NBA: `
-NBA NICHE VARIABLES + HEURISTICS:
-━━ ADVANCED METRICS (use the NBA ADVANCED STATS block if present):
-- NetRtg = best single predictor of team quality. Gap of 5+ NetRtg pts = strong favorite signal.
-- OffRtg vs opponent DefRtg gap → true scoring edge. If a team's OffRtg (118) faces DefRtg (110) = +8 scoring edge → they score more than the book expects.
-- Pace: Use model Expected Total vs book total line. If model >4 pts above book → lean Over. If model <4 pts below → lean Under.
-━━ SITUATIONAL VARIABLES:
-- ALTITUDE (Denver): Nuggets home games = +2.5 pts edge. Thin air at 5,280 ft exhausts visitors by Q3. Always add +2.5 to Nuggets home spread confidence.
-- REST DIFFERENTIAL: Team with 2+ days rest vs 0 days rest = +1.5–2 pts historical edge. Never ignore rest mismatch.
-- B2B FATIGUE: Night-2 of B2B → veteran star props average -3.5 pts vs their season avg. Young legs (<25) are less affected. Flag B2B for every prop.
-- BACK-TO-BACK ROAD: Away team on B2B night-2 → fade them vs home team. Home team on B2B → slight fade but home crowd partially offsets.
-- HOME/AWAY EFFICIENCY: Some teams' OffRtg drops >5 pts on road. If away team OffRtg drops to below opponent DefRtg → fade them.
-━━ BLOWOUT & USAGE:
-- BLOWOUT RISK: If spread >10, discount "Over" on star prop. 4th quarter rest = props die. Flag any SGP combining heavy favorite ML + star Over.
-- USAGE SHIFT: Star out → backup usage rises 25–35%. Backup's prop is still set to pre-injury level = massive EV. Calculate: missing_star_minutes × usage% → redistributed possessions.
-- KEY NUMBERS: 3, 5, 7, 10. Moving from -9.5 to -10.5 crosses key number 10 — blowout cover probability drops ~8%.
-━━ SGP RULES:
-- Team Total Over + Lead Playmaker Assists (NOT points). Assists are a pace proxy. If team scores more, playmaker gets more assists — pure correlation.
-- Avoid: Star Points Over + Team ML (heavy fav). Blowout makes both legs contradict each other in Q4.`,
-
-    MLB: `
-MLB NICHE VARIABLES + HEURISTICS:
-━━ PITCHER CONTEXT (use REAL PITCHER STATS block if present):
-- ERA/K9/WHIP: Cite exact numbers. ERA <3.50 = elite. WHIP <1.10 = elite. K9 >10 = high strikeout value.
-- PITCHER REST: 5+ days rest → ace performs better. 3 days rest → expect shorter outing, higher ERA, fade K props.
-- HANDEDNESS PLATOON: LHP vs R-heavy lineup → lean pitcher. RHP vs L-heavy lineup → lean pitcher. Check lineup handedness vs pitcher.
-- BULLPEN USAGE: Team's RP thrown 12+ IP in last 3 days → vulnerable late game. Lean Over 7th-9th inning total or full-game Over.
-━━ PARK FACTORS (memorize these):
-- COORS FIELD (COL) = +20–25% runs above average. Always lean Over and fade pitchers here.
-- PETCO PARK (SD), ORACLE PARK (SF), KAUFFMAN (KC) = -15–20% runs. Strong lean Under, strong pitcher ERA support.
-- YANKEE STADIUM (NYY), FENWAY (BOS), GREAT AMERICAN (CIN) = +10–15% runs. Lean Over, especially on windy days.
-- All others: neutral ±5%. Park factor context = cite the specific park name in rationale.
-━━ REGRESSION SIGNALS:
-- BABIP >.320 sustained = luck factor. Fade that pitcher next 2 weeks (regression incoming).
-- Pythagorean W%: RS^1.83/(RS^1.83+RA^1.83). If actual W% > Pythagorean by >8% → team is overperforming. Fade them.
-━━ WEATHER (use WEATHER DATA block):
-- Wind blowing OUT 15+mph + temp >80°F = lean Over (1–1.5 run adjustment).
-- Wind blowing IN 15+mph + temp <60°F = lean Under (1–1.5 run adjustment).
-- Rain delay risk → lean Under (pitchers shaken, relievers used early).
-━━ SHARP BETS:
-- F5 (First 5 Innings): Best when ace vs weak offense. Removes bullpen variance entirely. Sharp bettors prefer F5 on elite starters.
-- NRFI (No Run First Inning): Both aces starting in pitcher park = NRFI best value. Sharp single only, never a parlay leg.
-- UMPIRE ZONE: High-K ump (tight strike zone) → Over on K props, Under on hits total. Always flag if K-zone ump is assigned.
-━━ SGP RULES:
-- Pitcher strikeouts Over + Under hits allowed + Pitcher to win = clean triple correlation on ace days.
-- AVOID run lines in parlays — low payout vs blowout bust risk.`,
-
-    NFL: `
-NFL NICHE VARIABLES + HEURISTICS:
-━━ KEY NUMBERS (non-negotiable):
-- 3 and 7 are sacred. Half-point off 3 or 7 worth 3–5% win probability.
-- Key sequence: 3, 6, 7, 10, 13, 14, 17. Never buy past 10 unless price is -105 or better.
-- Line moves from -2.5 to -3.5 = enormous (FG margin). From -4 to -5 = negligible. Never pay -130 to buy a half-point off 4.
-━━ WEATHER FORMULA (use WEATHER DATA block):
-- Wind >15mph → fade all passing props -30%, lean Under on game total.
-- Wind >25mph → hard Under, fade QBs entirely, lean Run game props.
-- Rain + cold + wind = compound effect. Each adds ~0.5 pts to Under confidence.
-- Dome teams (Chiefs, Saints, Rams, Vikings) playing outdoors in cold/wind = -2 pt adjustment.
-━━ REST + TRAVEL:
-- Bye week team vs no-bye = +3.2 pts historical edge (biggest rest edge in sports).
-- Short week (Thursday game) team = -1.7 pts. Books rarely fully adjust.
-- West Coast team playing 10am local time (East Coast road game) = -1.5 pts. Circadian disruption is real.
-- Long travel (LAX → NYC in winter) = -0.8 pts on road side.
-━━ SITUATION EDGES:
-- DIVISIONAL DOGS: ATS record for divisional underdogs = ~54% historically. Familiarity flattens lines.
-- TURNOVER REGRESSION: Team +5 in turnover margin over last 3 games → regression incoming. Fade them vs positive turnover differential team.
-- REVENGE SPOT: Team coming off embarrassing loss (>17 pts) at home = +2.5 pts ATS edge (motivated performance).
-━━ EFFICIENCY PROXY:
-- Net yards per play differential (offense - defense). >0.5 yd/play advantage = ~3 pt spread edge.
-- 3rd down conversion rate: 50%+ team vs 35%- team = sustained possession advantage.
-- Red zone TD% vs Red zone scoring%: Team converting TDs not FGs = scoring efficiency edge.
-━━ SGP RULES:
-- QB Over passing yards + WR1 Over receiving yards + Team Win = clean triple if pass-heavy team with no wind.
-- NEVER pair QB passing yards + RB rushing yards unless RB is elite receiver (50+ receptions/yr).
-- Avoid: TD scorer props in parlays. Too volatile, kills SGPs constantly.`,
-
-    NHL: `
-NHL NICHE VARIABLES + HEURISTICS:
-━━ GOALTENDER (use NHL TEAM STATS block):
-- GOALIE IS THE SINGLE MOST IMPORTANT VARIABLE. Check SV% in the stats block.
-- SV% >.915 = elite. .900–.915 = average. <.900 = vulnerable. Top goalie vs bottom-10 offense = lean Under and puck line.
-- NEVER BET until starting goalie is confirmed (typically announced ~1–2 hrs before puck drop). Backup goalie = line moves 0.5–1 goal instantly.
-- GAA: <2.50 = elite. >3.00 = vulnerable. Cite exact from stats block.
-━━ SPECIAL TEAMS (use NHL TEAM STATS block):
-- PP Goals (PPG): High PPG team vs low-penalty kill team = lean Over and PP scorer prop.
-- Faceoff% >52% = possession advantage. More possessions → more shots → more goals. Slight Over lean.
-━━ SITUATIONAL VARIABLES:
-- B2B PENALTY: Second game of B2B → -8% goals scored on average. Away B2B = -12%. Always lean Under.
-- TRAVEL: East team playing Pacific coast away games = -5% performance. Pacific team playing 7pm ET road game = -3% (body clock).
-- HOME ICE: NHL home advantage ≈ 0.3 extra goals per game. Small but consistent.
-- HIGH SHOTS ≠ HIGH GOALS: Distinguish shot quantity (shots for/against) from shot quality. 35 perimeter shots ≠ 35 dangerous chances.
-━━ POSSESSION METRICS:
-- Corsi% >55% = dominant possession team. Their goal totals are sustainable (not PDO-inflated).
-- Corsi% <45% = possession-weak. Good record may be PDO-inflated (shooting % + SV% above sustainable). Regression incoming.
-- PDO = shooting% + save% (should ≈ 100). >102 = lucky team. <98 = unlucky team. Regress accordingly.
-━━ SGP RULES:
-- Team puck line (-1.5) + Over team total goals = only valid if opponent has bottom-10 defense AND your team has elite possession Corsi.
-- Anytime goal scorer + Over team goals = clean correlation. If team scores 4+, multiple scorers hit.
-- AVOID: Puck line parlays across multiple games. Hockey variance is violent — one goalie meltdown kills everything.`,
-
-    SOCCER: `
-SOCCER NICHE VARIABLES + HEURISTICS:
-━━ xG (EXPECTED GOALS) — THE CORE SIGNAL:
-- xG > actual goals = team is underperforming. Positive regression incoming. BACK THEM next match.
-- xG < actual goals = team is overperforming ("fraudulent winner"). Regression incoming. FADE THEM next match.
-- Both teams with xG >1.5/game → lean BTTS (Both Teams To Score). Both under 1.0 xGA → lean Clean Sheet / Under.
-━━ FORM CONTEXT (use SOCCER STANDINGS if provided):
-- W/D/L last 5 + GD (Goal Differential) are the primary signals.
-- GD >+15 in a league = dominant team, fully justify -1.5 AH or -0.5 AH.
-- PPG (Points Per Game) >.67 = above average. <.40 = relegation form.
-━━ ASIAN HANDICAP (PRIMARY MARKET):
-- Use AH over 1X2 always. Eliminates draw kill. -0.25 AH (quarter ball) = half bet wins even on draw. Best EV entry.
-- AH -0.5 = must win outright. AH -1.5 = must win by 2. AH +0.5 = wins or draws.
-━━ SITUATION EDGES:
-- HOME ADVANTAGE: EPL ≈ 0.5 goals, La Liga ≈ 0.4, MLS ≈ 0.6, Bundesliga ≈ 0.45. Apply to every line.
-- FIXTURE CONGESTION: 3 games in 8 days = rotation risk. Backup XI reduces quality ~15%.
-- MOTIVATION: Relegation battle team vs comfortable mid-table = massive underdog value. The bottom team fights; mid-table doesn't.
-- LATE-SEASON FATIGUE: Champions League participant playing domestic league late season = 20% extra fatigue. Rotation likely.
-━━ NICHE MARKETS:
-- CORNERS: Wing-heavy teams (crosses per game >15) generate corners even when losing. Corners O/U is bookmaker-soft — less sharp money.
-- CARDS: High-card referee (>5 yellows/game) + physical matchup (derby, relegation) = Over cards EV.
-- BTTS: Defend by checking last 5 H/A splits separately. A team scoring at home but not away skews BTTS calculations.
-━━ SGP RULES:
-- Over game goals + BTTS = correlated only if both teams have >1.2 GF/game. One defensive team kills it.
-- Result + Under/Over Cards based on referee card rate = clean correlation for high-card refs.
-- AVOID: Draws in parlays. Draw kill rate = parlay poison. Use double chance (Win or Draw) instead.`,
-
-    TENNIS: `
-TENNIS NICHE VARIABLES + HEURISTICS:
-━━ SURFACE IS THE DOMINANT VARIABLE — ALWAYS CHECK THE TOURNAMENT SURFACE FIRST:
-- CLAY (Roland Garros): Slowest surface. High-bounce, topspin-dominant, long baseline rallies. Serve matters LESS. Baseline grinders, physicality, and topspin excel. Big servers underperform. Fade flat-hitters and pure serve-bots.
-- GRASS (Wimbledon): Fastest surface. Low-bounce, serve+volley, short points. Big servers and net players dominate. First-set results are highly predictive (serve holds easy). Fade clay specialists — their topspin loops into the net.
-- HARD / OUTDOOR (US Open, Australian Open): Balanced surface. US Open is medium-fast. Aus Open Plexicushion is medium-slow. Recent form and ranking most predictive here. Serve still matters but not as dominant as grass.
-- HARD / INDOOR: Fast, controlled. No wind, no sun. Predictable bounce. Serve dominant. Big servers favorite. Baseline players struggle more indoors than outdoor hard.
-━━ SERVE + RETURN STATS BY SURFACE:
-- Hold% >80% = reliable server. Use game handicap over ML. Hold% <65% = volatile — fade as heavy favorite.
-- Ace rate: On grass, high ace rate = massive advantage. On clay, almost irrelevant. On hard, moderate advantage.
-- Break point conversion: On clay, high because longer rallies create more opportunities. On grass, very low.
-━━ FATIGUE TRACKING:
-- Total SETS played this tournament week (not just W/L). 3-setter in R1 + 3-setter in R2 = 6 sets of high-intensity = fatigue by R3+.
-- Total GAMES played is even better. >50 games in 2 rounds = physical fatigue. Lean against in next round.
-- POST-TITLE HANGOVER: Fade any player the week AFTER winning a tournament. Documented 58% underperformance vs. expected line. Fatigue + motivation dip is real.
-━━ CONDITIONS:
-- Roland Garros: Heavy balls (humidity), slow court, physical. Stamina dominant.
-- Wimbledon: Light balls, fast grass, serve dominant. First 2 rounds often upsets (grass specialists appear).
-- US Open night sessions: Faster ball under lights, loud crowd, momentum swings. Serve is enhanced at night.
-- Australian Open heat policy: Extreme heat = delays, physical attrition. Heavy favorites in 5-set danger.
-━━ BETTING STRUCTURE:
-- Game Handicap (+3.5/-3.5) > ML for heavy favorites (-250+). Protects against bagel+tiebreak variance. Much better EV.
-- Set Handicap (-1.5 sets = must win 2-0) = value when one player is clearly physically superior AND on their best surface.
-- Early rounds (R128, R64): Highest upset rate. 15–20% higher upset frequency vs R16+. Value on underdogs especially on grass.`,
-
-    UFC: `
-UFC NICHE VARIABLES + HEURISTICS:
-━━ STYLE MATCHUP — THE PRIMARY VARIABLE:
-- WRESTLER vs STRIKER: Elite wrestlers win 68%+ vs pure strikers. Takedowns control time, nullify striking. Fade the striker ML unless he has elite takedown defense.
-- JUDO/BJJ vs STRIKER: Submission threat = striker can't fully commit to punching. Grappler ML or Decision prop.
-- STRIKER vs STRIKER: Judge it on reach, speed, accuracy, recent KO results. Pressure fighter vs counter fighter = reach decides distance control.
-- GRAPPLER vs GRAPPLER: Evaluate who has better takedown defense. The one who stays standing is usually better on the feet.
-━━ CAGE VARIABLES:
-- SMALL CAGE (UFC Apex, ~25-ft): Higher finish rate (+15% KO/Sub vs large venues). Less room to run. Pressure fighters thrive. Lean ITD (Inside the Distance).
-- LARGE ARENA (MSG, T-Mobile, Kaseya): More space = more out-fighting. Counter strikers thrive. Decision rate rises. Method:Decision bet has value.
-- OUTDOOR EVENT: Rarely happens but wind/heat factors apply to striking accuracy.
-━━ PHYSICAL ADVANTAGES:
-- REACH: >3-inch reach advantage + age advantage >3 yrs = significant edge. Every inch matters at distance fighting.
-- HEIGHT: Tall fighters with long reach prefer distance. Short stocky fighters prefer clinch and grappling.
-- WEIGHT CLASS: Naturally bigger fighters who cut weight hard vs fighters at their natural weight = dehydration edge for natural-weight fighter post-weigh-in.
-━━ PSYCHOLOGICAL + FORM SIGNALS:
-- RECENT KO LOSS: Chin concern is real. Documented increased KO vulnerability in subsequent fights. Fade under pressure vs KO artist, even if they recovered.
-- STREAK: Win streak (5+) on betting favorites can be overvalued by public. Regression to mean is common.
-- REVENGE SPOT: Fighter coming off a close controversial loss = motivated. Slight underdog value if styles align.
-- LATE NOTICE: Fighter taking fight on <2 weeks notice = -5–8% performance estimate. Book doesn't always adjust.
-━━ BETTING STRUCTURE:
-- ITD (Inside the Distance) > specific round: Covers both KO and Submission. Better EV, same edge.
-- Method props carry highest EV of any UFC market: Decision, KO/TKO, Submission.
-- Max 2-leg UFC parlays. Single fight upset destroys 3+ leg parlays constantly.
-- Main card vs Prelim: Prelim fighters less scouted by books = more mispricings in prelims.`,
-
-    WNBA: `
-WNBA NICHE VARIABLES + HEURISTICS:
-━━ CORE EDGE: BOOKS ARE 2–3 SEASONS BEHIND:
-- Sportsbooks allocate minimal modeling resources to WNBA. Lines are set by NBA quants using rough adjustment. Systematic mispricing exists — this is the core exploitable edge.
-- Props open late (2hrs before tip). Low liquidity. Sharp money moves lines fast. Grab early props on pace-up stars before public discovers them. CLV window is 4–6x bigger than NBA.
-━━ PACE EXPLOIT:
-- Atlanta Dream, Dallas Wings, Indiana Fever = top-3 pace WNBA. When they play slow-pace opponents (Seattle, New York), the pace mismatch drags totals UP above book estimates. Lean Over aggressively.
-- Seattle Storm = explosive Q3/Q4 but slow Q1/Q2. Fade Seattle team total in Q1 lines. Back Seattle Q4 total.
-━━ STAR REMOVAL = PROP EXPLOSION:
-- WNBA rosters: 12 players. No G-League call-ups. A'ja Wilson out → no equivalent backup exists. Usage redistributes across 2–3 players who get 5–8 extra possessions each.
-- Their props are still set at pre-injury levels = massive EV.
-- Formula: missing star usage% × team possessions → redistributed possessions to specific backups. Those backups' props are the value bet.
-━━ B2B + TRAVEL:
-- WNBA B2B: 48-hour turnaround, no charter flights — commercial travel only. Away team on B2B night-2: fade their spread, fade star props (especially minutes-based props).
-- Home advantage in WNBA ≈ 3.5 pts but books price it at 1.5–2. Small home favorites underpriced by ~1–1.5 pts.
-━━ QUARTER LINES:
-- Books set Q1/Q2 totals using stale full-game models. Teams with strong quarter-specific patterns:
-  → Atlanta Dream: explosive starters, Q1 Over value.
-  → Seattle Storm: slow starters (bottom-5 Q1 scoring), explosive Q3/Q4. Fade Q1, back Q3.
-  → Indiana Fever: Caitlin Clark creates high-pace Q2–Q3 surge. Q2 total often underpriced.
-━━ SGP RULES:
-- Team Total Over + Lead Playmaker Assists (not points). Assists proxy ball movement + pace better than points alone.
-- Avoid WNBA moneyline parlays on heavy favorites (-200+). 30%+ upset rate on big WNBA favorites — variance is violent.`,
-
-    F1: `
-F1 NICHE VARIABLES + HEURISTICS:
-━━ CIRCUIT TYPE IS THE PRIMARY VARIABLE (check CIRCUIT CONTEXT if provided):
-- STREET CIRCUIT (Monaco, Singapore, Baku/Azerbaijan, Jeddah, Miami, Las Vegas, Melbourne/Albert Park, Zandvoort):
-  Qualifying position predicts 80–95% of race result. Overtaking near-impossible. Dirty air = catastrophic. Back the pole sitter. Heavy favorite is actually underpriced here.
-- POWER CIRCUIT (Monza, Spa/Belgium, Bahrain, Abu Dhabi, Austin):
-  Engine power = dominant factor. Overtaking common via long straights. Qualifying matters ~50%. Red Bull and Ferrari power units historically strongest here.
-- TECHNICAL CIRCUIT (Hungary, Silverstone, Suzuka, Interlagos):
-  Aerodynamic downforce + setup critical. Low-drag vs high-downforce setups diverge. Teams with best aero engineers (Red Bull, Ferrari) dominate. Overtaking moderate.
-- SPRINT WEEKEND: FP3 pace data available before race. Sprint result reveals race-trim setup directly. Adjust race bets based on sprint performance.
-━━ KEY BETTING VARIABLES:
-- TEAMMATE H2H: Most predictable F1 market. Both on identical equipment. Use FP3 long-run (fuel-corrected) pace to identify which teammate is better set up for race-trim.
-- WET WEATHER: Rain = field normalizer. Midfield cars gain 2–3 grid positions vs dry. Back underdog +AH (top-10 finish). Fade heavy favorites (they have more to lose).
-  → Rain probability on race day = major line mover. Always check weather context.
-- DNF PROBABILITY: Street circuits 20–40% historical DNF rate. "Classified Finisher" prop has clear value on street circuits. Safety car = guaranteed in Monaco, Singapore.
-- TIRE STRATEGY: Soft → Medium → Hard progression. Teams choosing aggressive undercut (early pit stop) gain track position. Conservative teams (overcut) rely on pace. Undercut success rate ≈ 70%.
-━━ CHAMPIONSHIP PRESSURE:
-- Tight championship battle → drivers race harder in early laps = higher DNF risk.
-- Drivers already clinched = race management mode. Fade them in risky circuits.
-- Midfield constructor battle: Teams gambling on strategy for points = more variance in results.
-━━ BETTING STRUCTURE:
-- Outright Race Winner: Only bet on street circuits (pole = 80% win prob) or dominant cars in dry.
-- Podium Finish (Top 3): Better EV than race winner. More coverage, same edge from dominant team.
-- Teammate H2H: Cleanest, most predictable F1 market. Always look here first.
-- AVOID: Race winner outright on technical circuits in mixed conditions. Too many variables.`,
-  };
-
-  return `${GLOBAL}\n\n${SPORT_RULES[sport.toUpperCase()] || SPORT_RULES.NBA}`;
-}
-
-// ── Sport-specific bet type context ───────────────────────────────────────────
-function getSportBetContext(sport: string): string {
-  const ctx: Record<string, string> = {
-    NBA: 'Bet types: spreads, moneyline, player props (points, rebounds, assists, steals, blocks, 3-pointers made). Niche: quarter lines, halftime lines, team totals.',
-    WNBA: 'Bet types: spreads, moneyline, player props (points, rebounds, assists, steals). Niche: q1/q2 team totals (books set stale), morning CLV props, pace-up team Overs, B2B road fades. Books are 2-3 seasons behind in WNBA modeling — systematic mispricing.',
-    MLB: 'Bet types: moneyline, player props (strikeouts, hits, home runs, total bases). F5 (first 5 innings) ML and total. Niche: NRFI, umpire-adjusted lines.',
-    NFL: 'Bet types: moneyline, spreads, player props (passing yards, rushing yards, TDs, receptions), game totals. Key numbers: 3, 7, 10.',
-    NHL: 'Bet types: puck line (-1.5/+1.5), moneyline, game total (O/U goals), period lines. Player props: shots on goal, goals, assists.',
-    SOCCER: 'Bet types: moneyline (1X2), Asian handicap, goals over/under, corners over/under, shots on target over/under. BTTS. Niche: exact score, cards.',
-    TENNIS: 'Bet types: moneyline (match winner). Game handicap (+3.5/-3.5). Niche: surface-specific form, post-title hangover fades.',
-    UFC: 'Bet types: moneyline, method of victory (KO/TKO, Submission, Decision), ITD (inside the distance). Niche: reach/age advantage flags.',
-    F1: 'Bet types: race winner (moneyline), pole position. H2H: driver vs driver, teammate matchup. Niche: DNF props on street circuits.',
-  };
-  return ctx[sport] || ctx.NBA;
-}
-
-// ── Short heuristics (~400 tokens) for simple endpoints — Fix #3 ─────────────
-function getShortHeuristics(sport: string): string {
-  const base = `SHARP RULES: (1) EV over narrative — find mispriced probability, not just winners. (2) Injury first — missing star = reprice the line. (3) Pinnacle gap ≥8pts = sharp money signal, follow it. (4) Juice filter — skip if vig >15%. (5) Caveman output — cite numbers, no fluff.`;
-  const sportNote: Record<string, string> = {
-    NBA:    "NBA: blowout risk on spreads >10. B2B = fade star props. SGP: team total + assists not points.",
-    WNBA:   "WNBA: books 2-3 yrs behind on modeling = systematic soft lines. Pace exploit: Atlanta/Dallas/Indiana vs slow teams → Over. Star removal = prop explosion (thin rosters). B2B commercial travel → fade road team props. Morning CLV window huge — grab early props.",
-    MLB:    "MLB: F5 over full game on aces. Park+weather matters. NRFI sharp single, not parlay leg.",
-    NFL:    "NFL: key numbers 3/7/10. Fade QB props with wind >15mph. Never pair QB yards + RB yards in SGP.",
-    SOCCER: "Soccer: Asian handicap over 1X2. Fade fraudulent winners (high xG loss teams).",
-    TENNIS: "Tennis: surface win% > overall rank. Game handicap > ML on favorites.",
-    UFC:    "UFC: wrestler vs striker → wrestler ML or decision. Reach +4in = striking advantage.",
-    NHL:    "NHL: starting goalie is single biggest variable. B2B → under.",
-  };
-  return `${base}\n${sportNote[sport.toUpperCase()] || ""}`;
-}
-
-// ── Types ─────────────────────────────────────────────────────────────────────
-export interface SGPLeg {
-  label: string;
-  value: string;
-  rationale: string;
-  espn_id: string;
-}
-
-export interface SwarmAgentData {
-  primary_single: string;
-  value_gap: string;
-  sgp_blueprint: SGPLeg[];
-  multi_parlay_anchor: string;
-  omni_report: string;
-  confidence_score: number;
-}
-
-export interface SwarmFinalPayload extends SwarmAgentData {
-  swarm_report: {
-    quant: SwarmAgentData;
-    simulation: SwarmAgentData;
-    audit_verdict: string;
-  };
-  hash: string;
-  timestamp: string;
-}
-
-export interface AlphaSheetItem {
-  rank: number;
-  team_logo: string;
-  player_name: string;
-  metric_label: string;
-  metric_value: string;
-  season_stat: string;
-  ai_score: number;
-  status_color: string;
-  espn_id: string;
-}
-
-export interface AlphaSheetContainer {
-  title: string;
-  subtitle: string;
-  data: AlphaSheetItem[];
-  timestamp: string;
-}
-
-// ── Parser ────────────────────────────────────────────────────────────────────
-const parseJSON = (raw: string): unknown => {
-  const clean = raw.replace(/```json|```/g, "").trim();
-  try { return JSON.parse(clean); } catch { /* fall through */ }
-  const match = clean.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
-  if (match) { try { return JSON.parse(match[0]); } catch { /* fall through */ } }
-  throw new Error("JSON_PARSE_FAILED");
+// Sport slug mapping for ESPN endpoints
+const ESPN_SPORT_SLUG: Record<string, { sport: string; league: string }> = {
+  NBA:    { sport: 'basketball', league: 'nba' },
+  WNBA:   { sport: 'basketball', league: 'wnba' },
+  NFL:    { sport: 'football',   league: 'nfl' },
+  MLB:    { sport: 'baseball',   league: 'mlb' },
+  NHL:    { sport: 'hockey',     league: 'nhl' },
+  SOCCER: { sport: 'soccer',     league: 'fifa.world' },
 };
+
+interface ESPNTeam { id: string; displayName: string; abbreviation: string; }
+
+// Cache team list per sport (changes rarely)
+async function getESPNTeams(sport: string): Promise<ESPNTeam[]> {
+  const slug = ESPN_SPORT_SLUG[sport];
+  if (!slug) return [];
+  const cacheKey = `espn_teams:${sport}`;
+  const cached = getCached(cacheKey);
+  if (cached) return cached as ESPNTeam[];
+  try {
+    const res = await fetch(`${ESPN_BASE}/${slug.sport}/${slug.league}/teams`, {
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!res.ok) return [];
+    const data = await res.json() as {
+      sports?: Array<{ leagues?: Array<{ teams?: Array<{ team: ESPNTeam }> }> }>;
+    };
+    const teams = (data.sports?.[0]?.leagues?.[0]?.teams ?? []).map(t => t.team);
+    setCache(cacheKey, teams, 24 * 60 * 60 * 1000); // 24h — team list is stable
+    return teams;
+  } catch { return []; }
+}
+
+// Fuzzy match team name → ESPN team ID
+function matchTeamId(name: string, teams: ESPNTeam[]): string | null {
+  if (!name) return null;
+  const n = name.toLowerCase();
+  // Exact display name match first
+  let match = teams.find(t => t.displayName.toLowerCase() === n);
+  if (match) return match.id;
+  // Partial match on last word (city or nickname)
+  const words = n.split(/\s+/);
+  for (const word of words.reverse()) {
+    if (word.length < 3) continue;
+    match = teams.find(t =>
+      t.displayName.toLowerCase().includes(word) ||
+      t.abbreviation.toLowerCase() === word
+    );
+    if (match) return match.id;
+  }
+  return null;
+}
+
+// Fetch W/L record + home/away split for a team from ESPN standings
+async function fetchESPNTeamRecord(sport: string, teamId: string): Promise<string> {
+  const slug = ESPN_SPORT_SLUG[sport];
+  if (!slug || !teamId) return '';
+  const yr = new Date().getFullYear();
+  const cacheKey = `espn_record:${sport}:${teamId}:${yr}`;
+  const cached = getCached(cacheKey);
+  if (cached) return cached as string;
+  try {
+    const res = await fetch(
+      `https://site.api.espn.com/apis/v2/sports/${slug.sport}/${slug.league}/standings?season=${yr}`,
+      { signal: AbortSignal.timeout(5000) }
+    );
+    if (!res.ok) return '';
+    const data = await res.json() as {
+      children?: Array<{
+        standings?: {
+          entries?: Array<{
+            team: { id: string; displayName: string };
+            stats: Array<{ name: string; displayValue: string }>;
+          }>;
+        };
+      }>;
+    };
+    // Search all conference groups
+    for (const group of (data.children ?? [])) {
+      const entry = group.standings?.entries?.find(e => e.team.id === teamId);
+      if (!entry) continue;
+      const s = Object.fromEntries(entry.stats.map(x => [x.name, x.displayValue]));
+      const line = [
+        `${entry.team.displayName}`,
+        s.wins && s.losses ? `Record: ${s.wins}-${s.losses}` : '',
+        s.Home ? `Home: ${s.Home}` : '',
+        s.Road ? `Away: ${s.Road}` : '',
+        s.pointsFor ? `PPG: ${s.pointsFor}` : '',
+        s.pointsAgainst ? `OPP PPG: ${s.pointsAgainst}` : '',
+        s.streak ? `Streak: ${s.streak}` : '',
+      ].filter(Boolean).join(' | ');
+      setCache(cacheKey, line, 3 * 60 * 60 * 1000); // 3h
+      return line;
+    }
+    return '';
+  } catch { return ''; }
+}
+
+// Fetch last 5 game results for a team (real scores, W/L)
+async function fetchESPNRecentForm(sport: string, teamId: string): Promise<string> {
+  const slug = ESPN_SPORT_SLUG[sport];
+  if (!slug || !teamId) return '';
+  const cacheKey = `espn_form:${sport}:${teamId}`;
+  const cached = getCached(cacheKey);
+  if (cached) return cached as string;
+  try {
+    const yr = new Date().getFullYear();
+    const res = await fetch(
+      `${ESPN_BASE}/${slug.sport}/${slug.league}/teams/${teamId}/schedule?season=${yr}`,
+      { signal: AbortSignal.timeout(5000) }
+    );
+    if (!res.ok) return '';
+    const data = await res.json() as {
+      events?: Array<{
+        name: string;
+        date: string;
+        competitions?: Array<{
+          competitors?: Array<{
+            id: string; homeAway: string; winner: boolean;
+            score?: { displayValue: string };
+            team: { displayName: string };
+          }>;
+        }>;
+      }>;
+    };
+    // Filter to completed games, take last 5
+    const completed = (data.events ?? []).filter(e => {
+      const comp = e.competitions?.[0]?.competitors?.[0];
+      return comp?.score?.displayValue && comp.score.displayValue !== '0';
+    }).slice(-5);
+
+    if (!completed.length) return '';
+
+    const lines = completed.map(e => {
+      const comps = e.competitions?.[0]?.competitors ?? [];
+      const us = comps.find(c => c.id === teamId);
+      const them = comps.find(c => c.id !== teamId);
+      if (!us || !them) return null;
+      const result = us.winner ? 'W' : 'L';
+      const loc = us.homeAway === 'home' ? 'vs' : '@';
+      return `${result} ${loc} ${them.team.displayName} ${us.score?.displayValue ?? '?'}-${them.score?.displayValue ?? '?'}`;
+    }).filter(Boolean);
+
+    const block = `Last ${lines.length} games: ${lines.join(', ')}`;
+    setCache(cacheKey, block, 2 * 60 * 60 * 1000); // 2h
+    return block;
+  } catch { return ''; }
+}
+
+// Master function — assembles real ESPN historical context for a matchup
+// Zero external API keys needed. Pure ESPN public data.
+async function fetchHistoricalContext(sport: string, matchup: string): Promise<string> {
+  const slug = ESPN_SPORT_SLUG[sport];
+  if (!slug) return ''; // Tennis/F1 — ESPN team structure doesn't apply
+
+  const teams = matchup.split(/\s+vs\.?\s+/i).map(t => t.trim()).filter(Boolean);
+  const t1 = teams[0] || '';
+  const t2 = teams[1] || '';
+  if (!t1) return '';
+
+  // Resolve team IDs
+  const allTeams = await getESPNTeams(sport);
+  const id1 = matchTeamId(t1, allTeams);
+  const id2 = t2 ? matchTeamId(t2, allTeams) : null;
+
+  if (!id1 && !id2) return '';
+
+  // Fetch records + recent form in parallel
+  const fetches = [
+    id1 ? fetchESPNTeamRecord(sport, id1) : Promise.resolve(''),
+    id1 ? fetchESPNRecentForm(sport, id1) : Promise.resolve(''),
+    id2 ? fetchESPNTeamRecord(sport, id2) : Promise.resolve(''),
+    id2 ? fetchESPNRecentForm(sport, id2) : Promise.resolve(''),
+  ];
+  const [rec1, form1, rec2, form2] = await Promise.all(fetches);
+
+  const lines: string[] = [];
+  if (rec1)  lines.push(`${t1} — ${rec1}`);
+  if (form1) lines.push(`${t1} — ${form1}`);
+  if (rec2)  lines.push(`${t2} — ${rec2}`);
+  if (form2) lines.push(`${t2} — ${form2}`);
+
+  if (!lines.length) return '';
+  return [
+    `📊 HISTORICAL DATA — ESPN OFFICIAL (free, no key — cite as [ESPN RECORDS])`,
+    `Source: ESPN public API — real ${sport} season data`,
+    ...lines,
+    `⚠️ ONLY cite numbers that appear VERBATIM above.`,
+  ].join('\n');
+}
 
 // ── Live Odds API ─────────────────────────────────────────────────────────────
 const ODDS_API_KEY = process.env.ODDS_API_KEY || "";
 const ODDS_API_BASE = "https://api.the-odds-api.com/v4";
 
-const SPORT_KEYS: Record<string, string[]> = {
-  NBA:    ["basketball_nba"],
-  WNBA:   ["basketball_wnba"],
-  MLB:    ["baseball_mlb"],
-  NFL:    ["americanfootball_nfl"],
-  NHL:    ["icehockey_nhl"],
-  SOCCER: ["soccer_epl", "soccer_usa_mls", "soccer_uefa_champs_league", "soccer_spain_la_liga"],
-  TENNIS: ["tennis_atp_french_open", "tennis_wta_french_open", "tennis_atp_wimbledon", "tennis_wta_wimbledon", "tennis_atp_us_open", "tennis_wta_us_open", "tennis_atp_aus_open", "tennis_wta_aus_open"],
-  UFC:    ["mma_mixed_martial_arts"],
-  F1:     [], // not on this API
+// ── Odds API quota tracking + floor guard ────────────────────────────────────
+// The free tier is ~500 requests/month. We read the quota the API reports on
+// every response header and refuse paid calls once a floor is hit — returning a
+// synthetic 429 so the existing skip-on-error paths serve the (now persistent)
+// cache instead of spending the last credits and hard-failing the whole app.
+const ODDS_QUOTA_FLOOR = Number(process.env.ODDS_QUOTA_FLOOR) || 15;
+const oddsQuota: { remaining: number | null; used: number | null; updated: string | null } = {
+  remaining: null,
+  used: null,
+  updated: null,
 };
+
+async function oddsFetch(url: string, timeoutMs = 6000): Promise<Response> {
+  if (oddsQuota.remaining !== null && oddsQuota.remaining <= ODDS_QUOTA_FLOOR) {
+    // Budget floor reached — don't spend the last credits; caller falls back to cache.
+    return new Response(null, { status: 429, statusText: 'ODDS_QUOTA_FLOOR' });
+  }
+  const res = await fetch(url, { signal: AbortSignal.timeout(timeoutMs) });
+  const rem = res.headers.get('x-requests-remaining');
+  if (rem !== null) {
+    oddsQuota.remaining = Number(rem);
+    const used = res.headers.get('x-requests-used');
+    if (used !== null) oddsQuota.used = Number(used);
+    oddsQuota.updated = new Date().toISOString();
+    if (oddsQuota.remaining <= ODDS_QUOTA_FLOOR) {
+      console.warn(`⚠️  Odds API quota low: ${oddsQuota.remaining} left (floor ${ODDS_QUOTA_FLOOR}) — serving cache until reset.`);
+    }
+  }
+  return res;
+}
+
+// SPORT_KEYS — imported from src/services/oddsService.ts
 
 interface OddsEvent {
   id: string;
@@ -464,48 +343,146 @@ interface OddsEvent {
   }>;
 }
 
+// Active sport keys from the free /sports endpoint (0 quota cost, cached 12h).
+// Lets fetchLiveOdds skip out-of-season keys automatically — no more stale-key bugs.
+async function getActiveSportKeys(): Promise<Set<string> | null> {
+  const cached = getCached('odds:active-keys');
+  if (cached) return cached as Set<string>;
+  try {
+    const res = await fetch(`${ODDS_API_BASE}/sports/?apiKey=${ODDS_API_KEY}`, { signal: AbortSignal.timeout(6000) });
+    // The free /sports endpoint still reports quota — seed it on boot (no floor
+    // guard here: this call is free and needed to know which leagues are live).
+    const rem = res.headers.get('x-requests-remaining');
+    if (rem !== null) {
+      oddsQuota.remaining = Number(rem);
+      const used = res.headers.get('x-requests-used');
+      if (used !== null) oddsQuota.used = Number(used);
+      oddsQuota.updated = new Date().toISOString();
+    }
+    if (!res.ok) return null;
+    const sports = await res.json() as Array<{ key: string; active: boolean }>;
+    const activeSet = new Set(sports.filter(s => s.active).map(s => s.key));
+    setCache('odds:active-keys', activeSet, 12 * 60 * 60 * 1000);
+    return activeSet;
+  } catch {
+    return null; // on failure, caller falls back to the full configured list
+  }
+}
+
+// Accent-stripping normalizer + Spanish→English WC team aliases for game search
+const normTeam = (s: string): string =>
+  s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+const ES_TEAM_ALIASES: Record<string, string> = {
+  'sudafrica': 'south africa', 'corea del sur': 'south korea', 'corea': 'south korea',
+  'republica checa': 'czech republic', 'checa': 'czech', 'alemania': 'germany',
+  'francia': 'france', 'espana': 'spain', 'inglaterra': 'england', 'brasil': 'brazil',
+  'suiza': 'switzerland', 'catar': 'qatar', 'qatar': 'qatar', 'croacia': 'croatia',
+  'japon': 'japan', 'marruecos': 'morocco', 'paises bajos': 'netherlands',
+  'holanda': 'netherlands', 'estados unidos': 'united states', 'eeuu': 'united states',
+  'escocia': 'scotland', 'egipto': 'egypt', 'nueva zelanda': 'new zealand',
+  'noruega': 'norway', 'costa de marfil': 'ivory coast', 'belgica': 'belgium',
+  'italia': 'italy', 'portugal': 'portugal', 'argelia': 'algeria', 'tunez': 'tunisia',
+  'arabia saudita': 'saudi arabia', 'iran': 'iran', 'grecia': 'greece',
+  'turquia': 'turkiye', 'austria': 'austria', 'polonia': 'poland',
+};
+
+// Tennis surface from the sport_key — surface is the single biggest betting
+// variable (it drives the model). Keyword-matched so it survives exact-key spelling
+// drift across the ~60 tour stops; returns an honest "unknown" rather than a wrong
+// guess (a fabricated surface would mis-price the whole match).
+function tennisSurface(key: string): string {
+  const MAJORS: Record<string, string> = {
+    'tennis_atp_french_open':  '🏟️ ROLAND GARROS — CLAY (slowest, topspin-dominant, baseline grinders excel, big servers fade)',
+    'tennis_wta_french_open':  '🏟️ ROLAND GARROS — CLAY (slowest, topspin-dominant, physical endurance key)',
+    'tennis_atp_wimbledon':    '🏟️ WIMBLEDON — GRASS (fastest, serve+volley, big servers/net players dominate, clay specialists fade)',
+    'tennis_wta_wimbledon':    '🏟️ WIMBLEDON — GRASS (fastest, serve dominant, low bounce, aggressive baseliners)',
+    'tennis_atp_us_open':      '🏟️ US OPEN — HARD (medium-fast, night sessions faster under lights, loud crowd)',
+    'tennis_wta_us_open':      '🏟️ US OPEN — HARD (medium-fast, night session crowd/momentum factor)',
+    'tennis_atp_aus_open':     '🏟️ AUSTRALIAN OPEN — HARD (medium-slow Plexicushion, January heat policy, long rallies)',
+    'tennis_wta_aus_open':     '🏟️ AUSTRALIAN OPEN — HARD (medium-slow Plexicushion, heat delays possible)',
+  };
+  if (MAJORS[key]) return MAJORS[key];
+  const k = key.toLowerCase();
+  const GRASS = '🌱 GRASS — fast, low bounce; big servers & aggressive returners overperform, clay specialists fade.';
+  const CLAY  = '🟧 CLAY — slowest, high bounce; topspin grinders & stamina win, big servers fade.';
+  const HARD  = '🟦 HARD — medium-fast, true bounce; all-court players & big hitters favored.';
+  const has = (...w: string[]): boolean => w.some(x => k.includes(x));
+  if (k.includes('stuttgart')) return k.includes('wta') ? CLAY : GRASS; // ATP grass, WTA clay
+  if (has('wimbledon', 'queens', 'eastbourne', 'mallorca', 'halle', 'homburg', 'hertog', 'birmingham', 'nottingham', 'berlin', 'newport')) return GRASS;
+  if (has('french', 'roland', 'monte_carlo', 'madrid', 'rome', 'barcelona', 'hamburg', 'bastad', 'gstaad', 'kitzbuhel', 'umag', 'estoril', 'munich', 'geneva', 'cordoba', 'houston', 'rio')) return CLAY;
+  if (has('us_open', 'aus_open', 'australian', 'indian_wells', 'miami', 'cincinnati', 'canada', 'toronto', 'montreal', 'dubai', 'doha', 'acapulco', 'shanghai', 'beijing', 'tokyo', 'vienna', 'basel', 'turin', 'washington', 'adelaide', 'brisbane')) return HARD;
+  return '⚠️ surface not auto-identified for this event — CONFIRM the surface before pricing (it is the model\'s biggest input).';
+}
+
 async function fetchLiveOdds(sport: string, gameQuery?: string): Promise<string> {
   if (!ODDS_API_KEY) return "Odds API key not configured.";
-  const sportKeys = SPORT_KEYS[sport] || SPORT_KEYS.NBA;
-  if (sportKeys.length === 0) return `No odds API coverage for ${sport}.`;
+  const configuredKeys = SPORT_KEYS[sport] || SPORT_KEYS.NBA;
+  if (configuredKeys.length === 0) return `No odds API coverage for ${sport}.`;
 
-  // Tennis: surface type from sport_key — critical betting variable
-  const TENNIS_SURFACE: Record<string, string> = {
-    'tennis_atp_french_open':  '🏟️ ROLAND GARROS — Surface: CLAY (slowest, topspin-dominant, baseline grinders excel, big servers fade)',
-    'tennis_wta_french_open':  '🏟️ ROLAND GARROS — Surface: CLAY (slowest, topspin-dominant, physical endurance key)',
-    'tennis_atp_wimbledon':    '🏟️ WIMBLEDON — Surface: GRASS (fastest, serve+volley, big servers/net players dominate, clay specialists fade)',
-    'tennis_wta_wimbledon':    '🏟️ WIMBLEDON — Surface: GRASS (fastest, serve dominant, low bounce, aggressive baseliners)',
-    'tennis_atp_us_open':      '🏟️ US OPEN — Surface: HARD/OUTDOOR (medium-fast, night sessions faster ball under lights, loud crowd)',
-    'tennis_wta_us_open':      '🏟️ US OPEN — Surface: HARD/OUTDOOR (medium-fast, night session crowd/momentum factor)',
-    'tennis_atp_aus_open':     '🏟️ AUSTRALIAN OPEN — Surface: HARD/OUTDOOR (medium-slow Plexicushion, heat policy in January, long rallies)',
-    'tennis_wta_aus_open':     '🏟️ AUSTRALIAN OPEN — Surface: HARD/OUTDOOR (medium-slow Plexicushion, heat delays possible)',
-  };
+  // Skip out-of-season keys when the active list is available
+  const activeKeys = await getActiveSportKeys();
+  let sportKeys = activeKeys
+    ? configuredKeys.filter(k => activeKeys.has(k))
+    : configuredKeys;
+
+  // TENNIS: cover the WHOLE tour — every active ATP/WTA tournament, not a fixed list
+  if (sport === 'TENNIS' && activeKeys) {
+    const tennisActive = [...activeKeys]
+      .filter(k => k.startsWith('tennis_') && !k.includes('winner'))
+      .sort()
+      .slice(0, 6); // quota guard: max 6 tournaments per scan
+    if (tennisActive.length) sportKeys = tennisActive;
+  }
+
+  if (sportKeys.length === 0) return `No ${sport} markets in season right now (all configured keys inactive).`;
 
   const results: string[] = [];
+  const apiErrors: string[] = [];
 
+  let isFirstKey = true;
   for (const key of sportKeys) {
+    // Throttle multi-key sports (tennis/soccer) — burst requests trigger HTTP 429
+    if (!isFirstKey) await new Promise(r => setTimeout(r, 400));
+    isFirstKey = false;
     try {
-      const url = `${ODDS_API_BASE}/sports/${key}/odds?apiKey=${ODDS_API_KEY}&regions=us&markets=h2h,spreads,totals,alternate_spreads,alternate_totals&bookmakers=pinnacle,draftkings,fanduel&dateFormat=iso&oddsFormat=american`;
-      const res = await fetch(url, { signal: AbortSignal.timeout(6000) });
-      if (!res.ok) continue;
+      // NOTE: alternate_spreads/alternate_totals are NOT supported on the bulk
+      // /sports/{key}/odds endpoint (422 INVALID_MARKET) — only per-event endpoint.
+      const url = `${ODDS_API_BASE}/sports/${key}/odds?apiKey=${ODDS_API_KEY}&regions=us&markets=h2h,spreads,totals&bookmakers=pinnacle,draftkings,fanduel&dateFormat=iso&oddsFormat=american`;
+      const res = await oddsFetch(url, 6000);
+      if (!res.ok) {
+        const body = await res.text().catch(() => '');
+        console.error(`Odds API ${res.status} for ${key}: ${body.slice(0, 200)}`);
+        apiErrors.push(`${key}: HTTP ${res.status}`);
+        continue;
+      }
 
       const events = await res.json() as OddsEvent[];
       if (!Array.isArray(events) || events.length === 0) continue;
 
       // Inject tennis surface header before listing events for this tournament
-      if (TENNIS_SURFACE[key]) results.push(TENNIS_SURFACE[key]);
+      if (key.startsWith('tennis_')) results.push(tennisSurface(key));
 
-      // Filter by game query if provided
+      // Filter by game query if provided.
+      // Accent-normalized + Spanish team aliases: "México vs Sudáfrica" must
+      // find "Mexico vs South Africa" — a miss here made the engine analyze
+      // a DIFFERENT game from the leftover fixtures context.
+      const matchesQuery = (e: OddsEvent, q: string): boolean => {
+        const tokens = [normTeam(q), ...normTeam(q).split(/\s+vs?\s+|\s+@\s+/i).map(t => t.trim())]
+          .filter(t => t.length >= 3)
+          .map(t => ES_TEAM_ALIASES[t] ?? t);
+        const home = normTeam(e.home_team);
+        const away = normTeam(e.away_team);
+        return tokens.some(t => home.includes(t) || away.includes(t));
+      };
       const filtered = gameQuery
-        ? events.filter(e =>
-            e.home_team.toLowerCase().includes(gameQuery.toLowerCase()) ||
-            e.away_team.toLowerCase().includes(gameQuery.toLowerCase()) ||
-            gameQuery.toLowerCase().split(/\s+vs?\s+/i).some(t =>
-              e.home_team.toLowerCase().includes(t.trim()) ||
-              e.away_team.toLowerCase().includes(t.trim())
-            )
-          )
+        ? events.filter(e => matchesQuery(e, gameQuery))
         : events.slice(0, 8); // max 8 games to keep prompt lean
+
+      if (gameQuery && filtered.length === 0) {
+        apiErrors.push(`match "${gameQuery}" not found in ${key}`);
+        continue;
+      }
 
       for (const ev of filtered) {
         const gameTime = new Date(ev.commence_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'America/New_York' });
@@ -518,14 +495,15 @@ async function fetchLiveOdds(sport: string, gameQuery?: string): Promise<string>
         const altTotals: string[] = [];
         for (const market of pinnacle.markets) {
           if (market.key === 'h2h') {
-            const [o1, o2] = market.outcomes;
             const ml = market.outcomes.map(o => `${o.name} ML ${o.price > 0 ? '+' : ''}${o.price}`).join(' | ');
             lines.push(`  Moneyline: ${ml}`);
-            // Implied probability + devig math embedded inline
-            if (o1 && o2) {
-              const p1r = impliedProb(o1.price), p2r = impliedProb(o2.price);
-              const dv  = devig(p1r, p2r);
-              lines.push(`  → Implied(devigged): ${o1.name} ${(dv.p1*100).toFixed(1)}% | ${o2.name} ${(dv.p2*100).toFixed(1)}% | Book vig: ${dv.vig.toFixed(1)}%`);
+            // Devig across ALL outcomes — soccer h2h is 3-way (home/draw/away),
+            // so devigging only the first two prices mis-prices every WC match.
+            const raws = market.outcomes.map(o => ({ name: o.name, p: impliedProb(o.price) }));
+            const rawSum = raws.reduce((s, r) => s + r.p, 0);
+            if (rawSum > 0 && raws.length >= 2) {
+              const devigged = raws.map(r => `${r.name} ${(r.p / rawSum * 100).toFixed(1)}%`).join(' | ');
+              lines.push(`  → Implied(devigged, ${raws.length}-way): ${devigged} | Book vig: ${((rawSum - 1) * 100).toFixed(1)}%`);
             }
           } else if (market.key === 'spreads') {
             const sp = market.outcomes.map(o => `${o.name} ${o.point && o.point > 0 ? '+' : ''}${o.point} (${o.price > 0 ? '+' : ''}${o.price})`).join(' | ');
@@ -552,10 +530,26 @@ async function fetchLiveOdds(sport: string, gameQuery?: string): Promise<string>
         if (altTotals.length) lines.push(`  Alt Totals: ${altTotals.slice(0, 4).join(' // ')}`);
         results.push(lines.join('\n'));
       }
-    } catch { /* skip failed sport key */ }
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      console.error(`Odds fetch failed for ${key}: ${msg}`);
+      apiErrors.push(`${key}: ${msg}`);
+    }
   }
 
-  if (results.length === 0) return `No live odds available for ${sport} right now.`;
+  if (results.length === 0) {
+    if (gameQuery && apiErrors.some(e => e.includes('not found'))) {
+      return `⛔ REQUESTED MATCH "${gameQuery}" NOT FOUND in ${sport} live odds. ` +
+        `DO NOT analyze a different game. Tell the user the match was not found in tonight's slate and to check the team names.`;
+    }
+    return apiErrors.length
+      ? `ODDS API ERROR — not "no games", the API calls failed: ${apiErrors.join(' | ')}`
+      : `No live odds available for ${sport} right now.`;
+  }
+
+  // Championship strength prior — cached 12h, ~1 credit/sport/day
+  const prior = await fetchChampionshipPrior(sport);
+  if (prior) results.push(prior);
   return `LIVE ODDS (Pinnacle/DraftKings) — ${sport}:\n${results.join('\n\n')}`;
 }
 
@@ -671,9 +665,10 @@ const ESPN_INJURY_ROUTES: Record<string, string> = {
   NBA:    "basketball/nba",
   WNBA:   "basketball/wnba",
   NFL:    "football/nfl",
-  MLB:    "baseball/mlb",
   NHL:    "hockey/nhl",
-  SOCCER: "soccer/usa.1", // MLS as default; EPL = soccer/eng.1
+  MLB:    "baseball/mlb",
+  // World Cup uses ESPN's FIFA feed; domestic MLS removed
+  SOCCER: "soccer/fifa.world",
 };
 
 async function fetchInjuries(sport: string, matchup?: string): Promise<string> {
@@ -771,9 +766,12 @@ async function fetchESPNNews(sport: string, matchup?: string): Promise<string> {
 
 // ── ESPN Scoreboard — today's schedule for non-NBA sports ────────────────────
 const ESPN_SCOREBOARD_ROUTES: Record<string, string> = {
-  MLB: 'baseball/mlb', NFL: 'football/nfl',
-  NHL: 'hockey/nhl',   WNBA: 'basketball/wnba',
-  SOCCER: 'soccer/usa.1',
+  NFL:    'football/nfl',
+  WNBA:   'basketball/wnba',
+  NHL:    'hockey/nhl',
+  MLB:    'baseball/mlb',
+  SOCCER: 'soccer/fifa.world',
+  TENNIS: 'tennis/atp',
 };
 
 async function fetchESPNScoreboard(sport: string): Promise<string> {
@@ -1113,8 +1111,11 @@ async function fetchMLBPitcherStats(matchup: string): Promise<string> {
 
 // ── Weather via wttr.in (completely free, no auth) ────────────────────────────
 // Only called for outdoor sports: MLB, NFL. Indoor (NBA/NHL) = skip.
-const STADIUM_CITIES: Record<string, string> = {
-  // MLB
+// Split by sport: 'giants' and 'cardinals' are BOTH MLB and NFL nicknames, so a
+// single flat map silently overwrote the MLB cities with the NFL ones (SF Giants
+// got New Jersey weather, StL Cardinals got Arizona). fetchWeather already knows
+// the sport — key off it so each league resolves to the right stadium city.
+const STADIUM_CITIES_MLB: Record<string, string> = {
   'yankees': 'New York', 'mets': 'New York', 'red sox': 'Boston',
   'cubs': 'Chicago', 'white sox': 'Chicago', 'dodgers': 'Los Angeles',
   'angels': 'Anaheim', 'giants': 'San Francisco', 'athletics': 'Oakland',
@@ -1125,7 +1126,8 @@ const STADIUM_CITIES: Record<string, string> = {
   'blue jays': 'Toronto', 'rays': 'St. Petersburg', 'tigers': 'Detroit',
   'guardians': 'Cleveland', 'royals': 'Kansas City', 'twins': 'Minneapolis',
   'astros': 'Houston', 'rangers': 'Arlington', 'mariners': 'Seattle',
-  // NFL
+};
+const STADIUM_CITIES_NFL: Record<string, string> = {
   'patriots': 'Foxborough', 'bills': 'Orchard Park', 'dolphins': 'Miami Gardens',
   'jets': 'East Rutherford', 'ravens': 'Baltimore', 'bengals': 'Cincinnati',
   'browns': 'Cleveland', 'steelers': 'Pittsburgh', 'texans': 'Houston',
@@ -1148,7 +1150,8 @@ async function fetchWeather(matchup: string, sport: string): Promise<string> {
   const homeStr = (parts[parts.length - 1] ?? parts[0]).trim();
 
   let city = '';
-  for (const [kw, c] of Object.entries(STADIUM_CITIES)) {
+  const stadiumCities = s === 'MLB' ? STADIUM_CITIES_MLB : STADIUM_CITIES_NFL;
+  for (const [kw, c] of Object.entries(stadiumCities)) {
     if (homeStr.includes(kw)) { city = c; break; }
   }
   if (!city) return "";
@@ -1268,64 +1271,254 @@ async function fetchNHLTeamStats(matchup: string): Promise<string> {
   return lines.length > 1 ? lines.join('\n') : "";
 }
 
-// ── Soccer context — ESPN standings (W/D/L, GF, GA, GD, PPG) ─────────────────
-// Tries EPL, La Liga, MLS, Champions League in parallel; returns matched teams.
-const SOCCER_LEAGUE_ROUTES: Record<string, string> = {
-  EPL: 'eng.1', 'LA LIGA': 'esp.1', MLS: 'usa.1', UCL: 'uefa.champions',
-  BUNDESLIGA: 'ger.1', 'SERIE A': 'ita.1', 'LIGUE 1': 'fra.1',
+// ── World Cup 2026 — today's fixtures + group standings ──────────────────────
+// Primary data source for all SOCCER analysis. MLS/EPL tables dropped.
+// xG/PPDA/SPI are NOT available from this feed — Claude must NOT invent them.
+const WC_VENUE_NOTES: Record<string, string> = {
+  'denver':       'ALTITUDE 5280ft — ball travels faster, lean Over, visiting teams gas in 70+',
+  'mexico city':  'ALTITUDE 7350ft — extreme fatigue factor, fade team totals in 2nd half',
+  'kansas city':  'ALTITUDE ~900ft — mild effect, slight Over lean vs sea-level opponents',
+  'dallas':       'HEAT — Dallas in June/July: 95°F+, slow tempo, lean Under 90min, ET goals spike',
+  'houston':      'HEAT — humidity compounds fatigue, defensive errors late, lean Under 2.5',
+  'miami':        'HEAT/HUMIDITY — worst conditions, fatigue heavy, fade team totals, ET likely',
+  'los angeles':  'Neutral conditions, largest stadium atmosphere — expect tight tactical games',
+  'new york':     'MetLife outdoor, weather variable — check wind before betting totals',
+  'seattle':      'RAIN risk — wet ball, slower play, lean Under on totals',
+  'san francisco':'COLD/FOG risk — bay area cooler than inland, favors physical teams',
+  'atlanta':      'DOME — controlled conditions, more goals expected, no weather factor',
+  'boston':       'Gillette outdoor, coastal wind — check forecast for passing prop adjustments',
+  'toronto':      'Outdoor, cooler climate — standard conditions',
+  'guadalajara':  'ALTITUDE 5100ft + heat — significant fatigue, lean Under late-game props',
+  'monterrey':    'HEAT — northern Mexico summer, extreme temp, fatigue bets apply',
 };
 
-async function fetchSoccerContext(matchup: string): Promise<string> {
-  if (!matchup) return "";
-  const parts = matchup.toLowerCase().split(/\s+(?:vs\.?|@|-)\s+/).map(p => p.trim());
-  if (parts.length < 2) return "";
+async function fetchWorldCupFixtures(): Promise<string> {
+  try {
+    const res = await fetch(
+      'https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard',
+      { signal: AbortSignal.timeout(6000) }
+    );
+    if (!res.ok) return "";
+    const data = await res.json() as {
+      events?: Array<{
+        id: string;
+        name: string;
+        date: string;
+        status: { type: { description: string; completed: boolean } };
+        competitions: Array<{
+          venue?: { fullName?: string; address?: { city?: string } };
+          competitors: Array<{
+            homeAway: string;
+            team: { displayName: string; abbreviation: string };
+            score?: string;
+            records?: Array<{ summary: string; type: string }>;
+          }>;
+          odds?: Array<{ details: string; overUnder?: number }>;
+        }>;
+      }>;
+    };
+    if (!data.events?.length) return "";
 
-  type StandingsEntry = { name: string; w: number; d: number; l: number; gf: number; ga: number; pts: number; gp: number };
+    const lines = [`WORLD CUP 2026 — TODAY'S FIXTURES (ESPN live):`];
+    for (const ev of data.events) {
+      const comp    = ev.competitions[0];
+      const home    = comp.competitors.find(c => c.homeAway === 'home');
+      const away    = comp.competitors.find(c => c.homeAway === 'away');
+      if (!home || !away) continue;
 
-  const fetchLeague = async (route: string): Promise<StandingsEntry[]> => {
-    try {
-      const res = await fetch(
-        `https://site.api.espn.com/apis/v2/sports/soccer/${route}/standings`,
-        { signal: AbortSignal.timeout(5000) }
+      const status   = ev.status.type.description;
+      const time     = new Date(ev.date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'America/New_York' });
+      const city     = comp.venue?.address?.city?.toLowerCase() ?? '';
+      const venue    = comp.venue?.fullName ?? 'TBD';
+      const venueNote = Object.entries(WC_VENUE_NOTES).find(([k]) => city.includes(k))?.[1] ?? '';
+      const homeRec  = home.records?.find(r => r.type === 'total')?.summary ?? '';
+      const awayRec  = away.records?.find(r => r.type === 'total')?.summary ?? '';
+      const ou       = comp.odds?.[0]?.overUnder;
+
+      const scoreStr = ev.status.type.completed
+        ? `FINAL ${away.score}-${home.score}`
+        : status === 'Scheduled' ? `${time} ET` : status;
+
+      lines.push(
+        `  ${away.team.displayName} (${awayRec}) @ ${home.team.displayName} (${homeRec}) — ${scoreStr}` +
+        `\n    Venue: ${venue}${venueNote ? ` | ⚠️ ${venueNote}` : ''}` +
+        (ou ? `\n    Book Total: ${ou}` : '')
       );
-      if (!res.ok) return [];
-      const data = await res.json() as {
-        children?: Array<{ standings?: { entries?: Array<{ team: { displayName: string }; stats: Array<{ name: string; value: number }> }> } }>;
-      };
-      const results: StandingsEntry[] = [];
-      for (const group of data.children ?? []) {
-        for (const entry of group.standings?.entries ?? []) {
-          const st: Record<string, number> = {};
-          for (const s of entry.stats) st[s.name] = s.value;
-          results.push({
-            name: entry.team.displayName.toLowerCase(),
-            w: st['wins'] ?? 0, d: st['ties'] ?? 0, l: st['losses'] ?? 0,
-            gf: st['pointsFor'] ?? 0, ga: st['pointsAgainst'] ?? 0,
-            pts: st['points'] ?? 0, gp: st['gamesPlayed'] ?? 1,
-          });
-        }
-      }
-      return results;
-    } catch { return []; }
-  };
+    }
+    return lines.join('\n');
+  } catch { return ""; }
+}
 
-  // Fetch all leagues in parallel, flatten
-  const allEntries = (await Promise.all(Object.values(SOCCER_LEAGUE_ROUTES).map(fetchLeague))).flat();
-  if (allEntries.length === 0) return "";
+// ── World Cup 2026 advancement scenario tagger ───────────────────────────────
+// WC 2026: 3 teams per group, top 2 advance + 8 best 3rd-place qualify.
+// Tags each team's BETTING CONTEXT: must-win, can-draw, rotates, eliminated.
+function wcAdvancementTag(rank: number, pts: number, gp: number, maxRemainingPts: number, secondPts: number, thirdPts: number): string {
+  const remaining = 3 - gp;
+  const maxPts = pts + remaining * 3;
 
-  const findTeam = (query: string): StandingsEntry | undefined =>
-    allEntries.find(e => e.name.includes(query) || query.split(' ').some(w => w.length > 3 && e.name.includes(w)));
-
-  const teams = parts.map(findTeam).filter((t): t is StandingsEntry => t !== undefined);
-  if (teams.length === 0) return "";
-
-  const lines = ["SOCCER STANDINGS (ESPN — real data, cite exactly):"];
-  for (const t of teams) {
-    const ppg = t.gp > 0 ? (t.pts / t.gp).toFixed(2) : '?';
-    const gd  = t.gf - t.ga;
-    lines.push(`  ${t.name.toUpperCase()}: ${t.w}W-${t.d}D-${t.l}L | GF:${t.gf} GA:${t.ga} GD:${gd >= 0 ? '+' : ''}${gd} | PPG:${ppg}`);
+  if (gp === 3) {
+    // Final standings
+    if (rank === 1) return '✅ QUALIFIED 1st — watch rotation risk game 3';
+    if (rank === 2) return '✅ QUALIFIED 2nd — competitive performance expected';
+    return '🔴 ELIMINATED — expect rotation/youth players. Fade totals/ML hard.';
   }
-  return lines.join('\n');
+  // In-progress group
+  if (pts >= 6) return '✅ QUALIFIED (6pts) — ROTATION RISK. Fade team totals + ML.';
+  if (pts >= 4 && gp === 2) return '🟢 VERY LIKELY THROUGH — may rotate. Reduced motivation possible.';
+  if (maxPts < secondPts) return '🔴 ELIMINATED (cannot catch 2nd) — Fade. Rotation/youth risk.';
+  if (pts === 0 && gp === 2) return '🔴 MUST WIN game 3 to have any chance. All-in attack. Over lean.';
+  if (pts <= 1 && gp === 2) return '⚠️ MUST WIN game 3 — attacking play forced. Lean Over totals.';
+  if (pts >= 3 && gp === 2) return '⚡ CAN DRAW to advance — defensive setup possible. Under lean.';
+  if (remaining === 1 && pts === 0) return '🔴 MUST WIN — desperate. All-out attack. Big Over lean.';
+  return `⚡ ${remaining} game(s) left — ${pts}pts — result matters`;
+}
+
+async function fetchWorldCupStandings(): Promise<string> {
+  try {
+    const res = await fetch(
+      'https://site.api.espn.com/apis/v2/sports/soccer/fifa.world/standings',
+      { signal: AbortSignal.timeout(6000) }
+    );
+    if (!res.ok) return "";
+    const data = await res.json() as {
+      children?: Array<{
+        name?: string;
+        standings?: {
+          entries?: Array<{
+            team: { displayName: string };
+            stats: Array<{ name: string; value: number }>;
+          }>;
+        };
+      }>;
+    };
+
+    const lines = ['WORLD CUP 2026 GROUP STANDINGS + ADVANCEMENT SCENARIOS (ESPN — real data):'];
+    for (const group of data.children ?? []) {
+      if (!group.standings?.entries?.length) continue;
+      lines.push(`  ${group.name ?? 'Group'}:`);
+
+      // Parse all entries first so we can compute advancement tags
+      const entries = group.standings.entries.map(entry => {
+        const st: Record<string, number> = {};
+        for (const s of entry.stats) st[s.name] = s.value;
+        return {
+          name: entry.team.displayName,
+          gp:  st['gamesPlayed'] ?? 0,
+          pts: st['points']      ?? 0,
+          w:   st['wins']        ?? 0,
+          d:   st['ties']        ?? 0,
+          l:   st['losses']      ?? 0,
+          gf:  st['pointsFor']   ?? 0,
+          ga:  st['pointsAgainst'] ?? 0,
+        };
+      }).sort((a, b) => b.pts - a.pts || (b.gf - b.ga) - (a.gf - a.ga));
+
+      entries.forEach((e, i) => {
+        const gd = e.gf - e.ga;
+        const secondPts = entries[1]?.pts ?? 0;
+        const thirdPts  = entries[2]?.pts ?? 0;
+        const tag = wcAdvancementTag(i + 1, e.pts, e.gp, e.pts + (3 - e.gp) * 3, secondPts, thirdPts);
+        lines.push(
+          `    ${i + 1}. ${e.name}: ${e.pts}pts | ${e.w}W-${e.d}D-${e.l}L | GF:${e.gf} GA:${e.ga} GD:${gd >= 0 ? '+' : ''}${gd} (${e.gp}GP) — ${tag}`
+        );
+      });
+    }
+    return lines.length > 1 ? lines.join('\n') : "";
+  } catch { return ""; }
+}
+
+// Championship outrights → devigged title probabilities = market's team-strength
+// rating. One API call per 12h per sport (cached). Injected into every analysis.
+const OUTRIGHT_KEYS: Record<string, { key: string; label: string }> = {
+  SOCCER: { key: 'soccer_fifa_world_cup_winner',            label: 'WC 2026 CHAMPION' },
+  NBA:    { key: 'basketball_nba_championship_winner',      label: 'NBA CHAMPIONSHIP' },
+  MLB:    { key: 'baseball_mlb_world_series_winner',        label: 'WORLD SERIES' },
+  NFL:    { key: 'americanfootball_nfl_super_bowl_winner',  label: 'SUPER BOWL' },
+  NHL:    { key: 'icehockey_nhl_championship_winner',       label: 'STANLEY CUP' },
+};
+
+async function fetchChampionshipPrior(sport: string): Promise<string> {
+  const outright = OUTRIGHT_KEYS[sport];
+  if (!ODDS_API_KEY || !outright) return '';
+  const cacheKey = `outrights:${sport}`;
+  const cached = getCached(cacheKey);
+  if (cached) return cached as string;
+  try {
+    // Skip silently if the outright market isn't in season
+    const activeKeys = await getActiveSportKeys();
+    if (activeKeys && !activeKeys.has(outright.key)) return '';
+
+    const url = `${ODDS_API_BASE}/sports/${outright.key}/odds?apiKey=${ODDS_API_KEY}&regions=us&markets=outrights&oddsFormat=american`;
+    const res = await oddsFetch(url, 6000);
+    if (!res.ok) {
+      console.error(`Outrights fetch failed for ${sport}: HTTP ${res.status}`);
+      return '';
+    }
+    const events = await res.json() as OddsEvent[];
+    const outcomes = events[0]?.bookmakers?.[0]?.markets?.find(m => m.key === 'outrights')?.outcomes ?? [];
+    if (!outcomes.length) return '';
+
+    const withImplied = outcomes.map(o => ({ name: o.name, price: o.price, implied: impliedProb(o.price) }));
+    const overround = withImplied.reduce((s, o) => s + o.implied, 0);
+    const top = [...withImplied].sort((a, b) => b.implied - a.implied).slice(0, 14);
+    const rows = top.map((o, i) =>
+      `${i + 1}. ${o.name} — ${((o.implied / overround) * 100).toFixed(1)}% (${o.price > 0 ? '+' : ''}${o.price})`
+    );
+    const block =
+      `🏆 ${outright.label} STRENGTH PRIOR (devigged title probabilities — the market's team-strength rating):\n` +
+      `${rows.join('\n')}\n` +
+      `Use as a class prior: a big title-prob gap between two teams = real class gap in their match. ` +
+      `Context only — match odds still decide the pick. Teams outside this list are longshots.`;
+    setCache(cacheKey, block, 12 * 60 * 60 * 1000);
+    return block;
+  } catch (e: unknown) {
+    console.error(`Outrights error for ${sport}: ${e instanceof Error ? e.message : String(e)}`);
+    return '';
+  }
+}
+
+async function fetchSoccerContext(matchup: string): Promise<string> {
+  // Run both WC data calls in parallel (championship prior arrives via fetchLiveOdds)
+  const [fixtures, standings] = await Promise.all([
+    fetchWorldCupFixtures(),
+    fetchWorldCupStandings(),
+  ]);
+
+  const parts: string[] = [];
+  if (fixtures) parts.push(fixtures);
+  if (standings) parts.push(standings);
+
+  // Venue note inline if matchup string contains a city
+  if (matchup) {
+    const lower = matchup.toLowerCase();
+    for (const [city, note] of Object.entries(WC_VENUE_NOTES)) {
+      if (lower.includes(city)) {
+        parts.push(`⚠️ VENUE FACTOR: ${note}`);
+        break;
+      }
+    }
+  }
+
+  // ── BETTING STAKES GUIDE — injected into every WC analysis ───────────────
+  parts.push(`
+⚽ WC 2026 BETTING STAKES GUIDE — READ BEFORE PICKING:
+• Teams tagged ✅ QUALIFIED with games remaining: ROTATION RISK. Fade their ML, fade player totals — starters may rest.
+• Teams tagged 🔴 ELIMINATED: Do NOT bet them as favorites. Motivation gone. Backs/youth players enter.
+• Teams tagged ⚠️ MUST WIN: Expect attacking play, high line, pressing. Lean Over 2.5 goals, Over team total, BTTS Yes.
+• Teams tagged ⚡ CAN DRAW: May play defensively to secure a point. Lean Under 2.5, AH+0.5 on underdog.
+• SIMULTANEOUS final group games: No tactical manipulation possible — more honest prices.
+• Group game 1: VERIFIED roughly coin-flip on totals (~49-51% under 2.5 in recent WCs). No automatic under — price decides.
+• Group game 3 with rotation risk: FADE player props hard. Fade team total. Lean opponent.
+• Asian Handicap ALWAYS > 3-way ML. AH+0.5 = draw insurance. Eliminates draw deadweight.
+• CRITICAL: Do NOT cite xG, PPDA, or SPI — not in data. Use devigged implied probability from LIVE ODDS only.`);
+
+  parts.push(
+    '⚠️ xG/PPDA/SPI data NOT available from this feed. ' +
+    'Do NOT invent these numbers. Use implied probability math from the LIVE ODDS block instead. ' +
+    'Label any xG estimates as "est." and note they are approximated from line movement.'
+  );
+
+  return parts.join('\n\n');
 }
 
 // ── F1 Circuit Database (local — no API needed) ───────────────────────────────
@@ -1378,9 +1571,289 @@ function getF1CircuitContext(matchup: string): string {
   return "";
 }
 
-// ── Synthetic Sharp Signal (Pinnacle vs soft-book line gap) ───────────────────
-// Pinnacle is the sharpest book. When Pinnacle line diverges from DraftKings/FanDuel,
-// that gap reveals where the sharp money is pointing.
+// ── Tennis context — current tournament scoreboard + surface + seedings ───────
+// Determines active tournament from SPORT_KEYS order, fetches today's schedule.
+const TENNIS_TOURNAMENT_CONTEXT: Record<string, string> = {
+  'tennis_atp_french_open':  'ROLAND GARROS — CLAY | Topspin grinders dominant. Big servers fade. Slow bounce = long rallies. Fade flat hitters. Stamina is #1 edge.',
+  'tennis_wta_french_open':  'ROLAND GARROS WTA — CLAY | Baseline endurance dominates. Lefties/topspin players overperform. Fat favorites often backed too hard — target surface specialists vs ranked opponents.',
+  'tennis_atp_wimbledon':    'WIMBLEDON — GRASS | ⚡ SURFACE TRANSITION ALPHA WINDOW: Books still using clay Elo for 1-2 weeks into grass. Clay grinders OVERBET by public rounds 1-2 — FADE them. Big servers/grass specialists UNDERVALUED — BACK them before books adjust. 1st set → match winner 72% on grass (highest any surface). Serve hold rate ~90%. Under total games, Under total breaks. Net rushers and serve-volleyers peak value rounds 1-3. ACE count + match winner = strong positive correlation for big servers.',
+  'tennis_wta_wimbledon':    'WIMBLEDON WTA — GRASS | ⚡ SURFACE FLIP ALPHA: Aggressive flat-ball strikers > defensive counterpunchers. Books lag clay Elo into grass weeks 1-2. Early rounds = maximum inefficiency — back grass specialists at inflated price. Serve hold ~85% on WTA grass. Under total games standard lean. Last-minute scratch risk HIGH on grass (ankle/knee on slick courts) — confirm warmup before betting.',
+  'tennis_atp_us_open':      'US OPEN — HARD/OUTDOOR | Night sessions: ball travels faster under lights, lean big servers slightly. Loud crowd at night = volatile momentum shifts in live betting. Deuce-set tiebreak = coin flip, avoid set-betting.',
+  'tennis_wta_us_open':      'US OPEN WTA — HARD/OUTDOOR | Most neutral surface. Overall Elo most predictive. Night session atmosphere = mental edge for US players, factor in nationalism bias on ML.',
+  'tennis_atp_aus_open':     'AUSTRALIAN OPEN — HARD/OUTDOOR | Heat policy applies (extreme heat suspensions). Plexicushion medium-slow = longer rallies than US Open. January heat in Melbourne = fatigue factor, lean Under on total games in later sets.',
+  'tennis_wta_aus_open':     'AUSTRALIAN OPEN WTA — HARD/OUTDOOR | Heat rule applies. Long baseline rallies. Consistent ball-strikers over power players.',
+  // Transition week events — grass warm-up = maximum inefficiency
+  'tennis_atp_queens':       'QUEEN\'S CLUB (GRASS) — TRANSITION WEEK | ⚡ MAXIMUM INEFFICIENCY: Books still using clay Elo. First grass event = biggest mispricing window of the tennis calendar. Big servers at their peak value BEFORE books adjust. Back serve-dominant players aggressively. Under total games strong lean.',
+  'tennis_atp_halle':        'HALLE OPEN (GRASS) — TRANSITION WEEK | ⚡ MAXIMUM INEFFICIENCY: Mirror Queen\'s Club edge. Serve-dominant Germans/Europeans at home venue with crowd edge. Books still clay-lagged. Under total games, Under breaks, Big server ML.',
+};
+
+// National-team form profile returned by /predict-soccer (built from real
+// internationals by fetch_soccer_form.py). Used only as analysis context.
+interface SoccerTeamForm {
+  team: string; form_ppg: number; win_rate: number; gf: number; ga: number;
+  over25: number; btts: number; clean_sheet: number; failed_to_score: number;
+  streak: string; last5: string;
+}
+
+// WNBA form profile returned by /predict (built from real ESPN game results
+// by fetch_wnba_form.py). Used only as analysis context.
+interface WnbaTeamForm {
+  team: string; gp: number; win_rate: number; last10: string; avg_margin: number;
+  recent_margin: number; streak: string; rest_days: number | null; b2b: boolean;
+  home: string; road: string;
+}
+
+// Active tennis surface (Clay|Grass|Hard) from the priority tournament key.
+// Title-case so it matches the surface keys the edge_api model expects.
+function tennisActiveSurface(): 'Clay' | 'Grass' | 'Hard' {
+  const key = SPORT_KEYS.TENNIS?.[0] ?? '';
+  if (key.includes('french')) return 'Clay';
+  if (key.includes('wimbledon') || key.includes('queens') || key.includes('halle')) return 'Grass';
+  return 'Hard';
+}
+
+// ── ESPN tennis scoreboard shape ────────────────────────────────────────────
+// ESPN nests every match (major AND regular tour) under
+// events[].groupings[].competitions[] — there is NO top-level events[].competitions.
+// linescores[].winner is the authoritative "who won this set" flag (linescore
+// VALUE is games won in that set, not sets won — count winner:true entries).
+interface TennisLinescore { value: number; winner?: boolean; tiebreak?: number }
+interface TennisCompetitor {
+  athlete?: { displayName?: string; rank?: number };
+  winner?: boolean;
+  linescores?: TennisLinescore[];
+}
+interface TennisMatch {
+  date: string;
+  status: { type: { description: string; state: string; completed: boolean } };
+  format?: { regulation?: { periods?: number } };
+  competitors: TennisCompetitor[];
+}
+interface TennisTourEvent {
+  name: string;
+  groupings?: Array<{ grouping?: { slug?: string }; competitions: TennisMatch[] }>;
+}
+
+// Flattens to singles matches only — doubles/mixed pairs would poison both the
+// schedule listing and the live-score lookup (the model is singles-only, see
+// project memory on the doubles-vs-singles gap).
+function flattenTennisSinglesMatches(events: TennisTourEvent[]): TennisMatch[] {
+  const out: TennisMatch[] = [];
+  for (const ev of events) {
+    for (const g of ev.groupings ?? []) {
+      if (!g.grouping?.slug?.includes('singles')) continue;
+      out.push(...g.competitions);
+    }
+  }
+  return out;
+}
+
+function setsWon(c: TennisCompetitor): number {
+  return (c.linescores ?? []).filter(ls => ls.winner === true).length;
+}
+
+const tennisSurname = (name: string): string =>
+  name.trim().toLowerCase().split(/[\s,]+/).filter(Boolean).pop() ?? '';
+
+// Best-effort live set score for an in-progress match — used to re-price the
+// tennis model off the CURRENT score instead of only the pregame number
+// (scripts/tennis_live.py does the actual math). Returns null for anything
+// pre-match, finished, or that ESPN doesn't have live right now; the /predict
+// call falls back to a pure pregame price when this is null.
+async function fetchTennisLiveSetScore(
+  homeName: string, awayName: string
+): Promise<{ setsWonHome: number; setsWonAway: number; bestOf: number } | null> {
+  try {
+    const results = await Promise.allSettled([
+      fetch('https://site.api.espn.com/apis/site/v2/sports/tennis/atp/scoreboard', { signal: AbortSignal.timeout(4000) }),
+      fetch('https://site.api.espn.com/apis/site/v2/sports/tennis/wta/scoreboard', { signal: AbortSignal.timeout(4000) }),
+    ]);
+    const homeSurname = tennisSurname(homeName);
+    const awaySurname = tennisSurname(awayName);
+    if (!homeSurname || !awaySurname) return null;
+
+    for (const r of results) {
+      if (r.status !== 'fulfilled' || !r.value.ok) continue;
+      const data = await r.value.json() as { events?: TennisTourEvent[] };
+      const matches = flattenTennisSinglesMatches(data.events ?? []);
+      for (const m of matches) {
+        if (m.status.type.state !== 'in') continue; // only live matches carry a real-time score
+        const names = m.competitors.map(c => c.athlete?.displayName?.toLowerCase() ?? '');
+        const homeIdx = names.findIndex(n => n.includes(homeSurname));
+        const awayIdx = names.findIndex(n => n.includes(awaySurname));
+        if (homeIdx === -1 || awayIdx === -1 || homeIdx === awayIdx) continue;
+        const periods = m.format?.regulation?.periods;
+        return {
+          setsWonHome: setsWon(m.competitors[homeIdx]),
+          setsWonAway: setsWon(m.competitors[awayIdx]),
+          bestOf: periods === 5 ? 5 : 3,
+        };
+      }
+    }
+    return null;
+  } catch {
+    return null; // best-effort — pregame pricing still works without this
+  }
+}
+
+async function fetchTennisContext(matchup: string): Promise<string> {
+  // Identify active tournament — first key in TENNIS list is the current priority
+  const activeTournamentKey = SPORT_KEYS.TENNIS?.[0] ?? '';
+  const surfaceCtx = TENNIS_TOURNAMENT_CONTEXT[activeTournamentKey] ?? 'HARD COURT — standard conditions.';
+
+  const activeSurface = activeTournamentKey.includes('french') ? 'CLAY'
+    : (activeTournamentKey.includes('wimbledon') || activeTournamentKey.includes('queens') || activeTournamentKey.includes('halle')) ? 'GRASS'
+    : 'HARD';
+
+  // Determine if we are in the grass transition window (late May – mid July)
+  const nowMonth = new Date().getMonth() + 1; // 1-12
+  const isGrassWindow = nowMonth >= 6 && nowMonth <= 7;
+
+  const parts: string[] = [`TENNIS CONTEXT — ${surfaceCtx}`];
+
+  if (isGrassWindow) {
+    parts.push(`
+⚡ WIMBLEDON GRASS TRANSITION WINDOW ACTIVE (June–July)
+────────────────────────────────────────────────────
+KEY EDGES THIS WINDOW:
+• Weeks 1–2 of grass: books still running clay Elo. BIGGEST mispricing window of tennis year.
+• Big servers (Ace% >18, hold% >85) are UNDERVALUED by 3-8% vs clay-based lines.
+• Clay grinders are OVERVALUED by 4-10% — books slow to adjust. FADE them R1-R2.
+• Serve hold rate on grass ~90% (ATP) / ~85% (WTA) → lean UNDER total breaks.
+• First set winner covers match 72% on grass (highest any surface).
+• After Roland Garros: players who reached SF/F may carry fatigue — watch for early exits.
+• Transition-specialist players (Queen's Club / Halle winners) carry strong grass Elo not priced by books.
+• Net rushers and serve-volleyers peak value rounds 1-3. Books don't model these specialties.
+• INJURY RISK: Slick grass courts = ankle/knee risk. Confirm no pre-match withdrawal before betting.
+• R1-R2 upsets on grass run ~28% — higher than any other slam surface. Avoid heavy parlays on chalk.
+
+MARKET PRIORITY FOR GRASS:
+1. ML on grass specialists / big servers at +120 to +250 (best value)
+2. Game handicap -4.5 / +4.5 (serve hold reduces break variance)
+3. Under total games (fewer breaks = fewer game swings)
+4. Avoid BTTS / exact set scores (high variance on grass)
+5. Set betting: "Player to win in straight sets" overpriced for big servers in R1-R2
+
+CRITICAL: Never cite clay stats for a grass match. Do NOT use clay season head-to-head if surface was different.`);
+  }
+
+  // ATP/WTA rankings from ESPN (best-effort)
+  const rankingsMap: Record<string, number> = {};
+  try {
+    const rankRes = await fetch(
+      'https://site.api.espn.com/apis/site/v2/sports/tennis/atp/rankings',
+      { signal: AbortSignal.timeout(4000) }
+    );
+    if (rankRes.ok) {
+      const rankData = await rankRes.json() as {
+        rankings?: Array<{
+          athletes: Array<{ athlete?: { displayName?: string }; rankChange?: number; current?: number }>;
+        }>;
+      };
+      const rows = rankData.rankings?.[0]?.athletes ?? [];
+      for (const r of rows.slice(0, 50)) {
+        const name = r.athlete?.displayName;
+        const rank = r.current;
+        if (name && rank) rankingsMap[name.toLowerCase()] = rank;
+      }
+    }
+  } catch { /* rankings best-effort */ }
+
+  // Today's ATP + WTA schedule from ESPN
+  const scheduleResults = await Promise.allSettled([
+    fetch('https://site.api.espn.com/apis/site/v2/sports/tennis/atp/scoreboard', { signal: AbortSignal.timeout(5000) }),
+    fetch('https://site.api.espn.com/apis/site/v2/sports/tennis/wta/scoreboard', { signal: AbortSignal.timeout(5000) }),
+  ]);
+
+  const keywords = matchup
+    ? matchup.toLowerCase().split(/\s+vs?\.?\s+/i).map(t => t.trim())
+    : [];
+
+  for (const [idx, result] of scheduleResults.entries()) {
+    if (result.status !== 'fulfilled' || !result.value.ok) continue;
+    const data = await result.value.json() as { events?: TennisTourEvent[] };
+    const allMatches = flattenTennisSinglesMatches(data.events ?? []);
+    if (!allMatches.length) continue;
+
+    const tour = idx === 0 ? 'ATP' : 'WTA';
+    const relevant = keywords.length
+      ? allMatches.filter(m =>
+          m.competitors.some(c =>
+            keywords.some(kw => c.athlete?.displayName?.toLowerCase().includes(kw))
+          )
+        )
+      : allMatches.slice(0, 6);
+
+    if (!relevant.length) continue;
+    parts.push(`TODAY'S ${tour} SCHEDULE (ESPN):`);
+    for (const m of relevant.slice(0, 6)) {
+      const p1 = m.competitors[0];
+      const p2 = m.competitors[1];
+      const status = m.status.type.description;
+      const time = new Date(m.date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'America/New_York' });
+      const name1 = p1?.athlete?.displayName ?? '?';
+      const name2 = p2?.athlete?.displayName ?? '?';
+      const liveRank1 = rankingsMap[name1.toLowerCase()];
+      const rank1 = (p1?.athlete?.rank ?? liveRank1) ? `(#${p1?.athlete?.rank ?? liveRank1})` : '';
+      const rank2Num = p2?.athlete?.rank ?? rankingsMap[name2.toLowerCase()];
+      const rank2 = rank2Num ? `(#${rank2Num})` : '';
+      const isLive = m.status.type.state === 'in';
+      const scoreTag = isLive ? ` [LIVE ${setsWon(p1)}-${setsWon(p2)} sets]` : '';
+      parts.push(
+        `  ${name1} ${rank1} vs ${name2} ${rank2} — ${status === 'Scheduled' ? time + ' ET' : status}${scoreTag}`
+      );
+    }
+  }
+
+  // Surface-specific betting rules
+  const surfaceRules: Record<string, string> = {
+    CLAY: `SURFACE RULES (CLAY):
+• Fade -300+ favorites — upsets ~22% on clay.
+• Target +150 to +280 surface specialists (topspin, stamina).
+• Rolling load >15 sets = HIGH FATIGUE — fade that player.
+• Game handicap -4.5 > ML at -200 to -280 juice.
+• Lefties/heavy topspin players overperform vs ranking.`,
+    GRASS: `SURFACE RULES (GRASS):
+• Big-server ML value HIGHEST rounds 1-3 (books still clay Elo).
+• First set winner covers match 72% — highest any surface.
+• Serve hold ~90% ATP / ~85% WTA → Under total breaks.
+• Fade clay grinders R1–R2 — they WILL be overbet.
+• Net rushers + serve-volleyers peak value rounds 1-3.
+• Injury risk on slick grass: verify no withdrawal before bet.`,
+    HARD: `SURFACE RULES (HARD):
+• Overall Elo most predictive surface.
+• Night sessions favor power players (ball travels faster).
+• Live betting > pre-match ML — service break volatility creates momentum swings.
+• Avoid set-betting after first set — tiebreaks = near coin flips.`,
+  };
+  parts.push(surfaceRules[activeSurface]);
+
+  parts.push(`
+DATA INTEGRITY RULE — TENNIS:
+• Only cite rankings, scores, and schedules from the data blocks above.
+• Do NOT hallucinate career stats, grass records, or H2H results.
+• Surface switch = clay records irrelevant. Use grass-specific performance only.
+• If a player's surface stats are not in the data block, state "surface data not available" — do not estimate.`);
+
+  return parts.join('\n');
+}
+
+// ── Devig a market → fair (no-vig) probability per outcome ────────────────────
+// Normalizes the book's implied probs to sum to 1. Handles 2-way (ML/spread/total)
+// AND 3-way (soccer 1X2 — Win/Draw/Win). Comparing raw implied probs across books
+// is biased by their different vig levels (Pinnacle ~2-3% vs DK/FD ~5%) — always
+// devig first so a gap reflects a real price disagreement, not juice.
+function fairMarketProbs(outcomes: Array<{ name: string; price: number }>): Map<string, number> | null {
+  if (outcomes.length < 2) return null;
+  const raw = outcomes.map(o => impliedProb(o.price));
+  const sum = raw.reduce((a, b) => a + b, 0);
+  if (sum <= 0) return null;
+  return new Map(outcomes.map((o, i) => [o.name, raw[i] / sum]));
+}
+
+// ── Synthetic Sharp Signal (Pinnacle vs soft-book fair-price gap) ─────────────
+// Pinnacle is the sharpest book. When its DEVIGGED fair price diverges from
+// DraftKings/FanDuel, that gap reveals where the sharp money is pointing.
 async function fetchSharpSignals(sport: string): Promise<string> {
   if (!ODDS_API_KEY) return "";
   const sportKeys = SPORT_KEYS[sport.toUpperCase()] || [];
@@ -1388,7 +1861,7 @@ async function fetchSharpSignals(sport: string): Promise<string> {
   const signals: string[] = [];
   try {
     const url = `${ODDS_API_BASE}/sports/${sportKeys[0]}/odds?apiKey=${ODDS_API_KEY}&regions=us&markets=h2h,spreads&bookmakers=pinnacle,draftkings,fanduel&dateFormat=iso&oddsFormat=american`;
-    const res = await fetch(url, { signal: AbortSignal.timeout(6000) });
+    const res = await oddsFetch(url, 6000);
     if (!res.ok) return "";
     const events = await res.json() as OddsEvent[];
     for (const ev of events.slice(0, 6)) {
@@ -1398,58 +1871,129 @@ async function fetchSharpSignals(sport: string): Promise<string> {
       for (const market of pinnacle.markets) {
         const dkMarket = dk.markets.find(m => m.key === market.key);
         if (!dkMarket) continue;
+        const pinFair = fairMarketProbs(market.outcomes);
+        const dkFair = fairMarketProbs(dkMarket.outcomes);
+        if (!pinFair || !dkFair) continue;
         for (const pinOut of market.outcomes) {
-          const dkOut = dkMarket.outcomes.find(o => o.name === pinOut.name);
+          const dkOut = dkMarket.outcomes.find(o =>
+            o.name === pinOut.name && (market.key !== 'spreads' || o.point === pinOut.point));
           if (!dkOut) continue;
-          const diff = pinOut.price - dkOut.price;
-          // If Pinnacle is >8 pts BETTER than DK on one side = sharp action on that side
-          if (Math.abs(diff) >= 8) {
-            const direction = diff > 0 ? "SHARP BACKING" : "SHARP FADING";
-            signals.push(`${ev.away_team} @ ${ev.home_team} | ${market.key.toUpperCase()} ${pinOut.name}: Pinnacle ${pinOut.price > 0 ? "+" : ""}${pinOut.price} vs DK ${dkOut.price > 0 ? "+" : ""}${dkOut.price} → ${direction} ${pinOut.name} (${diff > 0 ? "+" : ""}${diff} pts gap)`);
+          const pf = pinFair.get(pinOut.name), df = dkFair.get(pinOut.name);
+          if (pf == null || df == null) continue;
+          // Devigged fair-prob gap (percentage points) — not biased by either
+          // book's juice. ≥3 pts = a real sharp/soft disagreement on the price.
+          const gap = Math.round((pf - df) * 1000) / 10;
+          if (Math.abs(gap) >= 3) {
+            const direction = gap > 0 ? "SHARP BACKING" : "SHARP FADING";
+            signals.push(`${ev.away_team} @ ${ev.home_team} | ${market.key.toUpperCase()} ${pinOut.name}: Pinnacle ${(pf * 100).toFixed(1)}% vs DK ${(df * 100).toFixed(1)}% fair → ${direction} ${pinOut.name} (${gap > 0 ? "+" : ""}${gap} pts)`);
           }
         }
       }
     }
   } catch { return ""; }
   if (signals.length === 0) return "";
-  return `SYNTHETIC SHARP SIGNALS (Pinnacle vs DraftKings gap ≥8pts):\n${signals.join("\n")}`;
+  return `SYNTHETIC SHARP SIGNALS (Pinnacle vs DraftKings, devigged fair-prob gap ≥3 pts):\n${signals.join("\n")}`;
 }
+
+// ── Bet structure label — pure math from American odds ────────────────────────
+// Heavy favorites = bad single value (juice destroys ROI). Good parlay legs.
+// Props / moderate lines = good both ways. Plus-money dogs = take standalone.
+function getBetStructure(oddsNum: number): string {
+  // No odds = no bet (PASS / fake game). Never label a non-pick as a good bet.
+  if (isNaN(oddsNum) || oddsNum === 0) return 'PASS';
+  if (oddsNum <= -220) return 'PARLAY ONLY';
+  if (oddsNum <= -165) return 'PARLAY PREFERRED';
+  if (oddsNum <  200)  return 'SINGLE + PARLAY';
+  return 'SINGLE';
+}
+
+// ── Anti-hallucination directive — injected into EVERY prompt ─────────────────
+const ANTI_HALLUCINATION_DIRECTIVE = `
+⛔ DATA INTEGRITY RULES — NON-NEGOTIABLE. VIOLATION = INVALID OUTPUT:
+1. ONLY cite numbers, stats, or trends that appear VERBATIM in the DATA BLOCKS provided.
+2. Do NOT generate win probabilities, confidence scores, or EV percentages — math engine handles those.
+3. Do NOT generate kelly stakes — math engine handles those.
+4. Do NOT cite ATS records, historical cover rates, or any percentage NOT in the data blocks.
+5. Do NOT cite player stat lines (PPG, RPG, APG, etc.) unless in the PLAYER STATS / ADVANCED STATS block.
+6. SOCCER: Do NOT cite xG, PPDA, or SPI — not available in any data block.
+7. If no data exists to support a claim → say "no data" or omit the claim entirely.
+8. Rationale must cite source: [ESPN NEWS], [INJURY REPORT], [SHARP SIGNALS], [LIVE ODDS], [SCOREBOARD], [PLAYER STATS], [ADVANCED STATS], [WEATHER], [NICHE DATA], [ESPN RECORDS].
+9. All picks must come from the LIVE ODDS block. If a game is not in that block, do not pick it.
+10. ESPN RECORDS block: cite W/L records, home/away splits, and recent form from the HISTORICAL DATA block as [ESPN RECORDS]. ONLY cite numbers that appear VERBATIM above — do NOT round, invent, or extrapolate.
+YOUR ONLY JOB: (1) Identify the best bet from the LIVE ODDS block. (2) Explain using SOURCED DATA ONLY.
+`.trim();
 
 // ── MYTHOS-STYLE IDENTITY BLOCK (Capybara tier adapted for sports betting) ────
 // Borrowed from FTGMYTHOS/mythos-router: structured IDENTITY + CORE DIRECTIVES
 // forces disciplined, non-hallucinated output — same principle as SWD for files
-const SHARP_IDENTITY = `\
-## IDENTITY
-Tier: SHARP (CTE LOCKS Engine — Specialized in Sports Betting & EV Analysis)
-Protocol: Strict Odds Discipline (SOD)
-Constraint: NEVER invent odds, lines, or player stats. If not in LIVE ODDS block → UNKNOWN.
-
-## CORE DIRECTIVES
-1. STRICT ODDS DISCIPLINE: Only use lines from the LIVE ODDS block. Never hallucinate prices.
-2. INJURY FIRST: If a key player is OUT/DOUBTFUL in the INJURY REPORT, reprice the line mentally before picking.
-3. SHARP SIGNALS: Pinnacle vs DK gap ≥8pts = real sharp money. Follow it.
-4. EV BEFORE NARRATIVE: If a bet feels right but EV is negative → FADE IT.
-5. CAVEMAN OUTPUT: "why" fields max 12 words. Cite numbers. No fluff.
-6. RAW JSON ONLY: Never wrap in markdown. No commentary outside the JSON.`;
+const SHARP_IDENTITY = () => getSharpIdentity(
+  MODEL_WEIGHTS.math_weight * 100,
+  MODEL_WEIGHTS.sentiment_weight * 100,
+  MODEL_WEIGHTS.dissonance_threshold
+);
 
 // ── Claude (Anthropic) helper with DeepSeek fallback (Mythos multi-provider) ──
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const DEEPSEEK_KEY = process.env.DEEPSEEK_API_KEY || "";
 
-async function ask(prompt: string, model = "claude-sonnet-4-6"): Promise<string> {
+// Free fallback: Gemini's free tier keeps ANALYZE/PROPHET alive when the
+// Anthropic account runs out of credits (400 "credit balance too low") or is
+// rate-limited — no paid dependency, same prompt, same anti-hallucination rules.
+const GEMINI_KEY = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || "";
+const genai = GEMINI_KEY ? new GoogleGenAI({ apiKey: GEMINI_KEY }) : null;
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash"; // free-tier model
+
+async function askGemini(prompt: string): Promise<string> {
+  if (!genai) throw new Error("GEMINI_NOT_CONFIGURED");
+  const resp = await genai.models.generateContent({ model: GEMINI_MODEL, contents: prompt });
+  const text = resp.text ?? "";
+  return text.replace(/```json|```/g, "").trim();
+}
+
+async function ask(prompt: string, model = "claude-fable-5"): Promise<string> {
   try {
-    const msg = await anthropic.messages.create({
+    const msg = await anthropic.beta.messages.create({
       model,
-      max_tokens: 4096,
+      // Fable 5 thinking is always on and counts against max_tokens — 4096
+      // left verdicts truncated mid-thought; 16000 gives the reasoning room.
+      max_tokens: 16000,
+      // Server-side fallback: a safety-classifier decline re-runs the same
+      // request on Opus 4.8 inside the same call instead of killing the pick.
+      betas: ["server-side-fallback-2026-06-01"],
+      fallbacks: [{ model: "claude-opus-4-8" }],
       messages: [{ role: "user", content: prompt }],
     });
-    const text = msg.content[0].type === "text" ? msg.content[0].text : "";
+    // Whole fallback chain refused → treat like a provider failure below.
+    if (msg.stop_reason === "refusal") throw new Error("CLAUDE_REFUSAL");
+    // Always-on thinking puts a thinking block first — never read content[0].
+    const textBlock = msg.content.find(b => b.type === "text");
+    const text = textBlock?.type === "text" ? textBlock.text : "";
     return text.replace(/```json|```/g, "").trim();
   } catch (err: unknown) {
-    // Mythos-router style fallback: if Anthropic 429/500 → try DeepSeek V3
-    const isRateLimit = err instanceof Error && (err.message.includes("529") || err.message.includes("overloaded") || err.message.includes("rate_limit"));
-    if (isRateLimit && DEEPSEEK_KEY) {
-      console.log("Anthropic overloaded → falling back to DeepSeek V3");
+    // Fallback triggers: overload (429/5xx), safety refusal, OR the account
+    // being out of credits / payment required (400 "credit balance too low", 402).
+    const isOutOfCredits =
+      err instanceof Anthropic.APIError &&
+      (Number(err.status) === 402 ||
+        (Number(err.status) === 400 && /credit balance|too low|billing|payment/i.test(err.message)));
+    const shouldFallback =
+      isOutOfCredits ||
+      (err instanceof Anthropic.APIError && [429, 500, 529].includes(Number(err.status))) ||
+      (err instanceof Error && err.message === "CLAUDE_REFUSAL");
+
+    // Free tier first — keeps the app running at zero cost.
+    if (shouldFallback && genai) {
+      console.warn(`Anthropic unavailable (${isOutOfCredits ? "out of credits" : "overloaded"}) → falling back to free Gemini (${GEMINI_MODEL})`);
+      try {
+        return await askGemini(prompt);
+      } catch (gemErr: unknown) {
+        console.error("Gemini fallback failed:", gemErr instanceof Error ? gemErr.message : gemErr);
+        // fall through to DeepSeek if configured
+      }
+    }
+
+    if (shouldFallback && DEEPSEEK_KEY) {
+      console.warn("→ falling back to DeepSeek V3");
       const res = await fetch("https://api.deepseek.com/v1/chat/completions", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${DEEPSEEK_KEY}` },
@@ -1481,21 +2025,32 @@ app.get('/api/prophet', async (req: express.Request, res: express.Response) => {
   try {
     const today = todayStr();
     const sport = ((req.query.sport as string) || '').toUpperCase();
-    const sportFilter = sport ? `Focus ONLY on ${sport} games.` : 'Scan all sports (NBA, MLB, tennis, soccer, UFC — whatever is on tonight).';
+    const sportFilter = sport ? `Focus ONLY on ${sport} games.` : 'Scan all sports (NBA, WNBA, MLB, NHL, SOCCER/World Cup, TENNIS, NFL — whatever is on tonight).';
     const prophetSport = sport || 'ALL';
-    const heuristics = getBettingHeuristics(prophetSport === 'ALL' ? 'NBA' : prophetSport);
-    const activeSport = prophetSport === 'ALL' ? 'NBA' : prophetSport;
-    const [liveOdds, scheduleCtx, injuryData, newsData, pitcherData, advancedData, sharpSignals] = await Promise.all([
+    const isAll = prophetSport === 'ALL';
+    // June 2026: World Cup is primary for ALL mode. SOCCER heuristics + context loaded first.
+    const activeSport = isAll ? 'SOCCER' : prophetSport;
+    const heuristics = getBettingHeuristics(isAll ? 'SOCCER' : prophetSport);
+    const [liveOdds, scheduleCtx, injuryData, newsData, advancedData, sharpSignals, sportCtx, supplementalCtx, historicalCtx] = await Promise.all([
       fetchLiveOdds(activeSport),
-      activeSport === 'NBA' ? fetchNBAScheduleToday() : fetchESPNScoreboard(activeSport),
+      activeSport === 'NBA' || activeSport === 'WNBA' ? fetchNBAScheduleToday() : fetchESPNScoreboard(activeSport),
       fetchInjuries(activeSport),
       fetchESPNNews(activeSport),
-      activeSport === 'MLB' ? fetchMLBPitcherStats('') : Promise.resolve(''),
-      activeSport === 'NBA' ? fetchNBALeagueSnapshot() : Promise.resolve(''),
+      activeSport === 'NBA' || activeSport === 'WNBA' ? fetchNBALeagueSnapshot() : Promise.resolve(''),
       fetchSharpSignals(activeSport),
+      activeSport === 'SOCCER'  ? fetchSoccerContext('')
+        : activeSport === 'TENNIS' ? fetchTennisContext('')
+        : Promise.resolve(''),
+      // ALL mode: also pull NBA Finals odds + Tennis context as supplemental cross-sport data
+      isAll
+        ? Promise.all([fetchLiveOdds('NBA'), fetchLiveOdds('TENNIS'), fetchTennisContext('')])
+            .then(r => r.filter(Boolean).join('\n\n'))
+        : Promise.resolve(''),
+      // Google Search: real historical stats, ATS trends, H2H records from credible sources
+      fetchHistoricalContext(activeSport, ''),
     ]);
     const prompt = `
-${SHARP_IDENTITY}
+${SHARP_IDENTITY()}
 
 You are a sharp professional sports bettor with 15 years of experience beating closing lines.
 Today is ${today} (Eastern Time). ${sportFilter}
@@ -1504,43 +2059,47 @@ ${heuristics}
 
 ${liveOdds}
 ${scheduleCtx ? `\n${scheduleCtx}` : ''}
+${sportCtx ? `\n${sportCtx}` : ''}
+${supplementalCtx ? `\nCROSS-SPORT SUPPLEMENTAL (NBA Finals + Tennis):\n${supplementalCtx}` : ''}
 ${advancedData ? `\n${advancedData}` : ''}
 ${injuryData ? `\nINJURY REPORT (ESPN — LIVE):\n${injuryData}` : ''}
-${pitcherData ? `\nREAL PITCHER STATS (MLB API — cite exact numbers):\n${pitcherData}` : ''}
 ${newsData ? `\nLATEST NEWS (ESPN):\n${newsData}` : ''}
 ${sharpSignals ? `\n${sharpSignals}` : ''}
+${historicalCtx ? `\n${historicalCtx}` : ''}
 
 IMPORTANT: Lines above are REAL from Pinnacle/DraftKings — use exact lines, do not invent.
 Injuries are LIVE from ESPN — apply Next Man Up logic immediately.
-Sharp signals = Pinnacle vs DK gap ≥8pts — follow the sharp side.
+Sharp signals = Pinnacle vs DK devigged fair-prob gap ≥3 pts — follow the sharp side.
 News = live ESPN headlines — questionable/out tags reprice the market.
-⚠️ win_prob cap: never output >0.82. EV: label "est." — no true prob model exists here.
+Historical data is REAL from ESPN official API — only cite numbers that appear verbatim in the ESPN RECORDS block.
 
-Your job: apply the above heuristics to identify TODAY's single highest-conviction bet from the real games listed. Run the SHARP CHECK before selecting.
+${ANTI_HALLUCINATION_DIRECTIVE}
 
-Reasoning process (think step by step, don't include in output):
-1. Identify 2-3 real games tonight
-2. For each: check CLV opportunity, derivative market value, injury context, contrarian signals
-3. Score by: EV gap, correlation quality, juice filter, fragility
-4. Select the top one — flag [HIGH-RISK] if applicable, provide PIVOT if needed
-5. Output JSON only
+Your job: identify TODAY's single highest-conviction bet from the LIVE ODDS block above.
 
-Output ONLY a raw JSON object — no markdown, no commentary:
+Internal reasoning (do not include in output):
+1. Scan LIVE ODDS block — only consider games listed there
+2. Check INJURY REPORT — any key player out or doubtful that moves the line?
+3. Check SHARP SIGNALS — Pinnacle vs DK gap? Follow sharp direction.
+4. Check NEWS block — any lineup news or questionable tags?
+5. Select top pick — pick the bet where data blocks provide the clearest edge signal
+6. Write logic_bullets using ONLY facts from the data blocks above
+
+Output ONLY a raw JSON object — no markdown:
 {
-  "selection": "e.g. Anthony Edwards Over 28.5 Points or Celtics -4.5",
-  "odds": "American odds string e.g. -115 or +130",
-  "game_name": "Team A vs Team B — League — Tonight TIME ET",
-  "value_gap": "+X.X% EV",
+  "selection": "Exact bet from LIVE ODDS — e.g. Celtics -4.5 or Brunson Over 25.5 Points",
+  "odds": "American odds exactly as in LIVE ODDS block — e.g. -115 or +130",
+  "game_name": "Team A vs Team B — League — TIME ET",
   "recommended_unit": "1 UNIT or 2 UNITS",
   "logic_bullets": [
-    "Specific stat or trend #1 with numbers",
-    "Specific matchup or situational edge #2 with numbers",
-    "Sharp money / line movement or injury context #3"
+    "[SOURCE]: specific fact from a data block — e.g. [INJURY REPORT]: Gobert questionable",
+    "[SOURCE]: second sourced fact — e.g. [SHARP SIGNALS]: Pinnacle -118 vs DK -110",
+    "[SOURCE]: third sourced fact — e.g. [LIVE ODDS]: line moved from -3 to -4.5 since open"
   ],
-  "correlated_insight": "If bet wins, correlated SGP leg or same-game parlay suggestion"
+  "correlated_insight": "One other bet from the SAME game in LIVE ODDS that correlates — or null"
 }
 
-Be specific. Use real player names, real team names, real stats. No filler phrases.
+Real player names, real team names. Every logic bullet must have a [SOURCE] tag.
 `.trim();
 
     const prophetCacheKey = `prophet:${prophetSport}`;
@@ -1552,8 +2111,91 @@ Be specific. Use real player names, real team names, real stats. No filler phras
     if (!parsed || typeof parsed !== 'object') {
       return res.status(500).json({ error: "PARSE_FAILED", message: "AI returned invalid data. Try again." });
     }
-    const result = { ...parsed, hash: "Σ_" + Math.random().toString(36).substring(7).toUpperCase() };
-    setCache(prophetCacheKey, result);
+
+    // ── Math-computed fields (ground truth — not AI) ──────────────────────────
+    let implied_prob: number | null = null;
+    let payout_100: number | null = null;
+    let edge_pct: number | null = null;
+    let devigged_prob: number | null = null;
+    let predictedProb: number | null = null;  // model win prob (0-1) — for calibration
+    try {
+      const oddsStr = String(parsed.odds ?? '');
+      const oddsNum = parseInt(oddsStr.replace(/[^\d-]/g, ''), 10);
+      if (!isNaN(oddsNum) && oddsNum !== 0) {
+        implied_prob = Math.round(impliedProb(oddsNum) * 1000) / 10;        // e.g. 52.4
+        // Vig removal: divide by typical 2-way overround (~4.5% at -110/-110).
+        // Fair prob is LOWER than implied — book juice inflates implied prob.
+        const TYPICAL_OVERROUND = 1.045;
+        devigged_prob = Math.round((implied_prob / TYPICAL_OVERROUND) * 10) / 10;
+        const dec = toDecimal(oddsNum);
+        payout_100 = Math.round((dec - 1) * 100 * 10) / 10;                 // net profit on $100 bet
+        const aiWinProb = typeof parsed.win_prob === 'number' ? parsed.win_prob as number : null;
+        if (aiWinProb !== null) {
+          predictedProb = aiWinProb;
+          edge_pct = Math.round((aiWinProb - implied_prob / 100) * 1000) / 10;
+        }
+      }
+    } catch { /* non-blocking */ }
+
+    // QUALITY RULE — winning first, value second. If the market says the OTHER
+    // side wins ≥55% of the time, the pick is a contrarian longshot: flag it loud.
+    const UPSET_ALERT_THRESHOLD = 45; // pick's fair prob below this = other side ≥55%
+    const upset_alert = devigged_prob != null && devigged_prob < UPSET_ALERT_THRESHOLD
+      ? `⚠️ MARKET DISAGREES — this pick wins ~${devigged_prob}% of the time; the other side is the real favorite (~${Math.round((100 - devigged_prob) * 10) / 10}%). Quality rule: favor likely winners. Treat as longshot stake or skip.`
+      : null;
+
+    // Auto-lint — gate the pick's own price band before it ships (rule 11 enforcement).
+    // Single-leg lint flags chalk (<1.50) / lottery (5.0+) the model shouldn't fire on.
+    let lint: unknown = null;
+    try {
+      const lintOdds = parseInt(String(parsed.odds ?? '').replace(/[^\d-]/g, ''), 10);
+      if (Number.isFinite(lintOdds) && Math.abs(lintOdds) >= 100) {
+        lint = await lintLegs([{ decimal: toDecimal(lintOdds), selection: String(parsed.selection ?? 'pick') }]);
+      }
+    } catch { /* non-blocking */ }
+
+    const result = {
+      ...parsed,
+      implied_prob,    // math only — never hallucinated
+      devigged_prob,   // math only — never hallucinated
+      payout_100,      // math only — never hallucinated
+      edge_pct,        // math only — never hallucinated
+      upset_alert,     // math only — fires when pick's fair win prob < 45%
+      lint,            // pre-bet gate verdict on this pick's price band
+      hash: "Σ_" + Math.random().toString(36).substring(7).toUpperCase(),
+    };
+    // 60 min — slates don't reprice fast; halves repeat LLM cost without pick staleness
+    setCache(prophetCacheKey, result, 60 * 60 * 1000);
+
+    // Auto-log to the ledger — record builds itself, no cherry-picking possible.
+    // Skip if the same selection is already pending today (dedupe across cache misses).
+    try {
+      const selection = String(parsed.selection ?? '');
+      const oddsNum = parseInt(String(parsed.odds ?? '').replace(/[^\d-]/g, ''), 10);
+      if (selection && Number.isFinite(oddsNum) && Math.abs(oddsNum) >= 100) {
+        const ledger = await loadLedger();
+        const today_ = new Date().toISOString().slice(0, 10);
+        const dupe = ledger.some(p =>
+          p.result === 'PENDING' && p.selection === selection && p.created_at.startsWith(today_)
+        );
+        if (!dupe) {
+          const gameName = String(parsed.game_name ?? '');
+          await addPick({
+            sport: prophetSport,
+            game: gameName,
+            selection,
+            odds: oddsNum,
+            stake_units: /2\s*UNIT/i.test(String(parsed.recommended_unit ?? '')) ? 2 : 1,
+            source: 'prophet',
+            predicted_prob: predictedProb,  // model win prob — for calibration
+            ...parseSelectionIdentity(selection, gameName),  // structured identity for CLV capture
+          });
+        }
+      }
+    } catch (e: unknown) {
+      console.error('Prophet auto-log failed:', e instanceof Error ? e.message : String(e));
+    }
+
     res.json(result);
 
   } catch (e: unknown) {
@@ -1577,61 +2219,458 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
     const league = (sport || 'NBA').toUpperCase();
     const swarmHeuristics = getBettingHeuristics(league);
 
-    const [swarmLiveOdds, swarmNbaCtx, swarmInjuries, swarmSharp] = await Promise.all([
+    const getMatchupCtx = () => {
+      if (league === 'NBA' || league === 'WNBA') return fetchNBAPlayerStats(matchup);
+      if (league === 'NHL') return fetchNHLTeamStats(matchup);
+      if (league === 'MLB') return fetchMLBPitcherStats(matchup);
+      if (league === 'SOCCER') return fetchSoccerContext(matchup);
+      if (league === 'TENNIS') return fetchTennisContext(matchup);
+      return fetchESPNScoreboard(league);
+    };
+    const getNBAMetrics = () =>
+      (league === 'NBA' || league === 'WNBA') ? fetchNBAAdvancedStats(matchup) : Promise.resolve('');
+
+    const [swarmLiveOdds, swarmNbaCtx, swarmInjuries, swarmSharp, swarmAdvanced] = await Promise.all([
       fetchLiveOdds(league, matchup),
-      league === 'NBA' || league === 'WNBA' ? fetchNBAPlayerStats(matchup) : fetchESPNScoreboard(league),
+      getMatchupCtx(),
       fetchInjuries(league, matchup),
       fetchSharpSignals(league),
+      getNBAMetrics(),
     ]);
+
+    // ── Harvard Math Layer + Quant Model (XGBoost) ───────────────────────────
+    const oddsGame = parseOddsForTeams(swarmLiveOdds);
+
+    // Real injury input: count OUT/Doubtful players from the live ESPN report.
+    // Crude but sourced — replaces the hardcoded 0 that made the math layer blind.
+    const injuryOuts = (swarmInjuries.match(/\b(Out|Doubtful)\b/gi) ?? []).length;
+    const injuryImpact = Math.min(20, injuryOuts * 4);
+
+    let swarmHarvardCtx = '';
+    try {
+      // The Harvard engine is a 2-way win-prob stack. For soccer (3-way) a
+      // home-vs-away devig ignores the draw and inflates the prior, so its edge
+      // is fiction — the SOCCER MARKET BOARD owns 3-way pricing instead.
+      if (league === 'SOCCER') throw new Error('soccer handled by market board, not 2-way Harvard');
+      const hImp = oddsGame?.homeOdds != null ? impliedProb(oddsGame.homeOdds) : 0;
+      const aImp = oddsGame?.awayOdds != null ? impliedProb(oddsGame.awayOdds) : 0;
+      const dv = hImp && aImp ? devig(hImp, aImp) : null;
+      if (!dv) throw new Error('no parseable 2-way odds for Harvard prior');
+      const hRes = await fetch('http://127.0.0.1:8002/harvard/master', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prior_prob: dv.p1,
+          market_spread: oddsGame?.spread ?? 0,
+          decimal_odds: oddsGame?.homeOdds != null ? toDecimal(oddsGame.homeOdds) : 1.909,
+          bankroll: 100, injury_impact: injuryImpact, rest_advantage: 0, distraction_index: 0,
+          line_move_known: false, line_move_toward_team: false,
+          wins_in_sample: 10, losses_in_sample: 10,
+          observed_wins: 10, observed_losses: 10,
+        }),
+        signal: AbortSignal.timeout(4000),
+      });
+      if (hRes.ok) {
+        const h = await hRes.json() as { stacked_final_prob: number; edge_pct: number; verdict: string; edge_significant: boolean };
+        swarmHarvardCtx = `\n━━ HARVARD ENGINE: Final prob ${(h.stacked_final_prob * 100).toFixed(1)}% | Edge ${h.edge_pct > 0 ? '+' : ''}${h.edge_pct}% | ${h.verdict} | Significant: ${h.edge_significant ? 'YES' : 'NO'}`;
+      }
+    } catch (e: unknown) {
+      // Non-blocking, but NEVER silent — a dead math layer hid for days this way
+      console.error('Harvard engine unavailable:', e instanceof Error ? e.message : String(e));
+    }
+
+    // ── Quant Model — trained XGBoost margin predictor (port 8001) ──────────
+    // Presented with its own error bars: cover prob recomputed with model MAE
+    // folded into the variance so a stale model can't masquerade as certainty.
+    let quantCtx = '';
+    try {
+      // SOCCER is owned by the market board (/predict-soccer) — the XGBoost margin
+      // model runs on club-based ratings that are unreliable for WC national teams
+      // (Haiti rated above Brazil), so feeding its goal-margin here only misleads.
+      if (oddsGame && league === 'TENNIS') {
+        // Tennis uses the logistic WIN-PROB model (points + surface + comparative
+        // profile: H2H / form / psych / clutch), NOT the XGBoost margin path. Pass
+        // the match surface so surface affinity AND surface-aware H2H engage.
+        const surface = tennisActiveSurface();
+        // Live/in-play: if the match is on court right now, re-price off the
+        // actual set score (tennis_live.py) instead of only the pregame number.
+        const liveScore = await fetchTennisLiveSetScore(oddsGame.home, oddsGame.away);
+        // Feed the Kronos line-history store off odds already fetched for this
+        // real pick — builds real line-movement data with zero extra API calls.
+        recordTennisLineSnapshot(oddsGame.home, oddsGame.away, oddsGame.homeOdds);
+        const tRes = await fetch('http://127.0.0.1:8001/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sport: 'TENNIS',
+            home_team: oddsGame.home, away_team: oddsGame.away,
+            spread: oddsGame.spread, home_odds: oddsGame.homeOdds, away_odds: oddsGame.awayOdds,
+            surface,
+            ...(liveScore ? {
+              sets_won_home: liveScore.setsWonHome,
+              sets_won_away: liveScore.setsWonAway,
+              best_of: liveScore.bestOf,
+            } : {}),
+          }),
+          signal: AbortSignal.timeout(4000),
+        });
+        if (tRes.ok) {
+          const t = await tRes.json() as {
+            home_cover_prob: number | null; away_cover_prob: number | null;
+            home_true_prob: number | null; bet_signal?: string;
+            pick_quality?: string; quality_note?: string;
+            method?: string; surface?: string; profile?: Record<string, number>;
+            live?: { sets_won_home: number; sets_won_away: number; pregame_match_prob_home: number };
+          };
+          if (t.bet_signal === 'NO_DATA' || t.home_cover_prob == null) {
+            quantCtx = `━━ TENNIS MODEL: no ranking data for one/both players — model offers NO opinion. Rely on market devig + surface heuristics only.`;
+          } else {
+            const winH = (t.home_cover_prob * 100).toFixed(1);
+            const winA = ((t.away_cover_prob ?? 1 - t.home_cover_prob) * 100).toFixed(1);
+            const mktH = t.home_true_prob != null ? (t.home_true_prob * 100).toFixed(1) : '?';
+            const edgeH = t.home_true_prob != null ? (t.home_cover_prob - t.home_true_prob) * 100 : null;
+            const p = t.profile ?? {};
+            const dim = (label: string, v?: number) =>
+              v == null ? '' : ` ${label} ${v > 0 ? '+' : ''}${v}`;
+            const profileLine = [
+              dim('H2H', p.h2h), dim('form', p.form_diff), dim('psych', p.psych_diff),
+              dim('clutch', p.clutch_diff), dim('streak', p.streak_diff),
+            ].filter(Boolean).join(' |') || ' (no profile data for this pair)';
+            const liveLine = t.live
+              ? `🔴 LIVE — set score ${t.live.sets_won_home}-${t.live.sets_won_away} (${oddsGame.home}-${oddsGame.away}). ` +
+                `Pregame was ${(t.live.pregame_match_prob_home * 100).toFixed(1)}% ${oddsGame.home} — the ${winH}% above is the RE-PRICED live number, use it over the pregame line.\n`
+              : '';
+            quantCtx =
+              `━━ TENNIS WIN-PROB MODEL (${t.method ?? 'logistic'} on ${t.surface ?? surface}):\n` +
+              liveLine +
+              `Model: ${oddsGame.home} ${winH}% vs ${oddsGame.away} ${winA}% | Market devig: ${oddsGame.home} ${mktH}%` +
+              (edgeH != null ? ` | Edge ${edgeH > 0 ? '+' : ''}${edgeH.toFixed(1)}pp ${oddsGame.home}` : '') + `\n` +
+              `Comparative profile (home − away, surface-aware):${profileLine}\n` +
+              `Signal: ${t.bet_signal ?? 'NO_EDGE'}. Tennis is noisy — trust the bet_signal over raw EV%.\n` +
+              `Pick quality: ${t.pick_quality ?? 'n/a'} — ${t.quality_note ?? ''} (LOCK=anchor · PICK=parlay-ok · LEAN=single/small, NEVER a parlay anchor)\n` +
+              `⚠️ OVERRIDE: confirmed day-of data (injury, withdrawal, conditions) beats this historical model. If a player is hurt or just withdrew, ignore the model edge.`;
+          }
+        }
+      } else if (oddsGame && league !== 'SOCCER') {
+        const qRes = await fetch('http://127.0.0.1:8001/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sport: league,
+            home_team: oddsGame.home, away_team: oddsGame.away,
+            spread: oddsGame.spread, home_odds: oddsGame.homeOdds, away_odds: oddsGame.awayOdds,
+            neutral: league === 'SOCCER', // WC 2026 — neutral venues
+          }),
+          signal: AbortSignal.timeout(4000),
+        });
+        if (qRes.ok) {
+          const q = await qRes.json() as {
+            predicted_margin: number | null; model_edge: number | null; model_mae: number | null;
+            trained_on: number; bet_signal?: string;
+            pick_quality?: string; quality_note?: string;
+            home_ratings?: { net_rtg?: number }; away_ratings?: { net_rtg?: number };
+            profile?: { home?: WnbaTeamForm; away?: WnbaTeamForm;
+              h2h?: { n: number; w: number; l: number; margin: number; last: string } } | null;
+          };
+          // Real WNBA form/rest/H2H block (built from ESPN results). B2B fatigue
+          // is the biggest WNBA edge — surface it loudly.
+          const wp = q.profile;
+          const wForm = (t?: WnbaTeamForm): string | null =>
+            t ? `${t.team}: ${t.win_rate ? (t.win_rate*100).toFixed(0) : '?'}% (L10 ${t.last10}), margin ${t.avg_margin >= 0 ? '+' : ''}${t.avg_margin}, ${t.streak}, ${t.b2b ? '⚠️ ON B2B (tired legs)' : `${t.rest_days ?? '?'}d rest`}, home ${t.home}/road ${t.road}` : null;
+          const wnbaBlock = wp ? '\n━━ WNBA FORM & REST (real ESPN results): ' + [
+            wForm(wp.home), wForm(wp.away),
+            wp.h2h ? `H2H ${wp.h2h.w}-${wp.h2h.l} (avg margin ${wp.h2h.margin >= 0 ? '+' : ''}${wp.h2h.margin}, last ${wp.h2h.last})` : null,
+          ].filter(Boolean).join(' | ') : '';
+          if (q.bet_signal === 'NO_DATA' || q.model_edge == null || q.model_mae == null) {
+            // Model honestly refuses on unknown teams (e.g. WC national squads)
+            quantCtx = `━━ QUANT MODEL: no training data for these teams — model offers NO opinion. Rely on market devig + heuristics only.${wnbaBlock}`;
+          } else {
+            const GAME_SIGMA: Record<string, number> = { NBA: 11.5, WNBA: 9.5, NFL: 13.5, MLB: 3.0, TENNIS: 30.0, SOCCER: 2.0 };
+            const sigma = GAME_SIGMA[league] ?? 11.5;
+            // MAE → σ_model ≈ 1.25·MAE (normal); combine with game variance
+            const sigmaTotal = Math.sqrt(sigma ** 2 + (1.25 * q.model_mae) ** 2);
+            const coverProb = normalCDF(q.model_edge / sigmaTotal);
+            quantCtx =
+              `━━ QUANT MODEL (XGBoost margin predictor — trained on ${q.trained_on} games, MAE ${q.model_mae} pts, ratings frozen at last training):\n` +
+              `Predicted margin: ${oddsGame.home} by ${q.predicted_margin} | Market spread: ${oddsGame.spread}\n` +
+              `Cover prob WITH model error included: ${(coverProb * 100).toFixed(1)}% ${oddsGame.home} | NetRtg: ${q.home_ratings?.net_rtg ?? '?'} vs ${q.away_ratings?.net_rtg ?? '?'}\n` +
+              `⚠️ Model edge ${q.model_edge} pts vs market. If >7 pts, treat as STALE-DATA WARNING — the market knows something the training data doesn't. Weigh market over model on big disagreements.\n` +
+              `Pick quality: ${q.pick_quality ?? 'n/a'} — ${q.quality_note ?? ''} (LOCK=anchor · PICK=parlay-ok · LEAN=single/small, NEVER a parlay anchor)${wnbaBlock}`;
+          }
+        }
+      }
+    } catch (e: unknown) {
+      console.error('Quant model (8001) unavailable:', e instanceof Error ? e.message : String(e));
+    }
+
+    // ── Market boards — draw-insured soccer (DC/DNB) + UFC method/rounds ──────
+    // SOCCER: market-devigged 1X2 → recommends Double Chance / Draw No Bet / ML.
+    //         Authoritative for WC national teams (rating model is unreliable).
+    // UFC:    devig ML → routes juiced favourites to value derivatives.
+    let marketsCtx = '';
+    // Structured Poisson board — same numbers as the prompt text, but as DATA so
+    // the Game Breakdown page can chart the model distribution (soccer only).
+    let soccerPoisson: PoissonBoard | null = null;
+    // Math grade on the model's primary pick (mirrors edge_api.pick_quality:
+    // LOCK >=70%, PICK >=62%, LEAN below). A LEAN must be visibly flagged in the
+    // UI — a 55% play presented without a warning reads like a lock and isn't.
+    let soccerGrade: PickGrade | null = null;
+    try {
+      // Odds feed missing this match must NOT kill the board — edge_api falls
+      // back to the data-fit Poisson regression ratings when no 1X2 is sent,
+      // so the simulation still renders instead of "no data to simulate".
+      const socTeams = String(matchup).split(/\s+vs\.?\s+/i).map(t => t.trim()).filter(Boolean);
+      const socHome = oddsGame?.home ?? socTeams[0];
+      const socAway = oddsGame?.away ?? socTeams[1];
+      const socHasOdds = oddsGame != null && oddsGame.drawOdds != null;
+      if (league === 'SOCCER' && socHome && socAway) {
+        const sRes = await fetch('http://127.0.0.1:8001/predict-soccer', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            home_team: socHome, away_team: socAway, neutral: true,
+            ...(socHasOdds
+              ? { home_odds: oddsGame.homeOdds, draw_odds: oddsGame.drawOdds, away_odds: oddsGame.awayOdds }
+              : {}),
+          }),
+          signal: AbortSignal.timeout(4000),
+        });
+        if (sRes.ok) {
+          const s = await sRes.json() as {
+            markets?: {
+              totals?: Record<string, { over: number; under: number }>;
+              btts?: { yes: number; no: number };
+              expected_total_goals?: number;
+              correct_score?: { score: string; prob: number; fair_decimal_odds: number | null }[];
+            };
+            simulation?: {
+              n_sims: number;
+              top_simulated_scores?: { score: string; prob: number }[];
+              simulated_1x2?: { home?: SimHitRate; draw?: SimHitRate; away?: SimHitRate };
+              simulated_btts_yes?: SimHitRate;
+              simulated_over_2_5?: SimHitRate;
+              correlated?: Record<string, SimHitRate>;
+            };
+            data_fit_ratings?: {
+              home?: TeamFitRating | null; away?: TeamFitRating | null;
+              league?: string; note?: string;
+            } | null;
+            lambda_source?: string;
+            upset_risk?: { level: string; non_win_prob: number; favourite_true_win: number;
+              reasons: string[]; protective_action: string };
+            chaos?: { grade: string; draw_score: number; favourite: string;
+              side: string | null; market: string | null; value_ok: boolean | null; evidence: string[] };
+            market_recommendation?: { primary_pick?: { market: string; side: string; model_prob: number };
+              win_draw_lose?: { win: number; draw: number; lose: number };
+              double_chance?: { fav_or_draw: number }; draw_no_bet?: { fav: number }; favorite?: string };
+            profile?: {
+              home?: SoccerTeamForm; away?: SoccerTeamForm;
+              h2h?: { n: number; w: number; d: number; l: number; gf: number; ga: number; last: string };
+            };
+          };
+          const mr = s.market_recommendation;
+          if (mr?.primary_pick && mr.win_draw_lose) {
+            const w = mr.win_draw_lose;
+            // Totals/BTTS are now market-CALIBRATED (Poisson fit to the devigged
+            // 1X2), so they're consistent with the sharp price — safe for SGP legs.
+            const ou = s.markets?.totals?.['2.5'];
+            const ouSide = ou ? (ou.over >= ou.under ? `Over 2.5 ${(ou.over*100).toFixed(0)}%` : `Under 2.5 ${(ou.under*100).toFixed(0)}%`) : 'n/a';
+            const btts = s.markets?.btts;
+            const bttsSide = btts ? (btts.yes >= btts.no ? `BTTS Yes ${(btts.yes*100).toFixed(0)}%` : `BTTS No ${(btts.no*100).toFixed(0)}%`) : 'n/a';
+            const xg = s.markets?.expected_total_goals;
+            // Correct score + Monte Carlo — grounds the "simulation" swarm section in the
+            // real Poisson/Dixon-Coles matrix instead of the LLM guessing a score line.
+            const allScores = s.markets?.correct_score ?? s.simulation?.top_simulated_scores ?? [];
+            const topScores = allScores.slice(0, 3);
+            soccerPoisson = {
+              favorite: mr.favorite,
+              win_draw_lose: w,
+              correct_score: allScores.slice(0, 8).map(c => ({ score: c.score, prob: c.prob })),
+              expected_total_goals: s.markets?.expected_total_goals,
+              totals: s.markets?.totals,
+              btts: s.markets?.btts,
+              lambda_source: s.lambda_source,
+              n_sims: s.simulation?.n_sims,
+              sim_1x2: s.simulation?.simulated_1x2,
+              sim_over_2_5: s.simulation?.simulated_over_2_5,
+              sim_btts_yes: s.simulation?.simulated_btts_yes,
+              correlated: s.simulation?.correlated,
+              ratings: s.data_fit_ratings ? {
+                home: s.data_fit_ratings.home, away: s.data_fit_ratings.away,
+                home_team: socHome, away_team: socAway,
+                league: s.data_fit_ratings.league,
+              } : undefined,
+            };
+            const gp = mr.primary_pick.model_prob;
+            soccerGrade = {
+              grade: gp >= 0.70 ? 'LOCK' : gp >= 0.62 ? 'PICK' : 'LEAN',
+              win_prob: gp,
+              market: mr.primary_pick.market,
+              side: mr.primary_pick.side,
+            };
+            const correctScoreLine = topScores.length
+              ? `\nCorrect score (Poisson+DixonColes, n=${s.simulation?.n_sims ?? 'closed-form'}): ` +
+                topScores.map(c => `${c.score} ${(c.prob*100).toFixed(0)}%`).join(' | ')
+              : '';
+            // Upset / public-trap flag — only surface when ELEVATED or HIGH.
+            const up = s.upset_risk;
+            const upsetLine = (up && up.level !== 'LOW')
+              ? `\n⚠️ UPSET RISK ${up.level} — favourite wins only ${(up.favourite_true_win*100).toFixed(0)}%, does NOT win ${(up.non_win_prob*100).toFixed(0)}%. ${up.reasons.join(' ')} → ${up.protective_action}`
+              : '';
+            // Chaos engine read — only surface when a graded flag fires (LITE/FULL).
+            const ch = s.chaos;
+            const chaosLine = (ch && ch.grade !== 'NONE')
+              ? `\n🌀 CHAOS ${ch.grade} — back ${ch.side} [${ch.market}], draw_score ${ch.draw_score}${ch.value_ok === true ? ' (clears value)' : ch.value_ok === false ? ' (fails value gate)' : ''}. ${(ch.evidence || []).slice(-2).join(' ')}`
+              : '';
+            // Real form + H2H (recency × competitiveness weighted internationals).
+            const pf = s.profile;
+            const teamForm = (t?: SoccerTeamForm): string | null =>
+              t ? `${t.team}: ${t.form_ppg}ppg, GF ${t.gf}/GA ${t.ga}, O2.5 ${(t.over25*100).toFixed(0)}%, BTTS ${(t.btts*100).toFixed(0)}%, CS ${(t.clean_sheet*100).toFixed(0)}%, ${t.streak} [${t.last5}]` : null;
+            const profLines = pf ? [
+              teamForm(pf.home), teamForm(pf.away),
+              pf.h2h ? `H2H ${pf.home?.team ?? 'home'} ${pf.h2h.w}-${pf.h2h.d}-${pf.h2h.l} (avg ${pf.h2h.gf}-${pf.h2h.ga}, last ${pf.h2h.last})` : null,
+            ].filter(Boolean) : [];
+            const profileBlock = profLines.length
+              ? `\n━━ FORM & H2H (real internationals): ${profLines.join(' | ')}\n⚠️ Confirmed day-of data (injuries, lineups, rest days, weather) overrides this historical form. Group-stage rest gap (a team with fewer days since last match) = fatigue edge — check the real schedule.`
+              : '';
+            marketsCtx =
+              `━━ SOCCER MARKET BOARD (devigged 3-way + market-calibrated Poisson — sharp, draw priced):\n` +
+              `Fav ${mr.favorite}: win ${(w.win*100).toFixed(0)}% / draw ${(w.draw*100).toFixed(0)}% / lose ${(w.lose*100).toFixed(0)}%\n` +
+              `Double Chance (gana o empata) ${((mr.double_chance?.fav_or_draw ?? 0)*100).toFixed(0)}% | Draw No Bet (apuesta sin empate) ${((mr.draw_no_bet?.fav ?? 0)*100).toFixed(0)}%\n` +
+              `Totals/BTTS (market-calibrated${xg != null ? `, xGoals ${xg.toFixed(2)}` : ''}): ${ouSide} | ${bttsSide}` +
+              correctScoreLine + `\n` +
+              `>>> DRAW-INSURED PICK: ${mr.primary_pick.side} [${mr.primary_pick.market}] @ ${(mr.primary_pick.model_prob*100).toFixed(0)}%` +
+              upsetLine + chaosLine + profileBlock + `\n` +
+              `Rule: straight Win only when the price isn't heavy chalk (≳ -250) AND beats its devig; if "better but not dominant", insure the draw with DC/DNB when DC pays ~1.40-2.50; if the fav is HEAVY chalk (e.g. -511) the ML/DC have NO value — take the handicap (-1.5/-2.5), team total or correct score, else PASS. Build correlated SGP from calibrated legs (e.g. fav handicap + Over + BTTS that agree).`;
+          }
+        }
+      } else if (league === 'UFC' && oddsGame) {
+        const uRes = await fetch('http://127.0.0.1:8001/predict-ufc', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fighter_a: oddsGame.away, fighter_b: oddsGame.home,
+            ml_a: oddsGame.awayOdds, ml_b: oddsGame.homeOdds,
+          }),
+          signal: AbortSignal.timeout(4000),
+        });
+        if (uRes.ok) {
+          const u = await uRes.json() as {
+            markets?: { moneyline?: Record<string, number>; distance?: { not_distance: number } };
+            recommendation?: { primary_pick?: { market: string; side: string; model_prob: number; ev_pct?: number };
+              method_lean?: { side: string; model_prob: number } };
+            used_empirical_priors?: boolean;
+          };
+          const rp = u.recommendation?.primary_pick;
+          if (rp) {
+            const ml = u.markets?.moneyline ?? {};
+            const mlStr = Object.entries(ml).map(([k, v]) => `${k} ${(v*100).toFixed(0)}%`).join(' / ');
+            marketsCtx =
+              `━━ UFC MARKET BOARD (devig ML${u.used_empirical_priors ? ' + empirical finish priors — FLAG as league-average, not fighter stats' : ''}):\n` +
+              `Moneyline: ${mlStr} | Ends inside distance: ${((u.markets?.distance?.not_distance ?? 0)*100).toFixed(0)}%\n` +
+              `>>> PICK: ${rp.side} [${rp.market}] @ ${(rp.model_prob*100).toFixed(0)}%${rp.ev_pct != null ? ` (EV ${rp.ev_pct}%)` : ''}\n` +
+              `Most likely method: ${u.recommendation?.method_lean?.side} ${((u.recommendation?.method_lean?.model_prob ?? 0)*100).toFixed(0)}%`;
+          }
+        }
+      }
+    } catch (e: unknown) {
+      console.error('Market board (8001) unavailable:', e instanceof Error ? e.message : String(e));
+    }
+
     const liveOddsBlock = [
-      swarmLiveOdds ? `\nLIVE ODDS FOR THIS GAME (use these exact lines):\n${swarmLiveOdds}` : '',
-      swarmNbaCtx ? `\n${swarmNbaCtx}` : '',
-      swarmInjuries ? `\n${swarmInjuries}` : '',
-      swarmSharp ? `\n${swarmSharp}` : '',
+      swarmLiveOdds   ? `\nLIVE ODDS FOR THIS GAME (use these exact lines):\n${swarmLiveOdds}` : '',
+      swarmNbaCtx     ? `\n${swarmNbaCtx}` : '',
+      swarmAdvanced   ? `\n${swarmAdvanced}` : '',
+      swarmInjuries   ? `\n${swarmInjuries}` : '',
+      swarmSharp      ? `\n${swarmSharp}` : '',
+      swarmHarvardCtx ? `\n${swarmHarvardCtx}` : '',
+      quantCtx        ? `\n${quantCtx}` : '',
+      marketsCtx      ? `\n${marketsCtx}` : '',
     ].filter(Boolean).join('\n');
 
-    // Single unified prompt — all 3 perspectives in 1 call (Fix #2: 3 calls → 1)
+    // ── Sport playbook — money discipline injected per league ────────────────
+    const VALUE_DISCIPLINE = `
+💰 MONEY DISCIPLINE (this is how we actually profit — non-negotiable):
+- RANK every candidate by WIN PROBABILITY FIRST, then by value (edge vs price). Favor likely winners over longshots.
+- 🎯 SCAN EVERY MARKET — DO NOT DEFAULT TO THE MONEYLINE. From the LIVE ODDS / MARKET BOARD, enumerate EVERY available market: moneyline (win), draw / double chance / draw-no-bet, spread / handicap (incl. alternates), totals over/under (incl. alternates), team totals, BTTS, sport-specific derivatives (UFC method/round/distance), AND the sport's niche PLAYER PROPS (the heuristics list the menu per sport). From the stats + simulation, estimate EACH market's true win probability, compare it to that market's own devigged implied price, and pick the SINGLE market with the highest win-prob that also clears the value gate. The winner is whatever TYPE wins this comparison — an Over/Under, handicap, double chance, or a player prop can absolutely beat the straight win (e.g. "Brazil ML is a coin-flip but Over 2.5 wins 64% of sims → take Over 2.5"). PROP GUARD: only float a prop when REAL player stats are in context; if the prop line isn't on the live board, mark it a "lean", never invent the number. Name why the chosen market beat the runner-up.
+- A bet only has VALUE when its win probability BEATS the devigged implied price. If a market board / devig prob is shown, the pick prob must exceed the implied prob of its odds. If it does not, it is NOT a bet — say "no value, pass".
+- 🚫 NO-VALUE CHALK IS NOT A PICK — the best single bet can NEVER be a no-value pick. A heavy favourite priced ≈ -250 (1.40 decimal) or shorter — e.g. -511 — lays a fortune for pennies: even at its true win %, the price returns ~no edge and one slip is a disaster. Do NOT headline it, and do NOT "insure" it with a Double Chance / DNB priced under ~1.40 (that's also no value). On heavy chalk the value lives in the DERIVATIVE the favourite wins BY — handicap (-1.5 / -2.5), team/alt total, correct score, winning margin, or UFC method/round. Take the derivative that clears the value gate; if none does, PASS.
+- Prefer the SHARPEST market for the read: in soccer that means the draw-insured market when the favourite is "better but not dominant".
+- 🚫 DISCIPLINED PASS: if NO market clears the value gate, set primary_single to "PASS — no value" and primary_odds to "". A skipped bad spot protects the bankroll and the record. Do NOT manufacture a pick to fill the slot. (SGP/TikTok may still describe the lean, but the headline pick is PASS.)
+- 🔒 BOARD-CONSISTENCY LOCK: when a MARKET BOARD block is present (soccer/UFC), the final primary_single MUST follow its ">>> recommended pick" unless value_check cites a SPECIFIC sourced reason (injury/lineup/weather/line-move) to deviate. The board is the sharp market — do not drift to a softer narrative pick. VALUE EXCEPTION: the board sets the SIDE/read, but the VALUE GATE sets which MARKET you actually bet. If the board's pick is no-value heavy chalk (ML or DC priced shorter than ~ -250 / 1.40 dec), do NOT bet it — express the SAME side through a market with value (the favourite's handicap -1.5 / -2.5, team total, correct score), or PASS. Never headline a no-value pick just to match the board.
+- 📉 LINE-VALUE / CLV: beating the CLOSING line is the long-run proof of edge. Favor the side the devigged SHARP SIGNAL + line movement agree with. If the number has already moved THROUGH your price (you'd be chasing steam past the value), the edge is gone — PASS or pivot to the derivative that still prices value. Never bet into a line that moved AGAINST your read without a sourced reason (that is the market telling you something you missed).`.trim();
+
+    const soccerPlaybook = `
+⚽ WORLD CUP MONEY PLAYBOOK (follow exactly):
+- If a "SOCCER MARKET BOARD" block is present, it is the devigged sharp market with the draw PRICED. Its ">>> DRAW-INSURED PICK" is your default primary_single. Override only with a sourced reason.
+- 🚨 UPSET / PUBLIC-TRAP AWARENESS: a "name" favourite the public hammers (Canada, Brazil-Morocco, Panama-Ghana) is NOT the lock it feels like — trust the market's true win %, never the narrative. If the board shows "UPSET RISK ELEVATED/HIGH": say so plainly in the report, do NOT headline the straight Win, default to Double Chance / Draw No Bet or the +value dog, and cut favourite-Win stake to 0.5u. The public being 80% on a side is a fade signal, not a confirmation.
+- Draw is a real outcome — a "team to WIN" pick LOSES on a draw (the Canada lesson). But DOUBLE CHANCE / DNB are VALUE tools, not safety blankets: only worth it when the price sits in a real band (~1.40–2.50 decimal / -250 to +150) AND beats its devig — i.e. the favourite is "better but not dominant" (~ -110 to -250) and the dog can genuinely win or draw. When the favourite is HEAVY chalk (shorter than ~ -250, e.g. -511), DC pays ~1.05 = NO value → do NOT headline ML or DC; price the favourite's HANDICAP (-1.5 / -2.5), team total Over, or correct score for the value, else PASS. Straight ML is a candidate only when it isn't crushing juice AND beats its devigged price.
+- Build the SGP from CORRELATED legs that tell ONE story: e.g. [Fav Double Chance] + [Under 2.5 if defensive / Over 2.5 if both must-win] + [team total or corners]. Never pair BTTS Yes with Under 2.5.
+- Totals & corners are live money: cite the model/market totals lean when shown. Corners are a HEURISTIC proxy — present as "lean", not a hard stat.
+- Apply ADVANCEMENT TAGS (qualified=fade, eliminated=fade, must-win=Over/BTTS, can-draw=Under/DNB).`.trim();
+
+    const ufcPlaybook = `
+🥊 UFC MONEY PLAYBOOK (follow exactly):
+- If a "UFC MARKET BOARD" block is present, use its devigged ML + ">>> PICK". Heavy favourites (≥66%) are ML-juiced — route to the better-paying derivative the fighter actually wins by (does-not-go-distance / by-KO for finishers, by-decision for grinders).
+- Method/round/distance numbers from empirical priors must be FLAGGED as league-average, never stated as the fighter's real stat.
+- SGP from correlated legs: [Fav ML] + [Under rounds] + [Fav by KO] for a finisher; or [goes the distance] + [Over rounds] for two durable fighters. Never pair "by KO" with "goes the distance".`.trim();
+
+    const sportPlaybook =
+      league === 'SOCCER' ? `${VALUE_DISCIPLINE}\n\n${soccerPlaybook}`
+      : league === 'UFC'  ? `${VALUE_DISCIPLINE}\n\n${ufcPlaybook}`
+      : VALUE_DISCIPLINE;
+
+    // Single unified prompt — all 3 perspectives + TikTok content in 1 call
     const unifiedPrompt = `
-You are a sharp sports betting analyst team. Today is ${today}.
+You are CAVEMAN LOCKS — a sharp, disciplined sports betting brain that also writes viral short-form scripts. Today is ${today}.
 Analyze: ${matchup} (${league})
 ${liveOddsBlock}
 ${swarmHeuristics}
 
-Produce THREE perspectives on this matchup in one response, then synthesize a verdict.
+${sportPlaybook}
 
-Output ONLY this raw JSON (no markdown, no commentary):
+Produce THREE analytical perspectives, synthesize ONE disciplined verdict, then write TikTok content for that verdict.
+
+${ANTI_HALLUCINATION_DIRECTIVE}
+
+Output ONLY this raw JSON (no markdown):
 {
   "quant": {
-    "primary_single": "Best bet from pure line-value angle (specific line + odds)",
-    "value_gap": "+X.X% EV",
-    "confidence_score": 0.75,
+    "primary_single": "Best market by win-prob from the STATS scan across ALL types (ML / draw / DC / DNB / spread / total / team total / BTTS / derivative / player prop — not auto-ML) — description only, no odds here",
+    "primary_odds": "-110",
     "sgp_blueprint": [
-      { "label": "SGP Leg 1", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "" },
-      { "label": "SGP Leg 2", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "" },
-      { "label": "SGP Leg 3", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "" }
+      { "label": "SGP Leg 1", "value": "Pick from LIVE ODDS + odds", "rationale": "[SOURCE]: 1 sourced fact", "espn_id": "" },
+      { "label": "SGP Leg 2", "value": "Pick from LIVE ODDS + odds", "rationale": "[SOURCE]: 1 sourced fact", "espn_id": "" },
+      { "label": "SGP Leg 3", "value": "Pick from LIVE ODDS + odds", "rationale": "[SOURCE]: 1 sourced fact", "espn_id": "" }
     ],
-    "omni_report": "2 sentence quant view — cite specific numbers and CLV signal."
+    "omni_report": "2 sentences citing SOURCED DATA ONLY. Format: [SOURCE] fact. [SOURCE] fact."
   },
   "simulation": {
-    "primary_single": "Best bet from game-script/situational angle (specific line + odds)",
-    "value_gap": "+X.X% EV",
-    "confidence_score": 0.70,
+    "primary_single": "Simulate the game's score / outcome distribution, then pick the market with the highest win-prob across that distribution (totals & spreads read straight from the sim) — description only",
+    "primary_odds": "-180",
     "sgp_blueprint": [
-      { "label": "SGP Leg 1", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "" },
-      { "label": "SGP Leg 2", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "" },
-      { "label": "SGP Leg 3", "value": "Pick + odds", "rationale": "1 sentence why", "espn_id": "" }
+      { "label": "SGP Leg 1", "value": "Pick from LIVE ODDS + odds", "rationale": "[SOURCE]: 1 sourced fact", "espn_id": "" },
+      { "label": "SGP Leg 2", "value": "Pick from LIVE ODDS + odds", "rationale": "[SOURCE]: 1 sourced fact", "espn_id": "" },
+      { "label": "SGP Leg 3", "value": "Pick from LIVE ODDS + odds", "rationale": "[SOURCE]: 1 sourced fact", "espn_id": "" }
     ],
-    "omni_report": "2 sentence situational view — cite game script, fatigue, or contrarian signal."
+    "omni_report": "2 sentences: cite the real simulated distribution (soccer: the 'Correct score (Poisson+DixonColes)' line in the MARKET BOARD above — use those exact score lines, never invent one; other sports: the quant model's predicted margin/total) and the market it makes most probable. SOURCED DATA ONLY."
   },
-  "primary_single": "FINAL best bet after synthesizing both views (specific line + odds)",
-  "value_gap": "Final EV estimate",
-  "confidence_score": 0.80,
+  "primary_single": "FINAL best pick — the SINGLE highest win-prob +value market after scanning ALL market types (ML / draw / double chance / DNB / spread / total over-under / team total / BTTS / derivative / player prop). Pick whatever TYPE wins, not the moneyline by default. It MUST have value — a no-value heavy favourite (e.g. -511 ML, or DC on it) can NEVER be the pick; on chalk take the favourite's handicap/total/correct-score, on a live dog take its +value side, else PASS. If nothing clears the value gate, write exactly 'PASS — no value'. Must match the MARKET BOARD pick unless value_check justifies a deviation.",
+  "primary_odds": "-115 (or \"\" if PASS)",
+  "value_check": "State the pick's win prob vs the devigged implied prob of its odds, AND why this market beat the next-best market type. If prob does NOT beat implied → write 'NO VALUE — PASS'.",
   "sgp_blueprint": [
-    { "label": "SGP Leg 1", "value": "Pick + odds", "rationale": "Why this leg", "espn_id": "" },
-    { "label": "SGP Leg 2", "value": "Pick + odds", "rationale": "Why this leg", "espn_id": "" },
-    { "label": "SGP Leg 3", "value": "Pick + odds", "rationale": "Why this leg", "espn_id": "" }
+    { "label": "SGP Leg 1", "value": "Pick from LIVE ODDS + odds", "rationale": "[SOURCE]: sourced fact", "espn_id": "" },
+    { "label": "SGP Leg 2", "value": "Correlated leg + odds", "rationale": "[SOURCE]: sourced fact", "espn_id": "" },
+    { "label": "SGP Leg 3", "value": "Correlated leg + odds", "rationale": "[SOURCE]: sourced fact", "espn_id": "" }
   ],
-  "omni_report": "Final 2-sentence verdict. State conviction and single biggest risk. Flag [HIGH-RISK] if any heuristic violated."
+  "omni_report": "Final verdict citing SOURCED DATA ONLY. State the pick, the sourced evidence, the value vs price, and the single biggest risk. [HIGH-RISK] if any heuristic violated.",
+  "tiktok": {
+    "hook": "Scroll-stopping first line, under 8 words, no emoji. Names the pick or the edge.",
+    "script": "15-25 sec spoken script in short CAVEMAN voice (punchy, confident, save words). State the pick, ONE sourced reason, and WHY this market (e.g. 'team better but draw scary — we take win-or-draw'). End with a CTA to follow. SOURCED facts only — no invented stats.",
+    "on_screen_text": ["3-4 short caption bars for overlay, each under 6 words"],
+    "caption": "1-line post caption with the pick and 1 emoji max.",
+    "hashtags": ["#CavemanLocks", "#WorldCup2026", "3-5 relevant tags total"]
+  }
 }
 `.trim();
 
@@ -1646,12 +2685,39 @@ Output ONLY this raw JSON (no markdown, no commentary):
       return res.status(500).json({ error: "PARSE_FAILED", message: "AI returned invalid data. Try again." });
     }
 
+    // ── Math-computed fields — no AI ─────────────────────────────────────────
+    // implied_prob = the bet's own break-even probability from its American odds.
+    // (Previously this ADDED a flat +0.02, which inflates every pick ~2-4 pts and
+    //  is the wrong direction for vig — removing vig LOWERS a side's probability.)
+    const impliedPct = (oddsNum: number): number | null =>
+      isNaN(oddsNum) || oddsNum === 0 ? null : Math.round(impliedProb(oddsNum) * 1000) / 10;
+
+    const computePickMath = (agent: Record<string, unknown>) => {
+      const oddsStr = String(agent.primary_odds ?? '');
+      const oddsNum = parseInt(oddsStr.replace(/[^-\d]/g, ''), 10);
+      return {
+        ...agent,
+        bet_structure: getBetStructure(oddsNum),
+        implied_prob: impliedPct(oddsNum),   // break-even probability — math only
+      };
+    };
+
+    const quantRaw  = unified.quant      as Record<string, unknown> | undefined;
+    const simRaw    = unified.simulation as Record<string, unknown> | undefined;
+    const topOddsStr = String((unified.primary_odds as string | undefined) ?? '');
+    const topOddsNum = parseInt(topOddsStr.replace(/[^-\d]/g, ''), 10);
+    const topImp = impliedPct(topOddsNum);
+
     const exec = unified as SwarmAgentData;
     const payload: SwarmFinalPayload = {
       ...exec,
+      bet_structure: getBetStructure(topOddsNum),
+      implied_prob: topImp ?? undefined,
+      poisson: soccerPoisson ?? undefined,
+      pick_grade: soccerGrade ?? undefined,
       swarm_report: {
-        quant: unified.quant as SwarmAgentData,
-        simulation: unified.simulation as SwarmAgentData,
+        quant:      quantRaw ? computePickMath(quantRaw) as SwarmAgentData : undefined,
+        simulation: simRaw   ? computePickMath(simRaw)  as SwarmAgentData : undefined,
         audit_verdict: exec.omni_report || "CONVERGENCE_LOCKED"
       },
       hash: "Σ_" + Math.random().toString(36).substring(7).toUpperCase(),
@@ -1669,58 +2735,135 @@ Output ONLY this raw JSON (no markdown, no commentary):
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ALPHA SHEETS — today's top props cheat sheet
+// ALPHA SHEETS — today's top props cheat sheet (with live odds context)
 // ─────────────────────────────────────────────────────────────────────────────
-export async function generateAlphaSheet(sport: string): Promise<AlphaSheetContainer> {
+const ALPHA_TEAM_LOGO_HINT: Record<string, string> = {
+  NBA:    'NBA team abbreviation e.g. GSW, LAL, BOS',
+  WNBA:   'WNBA team abbreviation e.g. LV, NY, CHI',
+  NFL:    'NFL team abbreviation e.g. KC, SF, DAL',
+  MLB:    'MLB team abbreviation e.g. NYY, LAD, HOU',
+  SOCCER: 'Country or club shortname e.g. ARG, BRA, ENG, RMA',
+  TENNIS: 'Player country code e.g. ESP, SRB, USA',
+  F1:     'Constructor abbreviation e.g. RBR, FER, MER',
+};
+
+const ALPHA_PROP_HINT: Record<string, string> = {
+  NBA:    'points, rebounds, assists, 3PM, steals, blocks',
+  WNBA:   'points, rebounds, assists, 3PM, steals',
+  NFL:    'passing yards, rushing yards, receiving yards, TDs, receptions',
+  MLB:    'strikeouts, hits, total bases, RBIs, runs, home runs, walks',
+  SOCCER: 'shots on target, goals, assists, cards, corners (team), BTTS',
+  TENNIS: 'games won, sets won, aces, total games over/under, break points',
+  F1:     'race finish position, teammate H2H, podium yes/no, fastest lap, classified finisher',
+};
+
+async function generateAlphaSheet(sport: string): Promise<AlphaSheetContainer> {
   const today = todayStr();
   const s = sport.toUpperCase();
+  const cacheKey = `alpha:${s}:${today}`;
+  const cached = getCached(cacheKey);
+  if (cached) return cached as AlphaSheetContainer;
+
+  // Fetch live context so AI uses real lines, not invented ones
+  const [liveOdds, injuries, nicheData] = await Promise.all([
+    fetchLiveOdds(s),
+    fetchInjuries(s),
+    s === 'SOCCER'  ? fetchSoccerContext('')
+      : s === 'TENNIS' ? fetchTennisContext('')
+      : Promise.resolve(''),
+  ]);
+
+  const teamLogoHint = ALPHA_TEAM_LOGO_HINT[s] || 'team abbreviation';
+  const propHint = ALPHA_PROP_HINT[s] || 'player props';
+  const heuristics = getShortHeuristics(s);
 
   const prompt = `
-You are a sharp sports betting analyst building a prop betting cheat sheet.
-Today is ${today}.
+${SHARP_IDENTITY()}
+${ANTI_HALLUCINATION_DIRECTIVE}
+You are building a prop betting cheat sheet for ${s}. Today is ${today}.
 
-Generate a cheat sheet of the 10 highest-value player prop bets for ${s} games scheduled TODAY.
+LIVE ODDS (use ONLY players and lines from here — never invent):
+${liveOdds || 'No live odds available right now.'}
+${injuries ? `\nINJURY REPORT (LIVE — ESPN):\n${injuries}` : ''}
+${nicheData ? `\n${nicheData}` : ''}
 
-For each player:
-- Pick a real player with a game tonight
-- Identify the most mispriced prop line (points, rebounds, assists, strikeouts, hits, etc.)
-- ai_score = your confidence this is +EV (0-10 scale, be realistic — 6-8 range is good, 9+ is rare)
-- status_color: #22c55e (strong edge), #eab308 (moderate edge), #f97316 (speculative)
-- espn_id: leave as "" — do NOT invent ESPN player IDs, they will be wrong
+${heuristics}
 
-Output ONLY a raw JSON array of exactly 10 objects:
+Generate up to 10 prop bets from TODAY's ${s} slate.
+STRICT RULES:
+- Only pick players that appear in the LIVE ODDS block above
+- Only use lines that appear in the LIVE ODDS block — never invent a line
+- If a key player is listed as OUT in the INJURY REPORT, target their backup's Over
+- rationale: 1 sentence citing ONLY data from the blocks above. Use [SOURCE] tags.
+- Do NOT invent season stats, PPG, RPG, or any number not in the data blocks
+- espn_id: always ""
+
+Output ONLY raw JSON array:
 [
   {
     "rank": 1,
-    "team_logo": "NBA team abbreviation e.g. GSW",
-    "player_name": "Full Player Name",
-    "metric_label": "e.g. POINTS PROP or STRIKEOUTS",
-    "metric_value": "e.g. Over 27.5 -115",
-    "season_stat": "e.g. 29.4 PPG L10 or .312 BA",
-    "ai_score": 7.8,
-    "status_color": "#22c55e",
+    "team_logo": "${teamLogoHint}",
+    "player_name": "Full Name from LIVE ODDS block",
+    "metric_label": "PROP TYPE e.g. POINTS or SHOTS ON TARGET",
+    "metric_value": "Over/Under LINE ODDS exactly as in LIVE ODDS e.g. Over 27.5 -115",
+    "rationale": "[SOURCE]: sourced fact only — no invented stats",
     "espn_id": ""
   }
 ]
-
-Be specific. Real players, real prop lines, real reasoning baked into metric_value.
 `.trim();
 
   const raw = await ask(prompt);
-  const data = parseJSON(raw) as AlphaSheetItem[];
+  const rawData = parseJSON(raw) as Array<Record<string, unknown>>;
+
+  // Server-side math — never trust AI for numbers
+  const data: AlphaSheetItem[] = (Array.isArray(rawData) ? rawData : []).map((item, idx) => {
+    // Extract odds from metric_value e.g. "Over 27.5 -115" → -115
+    const metricVal = String(item.metric_value ?? '');
+    const oddsMatch = metricVal.match(/([+-]\d+)$/);
+    const oddsNum = oddsMatch ? parseInt(oddsMatch[1], 10) : NaN;
+    const imp = isNaN(oddsNum) ? 50 : Math.round(impliedProb(oddsNum) * 1000) / 10;
+    // ai_score: derived from how far implied prob deviates from fair coin (50%)
+    // Higher = more decisive market pricing = stronger signal
+    const deviation = Math.abs(imp - 50);
+    const ai_score = Math.min(9.5, Math.round((5 + deviation * 0.18) * 10) / 10);
+    const status_color = ai_score >= 7.5 ? '#22c55e' : ai_score >= 6 ? '#eab308' : '#f97316';
+
+    return {
+      rank: typeof item.rank === 'number' ? item.rank : idx + 1,
+      team_logo: String(item.team_logo ?? ''),
+      player_name: String(item.player_name ?? ''),
+      metric_label: String(item.metric_label ?? ''),
+      metric_value: metricVal,
+      rationale: String(item.rationale ?? ''),
+      implied_prob: imp,
+      ai_score,
+      status_color,
+      espn_id: '',
+    };
+  });
+
+  // Rank by win probability first, signal strength second — favor likely winners over longshots
+  data.sort((a, b) => b.implied_prob - a.implied_prob || b.ai_score - a.ai_score);
+  const ranked = data.map((item, idx) => ({ ...item, rank: idx + 1 }));
 
   const titles: Record<string, string> = {
-    NBA: "NBA PROP HEATBOARD", MLB: "DINGER & STRIKEOUT SHEET",
-    NFL: "NFL PROP SHEET", NHL: "PUCK LINE PROPS",
-    TENNIS: "TENNIS EDGE SHEET", SOCCER: "SOCCER PROP SHEET",
+    NBA:    "NBA PROP HEATBOARD",
+    WNBA:   "WNBA PROP HEATBOARD",
+    NFL:    "NFL PROP SHEET",
+    MLB:    "MLB PITCHER + BATTER EDGE",
+    SOCCER: "SOCCER / WORLD CUP PROPS",
+    TENNIS: "TENNIS EDGE SHEET",
+    F1:     "F1 DRIVER PROP SHEET",
   };
 
-  return {
+  const result: AlphaSheetContainer = {
     title: titles[s] || `${s} PROP SHEET`,
-    subtitle: `@cavemanlocks AI Edge — ${today}`,
-    data,
+    subtitle: `Caveman Locks AI Edge — ${today}`,
+    data: ranked,
     timestamp: new Date().toLocaleDateString()
   };
+  setCache(cacheKey, result);
+  return result;
 }
 
 app.post('/api/alpha-sheets', async (req: express.Request, res: express.Response) => {
@@ -1740,39 +2883,6 @@ app.post('/api/alpha-sheets', async (req: express.Request, res: express.Response
 // ─────────────────────────────────────────────────────────────────────────────
 // PARLAYS — best picks + 4 parlay types, sport-aware
 // ─────────────────────────────────────────────────────────────────────────────
-export interface ParlayLeg {
-  pick: string;
-  odds: string;
-  why: string;
-  game?: string;
-}
-
-export interface ParlayBlock {
-  legs: ParlayLeg[];
-  combined_odds: string;
-  why: string;
-  ev: string;
-  game?: string; // SGP only
-}
-
-export interface ParlaysPayload {
-  sport: string;
-  best_pick: {
-    selection: string;
-    odds: string;
-    why: string;
-    ev: string;
-    units: string;
-    game: string;
-  };
-  sgp: ParlayBlock;
-  multi_parlay: ParlayBlock;
-  ev_parlay: ParlayBlock;
-  correlation_parlay: ParlayBlock;
-  hash: string;
-  timestamp: string;
-}
-
 app.get('/api/parlays', async (req: express.Request, res: express.Response) => {
   if (rateLimit(req, 5, 60_000)) return res.status(429).json({ error: "RATE_LIMIT" });
 
@@ -1782,20 +2892,20 @@ app.get('/api/parlays', async (req: express.Request, res: express.Response) => {
     const today = todayStr();
     const isAllSports = sport === 'ALL';
 
-    // For cross-sport: fetch NBA + MLB + NFL + SOCCER + WNBA odds in parallel
-    // Only fetch sports currently in-season — saves Odds API credits (Fix #4)
-    const month = new Date().getMonth() + 1; // 1-12
+    // For cross-sport: fetch NBA + MLB + NHL + NFL + SOCCER + WNBA odds in parallel
+    // Only fetch sports currently in-season — saves Odds API credits
+    const month = new Date().getMonth() + 1;
     const inSeason = (s: string) => {
       if (s === 'NBA')    return month >= 10 || month <= 6;
       if (s === 'WNBA')   return month >= 5 && month <= 9;
-      if (s === 'MLB')    return month >= 4 && month <= 10;
       if (s === 'NFL')    return month >= 9 || month <= 2;
+      if (s === 'MLB')    return month >= 4 && month <= 10;
       if (s === 'NHL')    return month >= 10 || month <= 6;
-      if (s === 'SOCCER') return true; // always some league running
+      if (s === 'SOCCER') return true;
       if (s === 'TENNIS') return true;
       return false;
     };
-    const crossSportKeys = ['NBA', 'WNBA', 'MLB', 'NFL', 'SOCCER'].filter(inSeason);
+    const crossSportKeys = ['NBA', 'WNBA', 'NFL', 'MLB', 'NHL', 'SOCCER', 'TENNIS'].filter(inSeason);
     const sgpSport = isAllSports ? 'NBA' : sport;
     const [parlayOdds, crossOdds, parlayNba, parlayInjuries, parlaySharp] = await Promise.all([
       fetchLiveOdds(sgpSport, game || undefined),
@@ -1813,7 +2923,7 @@ app.get('/api/parlays', async (req: express.Request, res: express.Response) => {
     const gameContext = game
       ? `SPECIFIC GAME TO AUDIT: "${game}". SGP and correlation parlay must be from this exact game. Multi-game and EV parlays can include this game as the anchor with 1-2 other real games tonight from ANY sport.`
       : isAllSports
-        ? `Scan ALL sports tonight (NBA, WNBA, MLB, NFL, SOCCER). Pick the single best opportunity from any sport.`
+        ? `Scan ALL sports tonight (NBA, WNBA, NFL, SOCCER/World Cup, TENNIS). Pick the single best opportunity from any sport.`
         : `Generate the best betting opportunities across TODAY's ${sport} slate.`;
 
     const parlayOddsBlock = `
@@ -1836,63 +2946,65 @@ ${gameContext}
 
 Apply all heuristics above to every leg. Use the INJURY REPORT — if a key player is OUT or DOUBTFUL, apply Next Man Up logic (backup's props are often highest EV). Use the SHARP SIGNALS — follow the Pinnacle-vs-DK gap where sharp money is detected. Run the SHARP CHECK. Flag [HIGH-RISK] legs. Apply the JUICE FILTER (reject if cumulative vig >15%). For SGP: run CORRELATION STRESS TEST on every leg pair.
 
+📊 PARLAY DISCIPLINE (data-backed — see heuristic rule 11, OBEY): the user's settled results prove 2–3-leg tickets win (+83% ROI) and 4+ leg stacks bleed (7+ = total loss). Build 2–3 legs, HARD CAP 4, NEVER 5+. Every leg priced decimal 1.50–5.0 (American −200 to +400) — drop heavy chalk (<1.50) and lottery (5.0+) legs.
+
 CRITICAL RULES FOR EACH PARLAY TYPE:
-- best_pick: Best single bet from ANY sport available tonight
-- sgp (Same-Game Parlay): ALL legs MUST be from ONE single game in ${sgpSport}. Apply ${sgpBetCtx}
-- multi_parlay: Legs from DIFFERENT games — can mix NBA, MLB, NFL, SOCCER. Pick 3-4 best cross-sport legs tonight
-- ev_parlay: ONLY legs with >4% EV individually. Can be from ANY sport. Mix sports for max edge
-- correlation_parlay: Legs that POSITIVELY correlate — team score high + player Over props, or same-game correlated outcomes. Use ${sgpSport} for strongest correlation
+- best_pick: Best single bet from ANY sport available tonight (leg priced 1.50–5.0)
+- sgp (Same-Game Parlay): 2–3 legs, ALL from ONE single game in ${sgpSport}. Apply ${sgpBetCtx}
+- multi_parlay: 2–3 best cross-sport legs from DIFFERENT games (mix NBA, WNBA, MLB, NFL, SOCCER). Quality over quantity — 2 strong legs beat 4 weak ones
+- ev_parlay: 2–3 legs, ONLY legs with >4% EV individually, each priced 1.50–5.0. Any sport
+- correlation_parlay: 2–3 legs that POSITIVELY correlate — team score high + player Over props, or same-game correlated outcomes. Use ${sgpSport} for strongest correlation
+
+⛔ DO NOT output ev, win_prob, or any invented percentage. Math engine computes those server-side.
+⛔ All picks must be from the LIVE ODDS blocks above. Never invent lines.
+⛔ "why" fields must cite sourced data. Use [SOURCE] tags.
+⛔ MUTUAL EXCLUSIVITY CHECK: every leg pair in a parlay must be able to win TOGETHER in a realistic outcome. NEVER combine a team's spread with the OPPOSING team's moneyline (e.g., Spurs +2 + Knicks ML only both cash if Knicks win by exactly 1 — that is a middle, not a parlay). If two legs conflict, drop the weaker one.
 
 Output ONLY a raw JSON object with this exact structure:
 {
   "best_pick": {
-    "selection": "e.g. LeBron James Over 25.5 Points or Lakers -4.5",
+    "selection": "Exact pick from LIVE ODDS block",
     "odds": "-115",
-    "why": "short caveman reason — 1 sentence, specific numbers",
-    "ev": "+6.2%",
+    "why": "[SOURCE] 1 sentence, sourced data only, caveman short",
     "units": "2 UNITS",
     "game": "Team A vs Team B — TIME ET"
   },
   "sgp": {
     "game": "${game || `Best ${sgpSport} game on slate`} — TIME ET",
     "legs": [
-      { "pick": "Player X Over 24.5 Points", "odds": "-115", "why": "caveman why" },
-      { "pick": "Player X Over 5.5 Assists", "odds": "-110", "why": "caveman why" },
-      { "pick": "Team A -3.5", "odds": "-110", "why": "caveman why" }
+      { "pick": "Player X Over 24.5 Points from LIVE ODDS", "odds": "-115", "why": "[SOURCE] caveman why" },
+      { "pick": "Player X Over 5.5 Assists from LIVE ODDS", "odds": "-110", "why": "[SOURCE] caveman why" },
+      { "pick": "Team A -3.5 from LIVE ODDS", "odds": "-110", "why": "[SOURCE] caveman why" }
     ],
     "combined_odds": "+285",
-    "why": "1 sentence: why these legs correlate in same game",
-    "ev": "+8.1%"
+    "why": "1 sentence: why these legs correlate in same game"
   },
   "multi_parlay": {
     "legs": [
-      { "game": "NBA: Team A vs Team B — TIME ET", "pick": "Team A ML", "odds": "-130", "why": "caveman why" },
-      { "game": "MLB: Team C vs Team D — TIME ET", "pick": "Team C F5 -1.5", "odds": "+110", "why": "caveman why" },
-      { "game": "NFL: Team E vs Team F — TIME ET", "pick": "Total Under 44.5", "odds": "-110", "why": "caveman why" }
+      { "game": "NBA: Team A vs Team B — TIME ET", "pick": "Team A ML from LIVE ODDS", "odds": "-130", "why": "[SOURCE] caveman why" },
+      { "game": "MLB: Team C vs Team D — TIME ET", "pick": "Team C F5 -1.5 from LIVE ODDS", "odds": "+110", "why": "[SOURCE] caveman why" },
+      { "game": "NFL/SOCCER: Game — TIME ET", "pick": "Pick from LIVE ODDS", "odds": "-110", "why": "[SOURCE] caveman why" }
     ],
     "combined_odds": "+480",
-    "why": "1 sentence: why these cross-sport picks stack well tonight",
-    "ev": "+6.8%"
+    "why": "1 sentence: why these cross-sport picks stack well tonight"
   },
   "ev_parlay": {
     "legs": [
-      { "game": "SPORT: Game 1 — TIME ET", "pick": "Pick with highest EV from any sport", "odds": "+140", "why": "caveman why: line mispriced" },
-      { "game": "SPORT: Game 2 — TIME ET", "pick": "Pick with high EV", "odds": "-105", "why": "caveman why" },
-      { "game": "SPORT: Game 3 — TIME ET", "pick": "Pick with high EV", "odds": "-108", "why": "caveman why" }
+      { "game": "SPORT: Game 1 — TIME ET", "pick": "Pick with market edge from LIVE ODDS", "odds": "+140", "why": "[SHARP SIGNALS] caveman why" },
+      { "game": "SPORT: Game 2 — TIME ET", "pick": "Pick from LIVE ODDS", "odds": "-105", "why": "[SOURCE] caveman why" },
+      { "game": "SPORT: Game 3 — TIME ET", "pick": "Pick from LIVE ODDS", "odds": "-108", "why": "[SOURCE] caveman why" }
     ],
     "combined_odds": "+380",
-    "why": "All legs >4% EV individually. Best value across ALL sports tonight.",
-    "ev": "+14.2%"
+    "why": "Best line value picks across ALL sports tonight, from LIVE ODDS only"
   },
   "correlation_parlay": {
     "legs": [
-      { "game": "${game || `${sgpSport} target game`} — TIME ET", "pick": "Team scores high / wins big", "odds": "-120", "why": "fast pace" },
-      { "game": "Same game", "pick": "Star player Over points", "odds": "-115", "why": "star needs big game to win" },
-      { "game": "Same or linked game", "pick": "Correlated total or prop", "odds": "-110", "why": "legs move together" }
+      { "game": "${game || `${sgpSport} target game`} — TIME ET", "pick": "Team scores high / wins from LIVE ODDS", "odds": "-120", "why": "[SOURCE] fast pace" },
+      { "game": "Same game", "pick": "Star player Over points from LIVE ODDS", "odds": "-115", "why": "[SOURCE] caveman why" },
+      { "game": "Same or linked game", "pick": "Correlated total/prop from LIVE ODDS", "odds": "-110", "why": "[SOURCE] legs move together" }
     ],
     "combined_odds": "+320",
-    "why": "1 sentence: how these legs correlate positively",
-    "ev": "+9.5%"
+    "why": "1 sentence: how these legs correlate positively"
   }
 }
 
@@ -1915,14 +3027,72 @@ Rules:
       return res.status(500).json({ error: "PARSE_FAILED", message: "AI returned invalid data. Try again." });
     }
 
+    // Server-side math for best_pick
+    const bp = parsed?.best_pick;
+    const bpOddsNum = bp ? parseInt(String(bp.odds ?? '').replace(/[^-\d]/g, ''), 10) : NaN;
+    // Parlay combined odds — SERVER math, never AI arithmetic. LLMs get this
+    // wrong (saw +105 quoted on legs that multiply to ~+356). Independent-legs
+    // product; books price correlated SGPs below this, so it's the ceiling.
+    const decToAmerican = (dec: number): string => {
+      const b = dec - 1;
+      const am = b >= 1 ? Math.round(b * 100) : -Math.round(100 / b);
+      return am > 0 ? `+${am}` : `${am}`;
+    };
+    const withMathCombined = <T extends { legs?: Array<{ odds?: string }>; combined_odds?: string }>(block: T | undefined): T | undefined => {
+      if (!block || !Array.isArray(block.legs) || block.legs.length === 0) return block;
+      const nums = block.legs.map(l => parseInt(String(l.odds ?? '').replace(/[^-\d]/g, ''), 10));
+      if (!nums.every(n => Number.isFinite(n) && Math.abs(n) >= 100)) return block; // can't verify → leave AI value
+      const dec = nums.reduce((p, n) => p * toDecimal(n), 1);
+      return { ...block, combined_odds: decToAmerican(dec) };
+    };
+
+    const bpImplied = Math.round(impliedProb(bpOddsNum) * 1000) / 10;
+    const bpDevigged = Math.round((bpImplied / 1.045) * 10) / 10;
+    const enrichedBestPick = bp && !isNaN(bpOddsNum) ? {
+      ...bp,
+      implied_prob: bpImplied,
+      bet_structure: getBetStructure(bpOddsNum),
+      // Quality rule: winning > value — flag picks the market says lose ≥55% of the time
+      upset_alert: bpDevigged < 45
+        ? `⚠️ MARKET DISAGREES — this pick wins ~${bpDevigged}% of the time; the other side is the real favorite. Longshot stake or skip.`
+        : null,
+    } : bp;
+
     const payload: ParlaysPayload = {
       ...parsed,
+      best_pick: enrichedBestPick as ParlaysPayload['best_pick'],
+      sgp: withMathCombined(parsed.sgp) as ParlaysPayload['sgp'],
+      multi_parlay: withMathCombined(parsed.multi_parlay) as ParlaysPayload['multi_parlay'],
+      ev_parlay: withMathCombined(parsed.ev_parlay) as ParlaysPayload['ev_parlay'],
+      correlation_parlay: withMathCombined(parsed.correlation_parlay) as ParlaysPayload['correlation_parlay'],
       sport,
       hash: "Σ_" + Math.random().toString(36).substring(7).toUpperCase(),
       timestamp: new Date().toLocaleTimeString()
     };
 
-    setCache(parlayCacheKey, payload);
+    // 60 min — same slate, same parlay; rebuilds within the hour are free
+    setCache(parlayCacheKey, payload, 60 * 60 * 1000);
+
+    // Auto-log best_pick — same self-building record as the prophet
+    try {
+      const bpSel = String(bp?.selection ?? '');
+      const bpGame = String(bp?.game ?? '');
+      if (bpSel && Number.isFinite(bpOddsNum) && Math.abs(bpOddsNum) >= 100 &&
+          !(await hasPendingDuplicate(bpSel, bpGame))) {
+        await addPick({
+          sport,
+          game: bpGame,
+          selection: bpSel,
+          odds: bpOddsNum,
+          stake_units: /2\s*UNIT/i.test(String(bp?.units ?? '')) ? 2 : 1,
+          source: 'parlays',
+          ...parseSelectionIdentity(bpSel, bpGame),  // structured identity for CLV capture
+        });
+      }
+    } catch (e: unknown) {
+      console.error('Parlays auto-log failed:', e instanceof Error ? e.message : String(e));
+    }
+
     res.json(payload);
 
   } catch (e: unknown) {
@@ -1950,7 +3120,7 @@ app.post('/api/quantum-mission', async (req: express.Request, res: express.Respo
     const quantSport = (qSport || 'NBA').toUpperCase();
     const quantumHeuristics = getShortHeuristics(quantSport);
     const prompt = `
-${SHARP_IDENTITY}
+${SHARP_IDENTITY()}
 
 You are a sports betting research agent. Today is ${today}.
 Mission goal: "${goal}"
@@ -2027,15 +3197,17 @@ app.post('/api/full-breakdown', async (req: express.Request, res: express.Respon
     const inSeason = (s: string) => {
       if (s === 'NBA')    return month >= 10 || month <= 6;
       if (s === 'WNBA')   return month >= 5 && month <= 9;
-      if (s === 'MLB')    return month >= 4 && month <= 10;
       if (s === 'NFL')    return month >= 9 || month <= 2;
+      if (s === 'MLB')    return month >= 4 && month <= 10;
+      if (s === 'NHL')    return month >= 10 || month <= 6;
       if (s === 'SOCCER') return true;
+      if (s === 'TENNIS') return true;
       return false;
     };
-    const crossSports = ['NBA', 'MLB', 'NFL', 'SOCCER', 'WNBA'].filter(inSeason);
+    const crossSports = ['NBA', 'WNBA', 'NFL', 'MLB', 'NHL', 'SOCCER', 'TENNIS'].filter(inSeason);
 
-    // Fetch all data in parallel — real stats, news, odds, injuries, sharp signals
-    const [oddsCtx, injuryCtx, playerStatsCtx, advancedCtx, teamStatsCtx, nicheCtx, newsCtx, pitcherCtx, weatherCtx, sharpCtx, crossOdds] = await Promise.all([
+    // Fetch all data in parallel — real stats, news, odds, injuries, sharp signals, historical
+    const [oddsCtx, injuryCtx, playerStatsCtx, advancedCtx, teamStatsCtx, nicheCtx, newsCtx, pitcherCtx, weatherCtx, sharpCtx, crossOdds, historicalCtx] = await Promise.all([
       fetchLiveOdds(league, matchup),
       fetchInjuries(league, matchup),
       league === 'NBA' || league === 'WNBA'
@@ -2048,21 +3220,66 @@ app.post('/api/full-breakdown', async (req: express.Request, res: express.Respon
         ? fetchNBATeamStats(matchup)
         : Promise.resolve(''),
       // Sport-specific niche stats
-      league === 'NHL'    ? fetchNHLTeamStats(matchup) :
-      league === 'SOCCER' ? fetchSoccerContext(matchup) :
-      league === 'F1'     ? Promise.resolve(getF1CircuitContext(matchup)) :
-      Promise.resolve(''),
+      league === 'SOCCER'  ? fetchSoccerContext(matchup)
+        : league === 'TENNIS' ? fetchTennisContext(matchup)
+        : league === 'F1'     ? Promise.resolve(getF1CircuitContext(matchup))
+        : Promise.resolve(''),
       fetchESPNNews(league, matchup),
       league === 'MLB' ? fetchMLBPitcherStats(matchup) : Promise.resolve(''),
       fetchWeather(matchup, league),
       fetchSharpSignals(league),
       Promise.all(crossSports.filter(s => s !== league).map(s => fetchLiveOdds(s))).then(r => r.filter(Boolean).join('\n\n')),
+      // Google Search: real historical stats + trends from credible sources (covers, b-ref, espn)
+      fetchHistoricalContext(league, matchup),
     ]);
 
     const heuristics = getBettingHeuristics(league);
 
+    // ── Harvard Math Layer ─────────────────────────────────────────────────────
+    let harvardCtx = '';
+    try {
+      const fbOddsGame = parseOddsForTeams(oddsCtx);
+      const hImp = fbOddsGame?.homeOdds != null ? impliedProb(fbOddsGame.homeOdds) : 0;
+      const aImp = fbOddsGame?.awayOdds != null ? impliedProb(fbOddsGame.awayOdds) : 0;
+      const dv = hImp && aImp ? devig(hImp, aImp) : null;
+      const hRes = await fetch('http://127.0.0.1:8002/harvard/master', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prior_prob: dv ? dv.p1 : 0.5,
+          market_spread: fbOddsGame?.spread ?? 0,
+          decimal_odds: fbOddsGame?.homeOdds != null ? toDecimal(fbOddsGame.homeOdds) : 1.909,
+          bankroll: 100, injury_impact: 0, rest_advantage: 0, distraction_index: 0,
+          line_move_toward_team: false, wins_in_sample: 10, losses_in_sample: 10,
+          observed_wins: 10, observed_losses: 10,
+        }),
+        signal: AbortSignal.timeout(4000),
+      });
+      if (hRes.ok) {
+        const h = await hRes.json() as {
+          stacked_final_prob: number; edge_pct: number; verdict: string;
+          kelly_sizing_usd: number; edge_significant: boolean;
+          course_outputs: { stat110x_prob: number; ph125_prob: number; cs109x_prob: number };
+          feature_importance: Array<{ feature: string; direction: string }>;
+        };
+        harvardCtx = [
+          `\n━━ HARVARD PROBABILITY ENGINE ━━`,
+          `• STAT110x (Bayesian):    ${(h.course_outputs.stat110x_prob * 100).toFixed(1)}%`,
+          `• PH125.4x (Frequentist): ${(h.course_outputs.ph125_prob * 100).toFixed(1)}%`,
+          `• CS109xa (Logistic ML):  ${(h.course_outputs.cs109x_prob * 100).toFixed(1)}%`,
+          `• Stacked Final: ${(h.stacked_final_prob * 100).toFixed(1)}% | Edge: ${h.edge_pct > 0 ? '+' : ''}${h.edge_pct}%`,
+          `• Edge significant (p<0.05): ${h.edge_significant ? 'YES' : 'NO'} | Kelly $${h.kelly_sizing_usd} per $100`,
+          `• Top driver: ${h.feature_importance?.[0]?.feature ?? 'sharp_prob'} (${h.feature_importance?.[0]?.direction ?? 'boosting'})`,
+          `• Verdict: ${h.verdict}`,
+        ].join('\n');
+      }
+    } catch (e: unknown) {
+      // Non-blocking, but NEVER silent — a dead math layer hid for days this way
+      console.error('Harvard engine unavailable:', e instanceof Error ? e.message : String(e));
+    }
+
     const gamePrompt = `
-${SHARP_IDENTITY}
+${SHARP_IDENTITY()}
 
 You are a sharp sports betting analyst. Today is ${today}.
 Game: ${matchup} (${league})
@@ -2075,13 +3292,14 @@ ${oddsCtx || "No live odds found — note this clearly in your output, do not fa
 INJURY REPORT (ONLY reference players listed here — do NOT invent injuries):
 ${injuryCtx || "No injury data available from ESPN right now. Do NOT fabricate any injuries."}
 
-${advancedCtx ? `${advancedCtx}\n` : ''}
+${harvardCtx ? `${harvardCtx}\n` : ''}${advancedCtx ? `${advancedCtx}\n` : ''}
 ${nicheCtx ? `SPORT-SPECIFIC NICHE DATA (cite these exact numbers, do NOT invent):\n${nicheCtx}\n` : ''}
 ${playerStatsCtx ? `REAL PLAYER STATS — BallDontLie API (cite these exact numbers, do NOT invent):\n${playerStatsCtx}\n` : ''}
 ${teamStatsCtx ? `REAL TEAM STATS — ESPN API (cite these exact numbers, do NOT invent):\n${teamStatsCtx}\n` : ''}
 ${pitcherCtx ? `REAL PITCHER STATS — MLB Official API (cite these exact numbers, do NOT invent):\n${pitcherCtx}\n` : ''}
 ${weatherCtx ? `WEATHER DATA — wttr.in real-time:\n${weatherCtx}\n` : ''}
 ${newsCtx ? `LATEST NEWS — ESPN live:\n${newsCtx}\n` : ''}
+${historicalCtx ? `${historicalCtx}\n` : ''}
 📐 MATH ENGINE — use these formulas when computing EV and Kelly in your rationale:
 - Implied prob already devigged: see "→ Implied(devigged)" lines in LIVE ODDS above.
 - EV = (your_win_prob × (decimal_odds − 1)) − (1 − your_win_prob)
@@ -2124,33 +3342,34 @@ For EACH market (spread, total): scan ALL listed lines (standard + alternate) an
 - If the standard line is already the best value, leave "is_alt" as false and omit "alt_note".
 - Only use alt lines that appear in the LIVE ODDS block — never fabricate alternate lines.
 
-Analyze this specific game. win_prob = true win probability (0.50–0.95). Apply heuristics above to every pick.
-
+Analyze this specific game. Apply heuristics above to every pick.
 For the SGP: pick 3 correlated legs from THIS game only. Legs must positively correlate.
+
+⛔ DO NOT output win_prob, ev, niche_stat, confidence_score, or kelly_stake — math engine handles those.
+⛔ rationale MUST cite source using [SOURCE] tags from the data blocks.
 
 Output ONLY raw JSON — no markdown:
 {
   "game": "${matchup}",
-  "game_summary": "2-3 sentences: key injuries (only from report above), pace, sharp signals, biggest edge",
-  "spread_pick": { "pick": "Team -X.X or alt line", "odds": "-110", "win_prob": 0.68, "rationale": "2 sharp sentences citing real roster/matchup data", "niche_stat": "Specific ATS trend", "is_alt": false },
-  "ml_pick": { "pick": "Team ML", "odds": "-180", "win_prob": 0.72, "rationale": "2 sharp sentences", "niche_stat": "Specific ML trend", "is_alt": false },
-  "total_pick": { "pick": "Over/Under X.X or alt line", "odds": "-108", "win_prob": 0.64, "rationale": "2 sharp sentences", "niche_stat": "Specific pace/total trend", "is_alt": false },
+  "game_summary": "2-3 sentences: key injuries ([INJURY REPORT]), sharp signals ([SHARP SIGNALS]), biggest edge",
+  "spread_pick": { "pick": "Team -X.X or alt line from LIVE ODDS", "odds": "-110", "rationale": "[SOURCE] 2 sharp sentences citing real data", "is_alt": false },
+  "ml_pick": { "pick": "Team ML from LIVE ODDS", "odds": "-180", "rationale": "[SOURCE] 2 sharp sentences", "is_alt": false },
+  "total_pick": { "pick": "Over/Under X.X from LIVE ODDS", "odds": "-108", "rationale": "[SOURCE] 2 sharp sentences", "is_alt": false },
   "top_props": [
-    { "player": "MUST be a real player on one of these two teams", "market": "Points", "pick": "Over 26.5", "odds": "-115", "win_prob": 0.74, "rationale": "1-2 sentences based on real stats", "niche_stat": "Season average or matchup stat" },
-    { "player": "Real player on these teams only", "market": "Rebounds", "pick": "Over 8.5", "odds": "-110", "win_prob": 0.71, "rationale": "1-2 sentences", "niche_stat": "Real stat" },
-    { "player": "Real player on these teams only", "market": "Assists", "pick": "Over 6.5", "odds": "-115", "win_prob": 0.68, "rationale": "1-2 sentences", "niche_stat": "Real stat" },
-    { "player": "Real player on these teams only", "market": "Points", "pick": "Over 21.5", "odds": "-110", "win_prob": 0.65, "rationale": "1-2 sentences", "niche_stat": "Real stat" },
-    { "player": "Real player on these teams only", "market": "Threes", "pick": "Over 2.5", "odds": "-115", "win_prob": 0.62, "rationale": "1-2 sentences", "niche_stat": "Real stat" }
+    { "player": "Real player in LIVE ODDS block", "market": "Points", "pick": "Over 26.5", "odds": "-115", "rationale": "[SOURCE] 1-2 sentences from data blocks only" },
+    { "player": "Real player in LIVE ODDS block", "market": "Rebounds", "pick": "Over 8.5", "odds": "-110", "rationale": "[SOURCE] 1-2 sentences" },
+    { "player": "Real player in LIVE ODDS block", "market": "Assists", "pick": "Over 6.5", "odds": "-115", "rationale": "[SOURCE] 1-2 sentences" },
+    { "player": "Real player in LIVE ODDS block", "market": "Points", "pick": "Over 21.5", "odds": "-110", "rationale": "[SOURCE] 1-2 sentences" },
+    { "player": "Real player in LIVE ODDS block", "market": "Threes", "pick": "Over 2.5", "odds": "-115", "rationale": "[SOURCE] 1-2 sentences" }
   ],
   "sgp": {
     "legs": [
-      { "pick": "Team covers or wins", "odds": "-130", "why": "caveman reason max 10 words" },
-      { "pick": "Real player on these teams Over X stat", "odds": "-115", "why": "caveman reason" },
-      { "pick": "Correlated total or prop from this game", "odds": "-110", "why": "caveman reason" }
+      { "pick": "Team covers or wins from LIVE ODDS", "odds": "-130", "why": "caveman reason max 10 words" },
+      { "pick": "Real player Over X stat from LIVE ODDS", "odds": "-115", "why": "caveman reason" },
+      { "pick": "Correlated total or prop from LIVE ODDS", "odds": "-110", "why": "caveman reason" }
     ],
     "combined_odds": "+280",
-    "why": "1 sentence: why these legs from THIS game correlate",
-    "ev": "+9.5%"
+    "why": "1 sentence: why these legs from THIS game correlate"
   }
 }`.trim();
 
@@ -2166,26 +3385,27 @@ Task 1 — PICK OF THE DAY: Find the single best bet from the ODDS BLOCK above. 
 
 Task 2 — PARLAY OF THE DAY: Build the best 3-leg cross-sport parlay. Each leg must be from a DIFFERENT game in the odds block above.
 
+⛔ DO NOT output ev, win_prob, or any invented percentage.
+Each pick must be from the ODDS BLOCK above. If no odds available, return null for both fields.
+
 Output ONLY raw JSON — no markdown:
 {
   "pick_of_day": {
-    "selection": "e.g. LeBron James Over 25.5 Points",
+    "selection": "Exact pick from ODDS BLOCK e.g. LeBron James Over 25.5 Points",
     "odds": "-115",
-    "why": "1 sentence, specific numbers, caveman short",
-    "ev": "+6.2%",
+    "why": "[SOURCE] 1 sentence, specific sourced data only, caveman short",
     "units": "2U",
     "game": "Team A vs Team B",
     "sport": "NBA"
   },
   "parlay_of_day": {
     "legs": [
-      { "pick": "Team A ML", "odds": "-130", "why": "caveman why", "game": "NBA: Game 1" },
-      { "pick": "Team B -1.5 F5", "odds": "+110", "why": "caveman why", "game": "MLB: Game 2" },
-      { "pick": "Player Over X goals", "odds": "-115", "why": "caveman why", "game": "SOCCER: Game 3" }
+      { "pick": "Team A ML from ODDS BLOCK", "odds": "-130", "why": "[SOURCE] caveman why", "game": "NBA: Game 1" },
+      { "pick": "Team B -1.5 F5 from ODDS BLOCK", "odds": "+110", "why": "[SOURCE] caveman why", "game": "MLB: Game 2" },
+      { "pick": "Player Over X from ODDS BLOCK", "odds": "-115", "why": "[SOURCE] caveman why", "game": "SOCCER: Game 3" }
     ],
     "combined_odds": "+480",
-    "why": "1 sentence: why these cross-sport picks stack tonight",
-    "ev": "+8.1%"
+    "why": "1 sentence: why these cross-sport picks stack tonight"
   }
 }`.trim();
 
@@ -2213,9 +3433,30 @@ Output ONLY raw JSON — no markdown:
       if (d && typeof d === 'object' && !Array.isArray(d)) daily = d as Record<string, unknown>;
     } catch { /* daily picks are optional — continue without them */ }
 
+    // Server-side math — compute implied_prob + bet_structure for every pick
+    const enrichPick = (pick: Record<string, unknown> | null | undefined) => {
+      if (!pick || typeof pick !== 'object') return pick;
+      const oddsStr = String(pick.odds ?? '');
+      const oddsNum = parseInt(oddsStr.replace(/[^-\d]/g, ''), 10);
+      if (isNaN(oddsNum) || oddsNum === 0) return pick;
+      return {
+        ...pick,
+        implied_prob: Math.round(impliedProb(oddsNum) * 1000) / 10,
+        bet_structure: getBetStructure(oddsNum),
+      };
+    };
+
+    const enrichedGame = { ...game };
+    if (enrichedGame.spread_pick) enrichedGame.spread_pick = enrichPick(enrichedGame.spread_pick as Record<string, unknown>);
+    if (enrichedGame.ml_pick) enrichedGame.ml_pick = enrichPick(enrichedGame.ml_pick as Record<string, unknown>);
+    if (enrichedGame.total_pick) enrichedGame.total_pick = enrichPick(enrichedGame.total_pick as Record<string, unknown>);
+    if (Array.isArray(enrichedGame.top_props)) {
+      enrichedGame.top_props = (enrichedGame.top_props as Array<Record<string, unknown>>).map(enrichPick);
+    }
+
     const payload = {
-      ...game,
-      pick_of_day: daily.pick_of_day,
+      ...enrichedGame,
+      pick_of_day: enrichPick(daily.pick_of_day as Record<string, unknown>),
       parlay_of_day: daily.parlay_of_day,
       hash: "FB_" + Math.random().toString(36).substring(7).toUpperCase(),
     };
@@ -2261,7 +3502,7 @@ app.get('/api/sharp-money', async (req: express.Request, res: express.Response) 
     ].filter(Boolean).join('\n');
 
     const prompt = `
-${SHARP_IDENTITY}
+${SHARP_IDENTITY()}
 
 You are a sharp money tracking analyst. Today is ${today}. Sport: ${sport}.
 ${gameCtx}${betCtx}
@@ -2275,54 +3516,50 @@ Using the above heuristics, identify real sharp action. Specifically look for:
 - Derivative market value (softer lines in 1H/1Q/team totals/F5)
 - Injury context that moves EV but market hasn't fully adjusted
 
+⛔ DO NOT output ev percentages — math engine computes those. Do NOT invent line moves; only cite lines in LIVE ODDS.
 Output ONLY this raw JSON:
 {
   "sport": "${sport}",
   "steam_moves": [
     {
       "game": "Team A vs Team B — TIME ET",
-      "bet": "Exact bet e.g. Celtics -4.5 or Ohtani Over 7.5 strikeouts",
-      "opening_line": "e.g. -3 or -115",
-      "current_line": "e.g. -4.5 or -130",
-      "move": "e.g. 1.5 points or -15 cents",
+      "bet": "Exact bet from LIVE ODDS e.g. Celtics -4.5",
+      "opening_line": "e.g. -3",
+      "current_line": "e.g. -4.5",
+      "move": "e.g. 1.5 points",
       "direction": "STEAM",
-      "why": "Sharp hammered this side. Line moved fast with low public %",
-      "ev": "+5.2%"
+      "why": "[LIVE ODDS] Sharp hammered this side. Line moved fast with low public %"
     }
   ],
   "rlm": [
     {
       "game": "Team C vs Team D — TIME ET",
-      "bet": "Exact bet",
+      "bet": "Exact bet from LIVE ODDS",
       "opening_line": "opening",
       "current_line": "current",
       "move": "moved description",
       "direction": "RLM",
-      "why": "68% of public on Team C but line moved to Team D. Sharps on opposite side.",
-      "ev": "+6.1%"
+      "why": "[LIVE ODDS] Public majority on Team C but line moved to Team D — sharps on opposite side"
     }
   ],
   "best_ev_plays": [
     {
       "game": "Game — TIME ET",
-      "bet": "Best EV pick",
+      "bet": "Best value pick from LIVE ODDS",
       "odds": "-110",
-      "ev": "+7.3%",
-      "why": "Specific reason with numbers why this is +EV"
+      "why": "[SOURCE] Specific sourced reason why this line has value"
     },
     {
       "game": "Game — TIME ET",
-      "bet": "Second best EV pick",
+      "bet": "Second best from LIVE ODDS",
       "odds": "+130",
-      "ev": "+5.8%",
-      "why": "Specific reason"
+      "why": "[SOURCE] Specific sourced reason"
     },
     {
       "game": "Game — TIME ET",
-      "bet": "Third best EV pick",
+      "bet": "Third best from LIVE ODDS",
       "odds": "-105",
-      "ev": "+4.4%",
-      "why": "Specific reason"
+      "why": "[SOURCE] Specific sourced reason"
     }
   ],
   "hash": "Σ_${Math.random().toString(36).substring(7).toUpperCase()}",
@@ -2350,6 +3587,236 @@ Rules:
     const msg = e instanceof Error ? e.message : String(e);
     console.error("SHARP_MONEY_FAILURE:", msg);
     res.status(500).json({ error: "SHARP_MONEY_FAILURE", message: msg });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SHARP SCANNER — alias for /api/sharp-money (matches frontend route)
+// ─────────────────────────────────────────────────────────────────────────────
+app.get('/api/sharp-scanner', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 5, 60_000)) return res.status(429).json({ error: "RATE_LIMIT" });
+
+  try {
+    const sport = ((req.query.sport as string) || 'NBA').toUpperCase();
+    const cacheKey = `sharp:${sport}:slate`;
+    const cached = getCached(cacheKey);
+    if (cached) { res.json(cached); return; }
+
+    const betCtx = getSportBetContext(sport);
+    const sharpHeuristics = getShortHeuristics(sport);
+    const today = todayStr();
+    const [odds, schedule, injuries, signals] = await Promise.all([
+      fetchLiveOdds(sport),
+      sport === 'NBA' || sport === 'WNBA' ? fetchNBAScheduleToday() : fetchESPNScoreboard(sport),
+      fetchInjuries(sport),
+      fetchSharpSignals(sport),
+    ]);
+    const ctx = [
+      `\nLIVE ODDS:\n${odds}`,
+      schedule || '',
+      injuries ? `\n${injuries}` : '',
+      signals ? `\n${signals}` : '',
+    ].filter(Boolean).join('\n');
+
+    const seed = Math.random().toString(36).substring(7).toUpperCase();
+    const ts = new Date().toLocaleTimeString();
+    const prompt = `
+${SHARP_IDENTITY()}
+You are a sharp money tracking analyst. Today is ${today}. Sport: ${sport}.
+${betCtx}
+${ctx}
+${sharpHeuristics}
+
+Output ONLY raw JSON:
+{
+  "sport": "${sport}",
+  "steam_moves": [{"game":"...","bet":"...","opening_line":"...","current_line":"...","move":"...","direction":"STEAM","why":"...","ev":"..."}],
+  "rlm": [{"game":"...","bet":"...","opening_line":"...","current_line":"...","move":"...","direction":"RLM","why":"...","ev":"..."}],
+  "best_ev_plays": [{"game":"...","bet":"...","odds":"...","ev":"...","why":"..."}],
+  "hash": "Σ_${seed}",
+  "timestamp": "${ts}"
+}
+
+Rules: ${sport} ONLY. Real games tonight. steam_moves 2-3. rlm 1-2. best_ev_plays exactly 3. Raw JSON only.
+CRITICAL — "ev" fields: NEVER compute or invent a number. Only quote an implied-probability gap that appears verbatim in the data blocks above (e.g. "Pinnacle 54.2% vs DK 49.8%"). If no gap is shown in the data, write "N/A".
+`.trim();
+
+    const raw = await ask(prompt);
+    const parsed = parseJSON(raw) as Record<string, unknown>;
+    if (!parsed || typeof parsed !== 'object') {
+      return res.status(500).json({ error: "PARSE_FAILED" });
+    }
+    const result = { ...parsed, sport, timestamp: ts };
+    setCache(cacheKey, result);
+    res.json(result);
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    res.status(500).json({ error: "SHARP_SCANNER_FAILURE", message: msg });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LINE GAPS — pure math, no AI. Pinnacle implied prob vs DK/FD.
+// When Pinnacle prices a side higher than soft books, sharp money is on that side.
+// Best play: bet the sharp side at the soft book (better price, sharp direction).
+// ─────────────────────────────────────────────────────────────────────────────
+interface LineGap {
+  game: string;
+  market: string;
+  outcome: string;
+  pinnacle_odds: number;
+  book: string;
+  book_odds: number;
+  pinnacle_implied: number;  // fair (devigged) win prob %, Pinnacle
+  book_implied: number;      // fair (devigged) win prob %, soft book
+  gap_pct: number;           // pinnacle_implied − book_implied in fair-prob pts (positive = sharp on this side)
+  best_line: number;         // odds to bet (at soft book if gap > 0)
+  best_book: string;
+  signal: string;
+  commence_time: string;
+}
+
+app.get('/api/line-gaps', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 10, 60_000)) return res.status(429).json({ error: "RATE_LIMIT" });
+  if (!ODDS_API_KEY) return res.status(503).json({ error: "ODDS_API_NOT_CONFIGURED" });
+
+  try {
+    const sport = ((req.query.sport as string) || 'NBA').toUpperCase();
+    const cacheKey = `linegaps:${sport}`;
+    const cached = getCached(cacheKey);
+    if (cached) { res.json(cached); return; }
+
+    const sportKeys = SPORT_KEYS[sport] || SPORT_KEYS.NBA;
+    if (!sportKeys.length) return res.json({ gaps: [], scanned: 0 });
+
+    const gaps: LineGap[] = [];
+    const comparedGames = new Set<string>();  // games where Pinnacle + a soft book both priced ≥1 shared market
+    let scanned = 0;
+    let bestGap = 0;                            // largest fair-prob gap found, even below the 3pt bar
+
+    // Scan EVERY league key for the sport (was just sportKeys[0] — that missed
+    // Wimbledon/US Open for tennis, every non-WC league for soccer, etc.).
+    for (const key of sportKeys) {
+      const url = `${ODDS_API_BASE}/sports/${key}/odds?apiKey=${ODDS_API_KEY}&regions=us&markets=h2h,spreads&bookmakers=pinnacle,draftkings,fanduel&dateFormat=iso&oddsFormat=american`;
+      const r = await oddsFetch(url, 8000);
+      if (!r.ok) continue;                      // out-of-season key → skip, don't abort the scan
+      const events = await r.json() as OddsEvent[];
+      if (!Array.isArray(events)) continue;
+      scanned += events.length;
+
+      for (const ev of events.slice(0, 15)) {
+        const pinnacle = ev.bookmakers.find(b => b.key === 'pinnacle');
+        if (!pinnacle) continue;
+        const softBooks = ev.bookmakers.filter(b => ['draftkings', 'fanduel'].includes(b.key));
+        if (!softBooks.length) continue;
+
+        for (const market of pinnacle.markets) {
+          // Devig Pinnacle's two-way market to FAIR (no-vig) probabilities.
+          const pinFair = fairMarketProbs(market.outcomes);
+          if (!pinFair) continue;
+
+          for (const pinOut of market.outcomes) {
+            const pinFairProb = pinFair.get(pinOut.name);
+            if (pinFairProb == null) continue;
+
+            for (const soft of softBooks) {
+              const sm = soft.markets.find(m => m.key === market.key);
+              if (!sm) continue;
+              // For spreads, only compare the SAME handicap — a price gap across
+              // different points (-6.5 vs -7) is a line difference, not a price edge.
+              const so = sm.outcomes.find(o =>
+                o.name === pinOut.name && (market.key !== 'spreads' || o.point === pinOut.point));
+              if (!so) continue;
+              const softFair = fairMarketProbs(sm.outcomes);
+              if (!softFair) continue;
+              const softFairProb = softFair.get(pinOut.name);
+              if (softFairProb == null) continue;
+
+              // Gap in FAIR probability points. Comparing raw implied probs was
+              // biased: Pinnacle runs ~2-3% vig vs DK/FD ~5%, so the soft book's
+              // extra juice inflated every side and the old gap almost never cleared
+              // +3. Devigging both books first makes the gap a real disagreement.
+              const gap = Math.round((pinFairProb - softFairProb) * 1000) / 10;
+              comparedGames.add(`${ev.away_team} @ ${ev.home_team}`);
+              if (gap > bestGap) bestGap = gap;
+              if (gap >= 3) {
+                gaps.push({
+                  game:             `${ev.away_team} @ ${ev.home_team}`,
+                  market:           market.key,
+                  outcome:          pinOut.name,
+                  pinnacle_odds:    pinOut.price,
+                  book:             soft.title,
+                  book_odds:        so.price,
+                  pinnacle_implied: Math.round(pinFairProb * 1000) / 10,
+                  book_implied:     Math.round(softFairProb * 1000) / 10,
+                  gap_pct:          gap,
+                  // Bet the sharp side at the soft book (better price, sharp direction)
+                  best_line:        so.price,
+                  best_book:        soft.title,
+                  signal:           gap >= 6 ? 'STRONG_SHARP' : 'SOFT_SHARP',
+                  commence_time:    ev.commence_time,
+                });
+              }
+            }
+          }
+        }
+      }
+    }
+
+    gaps.sort((a, b) => b.gap_pct - a.gap_pct);
+    const result = {
+      gaps: gaps.slice(0, 12),
+      scanned,                                   // events fetched across all league keys
+      compared: comparedGames.size,              // events actually priced by Pinnacle AND a soft book
+      best_gap: Math.round(bestGap * 10) / 10,   // tightest = largest fair-prob gap found
+      sport,
+      computed_at: new Date().toISOString(),
+    };
+    setCache(cacheKey, result);
+    res.json(result);
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    res.status(500).json({ error: "LINE_GAPS_FAILURE", message: msg });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ARBITRAGE SCANNER — cross-book market discrepancy detection
+// ─────────────────────────────────────────────────────────────────────────────
+app.get('/api/arbitrage', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 5, 60_000)) return res.status(429).json({ error: "RATE_LIMIT" });
+  if (!ODDS_API_KEY) return res.status(503).json({ error: "ODDS_API_NOT_CONFIGURED" });
+
+  try {
+    const sport = ((req.query.sport as string) || 'NBA').toUpperCase();
+    const cacheKey = `arb:${sport}`;
+    const cached = getCached(cacheKey);
+    if (cached) { res.json(cached); return; }
+
+    const sportKeys = SPORT_KEYS[sport] || SPORT_KEYS.NBA;
+    if (sportKeys.length === 0) { res.json({ opportunities: [], scanned: 0 }); return; }
+
+    const opportunities: ArbitrageOpportunity[] = [];
+    let scanned = 0;
+
+    for (const key of sportKeys) {
+      const url = `${ODDS_API_BASE}/sports/${key}/odds?apiKey=${ODDS_API_KEY}&regions=us&markets=h2h&bookmakers=pinnacle,draftkings,fanduel,betmgm,caesars&dateFormat=iso&oddsFormat=american`;
+      const arbRes = await oddsFetch(url, 6000);
+      if (!arbRes.ok) continue;
+
+      const events = await arbRes.json() as OddsEvent[];
+      if (!Array.isArray(events)) continue;
+      scanned += events.length;
+
+      opportunities.push(...ArbitrageService.findOpportunities(events));
+    }
+
+    const result = { opportunities, scanned };
+    setCache(cacheKey, result);
+    res.json(result);
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    res.status(500).json({ error: "ARBITRAGE_FAILURE", message: msg });
   }
 });
 
@@ -2387,12 +3854,653 @@ app.get('/api/proxy-image', async (req: express.Request, res: express.Response) 
 // ─────────────────────────────────────────────────────────────────────────────
 // SERVE BUILT FRONTEND in production
 // ─────────────────────────────────────────────────────────────────────────────
+// ── Kronos Line Movement ──────────────────────────────────────────────────────
+// POST /api/line-movement
+// Body: { history: LineRecord[], steps?: number, n_samples?: number }
+// Returns: { direction, mean, std, confidence } | { error, note }
+const KRONOS_ADAPTER = path.resolve(process.cwd(), 'scripts/kronos_adapter.py');
+const KRONOS_CWD     = path.resolve(process.cwd(), 'scripts/kronos');
+
+interface KronosLineRecord { open: number; high: number; low: number; close: number; volume: number; amount: number }
+
+function runKronosAdapter(
+  history: KronosLineRecord[], steps: number, n_samples: number
+): Promise<Record<string, unknown>> {
+  return new Promise((resolve) => {
+    const input = JSON.stringify({ history, steps, n_samples });
+    const py    = spawn('python3', [KRONOS_ADAPTER, '--json'], { cwd: KRONOS_CWD });
+
+    let stdout = '';
+    let stderr = '';
+    py.stdout.on('data', (chunk: Buffer) => { stdout += chunk.toString(); });
+    py.stderr.on('data', (chunk: Buffer) => { stderr += chunk.toString(); });
+    py.stdin.write(input);
+    py.stdin.end();
+
+    const timer = setTimeout(() => { py.kill(); resolve({ error: 'Kronos timeout' }); }, 90_000);
+
+    py.on('close', () => {
+      clearTimeout(timer);
+      try {
+        resolve(JSON.parse(stdout.trim()));
+      } catch {
+        resolve({ error: 'Kronos parse failed', detail: stderr.slice(0, 300) });
+      }
+    });
+  });
+}
+
+app.post('/api/line-movement', async (req: express.Request, res: express.Response) => {
+  const { history, steps = 3, n_samples = 30 } = req.body as {
+    history: KronosLineRecord[];
+    steps?: number;
+    n_samples?: number;
+  };
+
+  if (!Array.isArray(history) || history.length < 5) {
+    res.status(400).json({ error: 'history array required (min 5 records)' });
+    return;
+  }
+
+  res.json(await runKronosAdapter(history, steps, n_samples));
+});
+
+// ── Tennis line-history accumulation ────────────────────────────────────────
+// Kronos needs a real time series of the LINE to forecast movement — this app
+// had no persisted odds history anywhere (see project memory: "closing_odds
+// never populated"). Rather than adding NEW polling calls to build one (which
+// would burn Odds API quota outside real usage), this piggybacks on odds the
+// app already fetches for real tennis predictions: every /predict call for a
+// TENNIS matchup appends the observed price as one point. History accumulates
+// organically over real usage, never fabricated, and no extra API calls.
+const TENNIS_LINE_HISTORY_PATH = path.resolve(__dirname, 'data/tennis_line_history.json');
+const TENNIS_LINE_HISTORY_MAX  = 512;      // Kronos max context
+const TENNIS_LINE_HISTORY_MIN  = 5;        // adapter's own floor
+const TENNIS_SNAPSHOT_COOLDOWN_MS = 60_000; // don't double-record within a minute
+
+function tennisMatchKey(home: string, away: string): string {
+  return `${home.trim().toLowerCase()}|${away.trim().toLowerCase()}`;
+}
+
+function loadTennisLineHistory(): Record<string, Array<KronosLineRecord & { ts: number }>> {
+  try {
+    return JSON.parse(readFileSync(TENNIS_LINE_HISTORY_PATH, 'utf8'));
+  } catch {
+    return {};
+  }
+}
+
+function recordTennisLineSnapshot(home: string, away: string, americanOdds: number): void {
+  try {
+    const store = loadTennisLineHistory();
+    const key = tennisMatchKey(home, away);
+    const series = store[key] ?? [];
+    const now = Date.now();
+    const last = series[series.length - 1];
+    if (last && now - last.ts < TENNIS_SNAPSHOT_COOLDOWN_MS) return; // too soon, skip
+
+    // Each observation is a single point-in-time price, not a range — recorded
+    // as a zero-range bar (open=high=low=close). volume=1 per real observation,
+    // amount=0 (no handle data — never invented).
+    series.push({ ts: now, open: americanOdds, high: americanOdds, low: americanOdds,
+                   close: americanOdds, volume: 1, amount: 0 });
+    store[key] = series.slice(-TENNIS_LINE_HISTORY_MAX);
+    writeFileSync(TENNIS_LINE_HISTORY_PATH, JSON.stringify(store));
+  } catch (e) {
+    console.error('recordTennisLineSnapshot failed (non-blocking):', e instanceof Error ? e.message : String(e));
+  }
+}
+
+// GET /api/tennis-line-movement?home=X&away=Y — Kronos forecast off the
+// REAL accumulated history for this matchup. Returns INSUFFICIENT_HISTORY
+// (with a count) instead of ever calling Kronos on fabricated data.
+app.get('/api/tennis-line-movement', async (req: express.Request, res: express.Response) => {
+  const home = String(req.query.home ?? '');
+  const away = String(req.query.away ?? '');
+  if (!home || !away) {
+    res.status(400).json({ error: 'home and away query params required' });
+    return;
+  }
+  const store = loadTennisLineHistory();
+  const series = store[tennisMatchKey(home, away)] ?? [];
+  if (series.length < TENNIS_LINE_HISTORY_MIN) {
+    res.json({ status: 'INSUFFICIENT_HISTORY', n: series.length, need: TENNIS_LINE_HISTORY_MIN,
+               note: 'history accumulates from real /predict calls for this matchup — not enough observations yet' });
+    return;
+  }
+  const history = series.map(({ ts: _ts, ...rec }) => rec);
+  res.json({ status: 'OK', n: series.length, ...(await runKronosAdapter(history, 3, 30)) });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// UPSET RADAR — pure math surprise detector. No AI, no hallucination possible.
+// Pinnacle devigged dog probability = real upset chance; if a soft book pays
+// more than fair for that dog, EV is positive. Sorted by EV, then probability.
+// ─────────────────────────────────────────────────────────────────────────────
+interface UpsetCandidate {
+  sport: string;
+  game: string;
+  commence_time: string;
+  underdog: string;
+  favorite: string;
+  upset_prob_pct: number;   // devigged from Pinnacle — the real chance of the surprise
+  fair_odds: number;        // American odds the dog SHOULD pay at that prob
+  best_odds: number;        // best dog price found across books
+  best_book: string;
+  ev_pct: number;           // EV per $100 at best price, using Pinnacle fair prob
+}
+
+function probToAmerican(p: number): number {
+  if (p >= 0.5) return Math.round((p / (1 - p)) * -100);
+  return Math.round(((1 - p) / p) * 100);
+}
+
+app.get('/api/upset-radar', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 10, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  try {
+    const sportParam = ((req.query.sport as string) || 'ALL').toUpperCase();
+    const cacheKey = `upset-radar:${sportParam}`;
+    const cached = getCached(cacheKey);
+    if (cached) { res.json(cached); return; }
+
+    const activeKeys = await getActiveSportKeys();
+    const sports = sportParam === 'ALL'
+      ? ['SOCCER', 'NBA', 'WNBA', 'MLB', 'NHL', 'TENNIS']
+      : [sportParam];
+
+    const candidates: UpsetCandidate[] = [];
+    let scanned = 0;
+
+    for (const sport of sports) {
+      const keys = (SPORT_KEYS[sport] ?? []).filter(k => !activeKeys || activeKeys.has(k));
+      const key = sport === 'TENNIS' && activeKeys
+        ? [...activeKeys].find(k => k.startsWith('tennis_') && !k.includes('winner'))
+        : keys[0];
+      if (!key) continue;
+
+      try {
+        const url = `${ODDS_API_BASE}/sports/${key}/odds?apiKey=${ODDS_API_KEY}&regions=us&markets=h2h&bookmakers=pinnacle,draftkings,fanduel,betmgm,caesars&oddsFormat=american`;
+        const r = await oddsFetch(url, 6000);
+        if (!r.ok) { console.error(`Upset radar ${sport} HTTP ${r.status}`); continue; }
+        const events = await r.json() as OddsEvent[];
+
+        for (const ev of events) {
+          scanned++;
+          const pinnacle = ev.bookmakers.find(b => b.key === 'pinnacle');
+          const pinH2h = pinnacle?.markets.find(m => m.key === 'h2h');
+          if (!pinH2h || pinH2h.outcomes.length < 2 || pinH2h.outcomes.length > 3) continue;
+
+          // Devig across ALL outcomes (handles soccer 3-way with draw)
+          const implieds = pinH2h.outcomes.map(o => ({ name: o.name, raw: impliedProb(o.price) }));
+          const overround = implieds.reduce((s, o) => s + o.raw, 0);
+          const teams = implieds
+            .map(o => ({ name: o.name, prob: o.raw / overround }))
+            .filter(o => o.name.toLowerCase() !== 'draw')
+            .sort((a, b) => a.prob - b.prob);
+          if (teams.length !== 2) continue;
+          const dog = { name: teams[0].name, prob: teams[0].prob, favName: teams[1].name };
+          // Live-dog floor: 20% in 2-way; 12% in 3-way (draw absorbs probability in soccer)
+          const liveDogFloor = pinH2h.outcomes.length === 3 ? 0.12 : 0.20;
+          if (dog.prob < liveDogFloor) continue;
+
+          // Best dog price across all books
+          let bestOdds = -Infinity;
+          let bestBook = '';
+          for (const book of ev.bookmakers) {
+            const m = book.markets.find(mk => mk.key === 'h2h');
+            const out = m?.outcomes.find(o => o.name === dog.name);
+            if (out && toDecimal(out.price) > toDecimal(bestOdds === -Infinity ? -10000 : bestOdds)) {
+              bestOdds = out.price;
+              bestBook = book.key;
+            }
+          }
+          if (bestOdds === -Infinity) continue;
+
+          const dec = toDecimal(bestOdds);
+          const evPct = (dog.prob * (dec - 1) - (1 - dog.prob)) * 100;
+
+          candidates.push({
+            sport,
+            game: `${ev.away_team} @ ${ev.home_team}`,
+            commence_time: ev.commence_time,
+            underdog: dog.name,
+            favorite: dog.favName,
+            upset_prob_pct: Math.round(dog.prob * 1000) / 10,
+            fair_odds: probToAmerican(dog.prob),
+            best_odds: bestOdds,
+            best_book: bestBook,
+            ev_pct: Math.round(evPct * 100) / 100,
+          });
+        }
+      } catch (e: unknown) {
+        console.error(`Upset radar ${sport}: ${e instanceof Error ? e.message : String(e)}`);
+      }
+    }
+
+    const sorted = [...candidates].sort((a, b) => b.ev_pct - a.ev_pct || b.upset_prob_pct - a.upset_prob_pct);
+    const payload = {
+      success: true,
+      upsets: sorted.slice(0, 20),
+      scanned,
+      computed_at: new Date().toISOString(),
+      note: 'Pure market math — Pinnacle devigged probability vs best available price. Positive EV = soft book overpaying the dog.',
+    };
+    setCache(cacheKey, payload, 10 * 60 * 1000);
+    res.json(payload);
+  } catch (e: unknown) {
+    res.status(500).json({ error: 'UPSET_RADAR_FAILED', message: e instanceof Error ? e.message : String(e) });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PICK LEDGER — proven track record (log → settle → stats with CLV)
+// ─────────────────────────────────────────────────────────────────────────────
+app.post('/api/ledger/pick', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 30, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  try {
+    const { sport, game, selection, odds, stake_units, source, predicted_prob, market_key, outcome, point } = req.body ?? {};
+    const oddsNum = Number(odds);
+    if (!sport || !game || !selection || !Number.isFinite(oddsNum) || oddsNum === 0 || (oddsNum > -100 && oddsNum < 100)) {
+      return res.status(400).json({ error: 'INVALID_PICK', message: 'sport, game, selection and valid American odds required' });
+    }
+    // Use caller-supplied identity if present, else derive it from the selection for CLV capture.
+    const ident = (market_key && outcome)
+      ? { market_key, outcome, point: point != null ? Number(point) : null }
+      : parseSelectionIdentity(String(selection), String(game));
+    const predProb = predicted_prob != null && Number.isFinite(Number(predicted_prob)) ? Number(predicted_prob) : null;
+    const pick = await addPick({ sport, game, selection, odds: oddsNum, stake_units: Number(stake_units) || 1, source, predicted_prob: predProb, ...ident });
+    res.json({ success: true, pick });
+  } catch (e: unknown) {
+    res.status(500).json({ error: 'LEDGER_WRITE_FAILED', message: e instanceof Error ? e.message : String(e) });
+  }
+});
+
+app.post('/api/ledger/settle', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 30, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  try {
+    const { id, result, closing_odds } = req.body ?? {};
+    if (!id || !['W', 'L', 'P'].includes(result)) {
+      return res.status(400).json({ error: 'INVALID_SETTLE', message: 'id and result (W/L/P) required' });
+    }
+    const closing = closing_odds != null && Number.isFinite(Number(closing_odds)) ? Number(closing_odds) : undefined;
+    const pick = await settlePick(id, result, closing);
+    if (pick === 'NOT_FOUND') return res.status(404).json({ error: 'PICK_NOT_FOUND' });
+    if (pick === 'ALREADY_SETTLED') {
+      return res.status(409).json({ error: 'ALREADY_SETTLED', message: 'Settled picks are immutable — the record cannot be rewritten.' });
+    }
+    res.json({ success: true, pick });
+  } catch (e: unknown) {
+    res.status(500).json({ error: 'LEDGER_WRITE_FAILED', message: e instanceof Error ? e.message : String(e) });
+  }
+});
+
+// Live Odds API quota — so "the app stopped working" is never a mystery: it
+// shows exactly how many of the ~500 monthly free-tier credits remain.
+app.get('/api/odds-quota', (req: express.Request, res: express.Response) => {
+  res.json({
+    success: true,
+    remaining: oddsQuota.remaining,
+    used: oddsQuota.used,
+    floor: ODDS_QUOTA_FLOOR,
+    serving_cache: oddsQuota.remaining !== null && oddsQuota.remaining <= ODDS_QUOTA_FLOOR,
+    updated: oddsQuota.updated,
+  });
+});
+
+app.get('/api/ledger/stats', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 30, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  try {
+    const ledger = await loadLedger();
+    res.json({ success: true, stats: computeStats(ledger) });
+  } catch (e: unknown) {
+    res.status(500).json({ error: 'LEDGER_READ_FAILED', message: e instanceof Error ? e.message : String(e) });
+  }
+});
+
+app.get('/api/ledger/picks', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 30, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  try {
+    const ledger = await loadLedger();
+    res.json({ success: true, picks: [...ledger].reverse().slice(0, 100) });
+  } catch (e: unknown) {
+    res.status(500).json({ error: 'LEDGER_READ_FAILED', message: e instanceof Error ? e.message : String(e) });
+  }
+});
+
+// ── CLV capture — stamp the closing line on pending picks just before kickoff ──
+// Reads the structured identity stored on each pick and re-finds the exact line.
+// Only ML/spread picks with a clean identity are captured; AH/props stay manual.
+async function fetchRawEvents(sportKey: string): Promise<OddsEvent[]> {
+  const url = `${ODDS_API_BASE}/sports/${sportKey}/odds?apiKey=${ODDS_API_KEY}&regions=us&markets=h2h,spreads&bookmakers=pinnacle,draftkings,fanduel&dateFormat=iso&oddsFormat=american`;
+  const r = await oddsFetch(url, 8000);
+  if (!r.ok) return [];
+  const events = await r.json();
+  return Array.isArray(events) ? events as OddsEvent[] : [];
+}
+
+async function runClvCapture(): Promise<{ stamped: number; checked: number }> {
+  if (!ODDS_API_KEY) return { stamped: 0, checked: 0 };
+  const ledger = await loadLedger();
+  const pending = pendingNeedingClose(ledger);
+  if (!pending.length) return { stamped: 0, checked: 0 };
+
+  let stamped = 0;
+  // Fetch each relevant sport's league keys once, match every pending pick against it.
+  for (const sport of [...new Set(pending.map(p => p.sport))]) {
+    const events: OddsEvent[] = [];
+    for (const key of (SPORT_KEYS[sport] || [])) events.push(...await fetchRawEvents(key));
+    if (!events.length) continue;
+
+    for (const pick of pending.filter(p => p.sport === sport)) {
+      const hit = findClose(pick, events as unknown as CaptureEvent[]);
+      if (!hit || !inCaptureWindow(hit.commence_time)) continue;  // only stamp the true pre-kickoff close
+      const r = await stampClosingOdds(pick.id, hit.price);
+      if (typeof r !== 'string') stamped++;
+    }
+  }
+  return { stamped, checked: pending.length };
+}
+
+// Manual trigger (the auto-cron is opt-in via ENABLE_CLV_CAPTURE so dev never hits the API).
+app.post('/api/ledger/capture-clv', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 5, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  if (!ODDS_API_KEY) return res.status(503).json({ error: 'ODDS_API_NOT_CONFIGURED' });
+  try {
+    const result = await runClvCapture();
+    res.json({ success: true, ...result });
+  } catch (e: unknown) {
+    res.status(500).json({ error: 'CLV_CAPTURE_FAILED', message: e instanceof Error ? e.message : String(e) });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PYTHON REPORT BRIDGE — spawn a script, feed optional stdin, parse its --json.
+// Shared by the slip linter (pre-bet gate) and the ledger CLV/calibration report.
+// Pure local compute — no external API, safe in dev/test.
+// ─────────────────────────────────────────────────────────────────────────────
+const SLIP_LINTER   = path.resolve(process.cwd(), 'scripts/slip_linter.py');
+const LEDGER_REPORT = path.resolve(process.cwd(), 'scripts/ledger_report.py');
+const BANK_BUILDER  = path.resolve(process.cwd(), 'scripts/bank_builder.py');
+const KILL_TEST     = path.resolve(process.cwd(), 'scripts/kill_test.py');
+// Live day-card cache — repeat clicks must not burn Odds API quota.
+const dayCardCache = new Map<string, { at: number; data: unknown }>();
+const DAY_CARD_TTL_MS = 10 * 60_000;
+
+function spawnPythonJson(script: string, args: string[], stdin: string | null, timeoutMs = 8_000): Promise<unknown> {
+  return new Promise((resolve, reject) => {
+    const py = spawn('python3', [script, ...args]);
+    let out = '';
+    let err = '';
+    py.stdout.on('data', (c: Buffer) => { out += c.toString(); });
+    py.stderr.on('data', (c: Buffer) => { err += c.toString(); });
+    if (stdin != null) py.stdin.write(stdin);
+    py.stdin.end();
+    const timer = setTimeout(() => { py.kill(); reject(new Error('PY_TIMEOUT')); }, timeoutMs);
+    py.on('close', () => {
+      clearTimeout(timer);
+      try { resolve(JSON.parse(out.trim())); }
+      catch { reject(new Error(err.slice(0, 300) || 'PY_PARSE_FAILED')); }
+    });
+  });
+}
+
+interface LintLeg { decimal: number; selection?: string }
+// Run the slip linter on a set of legs — verdict object, or null on failure (non-blocking).
+async function lintLegs(legs: LintLeg[]): Promise<unknown | null> {
+  try { return await spawnPythonJson(SLIP_LINTER, ['--json'], JSON.stringify({ legs })); }
+  catch { return null; }
+}
+
+// KILL-TEST — the full every-engine pick report (scripts/kill_test.py --json).
+// One endpoint = no forgotten engine: points+context, serve second opinion,
+// split router w/ floors (tennis); Poisson/Keener full board (soccer);
+// NB matrix + probables (mlb). Pure local compute — zero Odds API quota.
+app.post('/api/kill-test', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 12, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  const { sport, home, away, surface, bestOf, crowd, setsHome, setsAway,
+          priceHome, priceDraw, priceAway, totalLine, homeVenue } = req.body ?? {};
+  if (!sport || !home || !away) return res.status(400).json({ error: 'sport, home, away required' });
+  if (!['tennis', 'soccer', 'mlb'].includes(sport)) return res.status(400).json({ error: 'sport must be tennis|soccer|mlb' });
+  const args: string[] = [sport, String(home), String(away), '--json'];
+  if (surface)   args.push('--surface', String(surface));
+  if (bestOf)    args.push('--best-of', String(bestOf));
+  if (crowd)     args.push('--crowd', String(crowd));
+  if (setsHome != null) args.push('--sets-home', String(setsHome));
+  if (setsAway != null) args.push('--sets-away', String(setsAway));
+  if (priceHome) args.push('--price-home', String(priceHome));
+  if (priceDraw) args.push('--price-draw', String(priceDraw));
+  if (priceAway) args.push('--price-away', String(priceAway));
+  if (totalLine) args.push('--total-line', String(totalLine));
+  if (homeVenue) args.push('--home-venue');
+  try {
+    const report = await spawnPythonJson(KILL_TEST, args, null, 90_000);
+    return res.json({ success: true, data: report });
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : 'kill-test failed';
+    return res.status(500).json({ success: false, error: msg });
+  }
+});
+
+// SLIP LINTER — pre-bet gate. Scores a proposed ticket against the user's OWN
+// settled record (data/slips_raw.txt): ACCEPT / TRIM / REJECT with real ROI cited.
+app.post('/api/lint-slip', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 60, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  const { legs } = req.body as { legs?: LintLeg[] };
+  if (!Array.isArray(legs) || legs.length === 0) {
+    return res.status(400).json({ error: 'NEED_LEGS', message: 'body: { legs: [{ decimal, selection }] }' });
+  }
+  if (legs.some(l => typeof l?.decimal !== 'number' || !(l.decimal > 1))) {
+    return res.status(400).json({ error: 'BAD_DECIMAL', message: 'each leg needs decimal odds > 1' });
+  }
+  const data = await lintLegs(legs);
+  if (data == null) return res.status(500).json({ error: 'LINTER_FAILED' });
+  res.json({ success: true, data });
+});
+
+interface LintSlip { legs: (LintLeg & { match?: string })[] }
+// PORTFOLIO LINTER — lints the whole day's card at once. Catches the two leaks a
+// single-slip lint can't see: the same leg cloned across slips (one soft leg dies,
+// every ticket dies — the Jodar leak) and 3+ correlated sub-markets of one match
+// stacked in one slip (the Suiza-Argelia leak).
+app.post('/api/lint-portfolio', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 60, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  const { slips } = req.body as { slips?: LintSlip[] };
+  if (!Array.isArray(slips) || slips.length === 0 || slips.some(s => !Array.isArray(s?.legs) || s.legs.length === 0)) {
+    return res.status(400).json({ error: 'NEED_SLIPS', message: 'body: { slips: [{ legs: [{ decimal, selection, match? }] }] }' });
+  }
+  if (slips.some(s => s.legs.some(l => typeof l?.decimal !== 'number' || !(l.decimal > 1)))) {
+    return res.status(400).json({ error: 'BAD_DECIMAL', message: 'each leg needs decimal odds > 1' });
+  }
+  try {
+    const data = await spawnPythonJson(SLIP_LINTER, ['--json'], JSON.stringify({ slips }));
+    res.json({ success: true, data });
+  } catch {
+    res.status(500).json({ error: 'LINTER_FAILED' });
+  }
+});
+
+interface BankCandidate { match: string; selection: string; decimal: number; prob: number }
+// BANK BUILDER — constructs the 3-5x growth-lane ticket from model edges (rule 14
+// winning pattern: 2-3 legs, different matches, every leg probable). Win-prob
+// ranked, linter-approved, returned tickets never share a leg. Pure local compute.
+app.post('/api/bank-builder', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 30, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  interface SlateGame { name: string; h2h: number[] }
+  const { candidates, games, live, sport, n_tickets, bankroll } = req.body as {
+    candidates?: BankCandidate[]; games?: SlateGame[]; live?: boolean; sport?: string; n_tickets?: number; bankroll?: number;
+  };
+  // Three feeds: pre-built candidates, a raw slate (games), or live: true —
+  // the server pulls the slate itself (Odds API quota; cached 10 min).
+  // UI sport names -> odds-api keys; soccer runs the Poisson board, the rest
+  // run sharp-anchored 2-way ML (Pinnacle fair prob x best price).
+  const DAY_CARD_SPORTS: Record<string, string> = {
+    SOCCER: 'soccer_fifa_world_cup', NBA: 'basketball_nba', WNBA: 'basketball_wnba',
+    NFL: 'americanfootball_nfl', MLB: 'baseball_mlb', NHL: 'icehockey_nhl', TENNIS: 'tennis',
+  };
+  if (live) {
+    const mapped = DAY_CARD_SPORTS[String(sport || 'SOCCER').toUpperCase()];
+    const sportKey = (mapped ?? String(sport || 'soccer_fifa_world_cup')).replace(/[^a-z0-9_]/g, '');
+    const cacheKey = `${sportKey}:${bankroll ?? 0}`;
+    const hit = dayCardCache.get(cacheKey);
+    if (hit && Date.now() - hit.at < DAY_CARD_TTL_MS) {
+      return res.json({ success: true, data: hit.data, cached: true });
+    }
+    try {
+      const data = await spawnPythonJson(BANK_BUILDER, ['--json'],
+        JSON.stringify({ live: true, sport: sportKey, n_tickets, bankroll }), 30_000);
+      dayCardCache.set(cacheKey, { at: Date.now(), data });
+      return res.json({ success: true, data });
+    } catch (e: unknown) {
+      return res.status(502).json({ error: 'LIVE_SLATE_FAILED', message: e instanceof Error ? e.message : String(e) });
+    }
+  }
+  const hasGames = Array.isArray(games) && games.length > 0;
+  if (!hasGames && (!Array.isArray(candidates) || candidates.length === 0)) {
+    return res.status(400).json({ error: 'NEED_CANDIDATES_OR_GAMES', message: 'body: { candidates: [{ match, selection, decimal, prob }] } or { games: [{ name, h2h: [h,d,a], totals?, btts?, dc_x2?, dc_1x? }] } or { live: true }' });
+  }
+  if (hasGames && games.some(g => !g?.name || !Array.isArray(g?.h2h) || g.h2h.length !== 3 || g.h2h.some(o => typeof o !== 'number' || !(o > 1)))) {
+    return res.status(400).json({ error: 'BAD_GAME', message: 'each game needs name and h2h: [home, draw, away] decimal odds > 1' });
+  }
+  if (!hasGames && candidates!.some(c => typeof c?.decimal !== 'number' || !(c.decimal > 1)
+      || typeof c?.prob !== 'number' || !(c.prob > 0 && c.prob < 1)
+      || !c?.match || !c?.selection)) {
+    return res.status(400).json({ error: 'BAD_CANDIDATE', message: 'each candidate needs match, selection, decimal > 1, prob in (0,1)' });
+  }
+  try {
+    const data = await spawnPythonJson(BANK_BUILDER, ['--json'], JSON.stringify(
+      hasGames ? { games, n_tickets, bankroll } : { candidates, n_tickets, bankroll }));
+    res.json({ success: true, data });
+  } catch {
+    res.status(500).json({ error: 'BUILDER_FAILED' });
+  }
+});
+
+// LEDGER REPORT — CLV grading + model calibration over the booked picks. Reads
+// data/pick_ledger.json only; no Odds API call, safe in dev/test.
+app.get('/api/ledger/report', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 30, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  try {
+    const data = await spawnPythonJson(LEDGER_REPORT, ['--json'], null);
+    res.json({ success: true, data });
+  } catch (e: unknown) {
+    res.status(500).json({ error: 'REPORT_FAILED', message: e instanceof Error ? e.message : String(e) });
+  }
+});
+
+// Full board — every priceable market + fair odds (fire if book >= fair).
+// Proxies the edge_api /full-board endpoint so the front-end Game Breakdown can
+// render all markets. No external API: pure model math off the supplied 1X2.
+app.post('/api/full-board', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 20, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  const { home_team, away_team, home_odds, draw_odds, away_odds } = req.body ?? {};
+  if (home_odds == null || draw_odds == null || away_odds == null) {
+    return res.status(400).json({ error: 'NEED_1X2_DECIMAL_ODDS' });
+  }
+  try {
+    const r = await fetch('http://127.0.0.1:8001/full-board', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ home_team, away_team, home_odds, draw_odds, away_odds }),
+      signal: AbortSignal.timeout(4000),
+    });
+    if (!r.ok) return res.status(502).json({ error: 'EDGE_API_ERROR', status: r.status });
+    res.json({ success: true, data: await r.json() });
+  } catch (e: unknown) {
+    res.status(503).json({ error: 'EDGE_API_UNAVAILABLE', message: e instanceof Error ? e.message : String(e) });
+  }
+});
+
+// Player prop simulator — REAL game logs (ESPN/Sofascore, free) -> distribution
+// fit -> Monte Carlo -> P(over line) + fair/min odds + BET/LEAN/NO_BET.
+// Live network per call (game-log fetch): real usage only, never debug.
+app.post('/api/player-prop', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 20, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  const { sport, player, stat, line, odds_over, odds_under, teammates_out, opponent } = req.body ?? {};
+  if (!sport || !player || !stat || line == null) {
+    return res.status(400).json({ error: 'NEED_SPORT_PLAYER_STAT_LINE' });
+  }
+  try {
+    const r = await fetch('http://127.0.0.1:8001/player-prop', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sport, player, stat, line, odds_over, odds_under, teammates_out, opponent }),
+      signal: AbortSignal.timeout(45_000), // soccer/vacuum = one fetch per game/teammate
+    });
+    if (!r.ok) return res.status(502).json({ error: 'EDGE_API_ERROR', status: r.status });
+    res.json({ success: true, data: await r.json() });
+  } catch (e: unknown) {
+    res.status(503).json({ error: 'EDGE_API_UNAVAILABLE', message: e instanceof Error ? e.message : String(e) });
+  }
+});
+
+// ── Tennis rankings auto-refresh — ATP/WTA ranks move weekly (publish every Monday).
+// Pulls the OFFICIAL ATP+WTA ranks via ESPN (free, 0 Odds-API quota) into
+// all_ratings.json and stamps data/ratings_meta.json so stale ranks can be flagged.
+const TENNIS_RANKS_FETCH = path.resolve(process.cwd(), 'scripts/fetch_tennis_ratings.py');
+// Form + serve stats rot too (found 2026-07-18: form file built Jul 1 missed the
+// Badosa comeback and the model faded her) — same weekly refresh, same free sources.
+const TENNIS_FORM_FETCH = path.resolve(process.cwd(), 'scripts/fetch_tennis_form.py');
+const TENNIS_SERVE_FETCH = path.resolve(process.cwd(), 'scripts/fetch_tennis_serve_stats.py');
+
+function runPyFetch(script: string, timeoutMs: number): Promise<{ ok: boolean; out: string }> {
+  return new Promise((resolve) => {
+    const py = spawn('python3', [script]);
+    let out = '';
+    py.stdout.on('data', (c: Buffer) => { out += c.toString(); });
+    py.stderr.on('data', (c: Buffer) => { out += c.toString(); });
+    const timer = setTimeout(() => { py.kill(); resolve({ ok: false, out: 'timeout' }); }, timeoutMs);
+    py.on('close', (code) => { clearTimeout(timer); resolve({ ok: code === 0, out: out.slice(-400) }); });
+  });
+}
+
+async function refreshTennisRanks(): Promise<{ ok: boolean; out: string }> {
+  const ranks = await runPyFetch(TENNIS_RANKS_FETCH, 30_000);
+  // form/serve are best-effort: a slow xlsx mirror must not fail the rank refresh
+  const form = await runPyFetch(TENNIS_FORM_FETCH, 180_000);
+  const serve = await runPyFetch(TENNIS_SERVE_FETCH, 180_000);
+  return {
+    ok: ranks.ok,
+    out: `ranks:${ranks.ok ? 'ok' : 'FAIL'} form:${form.ok ? 'ok' : 'FAIL'} ` +
+         `serve:${serve.ok ? 'ok' : 'FAIL'} | ${ranks.out.slice(-160)}`,
+  };
+}
+
+// Manual trigger — the weekly cron handles the routine refresh.
+app.post('/api/refresh-rankings', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 3, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  const r = await refreshTennisRanks();
+  if (!r.ok) return res.status(502).json({ error: 'REFRESH_FAILED', detail: r.out });
+  res.json({ success: true, detail: r.out });
+});
+
 const distPath = path.resolve(process.cwd(), 'dist');
 app.use(express.static(distPath));
 app.get('/{*splat}', (_req, res) => {
   res.sendFile(path.join(distPath, 'index.html'));
 });
 
+// Auto-CLV capture — OFF by default so dev/test never call the Odds API (CLAUDE.md).
+// Set ENABLE_CLV_CAPTURE=true in production to stamp closing lines every 15 min.
+if (process.env.ENABLE_CLV_CAPTURE === 'true') {
+  cron.schedule('*/15 * * * *', () => {
+    runClvCapture()
+      .then(r => { if (r.stamped) console.info(`[CLV] stamped ${r.stamped}/${r.checked} closing lines`); })
+      .catch(e => console.error('[CLV] capture failed:', e instanceof Error ? e.message : String(e)));
+  });
+  console.info('[CLV] auto-capture enabled — every 15 min');
+}
+
+// Tennis ranks auto-refresh — ATP/WTA rankings publish every Monday. ESPN is free
+// (0 Odds-API quota), so this runs by default; set DISABLE_RANK_REFRESH=true to skip.
+if (process.env.DISABLE_RANK_REFRESH !== 'true') {
+  cron.schedule('0 6 * * 1', () => {   // Mondays 06:00 — just after ranks publish
+    refreshTennisRanks()
+      .then(r => console.info(`[RANKS] weekly tennis refresh ${r.ok ? 'ok' : 'FAILED'}`))
+      .catch(e => console.error('[RANKS] refresh failed:', e instanceof Error ? e.message : String(e)));
+  });
+  console.info('[RANKS] weekly tennis rank refresh scheduled — Mondays 06:00');
+}
+
 app.listen(port, '0.0.0.0', () => {
-  console.log(`🚀 CTE LOCKS Engine live → http://localhost:${port}`);
+  console.info(`CTE LOCKS Engine live → http://localhost:${port}`);
 });

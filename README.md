@@ -1,53 +1,51 @@
-# V15.0 // THE GOD-ENGINE TERMINAL
+# CTE LOCKS // CAVEMAN BETTING TERMINAL (v16.0)
 
-A state-of-the-art **Swarm Intelligence** platform designed for institutional-grade market extraction and high-conviction predictive modeling. The system has been "System Purified," eliminating all legacy technical debt to operate on pure first-principles reasoning.
+A state-of-the-art **Swarm Intelligence** platform designed for institutional-grade market extraction and high-conviction predictive modeling. Formerly known as the God-Engine, this system has been **"System Purified,"** eliminating all legacy technical debt to operate on pure first-principles reasoning and "Caveman" mathematical honesty.
 
-## 🦾 Core Philosophy: "Model x Machine"
+## 🦾 Core Philosophy: "EV Over Narrative"
 
-The God-Engine V15.0 operates via a multi-agent swarm architecture inspired by Andrej Karpathy's "Skills" framework. It maintains a strict visual and logical contrast between the sophisticated human-facing "Model" and the clinical, technical "Machine."
+**CTE LOCKS** operates via a multi-agent swarm architecture inspired by the [Matt Pocock Skills](https://github.com/mattpocock/skills) framework. It maintains a strict discipline: if the math doesn't show an edge, the bet doesn't exist.
 
-## 🧠 Swarm Archetypes (Karpathy Edition)
+## 🧠 The Caveman Swarm
 
-The engine orchestrates three world-class expert personas to achieve absolute predictive confluence:
+The engine orchestrates specialized AI "Skills" to achieve absolute predictive confluence:
 
-1.  **KARPATHY_QUANT**: Senior Quantitative Researcher. Focused on **Σ_Deviation** and global liquidity analysis.
-2.  **KARPATHY_RESEARCHER**: Strategic Predictive Analyst. Uses MiroFish-style narrative simulation to filter out retail noise.
-3.  **KARPATHY_EXECUTIVE**: Tier-1 Hedge Fund Portfolio Manager. Synthesizes swarm data into binary execution commands.
+1.  **CTE_CORE**: The foundational "Caveman" filter. Enforces mathematical honesty and rejects public narrative fluff.
+2.  **QUANT_NODE (Port 8002)**: Python-HFT simulation node using **Poisson Distributions** and **Odds Ratio Devigging** to find true probability.
+3.  **EDGE_API (Port 8001)**: Dynamic ML model server providing sport-specific XGBoost inference for NBA, MLB, NFL, and Soccer.
+4.  **SWARM_EXECUTIVE**: Synthesizes quant data, injury reports, and sharp signals into high-conviction execution commands.
 
-## 🛠️ Tech Stack: Zero-Dark-Thirty Standard
+## 🛠️ Tech Stack: The Purified Standard
 
-- **Brain**: Google Gemini 2.5 Flash // AgentSwarm Pipeline.
-- **Backend**: Pure TypeScript // Express // Institutional Type-Hardening.
-- **Frontend**: React // Vite // Framer Motion // Tailwind (High-Contrast Minimalism).
-- **Execution**: Recursive Logic // Sigma-Mutation Hashes // html2canvas social proofing.
+- **Brain**: Claude 3.5 Sonnet / DeepSeek V3 (Multi-Provider Failover via **9Router**).
+- **Quant Node**: Python 3.11 // FastAPI // Scipy (Poisson/Normal CDF).
+- **Orchestrator**: TypeScript // Express // **AgentMemory** (Persistent Persistence).
+- **Skills**: Modular `.md` skill modules for NBA, MLB, NFL, Soccer, Tennis, and F1.
 
 ## 🚀 Terminal Execution
 
 ### 1. Prerequisites
-- Node.js (v20+)
-- Gemini API Key in `.env`
+- Node.js (v20+) & Python 3.11+
+- API Keys for Anthropic, Gemini, or DeepSeek in `.env`
 
 ### 2. Ignition
-Install the refined dependencies and start the dual-engine terminal:
+The system is managed via PM2 for institutional stability:
 
 ```bash
 # Total Hardening Setup
 npm install
 
-# Start the Backend Machine (Port 3001)
-# Terminal A:
-npx tsx server.ts
+# Start the CTE Swarm (Orchestrator + Math Nodes)
+pm2 start ecosystem.config.cjs
 
-# Start the Model Interface (Port 5173)
-# Terminal B:
+# Start the Frontend Interface
 npm run dev
 ```
 
 The terminal will be available at: **[http://localhost:5173](http://localhost:5173)**
 
-## 📊 Sigma-Proof Audit (V15.0)
-
-Every analysis generates a **Σ_Hash** and is verifiable via the **POST-TRADE_ANALYSIS** portal. Use the **AUDIT** (The Machine) theme in the visualizer for professional social proof.
+## 📊 The "Caveman" Standard
+Every analysis is stress-tested against the **Sharp Signal Filter** (Pinnacle vs Soft-Book Gaps). If the edge strength is not **STRONG** or **MODERATE**, the system labels it as a avoid.
 
 ---
 **STATUS: SYSTEM_PURIFIED. 🚀🦾Σ**

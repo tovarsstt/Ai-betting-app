@@ -1,10 +1,21 @@
 import type { ReactNode } from "react";
 import { Link, useLocation } from "wouter";
-import { SidebarProvider, Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarTrigger, SidebarHeader } from "@/components/ui/sidebar";
-import { Swords } from "lucide-react";
+import {
+  SidebarProvider, Sidebar, SidebarContent, SidebarGroup,
+  SidebarGroupContent, SidebarMenu, SidebarMenuItem,
+  SidebarMenuButton, SidebarTrigger, SidebarHeader
+} from "@/components/ui/sidebar";
+import { Swords, TrendingUp, BarChart3, Zap, Shield, Trophy, Radar, Crosshair } from "lucide-react";
 
 const navigation = [
   { name: "Game Breakdown", href: "/", icon: Swords },
+  { name: "Pick Report", href: "/pick-report", icon: Crosshair },
+  { name: "Parlays", href: "/parlays", icon: TrendingUp },
+  { name: "Alpha Sheets", href: "/alpha-sheets", icon: BarChart3 },
+  { name: "Sharp Scanner", href: "/sharp-scanner", icon: Zap },
+  { name: "Arbitrage", href: "/arbitrage", icon: Shield },
+  { name: "Upset Radar", href: "/upset-radar", icon: Radar },
+  { name: "Track Record", href: "/track-record", icon: Trophy },
 ];
 
 export function AppLayout({ children }: { children: ReactNode }) {
@@ -17,23 +28,18 @@ export function AppLayout({ children }: { children: ReactNode }) {
         {/* ── Sidebar ── */}
         <Sidebar className="border-r border-sidebar-border bg-sidebar">
           <SidebarHeader className="p-5 border-b border-sidebar-border/50">
-            <div className="flex items-center gap-3">
-              <div
-                className="w-9 h-9 rounded-xl flex items-center justify-center shadow-lg shrink-0"
-                style={{ background: "linear-gradient(135deg, #7c3aed 0%, #2563eb 100%)" }}
-              >
-                <span className="text-white font-black text-base select-none">🦴</span>
-              </div>
+            <Link href="/" className="flex items-center gap-3 cursor-pointer">
+              <img src="/brand/caveman-locks-icon.svg" alt="Caveman Locks" className="w-9 h-9 shrink-0" />
               <div className="flex flex-col min-w-0">
                 <span
                   className="font-display font-bold text-base truncate"
-                  style={{ background: "linear-gradient(90deg,#a78bfa,#60a5fa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}
+                  style={{ color: "#C8860A" }}
                 >
                   Caveman Locks
                 </span>
                 <span className="text-[10px] text-muted-foreground uppercase tracking-widest">CTE Certified Picks</span>
               </div>
-            </div>
+            </Link>
           </SidebarHeader>
 
           <SidebarContent className="p-2 pt-3">
@@ -56,7 +62,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
                           {isActive && (
                             <div
                               className="ml-auto w-1.5 h-1.5 rounded-full"
-                              style={{ background: "linear-gradient(135deg,#7c3aed,#2563eb)" }}
+                              style={{ background: "#C8860A" }}
                             />
                           )}
                         </SidebarMenuButton>
@@ -69,7 +75,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           </SidebarContent>
 
           <div className="mt-auto p-4 border-t border-sidebar-border/30">
-            <p className="text-[10px] text-muted-foreground/40 text-center uppercase tracking-widest">caveman locks</p>
+            <p className="text-[10px] text-muted-foreground/40 text-center uppercase tracking-widest">cte locks v17.0</p>
           </div>
         </Sidebar>
 
@@ -80,20 +86,20 @@ export function AppLayout({ children }: { children: ReactNode }) {
               <SidebarTrigger className="text-muted-foreground hover:text-foreground transition-colors" />
               <div className="h-4 w-px bg-border hidden sm:block" />
               <h1 className="text-lg font-display font-bold tracking-wide hidden sm:block">
-                Game Breakdown
+                {navigation.find(n => n.href === location)?.name || "CTE LOCKS"}
               </h1>
             </div>
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/10">
-              <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-              <span className="text-xs font-bold text-primary uppercase tracking-wider">Live</span>
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#C8860A]/30 bg-[#C8860A]/10">
+              <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: "#C8860A" }} />
+              <span className="text-xs font-bold uppercase tracking-wider" style={{ color: "#C8860A" }}>Live</span>
             </div>
           </header>
 
           <main
-            className="flex-1 p-6 lg:p-8 overflow-y-auto"
-            style={{ background: "radial-gradient(ellipse at top right, rgba(124,58,237,0.07) 0%, transparent 55%), radial-gradient(ellipse at bottom left, rgba(37,99,235,0.05) 0%, transparent 55%)" }}
+            className="flex-1 p-4 md:p-6 lg:p-8 overflow-y-auto"
+            style={{ background: "radial-gradient(ellipse at top right, rgba(200,134,10,0.06) 0%, transparent 55%), radial-gradient(ellipse at bottom left, rgba(139,94,6,0.05) 0%, transparent 55%)" }}
           >
-            <div className="max-w-7xl mx-auto space-y-6">{children}</div>
+            <div className="max-w-7xl mx-auto">{children}</div>
           </main>
         </div>
       </div>
