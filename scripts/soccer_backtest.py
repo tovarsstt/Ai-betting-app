@@ -22,8 +22,9 @@ from __future__ import annotations
 
 import csv
 import json
+import math
 import sys
-from datetime import date
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -116,8 +117,54 @@ def backtest(start_from: str = DEFAULT_FROM) -> dict:
     return out
 
 
+# Where edge_api reads measured skill from. Writing it here is what turns the
+# backtest from a number in a report into a guard the engine actually applies
+# (global rule 19) — re-run this and the per-league confidence cap updates itself.
+SKILL_FILE = Path(__file__).parent.parent / "data" / "soccer" / "model_skill.json"
+
+
+def save_skill(result: dict, path: Path = SKILL_FILE) -> None:
+    """Persist per-league measured accuracy vs the always-home baseline.
+
+    A league whose accuracy does not clear the baseline has NO demonstrated
+    skill — the engine must not present a confident 1X2 number there.
+    """
+    baseline = result.get("always_home_baseline")
+
+    def demonstrated(acc: float, n: int) -> bool:
+        """Does this league's accuracy beat the always-home baseline by more than
+        noise? A raw `acc > baseline` is far too weak: the Premier League reads
+        .4483 vs a .4355 baseline on n=290 — ahead by 1.3 points when one standard
+        error is 2.9 points. Calling that skill is how a model with none gets
+        presented as confident. One-sided 95% (z=1.64) against binomial SE."""
+        if not n or baseline is None:
+            return False
+        se = math.sqrt(max(acc * (1 - acc), 1e-9) / n)
+        return (acc - baseline) > 1.64 * se
+
+    leagues = {
+        lg: {"n": v["n"], "accuracy": v["accuracy"], "rps": v["rps"],
+             "edge_vs_baseline": round(v["accuracy"] - baseline, 4) if baseline else None,
+             "beats_baseline": demonstrated(v["accuracy"], v["n"])}
+        for lg, v in (result.get("per_league") or {}).items()
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps({
+        "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "window_from": result.get("window_from"),
+        "n_games": result.get("n_games"),
+        "overall_accuracy": result.get("accuracy"),
+        "always_home_baseline": baseline,
+        "leagues": leagues,
+    }, indent=1))
+
+
 if __name__ == "__main__":
     frm = DEFAULT_FROM
     if "--from" in sys.argv:
         frm = sys.argv[sys.argv.index("--from") + 1]
-    print(json.dumps(backtest(frm), indent=1))
+    res = backtest(frm)
+    print(json.dumps(res, indent=1))
+    if "error" not in res:
+        save_skill(res)
+        print(f"\nwrote measured skill -> {SKILL_FILE}", file=sys.stderr)
