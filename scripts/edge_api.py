@@ -42,6 +42,8 @@ import tennis_scanner as tsc
 import period_model as pmod
 import club_form as cform
 import team_style as tstyle
+import tennis_style as tnstyle
+import pace_profile as pace
 import nfl_week1_prior as nflw1
 import line_shop as lshop
 from typing import List
@@ -1345,6 +1347,21 @@ def predict(req: PredictReq):
     extra["win_simulation"] = {**wsim.simulate_single(sim_prob, _to_decimal(sim_odds)),
                                "side": sim_side}
 
+    # Rule 28 across every sport — the niche context that matters HERE, which
+    # differs completely by sport. Tennis: surface, conditions, stage, nerve.
+    # Period sports: pace, quarter shape, start/close, variance.
+    try:
+        if sport == "TENNIS":
+            extra["game_context"] = tnstyle.matchup(
+                req.home_team, req.away_team,
+                tour="wta" if (h_r or {}).get("tour") == "WTA" else "atp",
+                surface=(req.surface or None))
+        elif sport in ("NBA", "WNBA", "NFL", "NHL"):
+            extra["game_context"] = pace.matchup(req.home_team, req.away_team,
+                                                 sport.lower())
+    except Exception as ce:                                    # noqa: BLE001
+        extra["game_context"] = {"error": str(ce)[:150]}
+
     # WIN PROBABILITY OF THE PICK ITSELF — not just "who wins the match".
     # A pick can be over 21.5 games, over 2.5 goals, a handicap, a total or a
     # prop; each has its OWN probability of landing, and that is the number the
@@ -2328,6 +2345,29 @@ def insider_sharp_moves(sport: str, min_move_pct: float = 5.0):
         return {"status": "OK", "sport": sport, "count": len(rows), "data": rows}
     except tbi.BettingInsiderError as e:
         return {"status": "UNAVAILABLE", "sport": sport, "note": str(e), "data": None}
+
+
+@app.get("/tennis-style/{player}")
+def tennis_style_route(player: str, tour: str = "atp"):
+    """Surface / conditions / stage / nerve profile for one player."""
+    out = tnstyle.profile(player, tour)
+    return out or {"error": "TOO_FEW_MATCHES", "player": player,
+                   "note": f"fewer than {tnstyle.MIN_TOTAL} matches on file"}
+
+
+@app.get("/pace/{sport}/{team}")
+def pace_route(sport: str, team: str):
+    """Pace, period shape, start/close and variance for a period sport."""
+    out = pace.profile(team, sport)
+    return out or {"error": "TOO_FEW_GAMES", "team": team, "sport": sport}
+
+
+@app.get("/pace/{sport}")
+def pace_league_route(sport: str):
+    """League baseline a team's pace is fast or slow AGAINST."""
+    out = pace.league_shape(sport)
+    return out or {"error": "NO_DATA", "sport": sport,
+                   "note": "run fetch_period_scores.py for this sport"}
 
 
 @app.get("/style/{team}")
