@@ -71,7 +71,7 @@ def _sides(team: str, games: list[dict]) -> list[dict]:
         else:
             continue
         out.append({"date": g["date"], "venue": venue, "pf": pf, "pa": pa,
-                    "ot": g.get("ot", False),
+                    "ot": g.get("ot", False), "padded": g.get("padded", False),
                     "opponent": g["away"] if venue == "home" else g["home"]})
     return out
 
@@ -93,8 +93,10 @@ def profile(team: str, sport: str, limit: int = 60) -> Optional[dict]:
     # Per-period shares and margins, regulation only — overtime is its own thing.
     per = []
     for p in range(reg):
-        pf = [m["pf"][p] for m in ms if len(m["pf"]) > p]
-        pa = [m["pa"][p] for m in ms if len(m["pa"]) > p]
+        rows = [m for m in ms if len(m["pf"]) > p and len(m["pa"]) > p
+                and not (p == reg - 1 and m.get("padded"))]
+        pf = [m["pf"][p] for m in rows]
+        pa = [m["pa"][p] for m in rows]
         if not pf:
             continue
         per.append({
@@ -102,6 +104,7 @@ def profile(team: str, sport: str, limit: int = 60) -> Optional[dict]:
             "points_for_pg": round(statistics.fmean(pf), 2),
             "points_against_pg": round(statistics.fmean(pa), 2),
             "margin_pg": round(statistics.fmean(pf) - statistics.fmean(pa), 2),
+            "n": len(pf),
             "share_of_own_points": round(sum(pf) / sum(tot_for), 3) if sum(tot_for) else None,
         })
 
@@ -145,10 +148,15 @@ def league_shape(sport: str) -> Optional[dict]:
     games = doc["games"]
     per = []
     for p in range(reg):
-        vals = [g["home_periods"][p] + g["away_periods"][p]
-                for g in games if len(g["home_periods"]) > p and len(g["away_periods"]) > p]
+        # A padded final period is a half-inning that was never played, not a
+        # scoreless one. Averaging the placeholder zero in would understate the
+        # last period badly — and in baseball it would do so only on home wins.
+        rows = [g for g in games
+                if len(g["home_periods"]) > p and len(g["away_periods"]) > p
+                and not (p == reg - 1 and g.get("padded"))]
+        vals = [g["home_periods"][p] + g["away_periods"][p] for g in rows]
         if vals:
-            per.append({"period": f"P{p + 1}",
+            per.append({"period": f"P{p + 1}", "n": len(vals),
                         "total_pg": round(statistics.fmean(vals), 2)})
     totals = [sum(g["home_periods"]) + sum(g["away_periods"]) for g in games]
     return {

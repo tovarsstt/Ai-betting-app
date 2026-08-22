@@ -44,6 +44,7 @@ import club_form as cform
 import team_style as tstyle
 import tennis_style as tnstyle
 import pace_profile as pace
+import f1_style as f1
 import nfl_week1_prior as nflw1
 import line_shop as lshop
 from typing import List
@@ -2345,6 +2346,29 @@ def insider_sharp_moves(sport: str, min_move_pct: float = 5.0):
         return {"status": "OK", "sport": sport, "count": len(rows), "data": rows}
     except tbi.BettingInsiderError as e:
         return {"status": "UNAVAILABLE", "sport": sport, "note": str(e), "data": None}
+
+
+@app.get("/f1/driver/{name}")
+def f1_driver_route(name: str):
+    """Reliability, racecraft and grid conversion for one driver."""
+    out = f1.driver(name)
+    return out or {"error": "NO_PROFILE", "driver": name,
+                   "note": f"unknown driver, ambiguous surname, or fewer than "
+                           f"{f1.MIN_RACES} races on file"}
+
+
+@app.get("/f1/circuit/{cid}")
+def f1_circuit_route(cid: str):
+    """Overtaking difficulty and attrition at one circuit."""
+    out = f1.circuit(cid)
+    return out or {"error": "NO_PROFILE", "circuit": cid}
+
+
+@app.get("/f1/teammates/{constructor}")
+def f1_teammates_route(constructor: str):
+    """Teammate head-to-head — the only F1 comparison that holds the car equal."""
+    out = f1.teammates(constructor)
+    return out or {"error": "NO_PROFILE", "constructor": constructor}
 
 
 @app.get("/tennis-style/{player}")

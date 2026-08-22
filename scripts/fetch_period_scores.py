@@ -41,6 +41,7 @@ SPORTS = {
     "nba": ("basketball/nba", 4),
     "nhl": ("hockey/nhl", 3),
     "wnba": ("basketball/wnba", 4),
+    "mlb": ("baseball/mlb", 9),
 }
 
 # Rough season windows so we only ask for days that can have games.
@@ -49,6 +50,7 @@ WINDOWS = {
     "nba": ((10, 15), (6, 25)),
     "nhl": ((10, 1), (6, 25)),
     "wnba": ((5, 10), (10, 25)),
+    "mlb": ((3, 20), (10, 5)),
 }
 TIMEOUT = 20
 
@@ -100,8 +102,20 @@ def _scrape_day(path: str, day: str, regulation: int) -> list[dict]:
         if "home" not in sides or "away" not in sides:
             continue
         hp, ap = sides["home"]["periods"], sides["away"]["periods"]
-        if len(hp) != len(ap) or len(hp) < regulation:
+        # A walk-off or an untaken bottom-9th leaves the home side one period
+        # short. That is a COMPLETE game, and it is disproportionately a home
+        # win — dropping those would bias every split built on this data.
+        if abs(len(hp) - len(ap)) > 1 or min(len(hp), len(ap)) < regulation - 1:
             continue                       # malformed or abandoned
+        if max(len(hp), len(ap)) < regulation:
+            continue                       # shortened game (rain, mercy)
+        # Pad the short side so period indexes stay aligned; a skipped
+        # half-inning really did produce zero runs.
+        padded = len(hp) != len(ap)
+        while len(hp) < len(ap):
+            hp = hp + [0.0]
+        while len(ap) < len(hp):
+            ap = ap + [0.0]
         games.append({
             "date": ev.get("date", "")[:10],
             "home": sides["home"]["team"], "away": sides["away"]["team"],
@@ -109,6 +123,11 @@ def _scrape_day(path: str, day: str, regulation: int) -> list[dict]:
             # Anything beyond regulation is overtime — kept so OT markets can be
             # priced off the real frequency instead of a guess.
             "ot": len(hp) > regulation,
+            # True when a half-period was never played (baseball walk-off /
+            # untaken bottom 9th). The padded zero is NOT a real scoreless
+            # period, so the final-period average must exclude these or it
+            # reads far too low.
+            "padded": padded,
         })
     return games
 

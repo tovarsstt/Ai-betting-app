@@ -151,3 +151,92 @@ def test_matchup_names_the_side_it_could_not_measure():
 
 def test_pace_is_labelled_description():
     assert "not prediction" in pp.profile("Fast", "nba")["source"]
+
+
+# ── F1 ─────────────────────────────────────────────────────────────────────
+
+def _f1(driver, constructor, grid, pos, status="Finished", rnd=1, circuit="spa"):
+    fin = status in ("Finished", "Lapped")
+    return {"year": 2026, "round": rnd, "race": "GP", "circuit": circuit,
+            "date": "2026-01-01", "driver": driver, "driver_name": driver.title(),
+            "constructor": constructor, "grid": grid, "position": pos,
+            "points": 25.0 if pos == 1 else 0.0, "status": status,
+            "finished": fin, "laps": 50}
+
+
+F1ROWS = (
+    # A quick, reliable driver who wins from pole.
+    [_f1("max_verstappen", "rb", 1, 1, rnd=i) for i in range(1, 11)]
+    # His teammate, same car, always behind.
+    + [_f1("perez", "rb", 4, 3, rnd=i) for i in range(1, 11)]
+    # A lapped runner — SAW THE FLAG, must not count as a DNF.
+    + [_f1("lapped_guy", "midfield", 10, 12, status="Lapped", rnd=i) for i in range(1, 11)]
+    # A genuinely unreliable driver.
+    + [_f1("breaker", "midfield", 5, 0, status="Retired", rnd=i) for i in range(1, 6)]
+    + [_f1("breaker", "midfield", 5, 6, rnd=i) for i in range(6, 11)]
+)
+
+
+@pytest.fixture(autouse=True)
+def stub_f1(monkeypatch):
+    import f1_style as f1
+    monkeypatch.setattr(f1, "load", lambda: F1ROWS)
+
+
+def test_lapped_car_is_a_finisher_not_a_dnf():
+    """jolpica writes 'Lapped' where Ergast wrote '+1 Lap'; treating that as a
+    retirement tripled the measured attrition rate."""
+    import f1_style as f1
+    assert f1.driver("lapped_guy")["reliability"]["dnf_rate"] == 0.0
+
+
+def test_dnf_rate_is_counted():
+    import f1_style as f1
+    assert f1.driver("breaker")["reliability"]["dnf_rate"] == 0.5
+
+
+def test_driver_id_resolves_from_bare_surname():
+    """Verstappen's id is `max_verstappen` — a surname lookup must still work."""
+    import f1_style as f1
+    assert f1.resolve_driver("Verstappen") == "max_verstappen"
+
+
+def test_unknown_driver_is_refused_not_guessed():
+    import f1_style as f1
+    assert f1.resolve_driver("Nobody") is None
+    assert f1.driver("Nobody") is None
+
+
+def test_circuit_reports_overtaking_difficulty():
+    import f1_style as f1
+    c = f1.circuit("spa")
+    assert c["overtaking"]["winner_avg_grid"] == 1.0      # always won from pole
+    assert c["overtaking"]["avg_places_changed"] is not None
+
+
+def test_teammate_h2h_holds_the_car_constant():
+    import f1_style as f1
+    h = f1.teammates("rb")["head_to_head"]
+    assert h["max_verstappen"]["beat_pct"] == 1.0
+    assert h["perez"]["beat_pct"] == 0.0
+
+
+def test_teammate_h2h_ignores_races_a_car_broke():
+    """A blown engine is not a verdict on the driver."""
+    import f1_style as f1
+    rows = F1ROWS + [_f1("a", "solo", 1, 0, status="Retired", rnd=20),
+                     _f1("b", "solo", 2, 1, rnd=20)]
+    assert f1.teammates("solo", rows) is None       # no comparable race
+
+
+def test_pit_lane_start_does_not_poison_positions_gained():
+    """grid 0 means a pit-lane start, not P0."""
+    import f1_style as f1
+    rows = F1ROWS + [_f1("max_verstappen", "rb", 0, 5, rnd=30)]
+    assert f1.driver("max_verstappen", rows)["race_craft"]["avg_positions_gained"] == 0.0
+
+
+def test_f1_context_names_the_driver_it_could_not_measure():
+    import f1_style as f1
+    out = f1.context(["max_verstappen", "Nobody"])
+    assert out["drivers"]["Nobody"] is None and "Nobody" in out["note"]
