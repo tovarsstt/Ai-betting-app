@@ -1,0 +1,117 @@
+{
+ "generated": "2026-08-22",
+ "headline": "Neither the soccer 1X2 model nor the tennis win model beats the market price.",
+ "results": {
+  "tennis_atp": {
+   "tour": "atp",
+   "year": 2026,
+   "best_of": 3,
+   "price_used": "avg",
+   "matches_scored": 696,
+   "vs_market": {
+    "model_brier": 0.2272,
+    "market_brier": 0.214,
+    "note": "lower is better; the market's is the number to beat"
+   },
+   "point_in_time": true,
+   "betting": {
+    "edge_threshold": 0.05,
+    "bets": 457,
+    "wins": 201,
+    "hit_rate": 0.4398,
+    "roi": -0.0522,
+    "profit_units": -23.86,
+    "avg_price": 2.735,
+    "model_expected_wins": 258.0,
+    "t_stat": -0.81,
+    "significant": false
+   }
+  },
+  "tennis_wta": {
+   "tour": "wta",
+   "year": 2026,
+   "best_of": 3,
+   "price_used": "avg",
+   "matches_scored": 811,
+   "vs_market": {
+    "model_brier": 0.2169,
+    "market_brier": 0.2009,
+    "note": "lower is better; the market's is the number to beat"
+   },
+   "point_in_time": true,
+   "betting": {
+    "edge_threshold": 0.05,
+    "bets": 509,
+    "wins": 173,
+    "hit_rate": 0.3399,
+    "roi": -0.1695,
+    "profit_units": -86.28,
+    "avg_price": 3.417,
+    "model_expected_wins": 251.4,
+    "t_stat": -2.32,
+    "significant": true
+   }
+  },
+  "soccer_close": {
+   "window_from": "2025-11-01",
+   "price_used": 4.75,
+   "edge_threshold": 0.05,
+   "games_priced": 1311,
+   "bets": 733,
+   "wins": 225,
+   "hit_rate": 0.307,
+   "roi": -0.0955,
+   "profit_units": -70.0,
+   "avg_price": 3.571,
+   "calibration": {
+    "model_expected_wins": 306.5,
+    "actual_wins": 225,
+    "note": "model claimed this many winners; reality delivered the other. A big gap means the edge was imaginary, not just unlucky."
+   },
+   "vs_market": {
+    "model_brier": 0.6018,
+    "market_brier": 0.585,
+    "note": "lower is better. If the market's is lower, the model is NOT adding information over the closing price, whatever the ROI says."
+   },
+   "by_league": {
+    "Bundesliga": {
+     "n": 133,
+     "roi": -0.2476,
+     "hit_rate": 0.2707
+    },
+    "La Liga": {
+     "n": 146,
+     "roi": -0.1423,
+     "hit_rate": 0.3562
+    },
+    "Ligue 1": {
+     "n": 115,
+     "roi": -0.1147,
+     "hit_rate": 0.3304
+    },
+    "Premier League": {
+     "n": 166,
+     "roi": 0.0382,
+     "hit_rate": 0.2711
+    },
+    "Serie A": {
+     "n": 173,
+     "roi": -0.0546,
+     "hit_rate": 0.3121
+    }
+   },
+   "unmatched_teams": [
+    "Atl. Madrid",
+    "Dep. A Coruna",
+    "Rayo Vallecano",
+    "Santander"
+   ],
+   "method": [
+    "walk-forward monthly refits; fitter blind to future games",
+    "flat 1u at the CLOSING price \u2014 no book shopping, no staking",
+    "closing line is the hardest price to beat; that is the point"
+   ]
+  }
+ },
+ "method": "walk-forward / point-in-time; flat 1u; devigged market probs"
+}

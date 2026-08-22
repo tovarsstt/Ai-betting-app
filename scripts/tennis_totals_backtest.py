@@ -122,10 +122,25 @@ def load_matches(tour: str, year: int) -> list[dict]:
         d = row[idx["Date"]] if "Date" in idx else None
         date_iso = d.date().isoformat() if hasattr(d, "date") else (
             str(d)[:10] if d else None)
+        # Closing-ish market prices, so a model can be tested against the
+        # PRICE and not just against the result. Pinnacle first (sharpest),
+        # then best-of-market, then the book average.
+        def _od(col):
+            if col not in idx:
+                return None
+            try:
+                v = float(row[idx[col]])
+            except (TypeError, ValueError):
+                return None
+            return v if v > 1.0 else None
+
         out.append({"winner": str(row[idx["Winner"]]).strip(),
                     "loser": str(row[idx["Loser"]]).strip(),
                     "date": date_iso,
-                    "sets": sets, "total_games": games, "best_of": bo})
+                    "sets": sets, "total_games": games, "best_of": bo,
+                    "odds_w": _od("PSW"), "odds_l": _od("PSL"),
+                    "max_w": _od("MaxW"), "max_l": _od("MaxL"),
+                    "avg_w": _od("AvgW"), "avg_l": _od("AvgL")})
     return out
 
 

@@ -15,7 +15,8 @@ What this enables, all COUNTED rather than asserted:
     the number that separates a strict whistle from a lenient one
   * derby intensity — cards and fouls in a specific fixture against each side's
     own baseline, so "this one is spicy" becomes a measurement
-  * closing odds (B365) — the first real CLV reference this project has had
+  * opening AND closing odds (B365), plus best-of-market closing (Max) —
+    the first real CLV reference this project has had
 
 Output: data/soccer/match_stats.csv, one row per match, superset of the columns.
 
@@ -53,14 +54,21 @@ COLS = {
     "HY": "home_yellow", "AY": "away_yellow",
     "HR": "home_red", "AR": "away_red",
     # Closing odds — a real reference price, which CLV has been missing.
-    "B365H": "close_home", "B365D": "close_draw", "B365A": "close_away",
+    # B365H/D/A are the OPENING prices; the closing ones carry a C. Conflating
+    # them made a backtest read as "beats the close" when it was really the
+    # much softer opening number — keep both, named for what they are.
+    "B365H": "open_home", "B365D": "open_draw", "B365A": "open_away",
+    "B365CH": "close_home", "B365CD": "close_draw", "B365CA": "close_away",
+    "MaxCH": "best_home", "MaxCD": "best_draw", "MaxCA": "best_away",
 }
 FIELDS = ["date", "league", "home_team", "away_team", "home_goals", "away_goals",
           "ht_home_goals", "ht_away_goals", "referee",
           "home_shots", "away_shots", "home_sot", "away_sot",
           "home_fouls", "away_fouls", "home_corners", "away_corners",
           "home_yellow", "away_yellow", "home_red", "away_red",
-          "close_home", "close_draw", "close_away"]
+          "open_home", "open_draw", "open_away",
+          "close_home", "close_draw", "close_away",
+          "best_home", "best_draw", "best_away"]
 
 
 def _season_codes(n: int = 3) -> list[str]:
@@ -116,8 +124,11 @@ def harvest(seasons: list[str] | None = None) -> dict:
     if OUT.exists():
         with OUT.open() as f:
             existing = list(csv.DictReader(f))
+    # FRESH ROWS FIRST. With `existing` first a re-fetch could never repair bad
+    # data: the stale row won the dedupe and the corrected one was dropped as a
+    # duplicate. That silently preserved a wrong odds mapping through a refetch.
     seen, merged = set(), []
-    for r in existing + rows:
+    for r in rows + existing:
         k = (r.get("date"), r.get("home_team"), r.get("away_team"))
         if k in seen:
             continue
