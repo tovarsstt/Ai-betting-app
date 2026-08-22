@@ -7,7 +7,8 @@ POST /predict  {"sport","home_team","away_team","spread","home_odds","away_odds"
 GET  /health
 GET  /teams/{sport}
 """
-import json, pickle, numpy as np
+import json, pickle, re, unicodedata
+import numpy as np
 from pathlib import Path
 from typing import Optional
 from scipy.stats import norm, poisson as sp_poisson
@@ -117,6 +118,89 @@ def league_skill(league: Optional[str]) -> Optional[dict]:
     }
 
 
+# ── Club name resolution ─────────────────────────────────────────────────────
+# The fitted ratings key off football-data.co.uk's ABBREVIATED names ("Espanol",
+# "Ath Madrid", "Sociedad"), but every caller — the odds feed, the UI, the user —
+# writes the real name. A miss did not error: it fell through to the hand-tuned
+# heuristic and produced a confident-looking garbage price. Found 2026-08-21
+# pricing Espanyol v Real Madrid, where the heuristic read Madrid 83.7% away.
+#
+# Matching is: exact, then accent/punctuation-normalised, then a curated alias,
+# then a UNIQUE token-subset match. Ambiguity refuses rather than guessing —
+# attaching the wrong club's ratings to a bet is worse than having no opinion.
+_CLUB_ALIASES = {
+    # Spain
+    "espanyol": "Espanol", "rcd espanyol": "Espanol",
+    "atletico madrid": "Ath Madrid", "atletico de madrid": "Ath Madrid",
+    "atlético madrid": "Ath Madrid", "club atletico de madrid": "Ath Madrid",
+    "athletic bilbao": "Ath Bilbao", "athletic club": "Ath Bilbao",
+    "real sociedad": "Sociedad", "rayo vallecano": "Vallecano",
+    "real betis": "Betis", "celta vigo": "Celta", "rc celta": "Celta",
+    "deportivo la coruna": "Dep. A Coruna", "deportivo": "Dep. A Coruna",
+    "racing santander": "Santander", "real oviedo": "Oviedo",
+    "real valladolid": "Valladolid", "ud las palmas": "Las Palmas",
+    "cd leganes": "Leganes", "ud almeria": "Almeria",
+    # England
+    "manchester united": "Man United", "man utd": "Man United",
+    "manchester city": "Man City", "newcastle united": "Newcastle",
+    "tottenham": "Tottenham", "tottenham hotspur": "Tottenham",
+    "wolverhampton": "Wolves", "wolverhampton wanderers": "Wolves",
+    "nottingham forest": "Nott'm Forest", "brighton": "Brighton",
+    "brighton & hove albion": "Brighton", "west ham united": "West Ham",
+    "leeds united": "Leeds", "sheffield united": "Sheffield United",
+    # Italy
+    "internazionale": "Inter", "inter milan": "Inter", "ac milan": "Milan",
+    "as roma": "Roma", "ss lazio": "Lazio", "juventus fc": "Juventus",
+    "napoli": "Napoli", "hellas verona": "Verona",
+    # Germany
+    "bayern munich": "Bayern Munich", "bayern munchen": "Bayern Munich",
+    "borussia dortmund": "Dortmund", "bayer leverkusen": "Leverkusen",
+    "borussia monchengladbach": "M'gladbach", "eintracht frankfurt": "Ein Frankfurt",
+    "rb leipzig": "RB Leipzig", "vfb stuttgart": "Stuttgart",
+    "werder bremen": "Werder Bremen", "vfl wolfsburg": "Wolfsburg",
+    # France
+    "paris saint-germain": "Paris SG", "psg": "Paris SG",
+    "paris saint germain": "Paris SG", "olympique marseille": "Marseille",
+    "olympique lyonnais": "Lyon", "as monaco": "Monaco",
+    "lille osc": "Lille", "stade rennais": "Rennes", "ogc nice": "Nice",
+}
+
+_CLUB_NOISE = re.compile(r"\b(fc|afc|cf|sc|ac|ud|cd|rc|rcd|ss|as|vfb|vfl|club|de|the)\b")
+
+
+def _norm_club(name: str) -> str:
+    """Lowercase, strip accents, drop punctuation and club-noise words."""
+    s = unicodedata.normalize("NFKD", (name or "").lower())
+    s = "".join(c for c in s if not unicodedata.combining(c))
+    s = re.sub(r"[^a-z0-9 ]+", " ", s)
+    s = _CLUB_NOISE.sub(" ", s)
+    return " ".join(s.split())
+
+
+def resolve_club(name: str, teams: dict):
+    """The rated team this name refers to, or None. Never a best guess."""
+    if not name or not teams:
+        return None
+    if name in teams:
+        return name
+    alias = _CLUB_ALIASES.get(_norm_club(name))
+    if alias and alias in teams:
+        return alias
+    target = _norm_club(name)
+    if not target:
+        return None
+    forms = {t: _norm_club(t) for t in teams}
+    exact = [t for t, f in forms.items() if f == target]
+    if len(exact) == 1:
+        return exact[0]
+    if exact:
+        return None                      # genuinely ambiguous — refuse
+    tt = set(target.split())
+    subset = [t for t, f in forms.items()
+              if tt and (tt <= set(f.split()) or set(f.split()) <= tt)]
+    return subset[0] if len(subset) == 1 else None
+
+
 def _club_lambdas(home: str, away: str, neutral: bool):
     """
     (lambda_home, lambda_away) from the Poisson-regression CLUB-league fit
@@ -128,7 +212,8 @@ def _club_lambdas(home: str, away: str, neutral: bool):
     """
     for league, data in (CLUB_SOCCER_RATINGS.get("leagues") or {}).items():
         teams = data.get("teams", {})
-        h, a = teams.get(home), teams.get(away)
+        hk, ak = resolve_club(home, teams), resolve_club(away, teams)
+        h, a = (teams.get(hk) if hk else None), (teams.get(ak) if ak else None)
         if not h or not a or h.get("attack") is None or a.get("attack") is None:
             continue
         mu = data.get("mu", 0.0)
