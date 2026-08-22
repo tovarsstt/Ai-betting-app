@@ -164,3 +164,54 @@ def test_board_carries_a_verdict_on_every_market():
     b = pm.board("nfl", 45, 6, seed=15)
     assert all(m.get("verdict") in ("STRONG", "PLAYABLE", "THIN", "LOTTERY")
                for m in b["markets"])
+
+
+# ── bet_timing: is waiting for a live price worth it? ──────────────────────
+
+import bet_timing as bt
+
+
+def test_market_settlement_rules():
+    assert bt._settles("X2", 0, 1) and bt._settles("X2", 1, 1)
+    assert not bt._settles("X2", 2, 1)
+    assert bt._settles("1X", 2, 1) and not bt._settles("1X", 0, 1)
+    assert bt._settles("O2.5", 2, 1) and not bt._settles("O2.5", 1, 1)
+    assert bt._settles("U2.5", 1, 1)
+
+
+def test_unknown_market_is_refused():
+    with pytest.raises(ValueError):
+        bt._settles("NONSENSE", 1, 0)
+
+
+def test_waiting_only_fires_some_of_the_time():
+    out = bt.simulate(0.95, 1.75, "X2", 1.30, check_minute=30,
+                      n_sims=1200, seed=3)
+    assert 0.0 < out["wait_and_bet_live"]["fire_rate"] < 1.0
+
+
+def test_ev_per_opportunity_is_below_ev_per_bet_when_it_skips():
+    """The skipped games earn nothing, and the comparison has to count them —
+    quoting only EV-per-bet-placed is how waiting looks better than it is."""
+    out = bt.simulate(0.95, 1.75, "X2", 1.30, check_minute=30,
+                      n_sims=1200, seed=4)
+    w = out["wait_and_bet_live"]
+    if w["fire_rate"] < 1.0 and w["ev_pct_per_bet_placed"] > 0:
+        assert w["ev_pct_per_opportunity"] < w["ev_pct_per_bet_placed"]
+
+
+def test_a_price_far_above_fair_is_positive_ev_now():
+    out = bt.simulate(0.95, 1.75, "X2", 2.50, check_minute=30,
+                      n_sims=1200, seed=5)
+    assert out["bet_now"]["ev_pct"] > 0
+
+
+def test_a_short_price_is_negative_ev_now():
+    out = bt.simulate(0.95, 1.75, "X2", 1.05, check_minute=30,
+                      n_sims=1200, seed=6)
+    assert out["bet_now"]["ev_pct"] < 0
+
+
+def test_result_states_its_own_limitation():
+    out = bt.simulate(0.95, 1.75, "X2", 1.30, n_sims=600, seed=7)
+    assert "red cards" in out["caveat"]
