@@ -4,15 +4,39 @@
     {
       "name": "caveman-locks",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 5173,
       "autoPort": false
     },
     {
       "name": "caveman-backend",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["tsx", "server.ts"],
+      "runtimeArgs": [
+        "tsx",
+        "server.ts"
+      ],
       "port": 3001,
+      "autoPort": false
+    },
+    {
+      "name": "edge-api",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "scripts/edge_api.py"
+      ],
+      "port": 8001,
+      "autoPort": false
+    },
+    {
+      "name": "math-engine",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "scripts/math_engine.py"
+      ],
+      "port": 8002,
       "autoPort": false
     }
   ]

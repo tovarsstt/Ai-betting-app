@@ -179,28 +179,36 @@ interface ProphetResult {
   kelly_stake?: string;
 }
 
+// Shape returned by the 32-book line shopper. The old two-book (Pinnacle vs
+// DK/FD) shape is gone: consensus is now the median fair price across every
+// book that prices the market, which is why `pinnacle_odds` and friends no
+// longer exist. Prices here are DECIMAL, not American.
 interface LineGap {
   game: string;
+  subject: string;            // team/player the line is on
+  team?: string;
   market: string;
-  outcome: string;
-  pinnacle_odds: number;
-  book: string;
-  book_odds: number;
-  pinnacle_implied: number;
-  book_implied: number;
-  gap_pct: number;
-  best_line: number;
+  line?: number;
+  side?: string;              // over / under / the side taken
   best_book: string;
-  signal: string;
-  commence_time: string;
+  best_price: number;         // decimal
+  consensus_fair_prob: number;
+  consensus_fair_price: number;
+  edge_prob_points: number;   // best price vs consensus, in probability points
+  books_compared: number;
+  min_odds?: number;          // Stake floor — do not bet below this
+  why: string;
+  signal?: string;
 }
 interface LineGapsResult {
   gaps: LineGap[];
   scanned: number;
-  compared?: number;   // games actually priced by Pinnacle AND a soft book
-  best_gap?: number;   // tightest = largest fair-prob gap found (even below the 3pt bar)
-  sport: string;
-  computed_at: string;
+  compared?: number;   // markets priced by at least two books
+  best_gap?: number;
+  sport?: string;
+  source?: string;
+  note?: string;
+  computed_at?: string;
 }
 
 /* ─── Lock tier config ─── */
@@ -883,15 +891,21 @@ function SharpPanel({ sport }: { sport: string }) {
     retry: 1,
   });
 
-  const formatTime = (iso: string) => {
-    try {
-      return new Date(iso).toLocaleTimeString("en-US", {
-        hour: "2-digit", minute: "2-digit", timeZone: "America/New_York",
-      }) + " ET";
-    } catch { return ""; }
+  // Game ids arrive as YYYYMMDD-AAA-BBB, so the date comes from the id rather
+  // than a timestamp the feed no longer sends. Anything else renders as blank
+  // instead of "Invalid Date".
+  const formatGameDate = (id: string) => {
+    const m = /^(\d{4})(\d{2})(\d{2})/.exec(id ?? "");
+    if (!m) return "";
+    const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+    return isNaN(d.getTime())
+      ? ""
+      : d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   };
 
-  const formatOdds = (n: number) => n > 0 ? `+${n}` : `${n}`;
+  const dec = (n?: number) => (typeof n === "number" && isFinite(n) ? n.toFixed(2) : "—");
+  const pct = (n?: number) =>
+    typeof n === "number" && isFinite(n) ? `${(n * 100).toFixed(1)}%` : "—";
 
   return (
     <Card className="glass-card overflow-hidden border border-[#C8860A]/20">
@@ -903,13 +917,13 @@ function SharpPanel({ sport }: { sport: string }) {
               Sharp Scanner — Pure Math
             </span>
             <span className="text-[9px] font-mono text-muted-foreground">
-              Pinnacle vs DK/FD · no AI
+              32 books · median devig · no AI
             </span>
           </div>
           <div className="flex items-center gap-2">
             {data && (
               <span className="text-[9px] font-mono text-muted-foreground">
-                {data.scanned} scanned · {data.compared ?? 0} priced both books
+                {data.scanned} scanned · {data.compared ?? 0} priced by 2+ books
               </span>
             )}
             <button
@@ -935,15 +949,16 @@ function SharpPanel({ sport }: { sport: string }) {
           <div className="py-6 text-center text-[11px] text-muted-foreground font-mono">
             {data
               ? (data.compared
-                  ? `No ≥3pt edge across ${data.compared} games priced by both books — tightest gap ${data.best_gap ?? 0}pts. Market efficient right now.`
-                  : "No games priced by both Pinnacle and a soft book right now.")
-              : "Odds API key required"}
+                  ? `${data.compared} markets priced by 2+ books, none off consensus by 3+ pts. Nothing mispriced right now — that is a result, not a failure.`
+                  : `Scanned ${data.scanned ?? 0} markets; none had two books to compare. No consensus, no signal.`)
+              : "Feed unavailable"}
           </div>
         )}
 
         {data?.gaps?.map((gap, i) => {
-          const isStrong = gap.signal === "STRONG_SHARP";
+          const isStrong = (gap.edge_prob_points ?? 0) >= 8;
           const accentColor = isStrong ? "#C8860A" : "#22c55e";
+          const when = formatGameDate(gap.game);
           return (
             <div
               key={i}
@@ -952,13 +967,13 @@ function SharpPanel({ sport }: { sport: string }) {
                 isStrong && "bg-[#C8860A]/[0.03]"
               )}
             >
-              {/* Game + time */}
+              {/* Subject + when */}
               <div className="flex items-start justify-between gap-2 mb-1.5">
                 <div>
-                  <span className="text-[11px] font-bold">{gap.game}</span>
-                  <span className="text-[9px] font-mono text-muted-foreground ml-2">
-                    {formatTime(gap.commence_time)}
-                  </span>
+                  <span className="text-[11px] font-bold">{gap.subject || gap.game}</span>
+                  {when && (
+                    <span className="text-[9px] font-mono text-muted-foreground ml-2">{when}</span>
+                  )}
                 </div>
                 <span
                   className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded shrink-0"
@@ -972,51 +987,66 @@ function SharpPanel({ sport }: { sport: string }) {
                 </span>
               </div>
 
-              {/* Market + outcome */}
+              {/* Market */}
               <div className="text-[10px] text-muted-foreground font-mono mb-2">
-                {gap.market.toUpperCase()} · {gap.outcome}
+                {gap.market?.toUpperCase()}
+                {gap.side ? ` · ${gap.side.toUpperCase()}` : ""}
+                {typeof gap.line === "number" ? ` ${gap.line}` : ""}
               </div>
 
-              {/* Odds comparison */}
-              <div className="flex items-center gap-4">
+              {/* Consensus -> best price */}
+              <div className="flex items-center gap-4 flex-wrap">
                 <div>
-                  <div className="text-[9px] font-mono text-muted-foreground uppercase">Pinnacle</div>
-                  <div className="text-sm font-black tabular-nums">{formatOdds(gap.pinnacle_odds)}</div>
-                  <div className="text-[9px] font-mono text-muted-foreground">{gap.pinnacle_implied}%</div>
+                  <div className="text-[9px] font-mono text-muted-foreground uppercase">
+                    Consensus ({gap.books_compared} books)
+                  </div>
+                  <div className="text-sm font-black tabular-nums">{dec(gap.consensus_fair_price)}</div>
+                  <div className="text-[9px] font-mono text-muted-foreground">
+                    {pct(gap.consensus_fair_prob)} fair
+                  </div>
                 </div>
                 <div className="flex flex-col items-center gap-0.5 px-2">
                   <ChevronRight className="w-3 h-3 text-muted-foreground/50" />
-                  <span
-                    className="text-[10px] font-black tabular-nums"
-                    style={{ color: accentColor }}
-                  >
-                    +{gap.gap_pct}%
+                  <span className="text-[10px] font-black tabular-nums" style={{ color: accentColor }}>
+                    +{(gap.edge_prob_points ?? 0).toFixed(1)}pts
                   </span>
                 </div>
                 <div>
-                  <div className="text-[9px] font-mono text-muted-foreground uppercase">{gap.best_book}</div>
+                  <div className="text-[9px] font-mono text-muted-foreground uppercase">
+                    {gap.best_book}
+                  </div>
                   <div className="text-sm font-black tabular-nums" style={{ color: accentColor }}>
-                    {formatOdds(gap.book_odds)}
+                    {dec(gap.best_price)}
                   </div>
-                  <div className="text-[9px] font-mono text-muted-foreground">{gap.book_implied}%</div>
+                  <div className="text-[9px] font-mono text-muted-foreground">best price</div>
                 </div>
-                <div className="ml-auto text-right">
-                  <div className="text-[9px] font-mono text-muted-foreground uppercase">Best Play</div>
-                  <div className="text-[11px] font-black" style={{ color: accentColor }}>
-                    {gap.outcome} @ {gap.best_book}
+                {typeof gap.min_odds === "number" && (
+                  <div className="ml-auto text-right">
+                    <div className="text-[9px] font-mono text-muted-foreground uppercase">
+                      Stake floor
+                    </div>
+                    <div className="text-[11px] font-black" style={{ color: accentColor }}>
+                      {dec(gap.min_odds)}
+                    </div>
+                    <div className="text-[9px] font-mono text-muted-foreground">
+                      don&apos;t bet below
+                    </div>
                   </div>
-                  <div className="text-[9px] font-mono text-muted-foreground">
-                    {formatOdds(gap.best_line)} · fair {gap.book_implied}%
-                  </div>
-                </div>
+                )}
               </div>
+
+              {gap.why && (
+                <div className="mt-2 text-[9px] font-mono text-muted-foreground/70 leading-relaxed">
+                  {gap.why}
+                </div>
+              )}
             </div>
           );
         })}
 
         {data?.computed_at && (
           <div className="px-5 py-2 text-[9px] font-mono text-muted-foreground/50 border-t border-white/[0.03]">
-            Updated {new Date(data.computed_at).toLocaleTimeString()} · Pinnacle vs soft fair-prob gap ≥3 pts (devigged)
+            Updated {new Date(data.computed_at).toLocaleTimeString()} · best book vs median devigged consensus, ≥3 pts
           </div>
         )}
       </CardContent>
