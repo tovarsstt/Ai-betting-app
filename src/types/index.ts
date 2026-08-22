@@ -111,12 +111,38 @@ export interface MarketContextPayload {
   sharp_moves?: { count?: number; moves?: SharpMove[] | null; note?: string | null } | null;
 }
 
+// Every market the model priced, ranked by how often THE PICK lands.
+export interface LadderRow {
+  market: string;
+  win_prob: number;
+  verdict: "STRONG" | "PLAYABLE" | "THIN" | "LOTTERY";
+  min_odds?: number | null;
+  note?: string;
+}
+
+export interface ModelSkill {
+  league?: string; accuracy?: number; baseline?: number;
+  n_games?: number; skill_demonstrated?: boolean; warning?: string | null;
+}
+
+// Counted club form (rule 13) — real results, never model output.
+export interface ClubProfilePayload {
+  home?: Record<string, unknown>;
+  away?: Record<string, unknown>;
+  h2h?: Record<string, unknown>;
+  note?: string;
+}
+
 export interface SwarmFinalPayload extends SwarmAgentData {
   bet_structure?: string;         // math-computed
   implied_prob?: number;          // math-computed from primary_odds
   pick_grade?: PickGrade;         // soccer: math grade on the model's primary pick
   poisson?: PoissonBoard;         // soccer: real model distribution for the chart
   market_context?: MarketContextPayload;  // cited external stats (never model output)
+  simulated_ladder?: LadderRow[];         // win prob of every market priced
+  most_likely_pick?: LadderRow;           // highest-win-prob market
+  model_skill?: ModelSkill | null;        // measured league skill (rule 19)
+  club_profile?: ClubProfilePayload | null;
   swarm_report: {
     quant?: SwarmAgentData;
     simulation?: SwarmAgentData;

@@ -681,5 +681,181 @@
     "churn_share": 0.238
    }
   }
+ },
+ {
+  "from": "2026-08-19T18:51:06+00:00",
+  "to": "2026-08-22T19:08:38+00:00",
+  "teams": {
+   "Atlanta Falcons": {
+    "added": [
+     "Eric Johnson II"
+    ],
+    "removed": [],
+    "churn_share": 0.011
+   },
+   "Buffalo Bills": {
+    "added": [
+     "Greg Gaines"
+    ],
+    "removed": [
+     "Tommy Akingbesote"
+    ],
+    "churn_share": 0.021
+   },
+   "Cleveland Browns": {
+    "added": [
+     "Drew Biber",
+     "Jamil Muhammad"
+    ],
+    "removed": [
+     "Jeadyn Lukus"
+    ],
+    "churn_share": 0.03
+   },
+   "Denver Broncos": {
+    "added": [
+     "Taylor Rapp"
+    ],
+    "removed": [],
+    "churn_share": 0.011
+   },
+   "Detroit Lions": {
+    "added": [],
+    "removed": [
+     "Loren Strickland"
+    ],
+    "churn_share": 0.011
+   },
+   "Indianapolis Colts": {
+    "added": [
+     "JJ Galbreath"
+    ],
+    "removed": [
+     "Jai'Onte' McMillan",
+     "Roydell Williams"
+    ],
+    "churn_share": 0.031
+   },
+   "Jacksonville Jaguars": {
+    "added": [
+     "Daniel Faalele"
+    ],
+    "removed": [
+     "Quinton Bohanna"
+    ],
+    "churn_share": 0.021
+   },
+   "Kansas City Chiefs": {
+    "added": [
+     "Cam Jones",
+     "Kellen Diesch"
+    ],
+    "removed": [
+     "Anthony Dunn Jr."
+    ],
+    "churn_share": 0.032
+   },
+   "Los Angeles Chargers": {
+    "added": [
+     "Liam Clifford"
+    ],
+    "removed": [],
+    "churn_share": 0.011
+   },
+   "Miami Dolphins": {
+    "added": [
+     "Stephen Dix Jr."
+    ],
+    "removed": [
+     "Zane Gonzalez"
+    ],
+    "churn_share": 0.02
+   },
+   "Minnesota Vikings": {
+    "added": [
+     "Joshua Gray"
+    ],
+    "removed": [
+     "Eric Johnson II"
+    ],
+    "churn_share": 0.022
+   },
+   "New England Patriots": {
+    "added": [],
+    "removed": [
+     "Andrew Rupcich"
+    ],
+    "churn_share": 0.01
+   },
+   "New York Giants": {
+    "added": [
+     "Ben Barten"
+    ],
+    "removed": [
+     "Daniel Faalele"
+    ],
+    "churn_share": 0.02
+   },
+   "New York Jets": {
+    "added": [
+     "Junior Bergen"
+    ],
+    "removed": [
+     "DT Sheffield"
+    ],
+    "churn_share": 0.021
+   },
+   "Philadelphia Eagles": {
+    "added": [
+     "Brandon Hayes",
+     "Zeke Correll"
+    ],
+    "removed": [],
+    "churn_share": 0.021
+   },
+   "San Francisco 49ers": {
+    "added": [
+     "Khalil Herbert"
+    ],
+    "removed": [],
+    "churn_share": 0.01
+   },
+   "Seattle Seahawks": {
+    "added": [
+     "Trevon Diggs"
+    ],
+    "removed": [
+     "Terrion Arnold"
+    ],
+    "churn_share": 0.021
+   },
+   "Tampa Bay Buccaneers": {
+    "added": [],
+    "removed": [
+     "Marcus Banks"
+    ],
+    "churn_share": 0.011
+   },
+   "Tennessee Titans": {
+    "added": [
+     "D'Ernest Johnson",
+     "Milo Eifler",
+     "Tanoh Kpassagnon"
+    ],
+    "removed": [
+     "Dominic Richardson",
+     "Matt Lauter",
+     "Sean Brown"
+    ],
+    "churn_share": 0.061
+   },
+   "Washington Commanders": {
+    "added": [],
+    "removed": [
+     "River Cracraft"
+    ],
+    "churn_share": 0.011
+   }
+  }
  }
 ]

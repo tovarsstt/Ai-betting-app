@@ -88,6 +88,37 @@ interface ContextTeamStats {
   note?: string | null;
 }
 
+// One priced market: the probability THE PICK lands, and the price it needs.
+interface LadderRow {
+  market: string;
+  win_prob: number;
+  verdict: "STRONG" | "PLAYABLE" | "THIN" | "LOTTERY";
+  min_odds?: number | null;
+  note?: string;
+}
+
+interface ClubSide {
+  team: string;
+  form?: string;                 // e.g. "LLWWDW", most recent last
+  streak?: string | null;
+  season?: { n?: number; w?: number; d?: number; l?: number; ppg?: number;
+             gf_pg?: number; ga_pg?: number };
+  home?: { ppg?: number; n?: number };
+  away?: { ppg?: number; n?: number };
+  btts_rate?: number;
+  over_2_5_rate?: number;
+  clean_sheet_rate?: number;
+  last_result_date?: string;
+}
+
+interface ClubProfile {
+  home?: ClubSide;
+  away?: ClubSide;
+  h2h?: { n: number; home_wins: number; draws: number; away_wins: number;
+          avg_goals: number };
+  note?: string;
+}
+
 interface MarketContextPayload {
   home?: ContextTeamStats;
   away?: ContextTeamStats;
@@ -105,6 +136,13 @@ interface AnalyzeResult {
   poisson?: PoissonBoard;
   pick_grade?: PickGrade;
   market_context?: MarketContextPayload;
+  simulated_ladder?: LadderRow[];
+  most_likely_pick?: LadderRow & { rule?: string };
+  model_skill?: {
+    league?: string; accuracy?: number; baseline?: number;
+    n_games?: number; skill_demonstrated?: boolean; warning?: string | null;
+  } | null;
+  club_profile?: ClubProfile | null;
   primary_single?: string;
   primary_odds?: string;
   bet_structure?: string;       // math-computed
@@ -399,6 +437,215 @@ function TeamForm({ t }: { t?: ContextTeamStats }) {
         <div className="text-[10px] text-muted-foreground opacity-70">none ruled out</div>
       )}
     </div>
+  );
+}
+
+/* ─── Win-probability ladder: every market the model priced, ranked ─── */
+/* The bet is the row, so the bar IS the information — length is how often the
+   pick lands. Ochre marks the most likely pick; everything else recedes.
+   min_odds is the actionable half: below it the row is not a bet. */
+
+const VERDICT_TONE: Record<string, string> = {
+  STRONG: "#7FA05A",
+  PLAYABLE: OCHRE,
+  THIN: "#B5651D",
+  LOTTERY: "#8F3A2F",
+};
+
+function LadderBars({ rows, best }: { rows: LadderRow[]; best?: string }) {
+  if (!rows?.length) return null;
+  const top = rows.slice(0, 10);
+  return (
+    <div className="space-y-1.5">
+      {top.map((r) => {
+        const pct = Math.round(r.win_prob * 1000) / 10;
+        const isBest = r.market === best;
+        return (
+          <div key={r.market} className="flex items-center gap-2.5">
+            <span
+              className={cn("w-40 shrink-0 truncate text-[11px]",
+                isBest ? "font-bold text-[#F5F0E8]" : "text-muted-foreground")}
+              title={r.market}
+            >
+              {r.market}
+            </span>
+            <div className="relative h-4 flex-1 bg-white/[0.04]">
+              <div
+                className="absolute inset-y-0 left-0"
+                style={{
+                  width: `${Math.max(pct, 1.5)}%`,
+                  background: isBest ? OCHRE : VERDICT_TONE[r.verdict] ?? "#6b6b6b",
+                  opacity: isBest ? 1 : 0.55,
+                }}
+              />
+            </div>
+            <span className="w-12 shrink-0 text-right font-mono text-[11px] tabular-nums text-[#F5F0E8]">
+              {pct.toFixed(1)}%
+            </span>
+            <span className="w-16 shrink-0 text-right font-mono text-[10px] tabular-nums text-muted-foreground">
+              {r.min_odds != null ? `≥${r.min_odds.toFixed(2)}` : "—"}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function WinLadderCard({
+  rows, best, skill,
+}: {
+  rows: LadderRow[];
+  best?: LadderRow & { rule?: string };
+  skill?: AnalyzeResult["model_skill"];
+}) {
+  if (!rows?.length) return null;
+  return (
+    <Card className="border-white/5 bg-[#1A1A1A]">
+      <CardHeader className="pb-2">
+        <CardTitle className="flex items-center gap-2 text-sm font-black uppercase tracking-widest">
+          <Target className="w-4 h-4" style={{ color: OCHRE }} />
+          Win Probability by Market
+          <span className="ml-auto text-[9px] font-mono normal-case tracking-normal text-muted-foreground">
+            P(the pick lands) · min price
+          </span>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {best && (
+          <div className="border-l-2 pl-3" style={{ borderColor: OCHRE }}>
+            <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+              Most likely pick
+            </div>
+            <div className="mt-0.5 flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
+              <span className="text-base font-bold text-[#F5F0E8]">{best.market}</span>
+              <span className="font-mono text-base tabular-nums" style={{ color: OCHRE }}>
+                {(best.win_prob * 100).toFixed(1)}%
+              </span>
+              <Badge variant="outline" className="border-white/15 text-[9px] uppercase">
+                {best.verdict}
+              </Badge>
+              {best.min_odds != null && (
+                <span className="font-mono text-[11px] text-muted-foreground">
+                  bet only at ≥{best.min_odds.toFixed(2)}
+                </span>
+              )}
+            </div>
+          </div>
+        )}
+
+        <LadderBars rows={rows} best={best?.market} />
+
+        {/* A league where the model has NOT been shown to beat picking home is
+            the single most important caveat on the whole card. */}
+        {skill?.league && (
+          <div
+            className={cn("border-t border-white/5 pt-3 text-[10px] leading-relaxed",
+              skill.skill_demonstrated ? "text-muted-foreground" : "text-[#C87A2E]")}
+          >
+            {skill.skill_demonstrated ? (
+              <>
+                Model measured in <b className="text-[#F5F0E8]">{skill.league}</b>:{" "}
+                {((skill.accuracy ?? 0) * 100).toFixed(1)}% vs{" "}
+                {((skill.baseline ?? 0) * 100).toFixed(1)}% always-home, n={skill.n_games}.
+              </>
+            ) : (
+              <>
+                <b>No demonstrated skill in {skill.league}</b> —{" "}
+                {((skill.accuracy ?? 0) * 100).toFixed(1)}% vs{" "}
+                {((skill.baseline ?? 0) * 100).toFixed(1)}% always-home over {skill.n_games}{" "}
+                games. Do not lead a ticket with a model side here.
+              </>
+            )}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+/* ─── Both-sides club form (rule 13) — counted results, never model output ─── */
+
+function FormRun({ run }: { run?: string }) {
+  if (!run) return null;
+  const tone: Record<string, string> = { W: "#7FA05A", D: "#8A8175", L: "#8F3A2F" };
+  return (
+    <span className="inline-flex gap-0.5">
+      {run.split("").map((c, i) => (
+        <span
+          key={i}
+          className="inline-flex h-4 w-4 items-center justify-center text-[9px] font-bold text-[#141312]"
+          style={{ background: tone[c] ?? "#8A8175" }}
+          title={c === "W" ? "Win" : c === "D" ? "Draw" : "Loss"}
+        >
+          {c}
+        </span>
+      ))}
+    </span>
+  );
+}
+
+function ClubSideBlock({ s }: { s?: ClubSide }) {
+  if (!s) return null;
+  const sea = s.season ?? {};
+  return (
+    <div className="space-y-1.5">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-[11px] font-bold uppercase tracking-wider text-[#F5F0E8]">
+          {s.team}
+        </span>
+        <FormRun run={s.form} />
+        {s.streak && (
+          <span className="font-mono text-[10px] text-muted-foreground">{s.streak}</span>
+        )}
+      </div>
+      <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[10px] text-muted-foreground">
+        <span>{sea.w}-{sea.d}-{sea.l} <span className="opacity-60">({sea.n}g)</span></span>
+        <span>PPG <b className="text-[#F5F0E8]">{sea.ppg}</b></span>
+        <span>GF <b className="text-[#F5F0E8]">{sea.gf_pg}</b></span>
+        <span>GA <b className="text-[#F5F0E8]">{sea.ga_pg}</b></span>
+      </div>
+      <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[10px] text-muted-foreground">
+        <span>home PPG <b className="text-[#F5F0E8]">{s.home?.ppg ?? "n/a"}</b></span>
+        <span>away PPG <b className="text-[#F5F0E8]">{s.away?.ppg ?? "n/a"}</b></span>
+        {s.btts_rate != null && <span>BTTS {Math.round(s.btts_rate * 100)}%</span>}
+        {s.over_2_5_rate != null && <span>O2.5 {Math.round(s.over_2_5_rate * 100)}%</span>}
+        {s.clean_sheet_rate != null && <span>CS {Math.round(s.clean_sheet_rate * 100)}%</span>}
+      </div>
+    </div>
+  );
+}
+
+function ClubFormCard({ p }: { p: ClubProfile }) {
+  if (!p?.home && !p?.away) return null;
+  return (
+    <Card className="border-white/5 bg-[#1A1A1A]">
+      <CardHeader className="pb-2">
+        <CardTitle className="flex items-center gap-2 text-sm font-black uppercase tracking-widest">
+          <BarChart3 className="w-4 h-4" style={{ color: OCHRE }} />
+          Form &amp; Head to Head
+          <span className="ml-auto text-[9px] font-mono normal-case tracking-normal text-muted-foreground">
+            counted results
+          </span>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <ClubSideBlock s={p.home} />
+          <ClubSideBlock s={p.away} />
+        </div>
+        {p.h2h && (
+          <div className="border-t border-white/5 pt-3 text-[10px] text-muted-foreground">
+            <span className="font-bold uppercase tracking-wider">H2H </span>
+            last {p.h2h.n}: {p.h2h.home_wins}W&ndash;{p.h2h.draws}D&ndash;{p.h2h.away_wins}L
+            <span className="ml-2 opacity-70">avg {p.h2h.avg_goals} goals</span>
+          </div>
+        )}
+        {p.note && (
+          <p className="text-[10px] leading-relaxed text-[#C87A2E]">{p.note}</p>
+        )}
+      </CardContent>
+    </Card>
   );
 }
 
@@ -1139,6 +1386,14 @@ export default function GameBreakdown() {
             </Card>
 
             {/* Poisson distribution — real model output (soccer) */}
+            {swarmData.simulated_ladder && (
+              <WinLadderCard
+                rows={swarmData.simulated_ladder}
+                best={swarmData.most_likely_pick}
+                skill={swarmData.model_skill}
+              />
+            )}
+            {swarmData.club_profile && <ClubFormCard p={swarmData.club_profile} />}
             {swarmData.poisson && <PoissonChart poisson={swarmData.poisson} />}
             {swarmData.market_context && (
               <MarketContextCard ctx={swarmData.market_context} />

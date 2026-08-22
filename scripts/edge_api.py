@@ -40,6 +40,7 @@ import market_context as mctx
 import win_simulator as wsim
 import tennis_scanner as tsc
 import period_model as pmod
+import club_form as cform
 from typing import List
 
 BASE = Path(__file__).parent.parent / "data"
@@ -135,6 +136,7 @@ _CLUB_ALIASES = {
     "atletico madrid": "Ath Madrid", "atletico de madrid": "Ath Madrid",
     "atlético madrid": "Ath Madrid", "club atletico de madrid": "Ath Madrid",
     "athletic bilbao": "Ath Bilbao", "athletic club": "Ath Bilbao",
+    "athletic": "Ath Bilbao", "ath bilbao": "Ath Bilbao",
     "real sociedad": "Sociedad", "rayo vallecano": "Vallecano",
     "real betis": "Betis", "celta vigo": "Celta", "rc celta": "Celta",
     "deportivo la coruna": "Dep. A Coruna", "deportivo": "Dep. A Coruna",
@@ -184,9 +186,15 @@ def resolve_club(name: str, teams: dict):
         return None
     if name in teams:
         return name
-    alias = _CLUB_ALIASES.get(_norm_club(name))
-    if alias and alias in teams:
-        return alias
+    # Alias lookup happens on BOTH the raw-lowered name and the noise-stripped
+    # one. "Athletic Club" normalises to "athletic" because `club` is a noise
+    # word, which silently defeated its own alias entry (found 2026-08-22 when
+    # ESPN's "Athletic Club" would not map to "Ath Bilbao").
+    plain = " ".join(re.sub(r"[^a-z0-9 ]+", " ", (name or "").lower()).split())
+    for key in (plain, _norm_club(name)):
+        alias = _CLUB_ALIASES.get(key)
+        if alias and alias in teams:
+            return alias
     target = _norm_club(name)
     if not target:
         return None
@@ -781,6 +789,14 @@ def _soccer_team_key(name: str, teams: dict) -> Optional[str]:
     return None
 
 def _soccer_profile(home: str, away: str):
+    """Both-sides profile (rule 13).
+
+    soccer_form.json holds only NATIONAL teams, so club fixtures used to return
+    None and every club pick was presented with no profile at all — in the
+    user's number-one sport. Club sides now fall back to counted form derived
+    from the real result set (club_form.py). National teams keep the existing
+    path; the club branch resolves the abbreviated rating names first.
+    """
     teams = SOCCER_FORM.get("teams") or {}
     h2h = SOCCER_FORM.get("h2h") or {}
     hk, ak = _soccer_team_key(home, teams), _soccer_team_key(away, teams)
@@ -793,7 +809,19 @@ def _soccer_profile(home: str, away: str):
         rec = (h2h.get(hk) or {}).get(ak)
         if rec:
             out["h2h"] = rec
-    return out or None
+    if out:
+        return out
+    # Not national sides — try the club result set, resolving the abbreviated
+    # names the fitted ratings use ("Espanol", "Ath Madrid").
+    pool = {}
+    for lg in (CLUB_SOCCER_RATINGS.get("leagues") or {}).values():
+        pool.update(lg.get("teams") or {})
+    hc = resolve_club(home, pool) or home
+    ac = resolve_club(away, pool) or away
+    try:
+        return cform.profile(hc, ac)
+    except Exception:                                      # noqa: BLE001
+        return None
 
 # ── WNBA comparative profile (form / rest / B2B / H2H — real game results) ──────
 def _wnba_team_key(name: str, teams: dict) -> Optional[str]:
