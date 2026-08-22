@@ -18,7 +18,7 @@ import { getBettingHeuristics, getSportBetContext, getShortHeuristics } from './
 import { getSharpIdentity } from './src/prompts/identity.js';
 import { SPORT_KEYS } from './src/services/oddsService.js';
 import { ArbitrageService, type ArbitrageOpportunity } from './src/services/arbitrageService.js';
-import type { SGPLeg, SwarmAgentData, SwarmFinalPayload, PoissonBoard, SimHitRate, TeamFitRating, PickGrade, AlphaSheetItem, AlphaSheetContainer, ParlayLeg, ParlayBlock, ParlaysPayload } from './src/types/index.js';
+import type { SGPLeg, SwarmAgentData, SwarmFinalPayload, PoissonBoard, MarketContextPayload, SimHitRate, TeamFitRating, PickGrade, AlphaSheetItem, AlphaSheetContainer, ParlayLeg, ParlayBlock, ParlaysPayload } from './src/types/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -1597,6 +1597,101 @@ interface SoccerTeamForm {
 
 // WNBA form profile returned by /predict (built from real ESPN game results
 // by fetch_wnba_form.py). Used only as analysis context.
+// ── External market context (scripts/market_context.py) ──────────────────────
+// Linemate ATS/injuries + Betting Insider Pinnacle movement. Every field is
+// optional because the layer degrades rather than failing: an unmatched team or
+// a dark upstream yields a note, not an error.
+interface ContextTeam {
+  team: string;
+  matched: string | null;
+  league: string | null;
+  ats: {
+    name?: string; games?: number;
+    ats_hit_rate?: number | null; home_ats_hit_rate?: number | null;
+    away_ats_hit_rate?: number | null; total_over_hit_rate?: number | null;
+    streak?: { type?: string; length?: number } | null;
+  } | null;
+  injuries: Array<{ name?: string; position?: string; injury?: string; status?: string }> | null;
+  note?: string | null;
+  stale?: boolean;
+}
+
+interface MarketContext {
+  home?: ContextTeam;
+  away?: ContextTeam;
+  sharp_moves?: {
+    count?: number;
+    moves?: Array<{ player?: string; market?: string; line?: number;
+                    pinnacle_over_move_pct?: number | null }> | null;
+    note?: string | null;
+  } | null;
+}
+
+const pct = (v?: number | null): string => (v == null ? 'n/a' : `${(v * 100).toFixed(0)}%`);
+
+/** One team's cited external stats, or null when there is nothing real to say. */
+function contextTeamLine(t?: ContextTeam): string | null {
+  if (!t || !t.matched) return null;
+  const a = t.ats ?? {};
+  // A line reading "ATS n/a, home ATS n/a, O/U n/a | injury feed unavailable"
+  // is pure noise — it costs prompt tokens and says nothing. Emit only when at
+  // least one real number or a usable injury list exists. (Early season: a club
+  // with 0 games played genuinely has no ATS record yet.)
+  const hasRecord = [a.ats_hit_rate, a.home_ats_hit_rate,
+                     a.away_ats_hit_rate, a.total_over_hit_rate]
+    .some(v => v != null);
+  if (!hasRecord && t.injuries == null) return null;
+  const bits = [`ATS ${pct(a.ats_hit_rate)}`,
+                `home ATS ${pct(a.home_ats_hit_rate)}`,
+                `O/U over ${pct(a.total_over_hit_rate)}`];
+  if (a.games) bits.push(`${a.games}g`);
+  // Injury status vocabulary is LEAGUE-SPECIFIC — an exact-match list built from
+  // NFL ("IR", "INACTIVE") silently dropped every MLB injury, which uses
+  // "60-Day IL" / "10-Day IL" / "15-Day IL" / "Out" / "Suspension", so an
+  // 11-player IL read as "no OUT/IR listed". Match the concepts instead.
+  // "Day-To-Day" is deliberately NOT ruled out — it's questionable, not out.
+  const inj = t.injuries;
+  let injText: string;
+  if (inj == null) {
+    // null = Linemate has no injury feed for this league (soccer). That is NOT
+    // the same as "nobody is hurt" and must never be presented as a clean bill.
+    injText = ' | injury feed unavailable for this league';
+  } else {
+    const out = inj.filter(i => {
+      const st = (i.status ?? '').toUpperCase();
+      return /\b(IL|IR)\b/.test(st) || /^(OUT|INACTIVE|SUSPEN)/.test(st);
+    });
+    injText = out.length
+      ? ` | OUT: ${out.slice(0, 5).map(i =>
+          `${i.name}${i.position ? ` (${i.position})` : ''}${i.status ? ` [${i.status}]` : ''}`).join(', ')}`
+        + (out.length > 5 ? ` +${out.length - 5} more` : '')
+      : ' | none ruled out';
+  }
+  return `${t.team}: ${bits.join(', ')}${injText}`;
+}
+
+/** Render the whole context block for the pick prompt, or '' when empty. */
+function buildContextBlock(ctx?: MarketContext | null): string {
+  if (!ctx) return '';
+  const lines = [contextTeamLine(ctx.home), contextTeamLine(ctx.away)].filter(Boolean);
+  const sm = ctx.sharp_moves;
+  const movers = (sm?.moves ?? []).slice(0, 5)
+    .map(m => `${m.player} ${m.market} ${m.line} (Pinnacle ${m.pinnacle_over_move_pct}%)`);
+  if (!lines.length && !movers.length) return '';
+  let out = '';
+  if (lines.length) {
+    out += `\n━━ EXTERNAL FORM (Linemate, real settled records — CITED STATS, not model output): `
+         + lines.join(' | ');
+  }
+  if (movers.length) {
+    // Negative % = money came in on that side since the open.
+    out += `\n━━ SHARP LINE MOVEMENT (Betting Insider, Pinnacle open→now; negative = money came in): `
+         + movers.join(' | ');
+  }
+  out += `\n(These are cited stats. They must still clear the value gate — they never override the engine.)`;
+  return out;
+}
+
 interface WnbaTeamForm {
   team: string; gp: number; win_rate: number; last10: string; avg_margin: number;
   recent_margin: number; streak: string; rest_days: number | null; b2b: boolean;
@@ -1950,7 +2045,23 @@ async function askGemini(prompt: string): Promise<string> {
   return text.replace(/```json|```/g, "").trim();
 }
 
+// FREE MODE (default ON): route every LLM call to Gemini's free tier first and
+// only reach for the paid Anthropic account when the user explicitly opts in
+// with LLM_PAID=true. Claude stays wired up as the fallback below, so turning
+// free mode off — or Gemini failing — still produces a pick; the app just never
+// spends money unless asked to. Set LLM_PAID=true to put Claude back in front.
+const LLM_FREE_MODE = process.env.LLM_PAID !== "true";
+
 async function ask(prompt: string, model = "claude-fable-5"): Promise<string> {
+  if (LLM_FREE_MODE && genai) {
+    try {
+      return await askGemini(prompt);
+    } catch (gemErr: unknown) {
+      console.warn(`Free Gemini (${GEMINI_MODEL}) failed → trying Anthropic:`,
+        gemErr instanceof Error ? gemErr.message : gemErr);
+      // fall through to the paid path rather than losing the pick
+    }
+  }
   try {
     const msg = await anthropic.beta.messages.create({
       model,
@@ -2283,6 +2394,9 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
     // Presented with its own error bars: cover prob recomputed with model MAE
     // folded into the variance so a stale model can't masquerade as certainty.
     let quantCtx = '';
+    // Hoisted so the UI payload can carry the CITED stats as data — the
+    // narrative repeating them is not the same as the page showing them.
+    let marketContext: MarketContext | null = null;
     try {
       // SOCCER is owned by the market board (/predict-soccer) — the XGBoost margin
       // model runs on club-based ratings that are unreliable for WC national teams
@@ -2306,6 +2420,9 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
             home_team: oddsGame.home, away_team: oddsGame.away,
             spread: oddsGame.spread, home_odds: oddsGame.homeOdds, away_odds: oddsGame.awayOdds,
             surface,
+            // Linemate has no tennis, so this resolves to an explicit
+            // "not covered" note rather than silently empty stats.
+            include_context: true,
             ...(liveScore ? {
               sets_won_home: liveScore.setsWonHome,
               sets_won_away: liveScore.setsWonAway,
@@ -2359,9 +2476,18 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
             sport: league,
             home_team: oddsGame.home, away_team: oddsGame.away,
             spread: oddsGame.spread, home_odds: oddsGame.homeOdds, away_odds: oddsGame.awayOdds,
-            neutral: league === 'SOCCER', // WC 2026 — neutral venues
+            // Was `neutral: league === 'SOCCER'` for World Cup 2026 — every match
+            // on neutral ground. That window closed and the CLUB season is what's
+            // wagerable now, so forcing neutral was zeroing each league's fitted
+            // home advantage (La Liga 0.29 ≈ +34% home goal rate) on every board
+            // pick. Ordinary home-and-away is the right default; a genuinely
+            // neutral tie is the exception and would have to say so.
+            neutral: false,
+            include_context: true,   // Linemate ATS/injuries + Insider sharp moves
           }),
-          signal: AbortSignal.timeout(4000),
+          // Context is cached, but a cold window costs an upstream round-trip —
+          // 4s was tight enough to drop it on the first pick of a slate.
+          signal: AbortSignal.timeout(12_000),
         });
         if (qRes.ok) {
           const q = await qRes.json() as {
@@ -2371,19 +2497,32 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
             home_ratings?: { net_rtg?: number }; away_ratings?: { net_rtg?: number };
             profile?: { home?: WnbaTeamForm; away?: WnbaTeamForm;
               h2h?: { n: number; w: number; l: number; margin: number; last: string } } | null;
+            data_freshness?: { worst_status?: string; feed?: string; age_days?: number } | null;
+            market_context?: MarketContext | null;
           };
           // Real WNBA form/rest/H2H block (built from ESPN results). B2B fatigue
           // is the biggest WNBA edge — surface it loudly.
           const wp = q.profile;
           const wForm = (t?: WnbaTeamForm): string | null =>
             t ? `${t.team}: ${t.win_rate ? (t.win_rate*100).toFixed(0) : '?'}% (L10 ${t.last10}), margin ${t.avg_margin >= 0 ? '+' : ''}${t.avg_margin}, ${t.streak}, ${t.b2b ? '⚠️ ON B2B (tired legs)' : `${t.rest_days ?? '?'}d rest`}, home ${t.home}/road ${t.road}` : null;
+          // External CITED stats (Linemate ATS/injuries + Betting Insider sharp
+          // moves). These were being fetched and then dropped on the floor — the
+          // predict response carried them but nothing read the field, so no pick
+          // ever saw them. They are context, never a model output (rule 17).
+          marketContext = q.market_context ?? null;
+          const ctxBlock = buildContextBlock(marketContext);
+          const freshBlock = q.data_freshness && q.data_freshness.worst_status !== 'OK'
+            ? `\n━━ ⚠️ DATA AGE: ${q.data_freshness.feed} ratings are `
+              + `${q.data_freshness.worst_status} (${q.data_freshness.age_days}d) — `
+              + `pick grade already capped for this; do not present the model % as hard.`
+            : '';
           const wnbaBlock = wp ? '\n━━ WNBA FORM & REST (real ESPN results): ' + [
             wForm(wp.home), wForm(wp.away),
             wp.h2h ? `H2H ${wp.h2h.w}-${wp.h2h.l} (avg margin ${wp.h2h.margin >= 0 ? '+' : ''}${wp.h2h.margin}, last ${wp.h2h.last})` : null,
           ].filter(Boolean).join(' | ') : '';
           if (q.bet_signal === 'NO_DATA' || q.model_edge == null || q.model_mae == null) {
             // Model honestly refuses on unknown teams (e.g. WC national squads)
-            quantCtx = `━━ QUANT MODEL: no training data for these teams — model offers NO opinion. Rely on market devig + heuristics only.${wnbaBlock}`;
+            quantCtx = `━━ QUANT MODEL: no training data for these teams — model offers NO opinion. Rely on market devig + heuristics only.${wnbaBlock}${ctxBlock}${freshBlock}`;
           } else {
             const GAME_SIGMA: Record<string, number> = { NBA: 11.5, WNBA: 9.5, NFL: 13.5, MLB: 3.0, TENNIS: 30.0, SOCCER: 2.0 };
             const sigma = GAME_SIGMA[league] ?? 11.5;
@@ -2395,7 +2534,7 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
               `Predicted margin: ${oddsGame.home} by ${q.predicted_margin} | Market spread: ${oddsGame.spread}\n` +
               `Cover prob WITH model error included: ${(coverProb * 100).toFixed(1)}% ${oddsGame.home} | NetRtg: ${q.home_ratings?.net_rtg ?? '?'} vs ${q.away_ratings?.net_rtg ?? '?'}\n` +
               `⚠️ Model edge ${q.model_edge} pts vs market. If >7 pts, treat as STALE-DATA WARNING — the market knows something the training data doesn't. Weigh market over model on big disagreements.\n` +
-              `Pick quality: ${q.pick_quality ?? 'n/a'} — ${q.quality_note ?? ''} (LOCK=anchor · PICK=parlay-ok · LEAN=single/small, NEVER a parlay anchor)${wnbaBlock}`;
+              `Pick quality: ${q.pick_quality ?? 'n/a'} — ${q.quality_note ?? ''} (LOCK=anchor · PICK=parlay-ok · LEAN=single/small, NEVER a parlay anchor)${wnbaBlock}${ctxBlock}${freshBlock}`;
           }
         }
       }
@@ -2428,7 +2567,11 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            home_team: socHome, away_team: socAway, neutral: true,
+            // Was hardcoded `neutral: true` for World Cup 2026. This is the
+            // MAIN soccer engine call, so it was overriding the API default
+            // and zeroing the fitted per-league home advantage on every club
+            // pick — Arsenal-Chelsea reads 52.0% home vs 58.3% with it applied.
+            home_team: socHome, away_team: socAway, neutral: false,
             ...(socHasOdds
               ? { home_odds: oddsGame.homeOdds, draw_odds: oddsGame.drawOdds, away_odds: oddsGame.awayOdds }
               : {}),
@@ -2714,6 +2857,7 @@ Output ONLY this raw JSON (no markdown):
       bet_structure: getBetStructure(topOddsNum),
       implied_prob: topImp ?? undefined,
       poisson: soccerPoisson ?? undefined,
+      market_context: marketContext ?? undefined,
       pick_grade: soccerGrade ?? undefined,
       swarm_report: {
         quant:      quantRaw ? computePickMath(quantRaw) as SwarmAgentData : undefined,
@@ -4441,6 +4585,12 @@ const TENNIS_RANKS_FETCH = path.resolve(process.cwd(), 'scripts/fetch_tennis_rat
 // Badosa comeback and the model faded her) — same weekly refresh, same free sources.
 const TENNIS_FORM_FETCH = path.resolve(process.cwd(), 'scripts/fetch_tennis_form.py');
 const TENNIS_SERVE_FETCH = path.resolve(process.cwd(), 'scripts/fetch_tennis_serve_stats.py');
+// Point-in-time rank archive. ESPN only serves a ROLLING WINDOW of ranking
+// weeks (verified 2026-08-21: weeks 11-32 of the current season resolve,
+// week 10 and all of 2025 are already 404), so this history can never be
+// back-filled — it only exists if we capture it as it goes past. Without it
+// the model that prices every tennis moneyline cannot be honestly measured.
+const TENNIS_RANK_HISTORY = path.resolve(process.cwd(), 'scripts/fetch_tennis_rank_history.py');
 
 function runPyFetch(script: string, timeoutMs: number): Promise<{ ok: boolean; out: string }> {
   return new Promise((resolve) => {
@@ -4453,24 +4603,92 @@ function runPyFetch(script: string, timeoutMs: number): Promise<{ ok: boolean; o
   });
 }
 
-async function refreshTennisRanks(): Promise<{ ok: boolean; out: string }> {
-  const ranks = await runPyFetch(TENNIS_RANKS_FETCH, 30_000);
+// ATP and WTA rankings both live in ratings_meta.json after a refresh. Reading
+// the stamp back is how we know a run actually landed — the previous cron only
+// console.error'd on failure, which is exactly how ESPN's 403 froze the ranks
+// at 2026-07-18 for a month with nothing surfacing it.
+const RATINGS_META = path.resolve(process.cwd(), 'data/ratings_meta.json');
+
+interface TennisRankState {
+  updated: string | null;
+  ageDays: number | null;
+  atp: number;
+  wta: number;
+}
+
+function readTennisRankState(): TennisRankState {
+  try {
+    const meta = JSON.parse(readFileSync(RATINGS_META, 'utf-8')) as
+      { tennis?: { updated?: string; atp?: number; wta?: number } };
+    const t = meta.tennis ?? {};
+    const updated = t.updated ?? null;
+    const ageDays = updated
+      ? (Date.now() - new Date(updated).getTime()) / 86_400_000
+      : null;
+    return { updated, ageDays, atp: t.atp ?? 0, wta: t.wta ?? 0 };
+  } catch {
+    return { updated: null, ageDays: null, atp: 0, wta: 0 };
+  }
+}
+
+// Both tours must land. A run where one tour returns 0 is a HALF refresh — the
+// fetcher deliberately keeps the old ranks for the empty tour rather than wiping
+// them, so it exits 0 and looks fine while half the board silently rots.
+async function refreshTennisRanks(): Promise<{ ok: boolean; out: string; state: TennisRankState }> {
+  const ranks = await runPyFetch(TENNIS_RANKS_FETCH, 120_000);
   // form/serve are best-effort: a slow xlsx mirror must not fail the rank refresh
   const form = await runPyFetch(TENNIS_FORM_FETCH, 180_000);
   const serve = await runPyFetch(TENNIS_SERVE_FETCH, 180_000);
+  // Archive this week's ranking BEFORE it ages out of ESPN's window.
+  const hist = await runPyFetch(TENNIS_RANK_HISTORY, 600_000);
+  const state = readTennisRankState();
+  const bothTours = state.atp > 0 && state.wta > 0;
   return {
-    ok: ranks.ok,
-    out: `ranks:${ranks.ok ? 'ok' : 'FAIL'} form:${form.ok ? 'ok' : 'FAIL'} ` +
-         `serve:${serve.ok ? 'ok' : 'FAIL'} | ${ranks.out.slice(-160)}`,
+    ok: ranks.ok && bothTours,
+    out: `ranks:${ranks.ok ? 'ok' : 'FAIL'} atp:${state.atp} wta:${state.wta}` +
+         `${bothTours ? '' : ' ← TOUR MISSING'} form:${form.ok ? 'ok' : 'FAIL'} ` +
+         `serve:${serve.ok ? 'ok' : 'FAIL'} hist:${hist.ok ? 'ok' : 'FAIL'} ` +
+         `| ${ranks.out.slice(-160)}`,
+    state,
   };
 }
 
-// Manual trigger — the weekly cron handles the routine refresh.
+// ATP/WTA publish weekly, but the model prices on rank DIFFERENCE, which barely
+// moves week to week outside a Slam — so a fortnightly refresh keeps the ranks
+// honest without hammering the source. Gate on the actual stamp age rather than
+// a cron interval: that way a refresh missed while the machine was off is picked
+// up on the next daily check instead of waiting another full period.
+const TENNIS_REFRESH_DAYS = Number(process.env.TENNIS_REFRESH_DAYS) || 14;
+
+async function refreshTennisRanksIfDue(force = false): Promise<
+  { ran: boolean; ok?: boolean; out?: string; ageDays: number | null }> {
+  const { ageDays } = readTennisRankState();
+  const due = force || ageDays === null || ageDays >= TENNIS_REFRESH_DAYS;
+  if (!due) return { ran: false, ageDays };
+  const r = await refreshTennisRanks();
+  return { ran: true, ok: r.ok, out: r.out, ageDays: r.state.ageDays };
+}
+
+// Manual trigger — the fortnightly cron handles the routine refresh. This forces
+// one regardless of age (a Slam can reshuffle ranks inside the normal window).
 app.post('/api/refresh-rankings', async (req: express.Request, res: express.Response) => {
   if (rateLimit(req, 3, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
   const r = await refreshTennisRanks();
   if (!r.ok) return res.status(502).json({ error: 'REFRESH_FAILED', detail: r.out });
-  res.json({ success: true, detail: r.out });
+  res.json({ success: true, detail: r.out, atp: r.state.atp, wta: r.state.wta });
+});
+
+// Rank freshness, readable without triggering a refresh — so "are the tennis
+// ranks current?" is answerable at pick time (global rule 16).
+app.get('/api/rank-status', (_req: express.Request, res: express.Response) => {
+  const st = readTennisRankState();
+  res.json({
+    success: true,
+    ...st,
+    refresh_every_days: TENNIS_REFRESH_DAYS,
+    due: st.ageDays === null || st.ageDays >= TENNIS_REFRESH_DAYS,
+    both_tours: st.atp > 0 && st.wta > 0,
+  });
 });
 
 const distPath = path.resolve(process.cwd(), 'dist');
@@ -4490,15 +4708,53 @@ if (process.env.ENABLE_CLV_CAPTURE === 'true') {
   console.info('[CLV] auto-capture enabled — every 15 min');
 }
 
-// Tennis ranks auto-refresh — ATP/WTA rankings publish every Monday. ESPN is free
-// (0 Odds-API quota), so this runs by default; set DISABLE_RANK_REFRESH=true to skip.
+// Tennis ranks auto-refresh — ATP + WTA, every TENNIS_REFRESH_DAYS (default 14).
+// The cron fires DAILY and the 14-day staleness gate decides whether to act, so a
+// period missed while the machine was off is caught the next morning rather than
+// skipped entirely. ESPN is free (0 Odds-API quota), so this runs by default; set
+// DISABLE_RANK_REFRESH=true to skip.
 if (process.env.DISABLE_RANK_REFRESH !== 'true') {
-  cron.schedule('0 6 * * 1', () => {   // Mondays 06:00 — just after ranks publish
-    refreshTennisRanks()
-      .then(r => console.info(`[RANKS] weekly tennis refresh ${r.ok ? 'ok' : 'FAILED'}`))
-      .catch(e => console.error('[RANKS] refresh failed:', e instanceof Error ? e.message : String(e)));
+  cron.schedule('0 6 * * *', () => {   // daily 06:00 — the age gate does the pacing
+    refreshTennisRanksIfDue()
+      .then(r => {
+        if (!r.ran) return;  // not due yet — stay quiet
+        if (r.ok) console.info(`[RANKS] tennis refresh ok — ${r.out}`);
+        // A FAILED refresh must be loud and must not update the stamp, so the
+        // next daily check retries instead of waiting another fortnight.
+        else console.error(`[RANKS] ⚠️  tennis refresh FAILED — ranks are stale ` +
+                           `(${r.ageDays === null ? 'never' : Math.floor(r.ageDays) + 'd'} old): ${r.out}`);
+      })
+      .catch(e => console.error('[RANKS] refresh threw:', e instanceof Error ? e.message : String(e)));
   });
-  console.info('[RANKS] weekly tennis rank refresh scheduled — Mondays 06:00');
+  const boot = readTennisRankState();
+  console.info(`[RANKS] ATP+WTA refresh every ${TENNIS_REFRESH_DAYS}d — checked daily 06:00 ` +
+               `(now: atp ${boot.atp}, wta ${boot.wta}, ` +
+               `${boot.ageDays === null ? 'never refreshed' : Math.floor(boot.ageDays) + 'd old'})`);
+}
+
+// Feed-health watchdog — the piece that was missing when ESPN's 403 froze the
+// tennis ranks for a month. A dead SOURCE is invisible to a freshness check
+// (the file on disk just quietly ages), so probe the upstreams daily and shout.
+// Free hosts only — feed_health.py never touches a quota-metered API.
+const FEED_HEALTH = path.resolve(process.cwd(), 'scripts/feed_health.py');
+
+async function runFeedHealth(): Promise<void> {
+  const r = await runPyFetch(FEED_HEALTH, 90_000);
+  // Non-zero exit == at least one source is DEAD.
+  if (r.ok) { console.info('[FEEDS] all upstreams reachable'); return; }
+  const dead = r.out.split('\n').filter(l => l.includes('DEAD')).join(' | ');
+  console.error(`[FEEDS] ⚠️  UPSTREAM DOWN — picks will price on frozen data: ` +
+                `${dead || r.out.slice(-200)}`);
+}
+
+if (process.env.DISABLE_FEED_HEALTH !== 'true') {
+  cron.schedule('30 6 * * *', () => {   // daily, just after the rank check
+    runFeedHealth().catch(e =>
+      console.error('[FEEDS] health check threw:', e instanceof Error ? e.message : String(e)));
+  });
+  // Run once at boot too — a source that died overnight shouldn't wait for 06:30.
+  runFeedHealth().catch(() => { /* boot probe is best-effort */ });
+  console.info('[FEEDS] upstream health watchdog scheduled — daily 06:30 + on boot');
 }
 
 app.listen(port, '0.0.0.0', () => {

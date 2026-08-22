@@ -71,11 +71,40 @@ interface PickGrade {
   side: string;
 }
 
+interface ContextTeamStats {
+  team: string;
+  matched: string | null;
+  league: string | null;
+  ats: {
+    games?: number;
+    ats_hit_rate?: number | null;
+    home_ats_hit_rate?: number | null;
+    away_ats_hit_rate?: number | null;
+    total_over_hit_rate?: number | null;
+  } | null;
+  // null = league has NO injury feed. Absence is not a clean bill of health.
+  injuries: Array<{ name?: string; position?: string; injury?: string; status?: string }> | null;
+  injuries_covered?: boolean;
+  note?: string | null;
+}
+
+interface MarketContextPayload {
+  home?: ContextTeamStats;
+  away?: ContextTeamStats;
+  sharp_moves?: {
+    count?: number;
+    moves?: Array<{ player?: string; market?: string; line?: number;
+                    pinnacle_over_move_pct?: number | null }> | null;
+    note?: string | null;
+  } | null;
+}
+
 interface AnalyzeResult {
   quant?: SwarmAgent;
   simulation?: SwarmAgent;
   poisson?: PoissonBoard;
   pick_grade?: PickGrade;
+  market_context?: MarketContextPayload;
   primary_single?: string;
   primary_odds?: string;
   bet_structure?: string;       // math-computed
@@ -310,6 +339,134 @@ function WagerCalculator({ odds, payout100 }: { odds: string; payout100?: number
 /* ─── Poisson distribution chart — real model output, no AI numbers ───
    Ochre = the model's most likely scores; W/D/L strip devigged from the 1X2. */
 const OCHRE = "#C8860A";
+
+/* ─── External cited stats: Linemate form/injuries + Insider sharp money ─── */
+/* Deliberately rendered as DATA, not folded into the narrative: these are real
+   settled records and real line movement, and the reader should be able to see
+   the number and its source rather than trust a paraphrase. Secondary to the
+   bet itself, so it recedes — small type, muted, ochre only on the live signal. */
+
+const OUT_STATUS = /\b(IL|IR)\b|^(OUT|INACTIVE|SUSPEN)/i;
+
+function pctOrNA(v?: number | null) {
+  return v == null ? "n/a" : `${Math.round(v * 100)}%`;
+}
+
+function TeamForm({ t }: { t?: ContextTeamStats }) {
+  if (!t?.matched) return null;
+  const a = t.ats ?? {};
+  const hasRecord = [a.ats_hit_rate, a.home_ats_hit_rate, a.total_over_hit_rate]
+    .some((v) => v != null);
+  if (!hasRecord && t.injuries == null) return null;
+
+  const out = (t.injuries ?? []).filter((i) => OUT_STATUS.test(i.status ?? ""));
+
+  return (
+    <div className="space-y-1.5">
+      <div className="text-[11px] font-bold uppercase tracking-wider text-[#F5F0E8]">
+        {t.team}
+      </div>
+      {hasRecord ? (
+        <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[10px] text-muted-foreground">
+          <span>ATS <b className="text-[#F5F0E8]">{pctOrNA(a.ats_hit_rate)}</b></span>
+          <span>home <b className="text-[#F5F0E8]">{pctOrNA(a.home_ats_hit_rate)}</b></span>
+          <span>over <b className="text-[#F5F0E8]">{pctOrNA(a.total_over_hit_rate)}</b></span>
+          {a.games ? <span className="opacity-60">{a.games}g</span> : null}
+        </div>
+      ) : (
+        <div className="text-[10px] text-muted-foreground opacity-70">
+          no settled record yet this season
+        </div>
+      )}
+      {t.injuries == null ? (
+        <div className="text-[10px] text-muted-foreground opacity-70">
+          no injury feed for this league — absence is not a clean bill of health
+        </div>
+      ) : out.length ? (
+        <div className="text-[10px] leading-relaxed text-muted-foreground">
+          <span className="font-bold text-[#F5F0E8]">OUT </span>
+          {out.slice(0, 6).map((i, n) => (
+            <span key={n}>
+              {n > 0 && ", "}
+              {i.name}
+              {i.position ? ` (${i.position})` : ""}
+              {i.status ? <span className="opacity-60"> {i.status}</span> : null}
+            </span>
+          ))}
+          {out.length > 6 && <span className="opacity-60"> +{out.length - 6} more</span>}
+        </div>
+      ) : (
+        <div className="text-[10px] text-muted-foreground opacity-70">none ruled out</div>
+      )}
+    </div>
+  );
+}
+
+function MarketContextCard({ ctx }: { ctx: MarketContextPayload }) {
+  const moves = (ctx.sharp_moves?.moves ?? []).slice(0, 6);
+  const home = <TeamForm t={ctx.home} />;
+  const away = <TeamForm t={ctx.away} />;
+  if (!home && !away && !moves.length) return null;
+
+  return (
+    <Card className="border-white/5 bg-[#1A1A1A]">
+      <CardHeader className="pb-2">
+        <CardTitle className="flex items-center gap-2 text-sm font-black uppercase tracking-widest">
+          <Activity className="w-4 h-4" style={{ color: OCHRE }} />
+          External Form &amp; Sharp Money
+          <span className="ml-auto text-[9px] font-mono normal-case tracking-normal text-muted-foreground">
+            cited stats · not model output
+          </span>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {(home || away) && (
+          <div className="grid gap-4 sm:grid-cols-2">
+            {home}
+            {away}
+          </div>
+        )}
+
+        {moves.length > 0 && (
+          <div className="space-y-1.5 border-t border-white/5 pt-3">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+              Pinnacle move since open
+              <span className="ml-2 font-normal normal-case opacity-70">
+                negative = money came in on that side
+              </span>
+            </div>
+            {moves.map((m, n) => {
+              const pctMove = m.pinnacle_over_move_pct;
+              const steam = pctMove != null && pctMove < 0;
+              return (
+                <div key={n} className="flex items-baseline gap-2 text-[10px]">
+                  <span className="min-w-0 flex-1 truncate text-[#F5F0E8]">
+                    {m.player}
+                    <span className="ml-1.5 opacity-60">
+                      {String(m.market ?? "").toLowerCase().replace(/_/g, " ")} {m.line}
+                    </span>
+                  </span>
+                  <span
+                    className="font-mono font-bold tabular-nums"
+                    style={{ color: steam ? OCHRE : "#6b6b6b" }}
+                  >
+                    {pctMove != null ? `${pctMove > 0 ? "+" : ""}${pctMove}%` : "n/a"}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        <p className="text-[9px] leading-relaxed text-muted-foreground opacity-60">
+          Linemate (settled ATS / injuries) · Betting Insider (Pinnacle open→now).
+          Context only — a trend still has to clear the value gate and never
+          overrides the model.
+        </p>
+      </CardContent>
+    </Card>
+  );
+}
 
 function PoissonChart({ poisson }: { poisson: PoissonBoard }) {
   if (!poisson.correct_score?.length) return null;
@@ -685,7 +842,11 @@ function AgentCard({ title, icon: Icon, agent, color }: {
 /* ─── Main Page ─── */
 export default function GameBreakdown() {
   const [matchup, setMatchup] = useState("");
-  const [sport, setSport]     = useState("NBA");
+  // Default to a sport that is actually running. NBA was hardcoded here, so
+  // the app opened every session on an offseason league — an empty board
+  // that reads like the scanner is broken. Soccer is live (club season
+  // opened 2026-08-08) alongside NFL preseason and tennis.
+  const [sport, setSport]     = useState("SOCCER");
 
   const { mutate: analyze, data: swarmData, isPending: swarmPending, error: swarmError } = useMutation({
     mutationFn: async () => {
@@ -979,6 +1140,9 @@ export default function GameBreakdown() {
 
             {/* Poisson distribution — real model output (soccer) */}
             {swarmData.poisson && <PoissonChart poisson={swarmData.poisson} />}
+            {swarmData.market_context && (
+              <MarketContextCard ctx={swarmData.market_context} />
+            )}
 
             {/* Agent Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

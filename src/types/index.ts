@@ -77,11 +77,46 @@ export interface PickGrade {
   side: string;
 }
 
+// External CITED context (Linemate ATS/injuries + Betting Insider Pinnacle
+// movement), surfaced as DATA so the page can show it rather than relying on the
+// narrative to repeat it. Every field is optional: the layer degrades to a note
+// when a team can't be matched or an upstream is dark.
+export interface ContextTeamStats {
+  team: string;
+  matched: string | null;
+  league: string | null;
+  ats: {
+    games?: number;
+    ats_hit_rate?: number | null;
+    home_ats_hit_rate?: number | null;
+    away_ats_hit_rate?: number | null;
+    total_over_hit_rate?: number | null;
+  } | null;
+  // null = the league has NO injury feed (absence is not a clean bill of health)
+  injuries: Array<{ name?: string; position?: string; injury?: string; status?: string }> | null;
+  injuries_covered?: boolean;
+  note?: string | null;
+}
+
+export interface SharpMove {
+  player?: string;
+  market?: string;
+  line?: number;
+  pinnacle_over_move_pct?: number | null;   // negative = money came in
+}
+
+export interface MarketContextPayload {
+  home?: ContextTeamStats;
+  away?: ContextTeamStats;
+  sharp_moves?: { count?: number; moves?: SharpMove[] | null; note?: string | null } | null;
+}
+
 export interface SwarmFinalPayload extends SwarmAgentData {
   bet_structure?: string;         // math-computed
   implied_prob?: number;          // math-computed from primary_odds
   pick_grade?: PickGrade;         // soccer: math grade on the model's primary pick
   poisson?: PoissonBoard;         // soccer: real model distribution for the chart
+  market_context?: MarketContextPayload;  // cited external stats (never model output)
   swarm_report: {
     quant?: SwarmAgentData;
     simulation?: SwarmAgentData;
