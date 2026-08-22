@@ -177,6 +177,20 @@ def _opening(side: dict | None) -> dict:
             "value": op.get("value")}
 
 
+def trends_raw(league: str) -> list[dict]:
+    """The UNNORMALISED trend payload, books and all.
+
+    `trends()` flattens each row to the single best price, which is the right
+    shape for reading a card but throws away the per-book prices. Anything that
+    compares books (line_shop.py) needs the raw thing.
+    """
+    lg = _check_league(league)
+    raw = _get(f"{lg}/v1/trends/straights")
+    if not isinstance(raw, list):
+        raise LinemateError(f"{lg} trends: expected list, got {type(raw).__name__}")
+    return [t for t in raw if isinstance(t, dict)]
+
+
 def trends(league: str) -> list[dict]:
     """Today's featured trends, normalised.
 

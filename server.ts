@@ -3842,6 +3842,34 @@ interface LineGap {
 
 app.get('/api/line-gaps', async (req: express.Request, res: express.Response) => {
   if (rateLimit(req, 10, 60_000)) return res.status(429).json({ error: "RATE_LIMIT" });
+
+  // FREE multi-book scan first. The Odds API path below compares only
+  // pinnacle/draftkings/fanduel, so it needs two of three to price the same
+  // market — on a normal slate that is ~1 game, and it then reported "market
+  // efficient", which was a statement about our COVERAGE, not about the market.
+  // Linemate quotes up to 32 books at no quota cost, so try that first and fall
+  // through only when the sport is not covered there.
+  try {
+    const sportParam = ((req.query.sport as string) || 'NBA').toUpperCase();
+    const lr = await fetch(`http://127.0.0.1:8001/line-shop/${sportParam}`,
+      { signal: AbortSignal.timeout(20_000) });
+    if (lr.ok) {
+      const shop = await lr.json() as {
+        outliers?: Array<Record<string, unknown>>; markets_compared?: number;
+        error?: string; note?: string;
+      };
+      if (!shop.error && (shop.markets_compared ?? 0) > 0) {
+        return res.json({
+          gaps: shop.outliers ?? [],
+          scanned: shop.markets_compared ?? 0,
+          compared: shop.markets_compared ?? 0,
+          source: 'linemate multi-book consensus (free)',
+          note: shop.note,
+        });
+      }
+    }
+  } catch { /* fall through to the Odds API path */ }
+
   if (!ODDS_API_KEY) return res.status(503).json({ error: "ODDS_API_NOT_CONFIGURED" });
 
   try {

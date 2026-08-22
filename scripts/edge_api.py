@@ -41,7 +41,9 @@ import win_simulator as wsim
 import tennis_scanner as tsc
 import period_model as pmod
 import club_form as cform
+import team_style as tstyle
 import nfl_week1_prior as nflw1
+import line_shop as lshop
 from typing import List
 
 BASE = Path(__file__).parent.parent / "data"
@@ -1421,6 +1423,7 @@ class SoccerMarketReq(BaseModel):
     # zeroing each league's fitted home_advantage (La Liga 0.29 ≈ +34% home
     # goal rate). Callers on genuinely neutral ground pass neutral: true.
     neutral: bool = False
+    referee: Optional[str] = None   # names the official, for the cards read
     rho: float = sm.DEFAULT_RHO   # Dixon-Coles draw/low-score correction
     simulate: bool = True         # Monte Carlo cross-check + correlated same-game markets
     n_sims: int = 120_000
@@ -1628,6 +1631,16 @@ def predict_soccer(req: SoccerMarketReq):
         # Rule 19 — what this model has actually been MEASURED to do in this
         # league. None = never backtested here, which is UNKNOWN, not "fine".
         "model_skill": league_skill(club_league),
+        # Rule 28 — HOW the sides play, measured: tempo, finishing, game-state
+        # split, discipline, set pieces, derby heat, and the referee's own
+        # tendency. Description, never fed into the win probability.
+        "game_context": (lambda h, a: tstyle.context(h, a, req.referee))(
+            resolve_club(req.home_team, {t: v for lg in
+                         (CLUB_SOCCER_RATINGS.get("leagues") or {}).values()
+                         for t, v in (lg.get("teams") or {}).items()}) or req.home_team,
+            resolve_club(req.away_team, {t: v for lg in
+                         (CLUB_SOCCER_RATINGS.get("leagues") or {}).values()
+                         for t, v in (lg.get("teams") or {}).items()}) or req.away_team),
         "method": f"{'MarketCalibrated' if calibrated else 'Ratings'}Poisson+DixonColes(rho={req.rho})",
         "data_fit_ratings": ({
             "home": intl_teams.get(req.home_team), "away": intl_teams.get(req.away_team),
@@ -2315,6 +2328,41 @@ def insider_sharp_moves(sport: str, min_move_pct: float = 5.0):
         return {"status": "OK", "sport": sport, "count": len(rows), "data": rows}
     except tbi.BettingInsiderError as e:
         return {"status": "UNAVAILABLE", "sport": sport, "note": str(e), "data": None}
+
+
+@app.get("/style/{team}")
+def team_style_route(team: str):
+    """Measured playing profile for one club."""
+    out = tstyle.style(team)
+    return out or {"error": "TOO_FEW_MATCHES", "team": team,
+                   "note": f"fewer than {tstyle.MIN_MATCHES} matches on file"}
+
+
+@app.get("/referee/{name}")
+def referee_route(name: str):
+    out = tstyle.referee(name)
+    return out or {"error": "TOO_FEW_MATCHES", "referee": name}
+
+
+@app.get("/referees")
+def referee_table_route(min_matches: int = 15):
+    return {"referees": [r for r in tstyle.referee_table()
+                         if r["matches"] >= min_matches]}
+
+
+@app.get("/line-shop/{target}")
+def line_shop_scan(target: str, min_books: int = lshop.MIN_BOOKS,
+                   min_edge: float = lshop.DEFAULT_MIN_EDGE):
+    """Outlier prices against a MULTI-BOOK consensus — free, no quota.
+
+    Replaces the 3-book Odds API gap scan, which needed two of
+    pinnacle/draftkings/fanduel on the same market and so compared ~1 game a
+    slate before reporting "market efficient" — a statement about coverage, not
+    about the market. Here each book's own price is devigged, the MEDIAN across
+    books is the consensus, and the best price is scored against it.
+    """
+    fn = lshop.scan if target.islower() and target in lmt.LEAGUES else lshop.scan_sport
+    return fn(target, min_books=min_books, min_edge=min_edge)
 
 
 @app.get("/linemate/leagues")
