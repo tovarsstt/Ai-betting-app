@@ -71,3 +71,6 @@ integrations/
 
 # runtime odds cache (persistent, do not commit)
 data/.cache.json
+
+# Disk-backed TTL cache for external market context (regenerable, per-machine)
+data/_cache/
