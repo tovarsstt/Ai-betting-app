@@ -4,6 +4,8 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
+import pytest
+import slip_linter as sl
 from slip_linter import lint, leg_bucket, roi_by
 
 # Mirrors the user's settled record: longshot wins, lottery/soft-fav bleed.
@@ -159,3 +161,100 @@ def test_numeric_handicap_parens_not_mistaken_for_esports():
             {"decimal": 3.0, "selection": "value"}]
     v = lint(legs, band, SHAPE)
     assert 0 not in v.cut_legs
+
+
+# ── Rule 3: cumulative juice filter (was prose-only until 2026-08-19) ────────
+
+def test_ticket_vig_computes_from_both_sides():
+    # 1.90 / 1.90 two-way = 5.26% vig on that leg.
+    v = sl.ticket_vig([{"decimal": 1.90, "opposite_decimal": 1.90, "selection": "A"}])
+    assert v["measured"] == 1 and v["unmeasured"] == 0
+    assert round(v["total_vig"], 4) == round(2 / 1.9 - 1, 4)
+    assert v["exceeds"] is False
+
+
+def test_ticket_vig_never_estimates_a_missing_side():
+    v = sl.ticket_vig([{"decimal": 1.90, "selection": "A"}])
+    assert v["measured"] == 0
+    assert v["unmeasured"] == 1
+    assert v["total_vig"] is None
+    assert v["exceeds"] is False   # unknown is not a breach
+
+
+def test_ticket_vig_flags_breach_over_cap():
+    # Three fat-margin legs compound past 15%.
+    legs = [{"decimal": 1.75, "opposite_decimal": 1.75, "selection": s}
+            for s in ("A", "B", "C")]
+    v = sl.ticket_vig(legs)
+    assert v["total_vig"] > sl.MAX_CUMULATIVE_VIG
+    assert v["exceeds"] is True
+
+
+def test_lint_rejects_ticket_over_the_vig_cap():
+    legs = [{"decimal": 1.75, "opposite_decimal": 1.75, "selection": s}
+            for s in ("Team A ML", "Team B ML", "Team C ML")]
+    v = sl.lint(legs, band_roi={}, shape_roi={})
+    assert v.status == "REJECT"
+    assert any("cumulative vig" in r for r in v.reasons)
+
+
+def test_lint_notes_when_vig_is_unmeasurable():
+    legs = [{"decimal": 2.10, "selection": "Team A ML"},
+            {"decimal": 2.20, "selection": "Team B ML"}]
+    v = sl.lint(legs, band_roi={}, shape_roi={})
+    assert any("vig unmeasured" in r for r in v.reasons)
+
+
+def test_lint_accepts_normal_juice():
+    legs = [{"decimal": 2.10, "opposite_decimal": 1.83, "selection": "Team A ML"},
+            {"decimal": 2.20, "opposite_decimal": 1.78, "selection": "Team B ML"}]
+    v = sl.lint(legs, band_roi={}, shape_roi={})
+    assert not any("cumulative vig" in r for r in v.reasons)
+
+
+# ── Over-cap trim must cut the least likely WINNER, using OUR probability ───
+# Was ranked purely on price. Price is the BOOK's proxy with their vig in it;
+# when the model supplies a probability, that is the number to rank on.
+
+def _six(probs):
+    """Six legs whose PRICES disagree with the model about which is safest."""
+    prices = [1.26, 1.26, 1.47, 1.09, 1.11, 1.35]
+    return [{"decimal": d, "prob": p, "selection": f"leg{i}"}
+            for i, (d, p) in enumerate(zip(prices, probs))]
+
+
+def test_trim_cuts_lowest_model_win_prob_not_highest_price():
+    # Real ticket: model rates leg0 (1.26) at 64.5% and leg5 (1.35) at 73.6%.
+    # Price-ranking would cut leg2/leg5; win-prob ranking must cut leg0/leg2.
+    legs = _six([0.645, 0.715, 0.658, 0.839, 0.870, 0.736])
+    v = sl.lint(legs, band_roi={}, shape_roi={})
+    assert set(v.cut_legs) == {0, 2}
+    assert v.keep_count == 4
+
+
+def test_trim_reason_names_the_win_prob_and_its_source():
+    legs = _six([0.645, 0.715, 0.658, 0.839, 0.870, 0.736])
+    v = sl.lint(legs, band_roi={}, shape_roi={})
+    cut = [r for r in v.reasons if "CUT" in r]
+    assert any("lowest win prob" in r and "model" in r for r in cut)
+
+
+def test_without_model_probs_it_falls_back_to_price_order():
+    # No `prob` anywhere -> 1/decimal proxy -> the old behaviour exactly.
+    legs = [{"decimal": d, "selection": f"leg{i}"}
+            for i, d in enumerate([1.26, 1.26, 1.47, 1.09, 1.11, 1.35])]
+    v = sl.lint(legs, band_roi={}, shape_roi={})
+    assert set(v.cut_legs) == {2, 5}          # the two priciest
+    assert any("price-implied" in r for r in v.reasons if "CUT" in r)
+
+
+def test_win_prob_helper_prefers_model_over_price():
+    assert sl._win_prob({"decimal": 1.10, "prob": 0.55}) == 0.55
+    assert sl._win_prob({"decimal": 2.00}) == pytest.approx(0.5)
+
+
+def test_win_prob_helper_ignores_nonsense_probabilities():
+    # Out-of-range or unparseable -> fall back to the price proxy, never crash.
+    assert sl._win_prob({"decimal": 2.0, "prob": 1.4}) == pytest.approx(0.5)
+    assert sl._win_prob({"decimal": 2.0, "prob": "abc"}) == pytest.approx(0.5)
+    assert sl._win_prob({"decimal": 2.0, "prob": None}) == pytest.approx(0.5)

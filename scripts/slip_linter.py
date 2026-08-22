@@ -40,6 +40,14 @@ SOFT_FAV_BAND = "soft favorite (1.50-1.90)"  # favourite but NOT a lock — the 
 MAX_SOFT_FAV = 1      # win-prob-first: at most one soft favourite per ticket
 MIN_BAND_SAMPLE = 5   # min singles before a band's per-leg ROI is trusted as a cut signal
 
+# ── Rule 3: JUICE FILTER — reject a ticket whose cumulative vig exceeds 15%.
+# This lived as prose in global_heuristics.md with NOTHING enforcing it (audited
+# 2026-08-19). Vig needs BOTH sides of a market, and a leg only carries the side
+# you're taking, so callers must pass `opposite_decimal` for it to be measurable.
+# When they don't we report it as UNMEASURED rather than assuming a house number —
+# a fabricated vig is worse than a missing one.
+MAX_CUMULATIVE_VIG = 0.15
+
 # ── Coverage gate: markets NO engine models — "no data, no bet" (rule 13).
 # Jul 16 2026 audit: -94 of a -71.10 day came entirely from esports/volleyball
 # slips no model would ever price. Detection is from the leg's own text (or an
@@ -195,6 +203,64 @@ def _gate_legs(legs: list[dict], band_roi: dict) -> tuple[list, list]:
     return cut, reasons
 
 
+def _win_prob(leg: dict) -> float:
+    """The leg's WIN PROBABILITY — the model's own when supplied, else the
+    book's implied price as a proxy.
+
+    Order matters: a model probability is OUR estimate; 1/decimal is the book's,
+    with their margin baked in. Ranking on the model number is what makes
+    "cut the least likely winner" mean what it says.
+    """
+    p = leg.get("prob")
+    if p is not None:
+        try:
+            p = float(p)
+            if 0.0 < p <= 1.0:
+                return p
+        except (TypeError, ValueError):
+            pass
+    try:
+        dec = float(leg["decimal"])
+        return 1.0 / dec if dec > 0 else 0.0
+    except (TypeError, ValueError, KeyError):
+        return 0.0
+
+
+def ticket_vig(legs: list[dict]) -> dict:
+    """Cumulative vig across a ticket (rule 3).
+
+    Per leg, vig = (1/decimal + 1/opposite_decimal) - 1, which needs the price of
+    BOTH outcomes. Legs lacking `opposite_decimal` are counted as unmeasured and
+    excluded — never estimated.
+
+    Returns {total_vig, measured, unmeasured, per_leg, exceeds}.
+    """
+    total, measured, unmeasured, per_leg = 0.0, 0, 0, []
+    for i, leg in enumerate(legs):
+        opp = leg.get("opposite_decimal")
+        try:
+            dec = float(leg["decimal"])
+            opp = float(opp) if opp is not None else None
+        except (TypeError, ValueError, KeyError):
+            dec, opp = None, None
+        if not dec or not opp or dec <= 1 or opp <= 1:
+            unmeasured += 1
+            per_leg.append({"leg": i + 1, "vig": None})
+            continue
+        v = (1.0 / dec) + (1.0 / opp) - 1.0
+        total += v
+        measured += 1
+        per_leg.append({"leg": i + 1, "vig": round(v, 4)})
+    return {
+        "total_vig": round(total, 4) if measured else None,
+        "measured": measured,
+        "unmeasured": unmeasured,
+        "per_leg": per_leg,
+        # Only a MEASURED total can breach the cap. Unknown is never a breach.
+        "exceeds": bool(measured and total > MAX_CUMULATIVE_VIG),
+    }
+
+
 def lint(legs: list[dict], band_roi: dict | None = None,
          shape_roi: dict | None = None) -> Verdict:
     """Score a ticket. `legs` = [{'decimal': float, 'selection': str}]."""
@@ -205,10 +271,31 @@ def lint(legs: list[dict], band_roi: dict | None = None,
     cut, reasons = _gate_legs(legs, band_roi)
     keep_n = len(legs) - len(set(cut))
 
-    # 2. Over the hard cap — trim weakest (highest-priced = riskiest) down to 4.
+    # 1b. Rule 3 — cumulative juice. A ticket can be full of individually fine
+    # legs and still be unplayable once the books' margins compound.
+    vig = ticket_vig(legs)
+    if vig["exceeds"]:
+        return Verdict("REJECT",
+                       tuple(reasons + [
+                           f"cumulative vig {vig['total_vig']:.1%} across {vig['measured']} "
+                           f"priced legs exceeds the {MAX_CUMULATIVE_VIG:.0%} cap (rule 3) — "
+                           f"the books' margin eats the edge; cut legs or find better prices"]),
+                       tuple(cut), keep_n)
+    if vig["unmeasured"]:
+        reasons.append(f"NOTE vig unmeasured on {vig['unmeasured']}/{len(legs)} legs "
+                       f"(no opposite_decimal supplied) — rule 3 not verifiable for those")
+
+    # 2. Over the hard cap — trim the LEAST LIKELY TO WIN down to 4.
+    #
+    # This used to rank purely on price (highest decimal cut first). Price is only
+    # a PROXY for win probability, and it is the BOOK's proxy — it carries their
+    # vig and their opinion, not ours. When a leg brings the model's own win
+    # probability we rank on that instead, so the leg that survives is the one
+    # OUR engine says is most likely to land (rule 0: winning is king, EV second).
+    # Falling back to 1/decimal reproduces the old ordering exactly, so a caller
+    # that supplies no probabilities loses nothing.
     if keep_n > MAX_LEGS:
-        ranked = sorted(range(len(legs)),
-                        key=lambda i: float(legs[i]["decimal"]), reverse=True)
+        ranked = sorted(range(len(legs)), key=lambda i: _win_prob(legs[i]))
         for i in ranked:
             if i in cut:
                 continue
@@ -216,7 +303,9 @@ def lint(legs: list[dict], band_roi: dict | None = None,
             keep_n -= 1
             sh = shape_roi.get("7+ legs", shape_roi.get("4-6 legs"))
             ev = f" ({sh:+.0f}% ROI)" if sh is not None else ""
-            reasons.append(f"CUT leg {i+1} — over {MAX_LEGS}-leg cap; long stacks bleed{ev}")
+            src = "model" if legs[i].get("prob") is not None else "price-implied"
+            reasons.append(f"CUT leg {i+1} — over {MAX_LEGS}-leg cap, lowest win prob "
+                           f"({_win_prob(legs[i])*100:.0f}%, {src}); long stacks bleed{ev}")
             if keep_n <= MAX_LEGS:
                 break
 

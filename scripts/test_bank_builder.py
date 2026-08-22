@@ -352,3 +352,54 @@ def test_non_mlb_sports_untouched_and_model_failure_safe(monkeypatch):
     monkeypatch.setattr(bb, "_mlb_model_read", lambda g: None)
     cands = bb.candidates_from_2way([_mlb_game()], sport_key="baseball_mlb")
     assert len(cands) == 2 and all("model_prob" not in c for c in cands)
+
+
+# ── Rule 16 data gate on the day card (added 2026-08-19) ───────────────────
+# The card had its own verdict and consulted neither freshness nor league skill,
+# so a fixture could read LEAN from /predict and a full BET here.
+
+def _rows():
+    return [{"match": "A vs B", "verdict": "BET", "prob": 0.62, "ev_pct": 4.0},
+            {"match": "C vs D", "verdict": "LEAN", "prob": 0.55, "ev_pct": 0.5},
+            {"match": "E vs F", "verdict": "NO_BET", "prob": 0.40, "ev_pct": -6.0}]
+
+
+def test_season_boundary_downgrades_bet_to_lean(monkeypatch):
+    monkeypatch.setattr(bb, "_freshness_flag", lambda s: "SEASON_BOUNDARY")
+    out = bb.apply_data_gate(_rows(), "americanfootball_nfl")
+    assert out[0]["verdict"] == "LEAN"
+    assert "rule 16" in out[0]["data_gate"]
+    assert "predate" in out[0]["data_gate"]
+
+
+def test_stale_data_downgrades_bet(monkeypatch):
+    monkeypatch.setattr(bb, "_freshness_flag", lambda s: "STALE")
+    out = bb.apply_data_gate(_rows(), "mlb")
+    assert out[0]["verdict"] == "LEAN"
+
+
+def test_gate_never_upgrades_or_touches_no_bet(monkeypatch):
+    monkeypatch.setattr(bb, "_freshness_flag", lambda s: "STALE")
+    out = bb.apply_data_gate(_rows(), "mlb")
+    assert out[1]["verdict"] == "LEAN"     # stays LEAN, not promoted
+    assert out[2]["verdict"] == "NO_BET"   # untouched
+    assert "data_gate" not in out[2]
+
+
+def test_fresh_data_leaves_verdicts_alone(monkeypatch):
+    monkeypatch.setattr(bb, "_freshness_flag", lambda s: None)
+    out = bb.apply_data_gate(_rows(), "mlb")
+    assert [r["verdict"] for r in out] == ["BET", "LEAN", "NO_BET"]
+    assert all("data_gate" not in r for r in out)
+
+
+def test_gate_does_not_mutate_the_input_rows(monkeypatch):
+    monkeypatch.setattr(bb, "_freshness_flag", lambda s: "SEASON_BOUNDARY")
+    rows = _rows()
+    bb.apply_data_gate(rows, "nfl")
+    assert rows[0]["verdict"] == "BET"     # immutability rule
+
+
+def test_unknown_sport_key_is_inert():
+    assert bb.apply_data_gate(_rows(), None) == _rows()
+    assert bb.apply_data_gate(_rows(), "quidditch") == _rows()

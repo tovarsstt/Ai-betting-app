@@ -187,6 +187,71 @@ def _verdict(prob: float, ev: float) -> str:
     return "NO_BET"
 
 
+# ── Data gates (global rules 16 + 19) ────────────────────────────────────────
+# /predict caps a pick's grade when the ratings behind it are stale or predate
+# the season, and when the league has no MEASURED model skill. The day card used
+# its own verdict and consulted neither, so the same fixture could read LEAN in
+# /predict and a full BET here — two paths to one decision, disagreeing. These
+# apply the same gates so the card can't be the loose one.
+
+# Sport key (Odds-API style or plain) -> data_freshness keys it prices on.
+_FRESHNESS_KEYS = {
+    "soccer": ("soccer_club", "soccer_intl"),
+    "tennis": ("tennis", "tennis_form"),
+    "americanfootball_nfl": ("nfl",), "nfl": ("nfl",),
+    "baseball_mlb": ("mlb",), "mlb": ("mlb",),
+    "basketball_nba": ("nba",), "nba": ("nba",),
+    "basketball_wnba": ("wnba",), "wnba": ("wnba",),
+    "icehockey_nhl": (), "nhl": (),
+}
+
+
+def _freshness_flag(sport_key: str | None) -> str | None:
+    """Worst freshness status for this sport, or None when it can't be judged."""
+    if not sport_key:
+        return None
+    keys: tuple = ()
+    for prefix, ks in _FRESHNESS_KEYS.items():
+        if sport_key == prefix or sport_key.startswith(prefix):
+            keys = ks
+            break
+    if not keys:
+        return None
+    try:
+        import data_freshness as dfr
+        sports = dfr.audit()["sports"]
+    except Exception:
+        return None
+    statuses = [sports.get(k, {}).get("status") for k in keys if k in sports]
+    for bad in ("MISSING", "SEASON_BOUNDARY", "STALE"):
+        if bad in statuses:
+            return bad
+    return None
+
+
+def apply_data_gate(rows: list[dict], sport_key: str | None) -> list[dict]:
+    """Downgrade BET -> LEAN where the DATA doesn't support a confident call.
+
+    Never upgrades, and never touches NO_BET. Returns new rows (no mutation).
+    """
+    flag = _freshness_flag(sport_key)
+    if not flag:
+        return rows
+    reason = ("ratings predate the current season — roster/promotion changes not modelled"
+              if flag == "SEASON_BOUNDARY" else
+              f"ratings are {flag.lower()} — refresh before staking on this")
+    out = []
+    for r in rows:
+        r = dict(r)
+        if r.get("verdict") == "BET":
+            r["verdict"] = "LEAN"
+            r["data_gate"] = f"BET->LEAN (rule 16): {reason}"
+        elif r.get("verdict") == "LEAN":
+            r["data_gate"] = f"rule 16: {reason}"
+        out.append(r)
+    return out
+
+
 def best_per_match(candidates: list[dict]) -> list[dict]:
     """EVERY match -> its single best option + honest verdict.
 
@@ -297,7 +362,7 @@ def day_card(games: list[dict], n_tickets: int = DEFAULT_TICKETS,
              else candidates_from_slate(games))
     return {**build_tickets(cands, n_tickets),
             "singles": strong_singles(cands, bankroll),
-            "per_match": best_per_match(cands)}
+            "per_match": apply_data_gate(best_per_match(cands), sport_key)}
 
 
 def _main() -> None:
@@ -310,17 +375,18 @@ def _main() -> None:
         sport = str(payload.get("sport", "soccer_fifa_world_cup"))
         if sport.startswith("soccer"):       # 3-way -> full Poisson board
             from scan_slate import fetch_slate_oddsapi
-            out = day_card(fetch_slate_oddsapi(sport), n, bank)
+            out = day_card(fetch_slate_oddsapi(sport), n, bank, sport_key=sport)
         elif sport == "tennis":              # active tournaments discovered live
             from scan_slate import discover_tennis_keys, fetch_slate_2way_oddsapi
             games = [g for k in discover_tennis_keys() for g in fetch_slate_2way_oddsapi(k)]
-            out = day_card(games, n, bank, mode="2way")
+            out = day_card(games, n, bank, mode="2way", sport_key="tennis")
         else:                                # NBA/NFL/MLB/NHL... -> sharp-anchored ML
             from scan_slate import fetch_slate_2way_oddsapi
             out = day_card(fetch_slate_2way_oddsapi(sport), n, bank, mode="2way",
                            sport_key=sport)
     elif payload.get("games"):               # whole slate -> auto-fed day card
-        out = day_card(payload["games"], n, bank)
+        out = day_card(payload["games"], n, bank,
+                       sport_key=payload.get("sport"))
     else:
         cands = payload.get("candidates", [])
         out = {**build_tickets(cands, n), "singles": strong_singles(cands, bank)}

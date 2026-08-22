@@ -137,6 +137,89 @@ def _sim_set(pa: float, pb: float, rng: random.Random,
             return tb, g[0], g[1], 1 - server
 
 
+def _sim_set_from(pa: float, pb: float, rng: random.Random, first: int,
+                  ga: int = 0, gb: int = 0) -> tuple[int, int, int, int]:
+    """Play out a set from an ARBITRARY game score — the in-play case.
+
+    `_sim_set` always starts 0-0, which is why live pricing could only ever use
+    the SET score: a player 4-3 up in the opening set got no credit at all
+    because sets were still 0-0. This finishes the set in progress.
+    """
+    ha, hb = hold_prob(round(pa, 4)), hold_prob(round(pb, 4))
+    g = [int(ga), int(gb)]
+    server = first
+    # Already over (caller handed us a finished set) — report it as-is.
+    for w in (0, 1):
+        if g[w] >= 6 and g[w] - g[1 - w] >= 2:
+            return w, g[0], g[1], server
+    while True:
+        p_hold = ha if server == 0 else hb
+        winner = server if rng.random() < p_hold else 1 - server
+        g[winner] += 1
+        server = 1 - server
+        if g[winner] >= 6 and g[winner] - g[1 - winner] >= 2:
+            return winner, g[0], g[1], server
+        if g[0] == 6 and g[1] == 6:
+            tb = _sim_tiebreak(pa, pb, rng, server)
+            g[tb] += 1
+            return tb, g[0], g[1], 1 - server
+
+
+def live_state_probs(pa: float, pb: float, sets_a: int = 0, sets_b: int = 0,
+                     games_a: int = 0, games_b: int = 0, server: int = 0,
+                     best_of: int = 3, n_sims: int = 20_000,
+                     seed: int = SEED) -> dict:
+    """Win probabilities from a LIVE position — sets AND games in the current set.
+
+    Answers the questions a live ticket actually rides on: who wins the match,
+    who wins the set in progress, and does each player win at least one set
+    (the "gana un set" market). Everything is simulated forward from the real
+    score rather than adjusted off a pre-match number.
+    """
+    need = best_of // 2 + 1
+    if max(sets_a, sets_b) >= need:
+        decided = 1.0 if sets_a >= need else 0.0
+        return {"match_prob_a": decided, "set_in_progress_prob_a": None,
+                "a_wins_a_set": 1.0 if sets_a >= 1 else 0.0,
+                "b_wins_a_set": 1.0 if sets_b >= 1 else 0.0,
+                "decided": True, "n_sims": 0}
+
+    rng = random.Random(seed)
+    wins_a = cur_set_a = at_least_a = at_least_b = 0
+    for _ in range(n_sims):
+        sa, sb = sets_a, sets_b
+        w, _ga, _gb, nxt = _sim_set_from(pa, pb, rng, server, games_a, games_b)
+        if w == 0:
+            sa += 1
+            cur_set_a += 1
+        else:
+            sb += 1
+        srv = nxt
+        while sa < need and sb < need:
+            w2, _x, _y, srv = _sim_set(pa, pb, rng, srv)
+            if w2 == 0:
+                sa += 1
+            else:
+                sb += 1
+        if sa >= need:
+            wins_a += 1
+        if sa >= 1:
+            at_least_a += 1
+        if sb >= 1:
+            at_least_b += 1
+    return {
+        "match_prob_a": round(wins_a / n_sims, 4),
+        "set_in_progress_prob_a": round(cur_set_a / n_sims, 4),
+        "a_wins_a_set": round(at_least_a / n_sims, 4),
+        "b_wins_a_set": round(at_least_b / n_sims, 4),
+        "from_score": {"sets": [sets_a, sets_b], "games": [games_a, games_b],
+                       "serving": "a" if server == 0 else "b"},
+        "decided": False, "n_sims": n_sims,
+        "note": "simulated forward from the live score using measured hold "
+                "probabilities; point score within the current game is ignored",
+    }
+
+
 def simulate_match(pa: float, pb: float, best_of: int = 3,
                    n_sims: int = N_SIMS, seed: int = SEED) -> dict:
     """Distributions of winner, total games, and A-minus-B games margin."""
@@ -147,6 +230,7 @@ def simulate_match(pa: float, pb: float, best_of: int = 3,
     totals: list[int] = []
     margins: list[int] = []
     set1_games: list[int] = []
+    set_scores: dict[tuple, int] = {}
     for _ in range(n_sims):
         sets = [0, 0]
         games = [0, 0]
@@ -163,10 +247,62 @@ def simulate_match(pa: float, pb: float, best_of: int = 3,
                 first_set = False
         totals.append(games[0] + games[1])
         margins.append(games[0] - games[1])
+        key = tuple(sets)
+        set_scores[key] = set_scores.get(key, 0) + 1
         if sets[0] == need:
             wins_a += 1
     return {"match_prob_a": wins_a / n_sims, "totals": totals, "margins": margins,
-            "set1_prob_a": set1_a / n_sims, "set1_games": set1_games}
+            "set1_prob_a": set1_a / n_sims, "set1_games": set1_games,
+            "set_scores": set_scores}
+
+
+def set_handicap(sims: dict, best_of: int = 3) -> dict:
+    """SET handicap — a market that is NOT the games handicap and gets confused
+    with it constantly (2026-08-19: a real ticket was built on "-1.5 Handicap de
+    Set" priced as if it were -1.5 GAMES; the two differ by ~25 points of win
+    probability, 58.7% vs 82.2% for the same player).
+
+    In a best-of-3, **-1.5 sets means winning 2-0** — a 2-1 win LOSES the bet
+    even though the player won the match. That is the whole trap.
+    """
+    sc = sims.get("set_scores") or {}
+    total = sum(sc.values()) or 1
+    need = best_of // 2 + 1
+    straight_a = sc.get((need, 0), 0) / total
+    straight_b = sc.get((0, need), 0) / total
+    match_a = sum(v for k, v in sc.items() if k[0] == need) / total
+    return {
+        "a_minus_1_5_sets": round(straight_a, 4),
+        "b_minus_1_5_sets": round(straight_b, 4),
+        # The gap between "wins the match" and "wins the bet".
+        "a_wins_match_but_loses_handicap": round(match_a - straight_a, 4),
+        "note": (f"-1.5 SETS requires a {need}-0 win; a {need}-{need-1} victory "
+                 f"LOSES this bet. Do not confuse with the GAMES handicap."),
+    }
+
+
+CALIB_PATH = DATA.parent / "tennis_totals_calibration.json"
+_CALIB: dict | None = None
+
+
+def totals_offset(tour: str | None) -> float:
+    """Measured games-total correction for a tour (0.0 when never fitted).
+
+    The raw simulation runs LONG: across 3,172 best-of-3 matches (ATP+WTA,
+    2025-26) it expected 1.7-2.2 MORE games than were played, and the error is
+    FLAT across match imbalance — a level bias, not a missing opponent
+    adjustment. Fit and refreshed by
+    `tennis_totals_backtest.py --fit`; absent file = no correction, never a
+    guessed number.
+    """
+    global _CALIB
+    if _CALIB is None:
+        try:
+            _CALIB = json.loads(CALIB_PATH.read_text())
+        except (FileNotFoundError, OSError, json.JSONDecodeError):
+            _CALIB = {"tours": {}}
+    rec = (_CALIB.get("tours") or {}).get((tour or "").lower())
+    return float(rec.get("offset_games", 0.0)) if rec else 0.0
 
 
 def predict(player_a: str, player_b: str, games_line: float | None = None,
@@ -199,7 +335,12 @@ def predict(player_a: str, player_b: str, games_line: float | None = None,
         delta = (lo + hi) / 2
 
     sim = simulate_match(pa + delta, pb - delta, best_of)
-    totals = sim["totals"]
+    # Apply the measured level correction before ANY total is read off the
+    # simulation, so expected_total_games and the over/under probabilities move
+    # together. Both players' tours agree in practice; take player A's.
+    tour = (players[ka].get("tour") or players[kb].get("tour") or "")
+    off = totals_offset(tour)
+    totals = [t + off for t in sim["totals"]] if off else sim["totals"]
     n = len(totals)
     out: dict = {
         "player_a": ka, "player_b": kb, "best_of": best_of,
@@ -209,6 +350,8 @@ def predict(player_a: str, player_b: str, games_line: float | None = None,
         "match_prob": {ka: round(sim["match_prob_a"], 4),
                        kb: round(1 - sim["match_prob_a"], 4)},
         "expected_total_games": round(sum(totals) / n, 2),
+        "totals_calibration": {"tour": tour or None, "offset_games": off,
+                               "source": "tennis_totals_backtest --fit"},
         # ── Set 1 ("period") markets — WTA/ATP, from the same game-level sim ──
         "set1": {
             "winner": {ka: round(sim["set1_prob_a"], 4),
@@ -240,6 +383,19 @@ def predict(player_a: str, player_b: str, games_line: float | None = None,
         push = sum(1 for m in margins if m + handicap_a == 0)
         out["game_handicap"] = {f"{ka} {handicap_a:+g}": round(cover / n, 4),
                                 "p_push": round(push / n, 4)}
+    # ALWAYS emit the SET handicap, whether or not a games handicap was asked
+    # for. A real ticket (2026-08-19) was built on "-1.5 Handicap de Set" priced
+    # as if it were -1.5 GAMES — 58.7% vs 82.2% for the same player. The two
+    # markets sit next to each other on the book and read almost identically,
+    # so the only safe design is to show both, always, and name the difference.
+    out["set_handicap"] = set_handicap(sim, best_of)
+    # Games handicap across the lines books actually post, so a caller never has
+    # to guess a line or reach for the raw margin distribution.
+    margins = sim["margins"]
+    out["game_handicap_ladder"] = {
+        f"{line:+g}": round(sum(1 for m in margins if m + line > 0) / len(margins), 4)
+        for line in (-6.5, -5.5, -4.5, -3.5, -2.5, -1.5)
+    }
     return out
 
 
