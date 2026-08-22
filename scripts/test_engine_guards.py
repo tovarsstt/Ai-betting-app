@@ -81,12 +81,42 @@ def test_stale_never_drops_below_lean(monkeypatch):
     assert e.freshness_guard("NFL", "LEAN", "n")[0] == "LEAN"
 
 
-def test_season_boundary_caps_at_lean(monkeypatch):
+def test_season_boundary_caps_at_lean_without_a_prior(monkeypatch):
     # Ratings describe a roster that no longer exists — a parlay anchor here is
     # dishonest no matter how strong the model reads.
     _freeze_freshness(monkeypatch, "SEASON_BOUNDARY", age_days=0)
+    monkeypatch.setattr(e.nflw1, "load_prior", lambda: None)
     assert e.freshness_guard("NFL", "LOCK", "n")[0] == "LEAN"
     assert e.freshness_guard("NFL", "PICK", "n")[0] == "LEAN"
+
+
+def test_season_boundary_with_a_measured_prior_downgrades_once(monkeypatch):
+    """Week 1 has no current-season games BY DEFINITION, so a hard cap could
+    never clear and the engine would be useless exactly when it is wanted. A
+    MODELLED prior is not stale data — grade one step down for the wider
+    spread, and say so."""
+    _freeze_freshness(monkeypatch, "SEASON_BOUNDARY", age_days=0)
+    monkeypatch.setattr(e.nflw1, "load_prior", lambda: {
+        "measured": {"shrinkage": 0.664, "n_games": 70},
+        "sigma_week1": 12.16, "caveat": "one transition"})
+    q, note, fresh = e.freshness_guard("NFL", "LOCK", "anchor")
+    assert q == "PICK"                       # one step, not capped at LEAN
+    assert fresh["preseason_prior"] is True
+    assert "PRESEASON PRIOR" in note
+    assert "0.664" in note                   # the shrinkage is cited, not hidden
+
+
+def test_preseason_prior_still_never_raises_a_grade(monkeypatch):
+    _freeze_freshness(monkeypatch, "SEASON_BOUNDARY", age_days=0)
+    monkeypatch.setattr(e.nflw1, "load_prior", lambda: {
+        "measured": {"shrinkage": 0.664, "n_games": 70}, "sigma_week1": 12.16})
+    assert e.freshness_guard("NFL", "LEAN", "n")[0] == "LEAN"
+    assert e.freshness_guard("NFL", "PASS", "n")[0] == "PASS"
+
+
+def test_other_sports_are_unaffected_by_the_nfl_prior(monkeypatch):
+    _freeze_freshness(monkeypatch, "SEASON_BOUNDARY", age_days=0)
+    assert e.freshness_guard("SOCCER", "LOCK", "n")[0] == "LEAN"
 
 
 def test_downgrade_explains_itself_with_the_age(monkeypatch):
@@ -327,3 +357,54 @@ def test_unknown_surname_initial_still_refuses():
 def test_initial_matching_is_tennis_only():
     # Other sports have their own key spaces; don't let this rule leak.
     assert not e.get_ratings("NFL", "Ravens B.") or True   # no crash either way
+
+
+# ── NFL Week-1 prior: measured shrinkage, not a carried-forward rating ──────
+
+def test_shrinkage_is_measured_not_assumed():
+    import nfl_week1_prior as w1
+    pr = w1.load_prior()
+    if not pr:
+        pytest.skip("prior not built on this machine")
+    m = pr["measured"]
+    # A guessed coefficient is the whole problem this replaces.
+    assert 0.3 < m["shrinkage"] < 1.0
+    assert m["n_games"] >= 30
+    assert m["transitions"]
+
+
+def test_prior_shrinks_toward_the_league_mean():
+    import nfl_week1_prior as w1
+    pr = w1.load_prior()
+    if not pr:
+        pytest.skip("prior not built on this machine")
+    mean = pr["league_mean_net"]
+    for rec in pr["teams"].values():
+        # Every team ends nearer the mean than it started — that IS reversion.
+        assert abs(rec["week1_net"] - mean) <= abs(rec["prior_net"] - mean) + 1e-6
+
+
+def test_roster_churn_only_widens_uncertainty():
+    """Churn means we know LESS, never that a team got worse. A churned team
+    must shrink harder toward the mean, never flip direction."""
+    import nfl_week1_prior as w1
+    pr = w1.load_prior()
+    if not pr:
+        pytest.skip("prior not built on this machine")
+    base = pr["measured"]["shrinkage"]
+    churned = [r for r in pr["teams"].values() if r["qb_room_changed"]]
+    if churned:
+        assert all(r["shrink_applied"] <= base for r in churned)
+    for r in pr["teams"].values():
+        if r["prior_net"] > pr["league_mean_net"]:
+            assert r["week1_net"] >= pr["league_mean_net"]
+        else:
+            assert r["week1_net"] <= pr["league_mean_net"]
+
+
+def test_prior_carries_its_own_caveat():
+    import nfl_week1_prior as w1
+    pr = w1.load_prior()
+    if not pr:
+        pytest.skip("prior not built on this machine")
+    assert "not precise" in pr["caveat"]

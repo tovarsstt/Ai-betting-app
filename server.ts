@@ -18,7 +18,7 @@ import { getBettingHeuristics, getSportBetContext, getShortHeuristics } from './
 import { getSharpIdentity } from './src/prompts/identity.js';
 import { SPORT_KEYS } from './src/services/oddsService.js';
 import { ArbitrageService, type ArbitrageOpportunity } from './src/services/arbitrageService.js';
-import type { SGPLeg, SwarmAgentData, SwarmFinalPayload, PoissonBoard, MarketContextPayload, SimHitRate, TeamFitRating, PickGrade, AlphaSheetItem, AlphaSheetContainer, ParlayLeg, ParlayBlock, ParlaysPayload } from './src/types/index.js';
+import type { SGPLeg, SwarmAgentData, SwarmFinalPayload, PoissonBoard, MarketContextPayload, LadderRow, ModelSkill, ClubProfilePayload, SimHitRate, TeamFitRating, PickGrade, AlphaSheetItem, AlphaSheetContainer, ParlayLeg, ParlayBlock, ParlaysPayload } from './src/types/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -2554,6 +2554,12 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
     // LOCK >=70%, PICK >=62%, LEAN below). A LEAN must be visibly flagged in the
     // UI — a 55% play presented without a warning reads like a lock and isn't.
     let soccerGrade: PickGrade | null = null;
+    // Engine blocks the page renders directly: the win-probability ladder,
+    // the measured league skill behind it, and the counted both-sides form.
+    let simLadder: LadderRow[] | null = null;
+    let bestPick: LadderRow | null = null;
+    let modelSkill: ModelSkill | null = null;
+    let clubProfile: ClubProfilePayload | null = null;
     try {
       // Odds feed missing this match must NOT kill the board — edge_api falls
       // back to the data-fit Poisson regression ratings when no 1X2 is sent,
@@ -2580,6 +2586,10 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
         });
         if (sRes.ok) {
           const s = await sRes.json() as {
+            simulated_ladder?: LadderRow[];
+            most_likely_pick?: LadderRow;
+            model_skill?: ModelSkill | null;
+            profile?: ClubProfilePayload | null;
             markets?: {
               totals?: Record<string, { over: number; under: number }>;
               btts?: { yes: number; no: number };
@@ -2611,6 +2621,12 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
               h2h?: { n: number; w: number; d: number; l: number; gf: number; ga: number; last: string };
             };
           };
+          // Engine blocks the page renders as data (rule 24): the ladder was
+          // being computed and never leaving the server.
+          simLadder = s.simulated_ladder ?? null;
+          bestPick = s.most_likely_pick ?? null;
+          modelSkill = s.model_skill ?? null;
+          clubProfile = s.profile ?? null;
           const mr = s.market_recommendation;
           if (mr?.primary_pick && mr.win_draw_lose) {
             const w = mr.win_draw_lose;
@@ -2858,6 +2874,10 @@ Output ONLY this raw JSON (no markdown):
       implied_prob: topImp ?? undefined,
       poisson: soccerPoisson ?? undefined,
       market_context: marketContext ?? undefined,
+      simulated_ladder: simLadder ?? undefined,
+      most_likely_pick: bestPick ?? undefined,
+      model_skill: modelSkill ?? undefined,
+      club_profile: clubProfile ?? undefined,
       pick_grade: soccerGrade ?? undefined,
       swarm_report: {
         quant:      quantRaw ? computePickMath(quantRaw) as SwarmAgentData : undefined,

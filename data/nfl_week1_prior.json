@@ -1,0 +1,243 @@
+{
+ "generated_at": "2026-08-22T19:13:46+00:00",
+ "prior_season": 2025,
+ "league_mean_net": -0.269,
+ "measured": {
+  "shrinkage": 0.664,
+  "home_advantage": 4.53,
+  "sigma": 12.16,
+  "n_games": 70,
+  "transitions": [
+   "2024->2025"
+  ]
+ },
+ "sigma_week1": 12.16,
+ "teams": {
+  "Philadelphia Eagles": {
+   "prior_net": 2.778,
+   "shrink_applied": 0.6454,
+   "week1_net": 1.697,
+   "roster_churn": 0.124,
+   "qb_room_changed": false
+  },
+  "Dallas Cowboys": {
+   "prior_net": -2.353,
+   "shrink_applied": 0.6531,
+   "week1_net": -1.63,
+   "roster_churn": 0.073,
+   "qb_room_changed": false
+  },
+  "Los Angeles Chargers": {
+   "prior_net": 0.833,
+   "shrink_applied": 0.6559,
+   "week1_net": 0.454,
+   "roster_churn": 0.054,
+   "qb_room_changed": false
+  },
+  "Kansas City Chiefs": {
+   "prior_net": 2.0,
+   "shrink_applied": 0.6528,
+   "week1_net": 1.212,
+   "roster_churn": 0.075,
+   "qb_room_changed": false
+  },
+  "Atlanta Falcons": {
+   "prior_net": -2.824,
+   "shrink_applied": 0.5533,
+   "week1_net": -1.683,
+   "roster_churn": 0.205,
+   "qb_room_changed": true
+  },
+  "Tampa Bay Buccaneers": {
+   "prior_net": -1.824,
+   "shrink_applied": 0.6469,
+   "week1_net": -1.275,
+   "roster_churn": 0.114,
+   "qb_room_changed": false
+  },
+  "Cleveland Browns": {
+   "prior_net": -5.882,
+   "shrink_applied": 0.6375,
+   "week1_net": -3.847,
+   "roster_churn": 0.177,
+   "qb_room_changed": false
+  },
+  "Cincinnati Bengals": {
+   "prior_net": -4.588,
+   "shrink_applied": 0.6591,
+   "week1_net": -3.116,
+   "roster_churn": 0.033,
+   "qb_room_changed": false
+  },
+  "Indianapolis Colts": {
+   "prior_net": 3.176,
+   "shrink_applied": 0.6426,
+   "week1_net": 1.944,
+   "roster_churn": 0.143,
+   "qb_room_changed": false
+  },
+  "Miami Dolphins": {
+   "prior_net": -4.529,
+   "shrink_applied": 0.6417,
+   "week1_net": -3.003,
+   "roster_churn": 0.149,
+   "qb_room_changed": false
+  },
+  "New England Patriots": {
+   "prior_net": 8.667,
+   "shrink_applied": 0.6378,
+   "week1_net": 5.43,
+   "roster_churn": 0.175,
+   "qb_room_changed": false
+  },
+  "Las Vegas Raiders": {
+   "prior_net": -11.235,
+   "shrink_applied": 0.6447,
+   "week1_net": -7.338,
+   "roster_churn": 0.129,
+   "qb_room_changed": false
+  },
+  "New Orleans Saints": {
+   "prior_net": -4.529,
+   "shrink_applied": 0.6459,
+   "week1_net": -3.02,
+   "roster_churn": 0.121,
+   "qb_room_changed": false
+  },
+  "Arizona Cardinals": {
+   "prior_net": -7.824,
+   "shrink_applied": 0.6445,
+   "week1_net": -5.138,
+   "roster_churn": 0.13,
+   "qb_room_changed": false
+  },
+  "New York Jets": {
+   "prior_net": -11.941,
+   "shrink_applied": 0.6441,
+   "week1_net": -7.786,
+   "roster_churn": 0.133,
+   "qb_room_changed": false
+  },
+  "Pittsburgh Steelers": {
+   "prior_net": -0.778,
+   "shrink_applied": 0.643,
+   "week1_net": -0.596,
+   "roster_churn": 0.14,
+   "qb_room_changed": false
+  },
+  "Washington Commanders": {
+   "prior_net": -5.588,
+   "shrink_applied": 0.6267,
+   "week1_net": -3.602,
+   "roster_churn": 0.249,
+   "qb_room_changed": false
+  },
+  "New York Giants": {
+   "prior_net": -3.412,
+   "shrink_applied": 0.5579,
+   "week1_net": -2.023,
+   "roster_churn": 0.174,
+   "qb_room_changed": true
+  },
+  "Jacksonville Jaguars": {
+   "prior_net": 7.5,
+   "shrink_applied": 0.6384,
+   "week1_net": 4.69,
+   "roster_churn": 0.171,
+   "qb_room_changed": false
+  },
+  "Carolina Panthers": {
+   "prior_net": -4.0,
+   "shrink_applied": 0.5509,
+   "week1_net": -2.324,
+   "roster_churn": 0.221,
+   "qb_room_changed": true
+  },
+  "Denver Broncos": {
+   "prior_net": 4.737,
+   "shrink_applied": 0.6529,
+   "week1_net": 2.999,
+   "roster_churn": 0.074,
+   "qb_room_changed": false
+  },
+  "Tennessee Titans": {
+   "prior_net": -11.412,
+   "shrink_applied": 0.6311,
+   "week1_net": -7.302,
+   "roster_churn": 0.219,
+   "qb_room_changed": false
+  },
+  "Seattle Seahawks": {
+   "prior_net": 12.3,
+   "shrink_applied": 0.6399,
+   "week1_net": 7.773,
+   "roster_churn": 0.161,
+   "qb_room_changed": false
+  },
+  "San Francisco 49ers": {
+   "prior_net": 1.842,
+   "shrink_applied": 0.6341,
+   "week1_net": 1.07,
+   "roster_churn": 0.199,
+   "qb_room_changed": false
+  },
+  "Green Bay Packers": {
+   "prior_net": 1.5,
+   "shrink_applied": 0.5573,
+   "week1_net": 0.717,
+   "roster_churn": 0.178,
+   "qb_room_changed": true
+  },
+  "Detroit Lions": {
+   "prior_net": 4.0,
+   "shrink_applied": 0.56,
+   "week1_net": 2.122,
+   "roster_churn": 0.16,
+   "qb_room_changed": true
+  },
+  "Los Angeles Rams": {
+   "prior_net": 8.7,
+   "shrink_applied": 0.6496,
+   "week1_net": 5.557,
+   "roster_churn": 0.096,
+   "qb_room_changed": false
+  },
+  "Houston Texans": {
+   "prior_net": 6.368,
+   "shrink_applied": 0.5684,
+   "week1_net": 3.503,
+   "roster_churn": 0.104,
+   "qb_room_changed": true
+  },
+  "Buffalo Bills": {
+   "prior_net": 6.105,
+   "shrink_applied": 0.6499,
+   "week1_net": 3.873,
+   "roster_churn": 0.094,
+   "qb_room_changed": false
+  },
+  "Baltimore Ravens": {
+   "prior_net": 1.529,
+   "shrink_applied": 0.5685,
+   "week1_net": 0.753,
+   "roster_churn": 0.103,
+   "qb_room_changed": true
+  },
+  "Chicago Bears": {
+   "prior_net": 1.421,
+   "shrink_applied": 0.6443,
+   "week1_net": 0.82,
+   "roster_churn": 0.131,
+   "qb_room_changed": false
+  },
+  "Minnesota Vikings": {
+   "prior_net": 0.647,
+   "shrink_applied": 0.6438,
+   "week1_net": 0.321,
+   "roster_churn": 0.135,
+   "qb_room_changed": false
+  }
+ },
+ "caveat": "shrinkage 0.664 measured on 70 games across 1 season transition(s) (2024->2025) \u2014 directionally right, not precise. Churn only widens uncertainty; it never says a team got better or worse.",
+ "method": "prior-season net rating shrunk toward the league mean by a MEASURED early-season regression, plus extra shrink for roster churn and QB-room change"
+}

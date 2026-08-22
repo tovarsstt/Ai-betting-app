@@ -41,6 +41,7 @@ import win_simulator as wsim
 import tennis_scanner as tsc
 import period_model as pmod
 import club_form as cform
+import nfl_week1_prior as nflw1
 from typing import List
 
 BASE = Path(__file__).parent.parent / "data"
@@ -509,6 +510,28 @@ def freshness_guard(sport: str, quality: str, note: str) -> tuple:
         return quality, note, fresh
     status = fresh["worst_status"]
     if status == "SEASON_BOUNDARY":
+        # A season boundary with a MODELLED prior behind it is not the same as
+        # stale data. NFL Week 1 has no current-season games by definition, so
+        # capping on "no current-season data" could never clear and would make
+        # the engine useless in the week it is most wanted. When a measured
+        # preseason prior exists (nfl_week1_prior.py — last season's rating
+        # shrunk toward the mean by a REGRESSION on real early-season games),
+        # the pick is priced, graded one step down for the wider spread, and
+        # labelled so nobody mistakes a prior for in-season form.
+        if sport.upper() == "NFL" and nflw1.load_prior():
+            capped = _DOWNGRADE.get(quality, quality)
+            pr = nflw1.load_prior()
+            m = pr.get("measured") or {}
+            note = (f"{note} · PRESEASON PRIOR (rule 16): no current-season games "
+                    f"yet, so last season's rating is shrunk to "
+                    f"{m.get('shrinkage')} of face value by a measured regression "
+                    f"(n={m.get('n_games')}), sigma {pr.get('sigma_week1')} pts. "
+                    f"Graded one step down for the wider spread.")
+            fresh = {**fresh, "preseason_prior": True,
+                     "shrinkage": m.get("shrinkage"),
+                     "sigma_week1": pr.get("sigma_week1"),
+                     "caveat": pr.get("caveat")}
+            return capped, note, fresh
         capped = "LEAN" if quality in ("LOCK", "PICK") else quality
         if capped != quality:
             note = (f"{note} · CAPPED (rule 16): {fresh['feed']} data predates the "
@@ -923,6 +946,18 @@ def predict(req: PredictReq):
 
     h_r = get_ratings(sport, req.home_team)
     a_r = get_ratings(sport, req.away_team)
+    # NFL before the season produces games: swap in the measured Week-1 prior
+    # (prior-season net shrunk toward the mean) rather than last season's raw
+    # numbers, which over-predict — measured at 0.66 of face value.
+    _w1 = None
+    if sport == "NFL":
+        _w1 = nflw1.load_prior()
+        if _w1:
+            hw = nflw1.week1_net(req.home_team, _w1)
+            aw = nflw1.week1_net(req.away_team, _w1)
+            if hw is not None and aw is not None:
+                h_r = {**(h_r or {}), "net": hw, "week1_prior": True}
+                a_r = {**(a_r or {}), "net": aw, "week1_prior": True}
 
     # ── Data gate: unknown teams → NO prediction. With default ratings the
     # model's prob is pure noise; comparing noise to market odds fabricates
