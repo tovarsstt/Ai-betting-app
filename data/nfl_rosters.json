@@ -1,5 +1,5 @@
 {
- "fetched_at": "2026-07-19T05:06:46+00:00",
+ "fetched_at": "2026-08-19T18:51:06+00:00",
  "source": "ESPN NFL rosters (free)",
  "teams": {
   "Arizona Cardinals": [
@@ -24,14 +24,14 @@
     "exp": 3
    },
    {
-    "name": "Chase Bisontis",
-    "pos": "G",
-    "exp": 0
-   },
-   {
     "name": "Kendrick Bourne",
     "pos": "WR",
     "exp": 10
+   },
+   {
+    "name": "Shawn Bowman",
+    "pos": "TE",
+    "exp": 1
    },
    {
     "name": "Jacoby Brissett",
@@ -52,6 +52,11 @@
     "name": "James Conner",
     "pos": "RB",
     "exp": 10
+   },
+   {
+    "name": "Baylor Cupp",
+    "pos": "TE",
+    "exp": 1
    },
    {
     "name": "Ka'ena De Cambra",
@@ -89,11 +94,6 @@
     "exp": 4
    },
    {
-    "name": "Jameson Geers",
-    "pos": "TE",
-    "exp": 0
-   },
-   {
     "name": "Bryson Green",
     "pos": "WR",
     "exp": 1
@@ -107,6 +107,11 @@
     "name": "Elijah Higgins",
     "pos": "TE",
     "exp": 4
+   },
+   {
+    "name": "Evan Hull",
+    "pos": "RB",
+    "exp": 1
    },
    {
     "name": "Demontrey Jacobs",
@@ -149,11 +154,6 @@
     "exp": 8
    },
    {
-    "name": "Tejhaun Palmer",
-    "pos": "WR",
-    "exp": 1
-   },
-   {
     "name": "Matt Pryor",
     "pos": "OT",
     "exp": 9
@@ -187,6 +187,11 @@
     "name": "Ihmir Smith-Marsette",
     "pos": "WR",
     "exp": 5
+   },
+   {
+    "name": "Tre Stewart",
+    "pos": "RB",
+    "exp": 1
    },
    {
     "name": "Olisaemeka Udoh",
@@ -224,9 +229,9 @@
     "exp": 4
    },
    {
-    "name": "Kenny Yeboah",
-    "pos": "TE",
-    "exp": 5
+    "name": "Eugene Asante",
+    "pos": "LB",
+    "exp": 1
    },
    {
     "name": "Budda Baker",
@@ -237,11 +242,6 @@
     "name": "Andrew Billings",
     "pos": "DT",
     "exp": 10
-   },
-   {
-    "name": "Joey Blount",
-    "pos": "S",
-    "exp": 5
    },
    {
     "name": "Elliott Brown",
@@ -294,14 +294,14 @@
     "exp": 0
    },
    {
-    "name": "Jaden Davis",
-    "pos": "CB",
-    "exp": 1
-   },
-   {
     "name": "Jack Gibbens",
     "pos": "LB",
     "exp": 4
+   },
+   {
+    "name": "Cam Horsley",
+    "pos": "DT",
+    "exp": 1
    },
    {
     "name": "Will Johnson",
@@ -312,11 +312,6 @@
     "name": "Elijah Jones",
     "pos": "CB",
     "exp": 3
-   },
-   {
-    "name": "Austin Keys",
-    "pos": "LB",
-    "exp": 2
    },
    {
     "name": "Kalen King",
@@ -334,6 +329,11 @@
     "exp": 6
    },
    {
+    "name": "Brodric Martin-Rhodes",
+    "pos": "DT",
+    "exp": 4
+   },
+   {
     "name": "Max Melton",
     "pos": "CB",
     "exp": 3
@@ -344,9 +344,9 @@
     "exp": 7
    },
    {
-    "name": "PJ Mustipher",
-    "pos": "DT",
-    "exp": 2
+    "name": "Quinton Newsome",
+    "pos": "CB",
+    "exp": 1
    },
    {
     "name": "Walter Nolen III",
@@ -369,11 +369,6 @@
     "exp": 4
    },
    {
-    "name": "Kaleb Proctor",
-    "pos": "DT",
-    "exp": 0
-   },
-   {
     "name": "Cameron Robertson",
     "pos": "LB",
     "exp": 0
@@ -392,6 +387,11 @@
     "name": "Cody Simon",
     "pos": "LB",
     "exp": 2
+   },
+   {
+    "name": "Keveion'ta Spears",
+    "pos": "DT",
+    "exp": 0
    },
    {
     "name": "Dante Stills",
@@ -457,6 +457,31 @@
     "name": "Chad Ryland",
     "pos": "PK",
     "exp": 4
+   },
+   {
+    "name": "Chase Bisontis",
+    "pos": "G",
+    "exp": 0
+   },
+   {
+    "name": "Joey Blount",
+    "pos": "S",
+    "exp": 5
+   },
+   {
+    "name": "Jameson Geers",
+    "pos": "TE",
+    "exp": 0
+   },
+   {
+    "name": "Austin Keys",
+    "pos": "LB",
+    "exp": 2
+   },
+   {
+    "name": "Kaleb Proctor",
+    "pos": "DT",
+    "exp": 0
    }
   ],
   "Atlanta Falcons": [
@@ -486,13 +511,13 @@
     "exp": 0
    },
    {
-    "name": "Le'Meke Brockington",
-    "pos": "WR",
-    "exp": 0
-   },
-   {
     "name": "Nathan Carter",
     "pos": "RB",
+    "exp": 2
+   },
+   {
+    "name": "Beaux Collins",
+    "pos": "WR",
     "exp": 2
    },
    {
@@ -571,9 +596,9 @@
     "exp": 4
    },
    {
-    "name": "Jack Nelson",
-    "pos": "OT",
-    "exp": 2
+    "name": "Nick Muse",
+    "pos": "TE",
+    "exp": 3
    },
    {
     "name": "Ryan Neuzil",
@@ -596,14 +621,14 @@
     "exp": 5
    },
    {
+    "name": "Jaeden Roberts",
+    "pos": "G",
+    "exp": 0
+   },
+   {
     "name": "Bijan Robinson",
     "pos": "RB",
     "exp": 4
-   },
-   {
-    "name": "Layden Robinson",
-    "pos": "G",
-    "exp": 3
    },
    {
     "name": "Brian Robinson Jr.",
@@ -611,9 +636,14 @@
     "exp": 5
    },
    {
-    "name": "Trevor Siemian",
+    "name": "Cooper Rush",
     "pos": "QB",
     "exp": 9
+   },
+   {
+    "name": "Trey Sermon",
+    "pos": "RB",
+    "exp": 5
    },
    {
     "name": "Joshua Simon",
@@ -651,9 +681,9 @@
     "exp": 3
    },
    {
-    "name": "Juice Wells Jr.",
+    "name": "Antwane Wells Jr.",
     "pos": "WR",
-    "exp": 0
+    "exp": 1
    },
    {
     "name": "Charlie Woerner",
@@ -671,14 +701,9 @@
     "exp": 0
    },
    {
-    "name": "Troy Andersen",
-    "pos": "LB",
-    "exp": 5
-   },
-   {
     "name": "Keshawn Banks",
     "pos": "DE",
-    "exp": 2
+    "exp": 1
    },
    {
     "name": "Jessie Bates III",
@@ -689,11 +714,6 @@
     "name": "JD Bertrand",
     "pos": "LB",
     "exp": 3
-   },
-   {
-    "name": "Ross Blacklock",
-    "pos": "DT",
-    "exp": 4
    },
    {
     "name": "Billy Bowman Jr.",
@@ -791,14 +811,9 @@
     "exp": 3
    },
    {
-    "name": "DeAngelo Malone",
-    "pos": "LB",
-    "exp": 5
-   },
-   {
     "name": "Devonnsha Maxwell",
     "pos": "DT",
-    "exp": 3
+    "exp": 2
    },
    {
     "name": "Azeez Ojulari",
@@ -831,9 +846,24 @@
     "exp": 4
    },
    {
+    "name": "Cameron Sample",
+    "pos": "DE",
+    "exp": 5
+   },
+   {
+    "name": "Keidron Smith",
+    "pos": "S",
+    "exp": 2
+   },
+   {
     "name": "Maason Smith",
     "pos": "DT",
     "exp": 3
+   },
+   {
+    "name": "Za'Darius Smith",
+    "pos": "DE",
+    "exp": 11
    },
    {
     "name": "Avieon Terrell",
@@ -866,14 +896,9 @@
     "exp": 3
    },
    {
-    "name": "Malik Verdon",
-    "pos": "LB",
-    "exp": 1
-   },
-   {
-    "name": "Jalon Walker",
-    "pos": "LB",
-    "exp": 2
+    "name": "Marlon Tuipulotu",
+    "pos": "DT",
+    "exp": 5
    },
    {
     "name": "Xavier Watts",
@@ -891,14 +916,14 @@
     "exp": 1
    },
    {
+    "name": "Josh Woods",
+    "pos": "LB",
+    "exp": 7
+   },
+   {
     "name": "Jake Bailey",
     "pos": "P",
     "exp": 8
-   },
-   {
-    "name": "Philip Florenzo",
-    "pos": "LS",
-    "exp": 0
    },
    {
     "name": "Nick Folk",
@@ -906,19 +931,29 @@
     "exp": 19
    },
    {
-    "name": "Matthew Hayball",
-    "pos": "P",
-    "exp": 3
-   },
-   {
     "name": "Liam McCullough",
     "pos": "LS",
+    "exp": 5
+   },
+   {
+    "name": "DeAngelo Malone",
+    "pos": "LB",
     "exp": 5
    },
    {
     "name": "Storm Norton",
     "pos": "OT",
     "exp": 7
+   },
+   {
+    "name": "Malik Verdon",
+    "pos": "LB",
+    "exp": 1
+   },
+   {
+    "name": "Jalon Walker",
+    "pos": "LB",
+    "exp": 2
    }
   ],
   "Baltimore Ravens": [
@@ -1038,14 +1073,9 @@
     "exp": 0
    },
    {
-    "name": "Diego Pavia",
-    "pos": "QB",
-    "exp": 0
-   },
-   {
-    "name": "Jared Penning",
-    "pos": "G",
-    "exp": 1
+    "name": "Chris Moore",
+    "pos": "WR",
+    "exp": 10
    },
    {
     "name": "Ty Pezza",
@@ -1058,6 +1088,11 @@
     "exp": 6
    },
    {
+    "name": "Ethan Pocic",
+    "pos": "C",
+    "exp": 10
+   },
+   {
     "name": "Diego Pounds",
     "pos": "OT",
     "exp": 0
@@ -1066,6 +1101,11 @@
     "name": "Adam Randall",
     "pos": "RB",
     "exp": 0
+   },
+   {
+    "name": "Austin Reed",
+    "pos": "QB",
+    "exp": 1
    },
    {
     "name": "Roger Rosengarten",
@@ -1081,6 +1121,11 @@
     "name": "Lucas Scott",
     "pos": "FB",
     "exp": 1
+   },
+   {
+    "name": "David Sharpe",
+    "pos": "OT",
+    "exp": 7
    },
    {
     "name": "John Simpson",
@@ -1108,11 +1153,6 @@
     "exp": 0
    },
    {
-    "name": "Skylar Thompson",
-    "pos": "QB",
-    "exp": 5
-   },
-   {
     "name": "Carson Vinson",
     "pos": "OT",
     "exp": 2
@@ -1131,6 +1171,11 @@
     "name": "Devontez Walker",
     "pos": "WR",
     "exp": 3
+   },
+   {
+    "name": "Jonathan Ward",
+    "pos": "RB",
+    "exp": 6
    },
    {
     "name": "LaJohntay Wester",
@@ -1218,6 +1263,11 @@
     "exp": 14
    },
    {
+    "name": "Jamon Johnson",
+    "pos": "LB",
+    "exp": 1
+   },
+   {
     "name": "Carl Jones",
     "pos": "LB",
     "exp": 2
@@ -1248,11 +1298,6 @@
     "exp": 2
    },
    {
-    "name": "Matthew McDoom",
-    "pos": "CB",
-    "exp": 0
-   },
-   {
     "name": "CJ Okoye",
     "pos": "DT",
     "exp": 2
@@ -1275,11 +1320,6 @@
    {
     "name": "Chandler Rivers",
     "pos": "CB",
-    "exp": 0
-   },
-   {
-    "name": "Jahquez Robinson",
-    "pos": "S",
     "exp": 0
    },
    {
@@ -1363,11 +1403,6 @@
     "exp": 0
    },
    {
-    "name": "Luke Elzinga",
-    "pos": "P",
-    "exp": 1
-   },
-   {
     "name": "Tyler Loop",
     "pos": "PK",
     "exp": 2
@@ -1376,14 +1411,19 @@
     "name": "Nick Moore",
     "pos": "LS",
     "exp": 5
+   },
+   {
+    "name": "Jahquez Robinson",
+    "pos": "S",
+    "exp": 0
+   },
+   {
+    "name": "Skylar Thompson",
+    "pos": "QB",
+    "exp": 5
    }
   ],
   "Buffalo Bills": [
-   {
-    "name": "Jackson Acker",
-    "pos": "FB",
-    "exp": 0
-   },
    {
     "name": "Josh Allen",
     "pos": "QB",
@@ -1466,7 +1506,7 @@
    },
    {
     "name": "Bruno Fina",
-    "pos": "OT",
+    "pos": "G",
     "exp": 0
    },
    {
@@ -1540,6 +1580,11 @@
     "exp": 6
    },
    {
+    "name": "Dante Pettis",
+    "pos": "WR",
+    "exp": 8
+   },
+   {
     "name": "Ar'maj Reed-Adams",
     "pos": "G",
     "exp": 0
@@ -1585,11 +1630,6 @@
     "exp": 4
    },
    {
-    "name": "Jalen Virgil",
-    "pos": "WR",
-    "exp": 4
-   },
-   {
     "name": "Da'Metrius Weatherspoon",
     "pos": "OT",
     "exp": 0
@@ -1597,7 +1637,7 @@
    {
     "name": "Ian Wheeler",
     "pos": "RB",
-    "exp": 3
+    "exp": 2
    },
    {
     "name": "Shane Zylstra",
@@ -1680,11 +1720,6 @@
     "exp": 0
    },
    {
-    "name": "Demetrius Flannigan-Fowles",
-    "pos": "LB",
-    "exp": 6
-   },
-   {
     "name": "Sam Franklin Jr.",
     "pos": "S",
     "exp": 7
@@ -1720,11 +1755,6 @@
     "exp": 6
    },
    {
-    "name": "Kody Huisman",
-    "pos": "DT",
-    "exp": 0
-   },
-   {
     "name": "Davison Igbinosun",
     "pos": "CB",
     "exp": 0
@@ -1745,6 +1775,11 @@
     "exp": 2
    },
    {
+    "name": "Anthony Kendall",
+    "pos": "CB",
+    "exp": 3
+   },
+   {
     "name": "Jalon Kilgore",
     "pos": "S",
     "exp": 0
@@ -1758,6 +1793,11 @@
     "name": "Phidarian Mathis",
     "pos": "DT",
     "exp": 5
+   },
+   {
+    "name": "D.J. Miller",
+    "pos": "CB",
+    "exp": 1
    },
    {
     "name": "Ed Oliver",
@@ -1778,6 +1818,11 @@
     "name": "Toriano Pride Jr.",
     "pos": "CB",
     "exp": 0
+   },
+   {
+    "name": "Otis Reese IV",
+    "pos": "LB",
+    "exp": 3
    },
    {
     "name": "Greg Rousseau",
@@ -1835,17 +1880,17 @@
     "exp": 8
    },
    {
+    "name": "Demetrius Flannigan-Fowles",
+    "pos": "LB",
+    "exp": 6
+   },
+   {
     "name": "Dorian Strong",
     "pos": "CB",
     "exp": 2
    }
   ],
   "Carolina Panthers": [
-   {
-    "name": "Chris Brazzell II",
-    "pos": "WR",
-    "exp": 0
-   },
    {
     "name": "Jonathon Brooks",
     "pos": "RB",
@@ -1857,24 +1902,24 @@
     "exp": 3
    },
    {
-    "name": "Saahdiq Charles",
-    "pos": "G",
-    "exp": 5
-   },
-   {
-    "name": "Dan Chisena",
-    "pos": "WR",
-    "exp": 5
-   },
-   {
     "name": "Brady Christensen",
     "pos": "G",
-    "exp": 5
+    "exp": 6
    },
    {
     "name": "Jalen Coker",
     "pos": "WR",
     "exp": 3
+   },
+   {
+    "name": "Elijah Cooks",
+    "pos": "WR",
+    "exp": 2
+   },
+   {
+    "name": "Jake Curhan",
+    "pos": "OT",
+    "exp": 6
    },
    {
     "name": "Miles Davis",
@@ -1927,8 +1972,8 @@
     "exp": 0
    },
    {
-    "name": "Joshua Gray",
-    "pos": "G",
+    "name": "Ryan Hayes",
+    "pos": "OT",
     "exp": 1
    },
    {
@@ -1972,11 +2017,6 @@
     "exp": 2
    },
    {
-    "name": "Malick Meiga",
-    "pos": "WR",
-    "exp": 0
-   },
-   {
     "name": "John Metchie III",
     "pos": "WR",
     "exp": 4
@@ -2002,9 +2042,9 @@
     "exp": 5
    },
    {
-    "name": "Kobe Prentice",
-    "pos": "WR",
-    "exp": 0
+    "name": "Caden Prieskorn",
+    "pos": "TE",
+    "exp": 1
    },
    {
     "name": "Ja'seem Reed",
@@ -2027,9 +2067,14 @@
     "exp": 3
    },
    {
-    "name": "Ainias Smith",
+    "name": "Roc Taylor",
     "pos": "WR",
-    "exp": 2
+    "exp": 1
+   },
+   {
+    "name": "Kyle Trask",
+    "pos": "QB",
+    "exp": 5
    },
    {
     "name": "Brycen Tremayne",
@@ -2052,6 +2097,16 @@
     "exp": 5
    },
    {
+    "name": "Darren Waller",
+    "pos": "TE",
+    "exp": 9
+   },
+   {
+    "name": "Casey Washington",
+    "pos": "WR",
+    "exp": 3
+   },
+   {
     "name": "Bryce Young",
     "pos": "QB",
     "exp": 4
@@ -2062,8 +2117,8 @@
     "exp": 4
    },
    {
-    "name": "Jared Bartlett",
-    "pos": "LB",
+    "name": "Kyon Barrs",
+    "pos": "DT",
     "exp": 1
    },
    {
@@ -2092,24 +2147,24 @@
     "exp": 2
    },
    {
+    "name": "Elijah Garcia",
+    "pos": "DE",
+    "exp": 4
+   },
+   {
+    "name": "Cam Gill",
+    "pos": "LB",
+    "exp": 6
+   },
+   {
     "name": "Trevis Gipson",
     "pos": "LB",
     "exp": 7
    },
    {
-    "name": "Jaylon Guilbeau",
-    "pos": "CB",
-    "exp": 0
-   },
-   {
     "name": "Aaron Hall",
     "pos": "DT",
     "exp": 0
-   },
-   {
-    "name": "Nick Hampton",
-    "pos": "LB",
-    "exp": 4
    },
    {
     "name": "Jared Harrison-Hunte",
@@ -2182,9 +2237,19 @@
     "exp": 6
    },
    {
+    "name": "Jeremiah Moon",
+    "pos": "LB",
+    "exp": 3
+   },
+   {
     "name": "Mapalo Mwansa",
     "pos": "LB",
     "exp": 1
+   },
+   {
+    "name": "DeCarlos Nicholson",
+    "pos": "CB",
+    "exp": 0
    },
    {
     "name": "Maema Njongmeta",
@@ -2207,16 +2272,6 @@
     "exp": 2
    },
    {
-    "name": "LaBryan Ray",
-    "pos": "DE",
-    "exp": 4
-   },
-   {
-    "name": "Michael Reid",
-    "pos": "CB",
-    "exp": 1
-   },
-   {
     "name": "Demani Richardson",
     "pos": "S",
     "exp": 3
@@ -2230,11 +2285,6 @@
     "name": "Nick Scott",
     "pos": "S",
     "exp": 8
-   },
-   {
-    "name": "Nic Scourton",
-    "pos": "LB",
-    "exp": 2
    },
    {
     "name": "Isaiah Simmons",
@@ -2295,6 +2345,21 @@
     "name": "Sam Martin",
     "pos": "P",
     "exp": 14
+   },
+   {
+    "name": "Chris Brazzell II",
+    "pos": "WR",
+    "exp": 0
+   },
+   {
+    "name": "Dan Chisena",
+    "pos": "WR",
+    "exp": 5
+   },
+   {
+    "name": "Nic Scourton",
+    "pos": "LB",
+    "exp": 2
    }
   ],
   "Chicago Bears": [
@@ -2329,11 +2394,6 @@
     "exp": 2
    },
    {
-    "name": "Coleman Bennett",
-    "pos": "RB",
-    "exp": 0
-   },
-   {
     "name": "Garrett Bradbury",
     "pos": "C",
     "exp": 8
@@ -2359,14 +2419,14 @@
     "exp": 1
    },
    {
+    "name": "Wesley French",
+    "pos": "C",
+    "exp": 4
+   },
+   {
     "name": "Kyle Hergel",
     "pos": "G",
     "exp": 2
-   },
-   {
-    "name": "Kyron Hudson",
-    "pos": "WR",
-    "exp": 0
    },
    {
     "name": "Qadir Ismail",
@@ -2392,11 +2452,6 @@
     "name": "Logan Jones",
     "pos": "C",
     "exp": 0
-   },
-   {
-    "name": "Nikola Kalinic",
-    "pos": "TE",
-    "exp": 2
    },
    {
     "name": "Case Keenum",
@@ -2427,6 +2482,11 @@
     "name": "Colston Loveland",
     "pos": "TE",
     "exp": 2
+   },
+   {
+    "name": "Ray-Ray McCloud III",
+    "pos": "WR",
+    "exp": 8
    },
    {
     "name": "Jordan McFadden",
@@ -2519,6 +2579,11 @@
     "exp": 4
    },
    {
+    "name": "Beanie Bishop Jr.",
+    "pos": "CB",
+    "exp": 2
+   },
+   {
     "name": "Josh Blackwell",
     "pos": "CB",
     "exp": 5
@@ -2539,6 +2604,11 @@
     "exp": 8
    },
    {
+    "name": "Marcus Davenport",
+    "pos": "DE",
+    "exp": 0
+   },
+   {
     "name": "Gervon Dexter Sr.",
     "pos": "DT",
     "exp": 4
@@ -2554,29 +2624,14 @@
     "exp": 0
    },
    {
-    "name": "KC Eziomume",
-    "pos": "CB",
-    "exp": 0
-   },
-   {
     "name": "Tony Fields II",
     "pos": "LB",
     "exp": 6
    },
    {
-    "name": "Dallis Flowers",
-    "pos": "CB",
-    "exp": 4
-   },
-   {
     "name": "Neville Gallimore",
     "pos": "DT",
     "exp": 7
-   },
-   {
-    "name": "Jonathan Garvin",
-    "pos": "DE",
-    "exp": 4
    },
    {
     "name": "Kyler Gordon",
@@ -2669,8 +2724,8 @@
     "exp": 6
    },
    {
-    "name": "Gervarrius Owens",
-    "pos": "S",
+    "name": "De'Antre Prince",
+    "pos": "CB",
     "exp": 2
    },
    {
@@ -2682,6 +2737,11 @@
     "name": "Jack Sanborn",
     "pos": "LB",
     "exp": 5
+   },
+   {
+    "name": "Marlen Sewell",
+    "pos": "S",
+    "exp": 0
    },
    {
     "name": "Nephi Sewell",
@@ -2734,9 +2794,14 @@
     "exp": 0
    },
    {
-    "name": "Luke Elkin",
-    "pos": "LS",
-    "exp": 1
+    "name": "Xavier Woods",
+    "pos": "S",
+    "exp": 10
+   },
+   {
+    "name": "William Wright",
+    "pos": "CB",
+    "exp": 0
    },
    {
     "name": "Beau Gardner",
@@ -2752,6 +2817,21 @@
     "name": "Tory Taylor",
     "pos": "P",
     "exp": 3
+   },
+   {
+    "name": "Dallis Flowers",
+    "pos": "CB",
+    "exp": 4
+   },
+   {
+    "name": "Jonathan Garvin",
+    "pos": "DE",
+    "exp": 4
+   },
+   {
+    "name": "Nikola Kalinic",
+    "pos": "TE",
+    "exp": 2
    }
   ],
   "Cincinnati Bengals": [
@@ -3136,6 +3216,11 @@
     "exp": 5
    },
    {
+    "name": "Matthew McDoom",
+    "pos": "CB",
+    "exp": 0
+   },
+   {
     "name": "Myles Murphy",
     "pos": "DE",
     "exp": 4
@@ -3144,11 +3229,6 @@
     "name": "Josh Newton",
     "pos": "CB",
     "exp": 3
-   },
-   {
-    "name": "Isaiah Nwokobia",
-    "pos": "S",
-    "exp": 0
    },
    {
     "name": "Antwaun Powell-Ryland",
@@ -3181,11 +3261,6 @@
     "exp": 4
    },
    {
-    "name": "Ceyair Wright",
-    "pos": "CB",
-    "exp": 0
-   },
-   {
     "name": "Russ Yeast",
     "pos": "S",
     "exp": 3
@@ -3208,19 +3283,9 @@
   ],
   "Cleveland Browns": [
    {
-    "name": "Aaron Anderson",
-    "pos": "WR",
-    "exp": 0
-   },
-   {
     "name": "Austin Barber",
     "pos": "OT",
     "exp": 0
-   },
-   {
-    "name": "Brenden Bates",
-    "pos": "TE",
-    "exp": 3
    },
    {
     "name": "Isaiah Bond",
@@ -3258,11 +3323,6 @@
     "exp": 0
    },
    {
-    "name": "Jack Conley",
-    "pos": "OT",
-    "exp": 1
-   },
-   {
     "name": "Malachi Corley",
     "pos": "WR",
     "exp": 3
@@ -3293,18 +3353,8 @@
     "exp": 2
    },
    {
-    "name": "Kendrick Green",
-    "pos": "G",
-    "exp": 5
-   },
-   {
     "name": "Taylen Green",
     "pos": "QB",
-    "exp": 0
-   },
-   {
-    "name": "T.J. Harden",
-    "pos": "RB",
     "exp": 0
    },
    {
@@ -3363,6 +3413,11 @@
     "exp": 0
    },
    {
+    "name": "Ben Patterson",
+    "pos": "WR",
+    "exp": 0
+   },
+   {
     "name": "Tyre Phillips",
     "pos": "OT",
     "exp": 4
@@ -3398,9 +3453,9 @@
     "exp": 6
    },
    {
-    "name": "Jamari Thrash",
-    "pos": "WR",
-    "exp": 3
+    "name": "Jermaine Terry II",
+    "pos": "TE",
+    "exp": 1
    },
    {
     "name": "Cedric Tillman",
@@ -3428,6 +3483,11 @@
     "exp": 0
    },
    {
+    "name": "Dae'Quan Wright",
+    "pos": "TE",
+    "exp": 0
+   },
+   {
     "name": "Luke Wypler",
     "pos": "C",
     "exp": 4
@@ -3443,6 +3503,11 @@
     "exp": 5
    },
    {
+    "name": "Travis Bell",
+    "pos": "DT",
+    "exp": 2
+   },
+   {
     "name": "Myles Bryant",
     "pos": "CB",
     "exp": 7
@@ -3451,11 +3516,6 @@
     "name": "Tyson Campbell",
     "pos": "CB",
     "exp": 6
-   },
-   {
-    "name": "Reid Carrico",
-    "pos": "LB",
-    "exp": 0
    },
    {
     "name": "Elijah Chatman",
@@ -3503,6 +3563,11 @@
     "exp": 2
    },
    {
+    "name": "Tyler Hall",
+    "pos": "CB",
+    "exp": 4
+   },
+   {
     "name": "Mike Hall Jr.",
     "pos": "DT",
     "exp": 3
@@ -3511,11 +3576,6 @@
     "name": "Myles Harden",
     "pos": "CB",
     "exp": 3
-   },
-   {
-    "name": "Tyron Herring",
-    "pos": "CB",
-    "exp": 1
    },
    {
     "name": "Ronnie Hickman",
@@ -3528,14 +3588,19 @@
     "exp": 2
    },
    {
+    "name": "Coziah Izzard",
+    "pos": "DT",
+    "exp": 1
+   },
+   {
     "name": "Justin Jefferson",
     "pos": "LB",
     "exp": 0
    },
    {
-    "name": "Dom Jones",
-    "pos": "CB",
-    "exp": 2
+    "name": "Patrick Jenkins",
+    "pos": "DT",
+    "exp": 1
    },
    {
     "name": "Sam Kamara",
@@ -3543,9 +3608,19 @@
     "exp": 4
    },
    {
+    "name": "Jeadyn Lukus",
+    "pos": "CB",
+    "exp": 0
+   },
+   {
     "name": "Easton Mascarenas-Arnold",
     "pos": "LB",
     "exp": 2
+   },
+   {
+    "name": "Jeremiah McClendon",
+    "pos": "CB",
+    "exp": 0
    },
    {
     "name": "Isaiah McGuire",
@@ -3663,9 +3738,34 @@
     "exp": 2
    },
    {
+    "name": "Brenden Bates",
+    "pos": "TE",
+    "exp": 3
+   },
+   {
+    "name": "Kendrick Green",
+    "pos": "G",
+    "exp": 5
+   },
+   {
+    "name": "Tyron Herring",
+    "pos": "CB",
+    "exp": 1
+   },
+   {
+    "name": "Damarri Mathis",
+    "pos": "CB",
+    "exp": 5
+   },
+   {
     "name": "Jeremiah Owusu-Koramoah",
     "pos": "LB",
     "exp": 6
+   },
+   {
+    "name": "Jamari Thrash",
+    "pos": "WR",
+    "exp": 3
    }
   ],
   "Dallas Cowboys": [
@@ -3700,6 +3800,11 @@
     "exp": 0
    },
    {
+    "name": "Jashaun Corbin",
+    "pos": "RB",
+    "exp": 2
+   },
+   {
     "name": "Ajani Cornelius",
     "pos": "OT",
     "exp": 2
@@ -3708,11 +3813,6 @@
     "name": "Malik Davis",
     "pos": "RB",
     "exp": 3
-   },
-   {
-    "name": "Princeton Fant",
-    "pos": "TE",
-    "exp": 2
    },
    {
     "name": "Jake Ferguson",
@@ -3730,14 +3830,14 @@
     "exp": 2
    },
    {
+    "name": "Sebastian Gutierrez",
+    "pos": "G",
+    "exp": 1
+   },
+   {
     "name": "Tyler Guyton",
     "pos": "OT",
     "exp": 3
-   },
-   {
-    "name": "Traeshon Holden",
-    "pos": "WR",
-    "exp": 1
    },
    {
     "name": "Sam Howell",
@@ -3763,6 +3863,11 @@
     "name": "Trevor Keegan",
     "pos": "G",
     "exp": 3
+   },
+   {
+    "name": "Zack Kuntz",
+    "pos": "TE",
+    "exp": 1
    },
    {
     "name": "CeeDee Lamb",
@@ -3813,11 +3918,6 @@
     "name": "Dak Prescott",
     "pos": "QB",
     "exp": 11
-   },
-   {
-    "name": "Dominic Richardson",
-    "pos": "RB",
-    "exp": 0
    },
    {
     "name": "DJ Rogers",
@@ -4015,6 +4115,11 @@
     "exp": 7
    },
    {
+    "name": "Von Miller",
+    "pos": "LB",
+    "exp": 16
+   },
+   {
     "name": "Devin Moore",
     "pos": "CB",
     "exp": 0
@@ -4053,11 +4158,6 @@
     "name": "Curtis Robinson",
     "pos": "LB",
     "exp": 5
-   },
-   {
-    "name": "Charles Snowden",
-    "pos": "LB",
-    "exp": 3
    },
    {
     "name": "Ameer Speed",
@@ -4125,6 +4225,11 @@
     "exp": 9
    },
    {
+    "name": "Princeton Fant",
+    "pos": "TE",
+    "exp": 2
+   },
+   {
     "name": "Matt Hennessy",
     "pos": "C",
     "exp": 7
@@ -4182,14 +4287,14 @@
     "exp": 3
    },
    {
-    "name": "Michael Deiter",
-    "pos": "C",
-    "exp": 7
-   },
-   {
     "name": "J.K. Dobbins",
     "pos": "RB",
     "exp": 7
+   },
+   {
+    "name": "Kyre Duplessis",
+    "pos": "WR",
+    "exp": 0
    },
    {
     "name": "Sam Ehlinger",
@@ -4322,9 +4427,19 @@
     "exp": 0
    },
    {
+    "name": "Kyrese Rowan",
+    "pos": "WR",
+    "exp": 1
+   },
+   {
     "name": "Cody Schrader",
     "pos": "RB",
     "exp": 3
+   },
+   {
+    "name": "Lecitus Smith",
+    "pos": "C",
+    "exp": 4
    },
    {
     "name": "Jarrett Stidham",
@@ -4397,11 +4512,6 @@
     "exp": 6
    },
    {
-    "name": "Blake Cotton",
-    "pos": "CB",
-    "exp": 0
-   },
-   {
     "name": "Jonah Elliss",
     "pos": "LB",
     "exp": 3
@@ -4412,9 +4522,9 @@
     "exp": 0
    },
    {
-    "name": "Matt Henningsen",
-    "pos": "DE",
-    "exp": 4
+    "name": "Ricardo Hallman",
+    "pos": "CB",
+    "exp": 0
    },
    {
     "name": "Talanoa Hufanga",
@@ -4490,11 +4600,6 @@
     "name": "Parker Robertson",
     "pos": "S",
     "exp": 0
-   },
-   {
-    "name": "Jaden Robinson",
-    "pos": "CB",
-    "exp": 1
    },
    {
     "name": "Que Robinson",
@@ -4585,6 +4690,16 @@
     "name": "Wil Lutz",
     "pos": "PK",
     "exp": 11
+   },
+   {
+    "name": "Michael Deiter",
+    "pos": "C",
+    "exp": 7
+   },
+   {
+    "name": "Matt Henningsen",
+    "pos": "DE",
+    "exp": 4
    }
   ],
   "Detroit Lions": [
@@ -4604,14 +4719,14 @@
     "exp": 1
    },
    {
+    "name": "Raheem Blackshear",
+    "pos": "RB",
+    "exp": 4
+   },
+   {
     "name": "Larry Borom",
     "pos": "OT",
     "exp": 6
-   },
-   {
-    "name": "Teddy Bridgewater",
-    "pos": "QB",
-    "exp": 12
    },
    {
     "name": "Devin Cochran",
@@ -4627,6 +4742,11 @@
     "name": "Malik Cunningham",
     "pos": "WR",
     "exp": 2
+   },
+   {
+    "name": "Joshua Dobbs",
+    "pos": "QB",
+    "exp": 9
    },
    {
     "name": "Greg Dortch",
@@ -4672,16 +4792,6 @@
     "name": "Tom Kennedy",
     "pos": "WR",
     "exp": 4
-   },
-   {
-    "name": "Lawrence Keys III",
-    "pos": "WR",
-    "exp": 1
-   },
-   {
-    "name": "Miles Kitselman",
-    "pos": "TE",
-    "exp": 0
    },
    {
     "name": "Sam LaPorta",
@@ -4754,11 +4864,6 @@
     "exp": 2
    },
    {
-    "name": "Kye Robichaux",
-    "pos": "RB",
-    "exp": 2
-   },
-   {
     "name": "Jacob Saylors",
     "pos": "RB",
     "exp": 2
@@ -4804,6 +4909,11 @@
     "exp": 5
    },
    {
+    "name": "Trayveon Williams",
+    "pos": "RB",
+    "exp": 8
+   },
+   {
     "name": "Cedrick Wilson Jr.",
     "pos": "WR",
     "exp": 9
@@ -4834,13 +4944,18 @@
     "exp": 6
    },
    {
+    "name": "Ekow Boye-Doe",
+    "pos": "CB",
+    "exp": 2
+   },
+   {
     "name": "Brian Branch",
-    "pos": "DB",
+    "pos": "S",
     "exp": 4
    },
    {
     "name": "Aamaris Brown",
-    "pos": "DB",
+    "pos": "CB",
     "exp": 0
    },
    {
@@ -4857,6 +4972,11 @@
     "name": "Damone Clark",
     "pos": "LB",
     "exp": 5
+   },
+   {
+    "name": "Ryan Cooper Jr.",
+    "pos": "CB",
+    "exp": 1
    },
    {
     "name": "Khalil Dorsey",
@@ -4890,7 +5010,7 @@
    },
    {
     "name": "Christian Izien",
-    "pos": "DB",
+    "pos": "S",
     "exp": 4
    },
    {
@@ -4904,11 +5024,6 @@
     "exp": 5
    },
    {
-    "name": "Aidan Keanaaina",
-    "pos": "DT",
-    "exp": 0
-   },
-   {
     "name": "Tyler Lacy",
     "pos": "DT",
     "exp": 4
@@ -4920,7 +5035,7 @@
    },
    {
     "name": "Avonte Maddox",
-    "pos": "DB",
+    "pos": "CB",
     "exp": 9
    },
    {
@@ -4949,6 +5064,11 @@
     "exp": 0
    },
    {
+    "name": "Amen Ogbongbemiga",
+    "pos": "LB",
+    "exp": 6
+   },
+   {
     "name": "Levi Onwuzurike",
     "pos": "DE",
     "exp": 6
@@ -4964,6 +5084,11 @@
     "exp": 9
    },
    {
+    "name": "Troy Reeder",
+    "pos": "LB",
+    "exp": 7
+   },
+   {
     "name": "Malcolm Rodriguez",
     "pos": "LB",
     "exp": 5
@@ -4974,24 +5099,14 @@
     "exp": 0
    },
    {
-    "name": "De'Shawn Rucker",
-    "pos": "CB",
-    "exp": 0
-   },
-   {
     "name": "Chris Smith",
     "pos": "DT",
     "exp": 1
    },
    {
-    "name": "Loren Strickland",
-    "pos": "S",
-    "exp": 2
-   },
-   {
-    "name": "Jay Tufele",
+    "name": "Ben Stille",
     "pos": "DT",
-    "exp": 6
+    "exp": 3
    },
    {
     "name": "Payton Turner",
@@ -5002,6 +5117,11 @@
     "name": "Tyre West",
     "pos": "DT",
     "exp": 0
+   },
+   {
+    "name": "Devin White",
+    "pos": "LB",
+    "exp": 8
    },
    {
     "name": "Nick Whiteside",
@@ -5047,9 +5167,24 @@
     "name": "Kendrick Law",
     "pos": "WR",
     "exp": 0
+   },
+   {
+    "name": "Kye Robichaux",
+    "pos": "RB",
+    "exp": 2
+   },
+   {
+    "name": "Loren Strickland",
+    "pos": "S",
+    "exp": 2
    }
   ],
   "Green Bay Packers": [
+   {
+    "name": "Zach Bako-Bewele",
+    "pos": "OT",
+    "exp": 5
+   },
    {
     "name": "Aaron Banks",
     "pos": "G",
@@ -5058,11 +5193,6 @@
    {
     "name": "Brant Banks",
     "pos": "OT",
-    "exp": 1
-   },
-   {
-    "name": "Karsen Barnhart",
-    "pos": "G",
     "exp": 1
    },
    {
@@ -5086,6 +5216,11 @@
     "exp": 0
    },
    {
+    "name": "McCallan Castles",
+    "pos": "TE",
+    "exp": 1
+   },
+   {
     "name": "Dalton Cooper",
     "pos": "OT",
     "exp": 1
@@ -5094,11 +5229,6 @@
     "name": "Drake Dabney",
     "pos": "TE",
     "exp": 1
-   },
-   {
-    "name": "Kyron Drones",
-    "pos": "QB",
-    "exp": 0
    },
    {
     "name": "Josh Gesky",
@@ -5116,6 +5246,11 @@
     "exp": 2
    },
    {
+    "name": "Chris Hilton Jr.",
+    "pos": "WR",
+    "exp": 0
+   },
+   {
     "name": "Josh Jacobs",
     "pos": "RB",
     "exp": 8
@@ -5126,6 +5261,11 @@
     "exp": 2
    },
    {
+    "name": "Kisean Johnson",
+    "pos": "WR",
+    "exp": 0
+   },
+   {
     "name": "Darian Kinnard",
     "pos": "OT",
     "exp": 4
@@ -5134,11 +5274,6 @@
     "name": "Tucker Kraft",
     "pos": "TE",
     "exp": 4
-   },
-   {
-    "name": "Luke Lachey",
-    "pos": "TE",
-    "exp": 1
    },
    {
     "name": "MarShawn Lloyd",
@@ -5154,11 +5289,6 @@
     "name": "Damien Martinez",
     "pos": "RB",
     "exp": 1
-   },
-   {
-    "name": "RJ Maryland",
-    "pos": "TE",
-    "exp": 0
    },
    {
     "name": "Kyle McCord",
@@ -5201,6 +5331,11 @@
     "exp": 0
    },
    {
+    "name": "Kaden Prather",
+    "pos": "WR",
+    "exp": 1
+   },
+   {
     "name": "Jayden Reed",
     "pos": "WR",
     "exp": 4
@@ -5209,11 +5344,6 @@
     "name": "Sean Rhyan",
     "pos": "G",
     "exp": 5
-   },
-   {
-    "name": "Brenden Rice",
-    "pos": "WR",
-    "exp": 2
    },
    {
     "name": "Will Sheppard",
@@ -5241,11 +5371,6 @@
     "exp": 16
    },
    {
-    "name": "Zach Tom",
-    "pos": "OT",
-    "exp": 5
-   },
-   {
     "name": "Dillon Wade",
     "pos": "G",
     "exp": 0
@@ -5271,13 +5396,8 @@
     "exp": 2
    },
    {
-    "name": "Johnathan Baldwin II",
-    "pos": "S",
-    "exp": 1
-   },
-   {
-    "name": "Dante Barnett",
-    "pos": "DT",
+    "name": "Thomas Yassmin",
+    "pos": "TE",
     "exp": 1
    },
    {
@@ -5326,6 +5446,11 @@
     "exp": 3
    },
    {
+    "name": "Trey Dean III",
+    "pos": "S",
+    "exp": 1
+   },
+   {
     "name": "Dani Dennis-Sutton",
     "pos": "DE",
     "exp": 0
@@ -5333,6 +5458,11 @@
    {
     "name": "MJ Devonshire Jr.",
     "pos": "CB",
+    "exp": 1
+   },
+   {
+    "name": "Tra Fluellen",
+    "pos": "S",
     "exp": 1
    },
    {
@@ -5362,11 +5492,6 @@
    },
    {
     "name": "Domani Jackson",
-    "pos": "CB",
-    "exp": 0
-   },
-   {
-    "name": "Marlon Jones",
     "pos": "CB",
     "exp": 0
    },
@@ -5442,7 +5567,7 @@
    },
    {
     "name": "Jaylin Simpson",
-    "pos": "DB",
+    "pos": "S",
     "exp": 1
    },
    {
@@ -5471,6 +5596,11 @@
     "exp": 4
    },
    {
+    "name": "Arden Walker",
+    "pos": "LB",
+    "exp": 0
+   },
+   {
     "name": "Kristian Welch",
     "pos": "LB",
     "exp": 7
@@ -5486,9 +5616,9 @@
     "exp": 5
    },
    {
-    "name": "Lucas Havrisik",
-    "pos": "PK",
-    "exp": 3
+    "name": "Cal Adomitis",
+    "pos": "LS",
+    "exp": 5
    },
    {
     "name": "Matt Orzech",
@@ -5504,6 +5634,16 @@
     "name": "Daniel Whelan",
     "pos": "P",
     "exp": 4
+   },
+   {
+    "name": "Johnathan Baldwin II",
+    "pos": "S",
+    "exp": 1
+   },
+   {
+    "name": "Marlon Jones",
+    "pos": "CB",
+    "exp": 0
    }
   ],
   "Houston Texans": [
@@ -5558,11 +5698,6 @@
     "exp": 3
    },
    {
-    "name": "Derrick Graham",
-    "pos": "OT",
-    "exp": 0
-   },
-   {
     "name": "Sam Hagen",
     "pos": "G",
     "exp": 0
@@ -5576,11 +5711,6 @@
     "name": "Jayden Higgins",
     "pos": "WR",
     "exp": 2
-   },
-   {
-    "name": "Evan Hull",
-    "pos": "RB",
-    "exp": 3
    },
    {
     "name": "Xavier Hutchinson",
@@ -5628,11 +5758,6 @@
     "exp": 2
    },
    {
-    "name": "Graham Mertz",
-    "pos": "QB",
-    "exp": 2
-   },
-   {
     "name": "Davis Mills",
     "pos": "QB",
     "exp": 6
@@ -5668,11 +5793,6 @@
     "exp": 4
    },
    {
-    "name": "Josh Pitsenberger",
-    "pos": "RB",
-    "exp": 0
-   },
-   {
     "name": "Layne Pryor",
     "pos": "TE",
     "exp": 1
@@ -5681,6 +5801,11 @@
     "name": "Keylan Rutledge",
     "pos": "G",
     "exp": 0
+   },
+   {
+    "name": "Brett Rypien",
+    "pos": "QB",
+    "exp": 8
    },
    {
     "name": "Treyvhon Saunders",
@@ -5733,6 +5858,16 @@
     "exp": 0
    },
    {
+    "name": "Juwann Winfree",
+    "pos": "WR",
+    "exp": 6
+   },
+   {
+    "name": "Owen Wright",
+    "pos": "RB",
+    "exp": 2
+   },
+   {
     "name": "Azeez Al-Shaair",
     "pos": "LB",
     "exp": 8
@@ -5763,9 +5898,19 @@
     "exp": 1
    },
    {
+    "name": "Jadeveon Clowney",
+    "pos": "DE",
+    "exp": 13
+   },
+   {
     "name": "Brandon Codrington",
     "pos": "CB",
     "exp": 3
+   },
+   {
+    "name": "Mario Edwards Jr.",
+    "pos": "DT",
+    "exp": 11
    },
    {
     "name": "Aiden Fisher",
@@ -5776,6 +5921,11 @@
     "name": "Ali Gaye",
     "pos": "DE",
     "exp": 3
+   },
+   {
+    "name": "Bryce Hall",
+    "pos": "CB",
+    "exp": 6
    },
    {
     "name": "Logan Hall",
@@ -5913,11 +6063,6 @@
     "exp": 5
    },
    {
-    "name": "Junior Tafuna",
-    "pos": "DT",
-    "exp": 1
-   },
-   {
     "name": "Henry To'oTo'o",
     "pos": "LB",
     "exp": 4
@@ -5953,8 +6098,13 @@
     "exp": 2
    },
    {
-    "name": "Jack Stonehouse",
-    "pos": "P",
+    "name": "Graham Mertz",
+    "pos": "QB",
+    "exp": 2
+   },
+   {
+    "name": "Josh Pitsenberger",
+    "pos": "RB",
     "exp": 0
    }
   ],
@@ -5965,6 +6115,11 @@
     "exp": 9
    },
    {
+    "name": "Keenan Allen",
+    "pos": "WR",
+    "exp": 13
+   },
+   {
     "name": "Ulysses Bentley IV",
     "pos": "RB",
     "exp": 1
@@ -5973,6 +6128,11 @@
     "name": "Tanor Bortolini",
     "pos": "C",
     "exp": 3
+   },
+   {
+    "name": "Pharaoh Brown",
+    "pos": "TE",
+    "exp": 9
    },
    {
     "name": "Deion Burks",
@@ -6025,11 +6185,6 @@
     "exp": 0
    },
    {
-    "name": "EJ Horton Jr.",
-    "pos": "WR",
-    "exp": 0
-   },
-   {
     "name": "Daniel Jones",
     "pos": "QB",
     "exp": 8
@@ -6050,7 +6205,7 @@
     "exp": 4
    },
    {
-    "name": "Bayron Matos",
+    "name": "Roy Mbaeteka",
     "pos": "OT",
     "exp": 1
    },
@@ -6060,9 +6215,14 @@
     "exp": 0
    },
    {
-    "name": "Sean McKeon",
-    "pos": "TE",
+    "name": "D.J. Montgomery",
+    "pos": "WR",
     "exp": 5
+   },
+   {
+    "name": "Tyler Moore",
+    "pos": "TE",
+    "exp": 0
    },
    {
     "name": "Jimmy Morrissey",
@@ -6088,11 +6248,6 @@
     "name": "Eli Pancol",
     "pos": "WR",
     "exp": 1
-   },
-   {
-    "name": "Lincoln Pare",
-    "pos": "RB",
-    "exp": 0
    },
    {
     "name": "Alec Pierce",
@@ -6140,11 +6295,6 @@
     "exp": 4
    },
    {
-    "name": "Carson Towt",
-    "pos": "TE",
-    "exp": 0
-   },
-   {
     "name": "Jalen Travis",
     "pos": "OT",
     "exp": 2
@@ -6170,9 +6320,19 @@
     "exp": 2
    },
    {
+    "name": "Trey Wedig",
+    "pos": "OT",
+    "exp": 1
+   },
+   {
     "name": "Nick Westbrook-Ikhine",
     "pos": "WR",
     "exp": 7
+   },
+   {
+    "name": "Roydell Williams",
+    "pos": "RB",
+    "exp": 0
    },
    {
     "name": "Adetomiwa Adebawore",
@@ -6295,11 +6455,6 @@
     "exp": 0
    },
    {
-    "name": "Cameron Mitchell",
-    "pos": "CB",
-    "exp": 4
-   },
-   {
     "name": "Durell Nchami",
     "pos": "DE",
     "exp": 1
@@ -6318,6 +6473,11 @@
     "name": "Jonathan Owens",
     "pos": "S",
     "exp": 8
+   },
+   {
+    "name": "Mekhi Rodgers",
+    "pos": "CB",
+    "exp": 0
    },
    {
     "name": "Daniel Scott",
@@ -6408,6 +6568,21 @@
     "name": "Spencer Shrader",
     "pos": "PK",
     "exp": 3
+   },
+   {
+    "name": "Sean McKeon",
+    "pos": "TE",
+    "exp": 5
+   },
+   {
+    "name": "Cameron Mitchell",
+    "pos": "CB",
+    "exp": 4
+   },
+   {
+    "name": "Carson Towt",
+    "pos": "TE",
+    "exp": 0
    }
   ],
   "Jacksonville Jaguars": [
@@ -6457,29 +6632,19 @@
     "exp": 1
    },
    {
+    "name": "Geron Christian",
+    "pos": "OT",
+    "exp": 9
+   },
+   {
     "name": "Ezra Cleveland",
     "pos": "G",
     "exp": 7
    },
    {
-    "name": "Trystan Colon",
-    "pos": "C",
-    "exp": 7
-   },
-   {
-    "name": "Ethan Conner",
-    "pos": "TE",
-    "exp": 0
-   },
-   {
     "name": "DeeJay Dallas",
     "pos": "RB",
     "exp": 7
-   },
-   {
-    "name": "Garrett DiGiorgio",
-    "pos": "OT",
-    "exp": 0
    },
    {
     "name": "Chuma Edoga",
@@ -6537,6 +6702,11 @@
     "exp": 6
    },
    {
+    "name": "Timothy McKay",
+    "pos": "G",
+    "exp": 1
+   },
+   {
     "name": "Patrick Mekari",
     "pos": "G",
     "exp": 8
@@ -6567,13 +6737,13 @@
     "exp": 8
    },
    {
-    "name": "Jimto Obidegwu",
-    "pos": "OT",
-    "exp": 0
+    "name": "Sam Mustipher",
+    "pos": "C",
+    "exp": 6
    },
    {
-    "name": "Ben Patterson",
-    "pos": "WR",
+    "name": "Jimto Obidegwu",
+    "pos": "OT",
     "exp": 0
    },
    {
@@ -6652,6 +6822,11 @@
     "exp": 12
    },
    {
+    "name": "Corey Ballentine",
+    "pos": "CB",
+    "exp": 8
+   },
+   {
     "name": "Quinton Bohanna",
     "pos": "DT",
     "exp": 5
@@ -6670,6 +6845,11 @@
     "name": "Montaric Brown",
     "pos": "CB",
     "exp": 5
+   },
+   {
+    "name": "Amari Burney",
+    "pos": "LB",
+    "exp": 3
    },
    {
     "name": "Branson Combs",
@@ -6717,11 +6897,6 @@
     "exp": 0
    },
    {
-    "name": "Parker Hughes",
-    "pos": "LB",
-    "exp": 0
-   },
-   {
     "name": "Jalen Hunt",
     "pos": "DT",
     "exp": 0
@@ -6730,11 +6905,6 @@
     "name": "Jalen Huskey",
     "pos": "S",
     "exp": 0
-   },
-   {
-    "name": "Dane Jackson",
-    "pos": "CB",
-    "exp": 6
    },
    {
     "name": "Antonio Johnson",
@@ -6762,11 +6932,6 @@
     "exp": 10
    },
    {
-    "name": "Keni-H Lovely",
-    "pos": "CB",
-    "exp": 1
-   },
-   {
     "name": "Devon Marshall",
     "pos": "CB",
     "exp": 0
@@ -6792,7 +6957,7 @@
     "exp": 11
    },
    {
-    "name": "Devin Neal",
+    "name": "Devin Neal Jr.",
     "pos": "S",
     "exp": 0
    },
@@ -6827,9 +6992,19 @@
     "exp": 1
    },
    {
+    "name": "Baylon Spector",
+    "pos": "LB",
+    "exp": 4
+   },
+   {
     "name": "Danny Striggow",
     "pos": "DE",
     "exp": 2
+   },
+   {
+    "name": "Jahlani Tavai",
+    "pos": "LB",
+    "exp": 9
    },
    {
     "name": "Trevian Thomas",
@@ -6865,6 +7040,21 @@
     "name": "Ross Matiscik",
     "pos": "LS",
     "exp": 7
+   },
+   {
+    "name": "Jared Bartlett",
+    "pos": "LB",
+    "exp": 1
+   },
+   {
+    "name": "Garrett DiGiorgio",
+    "pos": "OT",
+    "exp": 0
+   },
+   {
+    "name": "Parker Hughes",
+    "pos": "LB",
+    "exp": 0
    }
   ],
   "Kansas City Chiefs": [
@@ -6937,11 +7127,6 @@
     "name": "Noah Gray",
     "pos": "TE",
     "exp": 6
-   },
-   {
-    "name": "John Michael Gyllenborg",
-    "pos": "TE",
-    "exp": 0
    },
    {
     "name": "C.J. Hanson",
@@ -7084,6 +7269,11 @@
     "exp": 1
    },
    {
+    "name": "Jeff Weimer",
+    "pos": "WR",
+    "exp": 0
+   },
+   {
     "name": "Jared Wiley",
     "pos": "TE",
     "exp": 3
@@ -7154,11 +7344,6 @@
     "exp": 0
    },
    {
-    "name": "Ethan Downs",
-    "pos": "LB",
-    "exp": 1
-   },
-   {
     "name": "Anthony Dunn Jr.",
     "pos": "DE",
     "exp": 0
@@ -7192,6 +7377,11 @@
     "name": "Jaden Hicks",
     "pos": "S",
     "exp": 3
+   },
+   {
+    "name": "Ethan Hurkett",
+    "pos": "DE",
+    "exp": 0
    },
    {
     "name": "Chris Jones",
@@ -7239,17 +7429,17 @@
     "exp": 0
    },
    {
+    "name": "Emmanuel Ogbah",
+    "pos": "DE",
+    "exp": 11
+   },
+   {
     "name": "Damon Payne",
     "pos": "DT",
     "exp": 0
    },
    {
     "name": "D'Arco Perkins-McAllister",
-    "pos": "CB",
-    "exp": 0
-   },
-   {
-    "name": "Bryce Phillips",
     "pos": "CB",
     "exp": 0
    },
@@ -7322,6 +7512,16 @@
     "name": "James Winchester",
     "pos": "LS",
     "exp": 12
+   },
+   {
+    "name": "Ethan Downs",
+    "pos": "LB",
+    "exp": 1
+   },
+   {
+    "name": "John Michael Gyllenborg",
+    "pos": "TE",
+    "exp": 0
    }
   ],
   "Las Vegas Raiders": [
@@ -7341,9 +7541,9 @@
     "exp": 3
    },
    {
-    "name": "Jonathan Brady",
+    "name": "Noah Brown",
     "pos": "WR",
-    "exp": 0
+    "exp": 10
    },
    {
     "name": "Spencer Burford",
@@ -7356,14 +7556,14 @@
     "exp": 0
    },
    {
-    "name": "Chris Collier",
-    "pos": "RB",
-    "exp": 2
-   },
-   {
     "name": "Kirk Cousins",
     "pos": "QB",
     "exp": 15
+   },
+   {
+    "name": "Braeden Daniels",
+    "pos": "OT",
+    "exp": 3
    },
    {
     "name": "Phillip Dorsett II",
@@ -7461,6 +7661,11 @@
     "exp": 0
    },
    {
+    "name": "Chris Myarick",
+    "pos": "TE",
+    "exp": 5
+   },
+   {
     "name": "Jalen Nailor",
     "pos": "WR",
     "exp": 5
@@ -7471,14 +7676,14 @@
     "exp": 4
    },
    {
+    "name": "Dare Ogunbowale",
+    "pos": "RB",
+    "exp": 9
+   },
+   {
     "name": "Albert Okwuegbunam Jr.",
     "pos": "TE",
     "exp": 6
-   },
-   {
-    "name": "Justin Pickett",
-    "pos": "G",
-    "exp": 0
    },
    {
     "name": "Jackson Powers-Johnson",
@@ -7509,6 +7714,11 @@
     "name": "Ian Thomas",
     "pos": "TE",
     "exp": 9
+   },
+   {
+    "name": "Deven Thompkins",
+    "pos": "WR",
+    "exp": 5
    },
    {
     "name": "Dont'e Thornton Jr.",
@@ -7591,6 +7801,11 @@
     "exp": 3
    },
    {
+    "name": "Folorunso Fatukasi",
+    "pos": "DT",
+    "exp": 8
+   },
+   {
     "name": "Jahfari Harvey",
     "pos": "DE",
     "exp": 1
@@ -7601,9 +7816,9 @@
     "exp": 2
    },
    {
-    "name": "Brennan Jackson",
+    "name": "Buddy Johnson",
     "pos": "LB",
-    "exp": 3
+    "exp": 5
    },
    {
     "name": "Dalton Johnson",
@@ -7611,14 +7826,14 @@
     "exp": 0
    },
    {
+    "name": "Patrick Johnson",
+    "pos": "DE",
+    "exp": 6
+   },
+   {
     "name": "Taron Johnson",
     "pos": "CB",
     "exp": 9
-   },
-   {
-    "name": "Benito Jones",
-    "pos": "DT",
-    "exp": 5
    },
    {
     "name": "Malcolm Koonce",
@@ -7731,16 +7946,6 @@
     "exp": 0
    },
    {
-    "name": "Laki Tasi",
-    "pos": "DT",
-    "exp": 1
-   },
-   {
-    "name": "Chris Thomas",
-    "pos": "LB",
-    "exp": 0
-   },
-   {
     "name": "Greedy Vance",
     "pos": "CB",
     "exp": 2
@@ -7749,11 +7954,6 @@
     "name": "Quay Walker",
     "pos": "LB",
     "exp": 5
-   },
-   {
-    "name": "Tanner Wall",
-    "pos": "S",
-    "exp": 0
    },
    {
     "name": "AJ Cole",
@@ -7779,6 +7979,21 @@
     "name": "Alex Ward",
     "pos": "LS",
     "exp": 4
+   },
+   {
+    "name": "Chris Collier",
+    "pos": "RB",
+    "exp": 2
+   },
+   {
+    "name": "Brennan Jackson",
+    "pos": "LB",
+    "exp": 3
+   },
+   {
+    "name": "Justin Pickett",
+    "pos": "G",
+    "exp": 0
    },
    {
     "name": "Corey Rucker",
@@ -7826,11 +8041,6 @@
     "name": "Dalevon Campbell",
     "pos": "WR",
     "exp": 2
-   },
-   {
-    "name": "Ben Cleveland",
-    "pos": "G",
-    "exp": 6
    },
    {
     "name": "Derius Davis",
@@ -7926,11 +8136,6 @@
     "name": "Keaton Mitchell",
     "pos": "RB",
     "exp": 4
-   },
-   {
-    "name": "Mante Morrow",
-    "pos": "WR",
-    "exp": 0
    },
    {
     "name": "David Njoku",
@@ -8046,6 +8251,11 @@
     "name": "Jahmeer Carter",
     "pos": "DT",
     "exp": 0
+   },
+   {
+    "name": "Andre Carter II",
+    "pos": "LB",
+    "exp": 3
    },
    {
     "name": "Junior Colson",
@@ -8233,6 +8443,11 @@
     "exp": 2
    },
    {
+    "name": "Peter Bowden",
+    "pos": "LS",
+    "exp": 1
+   },
+   {
     "name": "Cameron Dicker",
     "pos": "PK",
     "exp": 5
@@ -8268,6 +8483,11 @@
     "name": "Steve Avila",
     "pos": "G",
     "exp": 4
+   },
+   {
+    "name": "Alex Bachman",
+    "pos": "WR",
+    "exp": 3
    },
    {
     "name": "Stetson Bennett IV",
@@ -8325,6 +8545,11 @@
     "exp": 2
    },
    {
+    "name": "Blake Hance",
+    "pos": "G",
+    "exp": 6
+   },
+   {
     "name": "Bryce Henderson",
     "pos": "OT",
     "exp": 0
@@ -8372,6 +8597,11 @@
    {
     "name": "Konata Mumpfield",
     "pos": "WR",
+    "exp": 2
+   },
+   {
+    "name": "Bill Murray",
+    "pos": "G",
     "exp": 2
    },
    {
@@ -8455,11 +8685,6 @@
     "exp": 5
    },
    {
-    "name": "Mario Williams",
-    "pos": "WR",
-    "exp": 1
-   },
-   {
     "name": "Nick Andersen",
     "pos": "S",
     "exp": 0
@@ -8468,6 +8693,11 @@
     "name": "Wesley Bailey",
     "pos": "LB",
     "exp": 0
+   },
+   {
+    "name": "Alex Cook",
+    "pos": "S",
+    "exp": 2
    },
    {
     "name": "Kam Curl",
@@ -8507,7 +8737,7 @@
    {
     "name": "Tomon Fox",
     "pos": "LB",
-    "exp": 3
+    "exp": 4
    },
    {
     "name": "Myles Garrett",
@@ -8580,6 +8810,11 @@
     "exp": 5
    },
    {
+    "name": "Zech McPhearson",
+    "pos": "CB",
+    "exp": 5
+   },
+   {
     "name": "Jaxson Moi",
     "pos": "DT",
     "exp": 0
@@ -8600,13 +8835,18 @@
     "exp": 1
    },
    {
-    "name": "Drey Norwood",
-    "pos": "CB",
+    "name": "Darryl Peterson III",
+    "pos": "LB",
     "exp": 0
    },
    {
-    "name": "Darryl Peterson III",
+    "name": "Monty Rice",
     "pos": "LB",
+    "exp": 5
+   },
+   {
+    "name": "Daniel Rickert",
+    "pos": "DE",
     "exp": 0
    },
    {
@@ -8660,6 +8900,11 @@
     "exp": 0
    },
    {
+    "name": "Jack Bouwmeester",
+    "pos": "P",
+    "exp": 0
+   },
+   {
     "name": "Joe Cardona",
     "pos": "LS",
     "exp": 12
@@ -8678,6 +8923,11 @@
     "name": "Eddie Walls III",
     "pos": "LB",
     "exp": 0
+   },
+   {
+    "name": "Mario Williams",
+    "pos": "WR",
+    "exp": 1
    }
   ],
   "Miami Dolphins": [
@@ -8757,6 +9007,11 @@
     "exp": 2
    },
    {
+    "name": "Jeremiah Franklin",
+    "pos": "TE",
+    "exp": 0
+   },
+   {
     "name": "Ollie Gordon II",
     "pos": "RB",
     "exp": 2
@@ -8764,11 +9019,6 @@
    {
     "name": "Mark Gronowski",
     "pos": "QB",
-    "exp": 0
-   },
-   {
-    "name": "Anthony Hankerson",
-    "pos": "RB",
     "exp": 0
    },
    {
@@ -8837,11 +9087,6 @@
     "exp": 7
    },
    {
-    "name": "Jamaree Salyer",
-    "pos": "G",
-    "exp": 5
-   },
-   {
     "name": "Jonah Savaiinaea",
     "pos": "G",
     "exp": 2
@@ -8864,6 +9109,11 @@
    {
     "name": "Cole Turner",
     "pos": "TE",
+    "exp": 3
+   },
+   {
+    "name": "Caedan Wallace",
+    "pos": "OT",
     "exp": 3
    },
    {
@@ -8942,14 +9192,9 @@
     "exp": 7
    },
    {
-    "name": "Omar Brown",
-    "pos": "S",
-    "exp": 1
-   },
-   {
     "name": "Major Burns",
     "pos": "S",
-    "exp": 0
+    "exp": 1
    },
    {
     "name": "Matthew Butler",
@@ -8957,7 +9202,7 @@
     "exp": 4
    },
    {
-    "name": "Seth Coleman",
+    "name": "Seth Coleman-Lyles",
     "pos": "DE",
     "exp": 1
    },
@@ -8975,6 +9220,11 @@
     "name": "Storm Duck",
     "pos": "CB",
     "exp": 3
+   },
+   {
+    "name": "Clelin Ferrell",
+    "pos": "DE",
+    "exp": 8
    },
    {
     "name": "Willie Gay Jr.",
@@ -9002,6 +9252,11 @@
     "exp": 9
    },
    {
+    "name": "Ahmari Harvey",
+    "pos": "CB",
+    "exp": 0
+   },
+   {
     "name": "Alex Huntley",
     "pos": "DT",
     "exp": 1
@@ -9015,11 +9270,6 @@
     "name": "Lonnie Johnson Jr.",
     "pos": "S",
     "exp": 8
-   },
-   {
-    "name": "Rene Konga",
-    "pos": "DT",
-    "exp": 0
    },
    {
     "name": "Max Llewellyn",
@@ -9037,6 +9287,11 @@
     "exp": 2
    },
    {
+    "name": "Nick McCloud",
+    "pos": "CB",
+    "exp": 6
+   },
+   {
     "name": "Rodney McGraw",
     "pos": "DE",
     "exp": 0
@@ -9052,6 +9307,11 @@
     "exp": 0
    },
    {
+    "name": "Fatorma Mulbah",
+    "pos": "DT",
+    "exp": 1
+   },
+   {
     "name": "David Ojabo",
     "pos": "LB",
     "exp": 5
@@ -9062,9 +9322,14 @@
     "exp": 2
    },
    {
-    "name": "Mason Reiger",
-    "pos": "DE",
+    "name": "Cam Rice",
+    "pos": "DT",
     "exp": 0
+   },
+   {
+    "name": "Cam Riley",
+    "pos": "LB",
+    "exp": 1
    },
    {
     "name": "Chop Robinson",
@@ -9072,18 +9337,8 @@
     "exp": 3
    },
    {
-    "name": "Ethan Robinson",
-    "pos": "CB",
-    "exp": 1
-   },
-   {
     "name": "Jacob Rodriguez",
     "pos": "LB",
-    "exp": 0
-   },
-   {
-    "name": "Kahlil Saunders",
-    "pos": "DT",
     "exp": 0
    },
    {
@@ -9122,11 +9377,6 @@
     "exp": 2
    },
    {
-    "name": "Zane Gonzalez",
-    "pos": "PK",
-    "exp": 9
-   },
-   {
     "name": "Riley Patterson",
     "pos": "PK",
     "exp": 6
@@ -9135,6 +9385,31 @@
     "name": "Bradley Pinion",
     "pos": "P",
     "exp": 12
+   },
+   {
+    "name": "Zane Gonzalez",
+    "pos": "PK",
+    "exp": 9
+   },
+   {
+    "name": "Rene Konga",
+    "pos": "DT",
+    "exp": 0
+   },
+   {
+    "name": "Mason Reiger",
+    "pos": "DE",
+    "exp": 0
+   },
+   {
+    "name": "Ethan Robinson",
+    "pos": "CB",
+    "exp": 1
+   },
+   {
+    "name": "Jamaree Salyer",
+    "pos": "G",
+    "exp": 5
    },
    {
     "name": "Carter Warren",
@@ -9160,7 +9435,7 @@
    },
    {
     "name": "Blake Brandel",
-    "pos": "G",
+    "pos": "C",
     "exp": 6
    },
    {
@@ -9234,6 +9509,11 @@
     "exp": 2
    },
    {
+    "name": "Jermar Jefferson",
+    "pos": "RB",
+    "exp": 5
+   },
+   {
     "name": "Justin Jefferson",
     "pos": "WR",
     "exp": 7
@@ -9255,7 +9535,7 @@
    },
    {
     "name": "Michael Jurgens",
-    "pos": "G",
+    "pos": "C",
     "exp": 3
    },
    {
@@ -9309,11 +9589,6 @@
     "exp": 8
    },
    {
-    "name": "Kejon Owens",
-    "pos": "RB",
-    "exp": 0
-   },
-   {
     "name": "Myles Price",
     "pos": "WR",
     "exp": 2
@@ -9357,11 +9632,6 @@
     "name": "Carson Wentz",
     "pos": "QB",
     "exp": 11
-   },
-   {
-    "name": "Luke Wysong",
-    "pos": "WR",
-    "exp": 0
    },
    {
     "name": "Ben Yurosek",
@@ -9409,13 +9679,18 @@
     "exp": 0
    },
    {
+    "name": "Kenny Dyson Jr.",
+    "pos": "LB",
+    "exp": 1
+   },
+   {
     "name": "Jake Golday",
     "pos": "LB",
     "exp": 0
    },
    {
     "name": "Kahlef Hailassie",
-    "pos": "CB",
+    "pos": "S",
     "exp": 4
    },
    {
@@ -9439,17 +9714,12 @@
     "exp": 0
    },
    {
-    "name": "Keli Lawson",
-    "pos": "LB",
-    "exp": 0
-   },
-   {
     "name": "Isaiahh Loudermilk",
     "pos": "DT",
-    "exp": 5
+    "exp": 6
    },
    {
-    "name": "Dwight McGlothern",
+    "name": "Dwight McGlothern Jr.",
     "pos": "CB",
     "exp": 3
    },
@@ -9472,6 +9742,11 @@
     "name": "Ivan Pace Jr.",
     "pos": "LB",
     "exp": 4
+   },
+   {
+    "name": "Bryce Phillips",
+    "pos": "CB",
+    "exp": 0
    },
    {
     "name": "James Pierre",
@@ -9559,14 +9834,14 @@
     "exp": 0
    },
    {
-    "name": "Arden Walker",
-    "pos": "LB",
-    "exp": 0
-   },
-   {
     "name": "Jay Ward",
     "pos": "S",
     "exp": 4
+   },
+   {
+    "name": "Jarod Washington",
+    "pos": "CB",
+    "exp": 0
    },
    {
     "name": "Elijah Williams",
@@ -9597,6 +9872,11 @@
     "name": "Brett Thorson",
     "pos": "P",
     "exp": 0
+   },
+   {
+    "name": "Jamal Adams",
+    "pos": "LB",
+    "exp": 10
    }
   ],
   "New England Patriots": [
@@ -9646,6 +9926,11 @@
     "exp": 0
    },
    {
+    "name": "Darrian Dalcourt",
+    "pos": "G",
+    "exp": 1
+   },
+   {
     "name": "Nick DeGennaro",
     "pos": "WR",
     "exp": 0
@@ -9686,9 +9971,14 @@
     "exp": 7
    },
    {
-    "name": "Sebastian Gutierrez",
-    "pos": "OT",
-    "exp": 1
+    "name": "Hassan Haskins",
+    "pos": "RB",
+    "exp": 4
+   },
+   {
+    "name": "JaMycal Hasty",
+    "pos": "RB",
+    "exp": 6
    },
    {
     "name": "TreVeyon Henderson",
@@ -9716,21 +10006,6 @@
     "exp": 4
    },
    {
-    "name": "Terrell Jennings",
-    "pos": "RB",
-    "exp": 2
-   },
-   {
-    "name": "Jimmy Kibble",
-    "pos": "WR",
-    "exp": 0
-   },
-   {
-    "name": "Brock Lampe",
-    "pos": "FB",
-    "exp": 2
-   },
-   {
     "name": "Lan Larison",
     "pos": "RB",
     "exp": 2
@@ -9751,12 +10026,12 @@
     "exp": 1
    },
    {
-    "name": "Jam Miller",
-    "pos": "RB",
-    "exp": 0
+    "name": "Joe Michalski",
+    "pos": "C",
+    "exp": 1
    },
    {
-    "name": "Myles Montgomery",
+    "name": "Jam Miller",
     "pos": "RB",
     "exp": 0
    },
@@ -9781,6 +10056,16 @@
     "exp": 7
    },
    {
+    "name": "Tejhaun Palmer",
+    "pos": "WR",
+    "exp": 1
+   },
+   {
+    "name": "Kobe Prentice",
+    "pos": "WR",
+    "exp": 0
+   },
+   {
     "name": "Eli Raridon",
     "pos": "TE",
     "exp": 0
@@ -9791,14 +10076,14 @@
     "exp": 0
    },
    {
-    "name": "Andrew Rupcich",
-    "pos": "G",
-    "exp": 2
-   },
-   {
     "name": "Rhamondre Stevenson",
     "pos": "RB",
     "exp": 6
+   },
+   {
+    "name": "Greg Van Roten",
+    "pos": "G",
+    "exp": 12
    },
    {
     "name": "Alijah Vera-Tucker",
@@ -9806,18 +10091,8 @@
     "exp": 6
    },
    {
-    "name": "Caedan Wallace",
-    "pos": "OT",
-    "exp": 3
-   },
-   {
-    "name": "Jeremiah Webb",
-    "pos": "WR",
-    "exp": 1
-   },
-   {
     "name": "Jack Westover",
-    "pos": "FB",
+    "pos": "TE",
     "exp": 2
    },
    {
@@ -9836,11 +10111,6 @@
     "exp": 6
    },
    {
-    "name": "David Blay Jr.",
-    "pos": "DT",
-    "exp": 0
-   },
-   {
     "name": "K.J. Britt",
     "pos": "LB",
     "exp": 6
@@ -9849,6 +10119,11 @@
     "name": "Mike Brown",
     "pos": "S",
     "exp": 4
+   },
+   {
+    "name": "Eric Butler",
+    "pos": "S",
+    "exp": 0
    },
    {
     "name": "Kevin Byard",
@@ -9921,6 +10196,11 @@
     "exp": 0
    },
    {
+    "name": "Isaiah Iton",
+    "pos": "DT",
+    "exp": 2
+   },
+   {
     "name": "Gabe Jacas",
     "pos": "LB",
     "exp": 0
@@ -9991,9 +10271,9 @@
     "exp": 0
    },
    {
-    "name": "Otis Reese",
-    "pos": "LB",
-    "exp": 3
+    "name": "Casey Rogers",
+    "pos": "DT",
+    "exp": 1
    },
    {
     "name": "John Saunders Jr.",
@@ -10027,8 +10307,13 @@
    },
    {
     "name": "Milton Williams",
-    "pos": "DE",
+    "pos": "DT",
     "exp": 6
+   },
+   {
+    "name": "Riley Wilson",
+    "pos": "LB",
+    "exp": 0
    },
    {
     "name": "Charles Woods",
@@ -10059,6 +10344,26 @@
     "name": "Julian Hill",
     "pos": "TE",
     "exp": 4
+   },
+   {
+    "name": "Jimmy Kibble",
+    "pos": "WR",
+    "exp": 0
+   },
+   {
+    "name": "Myles Montgomery",
+    "pos": "RB",
+    "exp": 0
+   },
+   {
+    "name": "Andrew Rupcich",
+    "pos": "G",
+    "exp": 2
+   },
+   {
+    "name": "Jeremiah Webb",
+    "pos": "WR",
+    "exp": 1
    }
   ],
   "New Orleans Saints": [
@@ -10090,7 +10395,7 @@
    {
     "name": "Hunter Dekkers",
     "pos": "QB",
-    "exp": 0
+    "exp": 1
    },
    {
     "name": "Oscar Delp",
@@ -10203,16 +10508,6 @@
     "exp": 4
    },
    {
-    "name": "Ja'Lynn Polk",
-    "pos": "WR",
-    "exp": 3
-   },
-   {
-    "name": "Dillon Radunz",
-    "pos": "G",
-    "exp": 6
-   },
-   {
     "name": "Spencer Rattler",
     "pos": "QB",
     "exp": 3
@@ -10298,11 +10593,6 @@
     "exp": 1
    },
    {
-    "name": "Beanie Bishop",
-    "pos": "CB",
-    "exp": 2
-   },
-   {
     "name": "Julian Blackmon",
     "pos": "S",
     "exp": 7
@@ -10311,11 +10601,6 @@
     "name": "Khristian Boyd",
     "pos": "DT",
     "exp": 3
-   },
-   {
-    "name": "Bryan Bresee",
-    "pos": "DT",
-    "exp": 4
    },
    {
     "name": "Vernon Broughton",
@@ -10350,7 +10635,7 @@
    {
     "name": "Martin Emerson Jr.",
     "pos": "CB",
-    "exp": 4
+    "exp": 5
    },
    {
     "name": "Jaylan Ford",
@@ -10368,13 +10653,8 @@
     "exp": 8
    },
    {
-    "name": "TJ Hall",
+    "name": "TJ Hall Jr.",
     "pos": "CB",
-    "exp": 0
-   },
-   {
-    "name": "Zxavian Harris",
-    "pos": "DT",
     "exp": 0
    },
    {
@@ -10390,7 +10670,12 @@
    {
     "name": "Anfernee Jennings",
     "pos": "LB",
-    "exp": 6
+    "exp": 7
+   },
+   {
+    "name": "Deion Jones",
+    "pos": "LB",
+    "exp": 10
    },
    {
     "name": "Cameron Jordan",
@@ -10408,6 +10693,11 @@
     "exp": 0
    },
    {
+    "name": "Garrett Nelson",
+    "pos": "DE",
+    "exp": 1
+   },
+   {
     "name": "Jayden Price",
     "pos": "CB",
     "exp": 1
@@ -10416,6 +10706,11 @@
     "name": "Justin Reid",
     "pos": "S",
     "exp": 9
+   },
+   {
+    "name": "Mike Reid",
+    "pos": "CB",
+    "exp": 1
    },
    {
     "name": "John Ridgeway III",
@@ -10438,14 +10733,14 @@
     "exp": 2
    },
    {
+    "name": "Kahlil Saunders",
+    "pos": "DT",
+    "exp": 0
+   },
+   {
     "name": "Nathan Shepherd",
     "pos": "DT",
     "exp": 9
-   },
-   {
-    "name": "Keeshawn Silver",
-    "pos": "DT",
-    "exp": 0
    },
    {
     "name": "Jackson Sirmon",
@@ -10473,9 +10768,19 @@
     "exp": 0
    },
    {
+    "name": "Brien Taylor",
+    "pos": "DT",
+    "exp": 0
+   },
+   {
     "name": "Pete Werner",
     "pos": "LB",
     "exp": 6
+   },
+   {
+    "name": "Malakai Williams",
+    "pos": "DE",
+    "exp": 0
    },
    {
     "name": "Tyree Wilson",
@@ -10518,6 +10823,16 @@
     "exp": 5
    },
    {
+    "name": "Bryan Bresee",
+    "pos": "DT",
+    "exp": 4
+   },
+   {
+    "name": "Dillon Radunz",
+    "pos": "G",
+    "exp": 6
+   },
+   {
     "name": "Nick Saldiveri",
     "pos": "OT",
     "exp": 4
@@ -10551,11 +10866,6 @@
    },
    {
     "name": "Dalen Cambre",
-    "pos": "WR",
-    "exp": 2
-   },
-   {
-    "name": "Beaux Collins",
     "pos": "WR",
     "exp": 2
    },
@@ -10600,6 +10910,11 @@
     "exp": 0
    },
    {
+    "name": "Grant Finley",
+    "pos": "FB",
+    "exp": 0
+   },
+   {
     "name": "Xavier Gipson",
     "pos": "WR",
     "exp": 4
@@ -10615,6 +10930,16 @@
     "exp": 0
    },
    {
+    "name": "Jake Haener",
+    "pos": "QB",
+    "exp": 3
+   },
+   {
+    "name": "Najee Harris",
+    "pos": "RB",
+    "exp": 6
+   },
+   {
     "name": "Isaiah Hodgins",
     "pos": "WR",
     "exp": 5
@@ -10628,6 +10953,11 @@
     "name": "Jalin Hyatt",
     "pos": "WR",
     "exp": 4
+   },
+   {
+    "name": "Brenden Jaimes",
+    "pos": "G",
+    "exp": 5
    },
    {
     "name": "Theo Johnson",
@@ -10658,11 +10988,6 @@
     "name": "Marcus Mbow",
     "pos": "OT",
     "exp": 2
-   },
-   {
-    "name": "Dante Miller",
-    "pos": "RB",
-    "exp": 1
    },
    {
     "name": "Ryan Miller",
@@ -10725,11 +11050,6 @@
     "exp": 8
    },
    {
-    "name": "JuJu Smith-Schuster",
-    "pos": "WR",
-    "exp": 10
-   },
-   {
     "name": "Aaron Stinnie",
     "pos": "G",
     "exp": 9
@@ -10760,6 +11080,11 @@
     "exp": 2
    },
    {
+    "name": "Ugo Amadi",
+    "pos": "S",
+    "exp": 8
+   },
+   {
     "name": "Deonte Banks",
     "pos": "CB",
     "exp": 4
@@ -10773,16 +11098,6 @@
     "name": "Anquin Barnes Jr.",
     "pos": "DT",
     "exp": 0
-   },
-   {
-    "name": "Ben Barten",
-    "pos": "DT",
-    "exp": 0
-   },
-   {
-    "name": "Jarrick Bernard-Converse",
-    "pos": "CB",
-    "exp": 4
    },
    {
     "name": "Korie Black",
@@ -10808,6 +11123,11 @@
     "name": "Abdul Carter",
     "pos": "LB",
     "exp": 2
+   },
+   {
+    "name": "Marlon Davidson",
+    "pos": "DT",
+    "exp": 5
    },
    {
     "name": "Tremaine Edmunds",
@@ -10855,11 +11175,6 @@
     "exp": 0
    },
    {
-    "name": "Cam Jones",
-    "pos": "LB",
-    "exp": 4
-   },
-   {
     "name": "Nic Jones",
     "pos": "CB",
     "exp": 3
@@ -10878,6 +11193,11 @@
     "name": "Raheem Layne",
     "pos": "S",
     "exp": 3
+   },
+   {
+    "name": "Chandler Martin",
+    "pos": "LB",
+    "exp": 1
    },
    {
     "name": "Micah McFadden",
@@ -10905,6 +11225,11 @@
     "exp": 3
    },
    {
+    "name": "Anfernee Orji",
+    "pos": "LB",
+    "exp": 3
+   },
+   {
     "name": "Dru Phillips",
     "pos": "CB",
     "exp": 3
@@ -10920,11 +11245,6 @@
     "exp": 6
    },
    {
-    "name": "C.J. Ravenell",
-    "pos": "DE",
-    "exp": 2
-   },
-   {
     "name": "DJ Reader",
     "pos": "DT",
     "exp": 11
@@ -10933,16 +11253,6 @@
     "name": "Arvell Reese",
     "pos": "LB",
     "exp": 0
-   },
-   {
-    "name": "Sam Roberts",
-    "pos": "DT",
-    "exp": 4
-   },
-   {
-    "name": "Roy Robertson-Harris",
-    "pos": "DT",
-    "exp": 10
    },
    {
     "name": "Kayvon Thibodeaux",
@@ -10958,6 +11268,11 @@
     "name": "Ar'Darius Washington",
     "pos": "S",
     "exp": 5
+   },
+   {
+    "name": "JT Woods",
+    "pos": "S",
+    "exp": 4
    },
    {
     "name": "Ben Mann",
@@ -10980,9 +11295,24 @@
     "exp": 0
    },
    {
+    "name": "Jarrick Bernard-Converse",
+    "pos": "CB",
+    "exp": 4
+   },
+   {
     "name": "Thaddeus Dixon",
     "pos": "CB",
     "exp": 0
+   },
+   {
+    "name": "DJ James",
+    "pos": "CB",
+    "exp": 1
+   },
+   {
+    "name": "Dante Miller",
+    "pos": "RB",
+    "exp": 1
    },
    {
     "name": "Gunner Olszewski",
@@ -10993,6 +11323,11 @@
     "name": "Rico Payton",
     "pos": "CB",
     "exp": 3
+   },
+   {
+    "name": "Roy Robertson-Harris",
+    "pos": "DT",
+    "exp": 10
    }
   ],
   "New York Jets": [
@@ -11005,6 +11340,11 @@
     "name": "Andrew Beck",
     "pos": "FB",
     "exp": 7
+   },
+   {
+    "name": "Cam Camper",
+    "pos": "WR",
+    "exp": 1
    },
    {
     "name": "Brady Cook",
@@ -11059,6 +11399,11 @@
    {
     "name": "Xavier Hill",
     "pos": "G",
+    "exp": 0
+   },
+   {
+    "name": "Connor Hulstein",
+    "pos": "TE",
     "exp": 0
    },
    {
@@ -11147,14 +11492,14 @@
     "exp": 0
    },
    {
-    "name": "Gee Scott Jr.",
+    "name": "DT Sheffield",
     "pos": "WR",
     "exp": 0
    },
    {
-    "name": "DT Sheffield",
+    "name": "Quincy Skinner Jr.",
     "pos": "WR",
-    "exp": 0
+    "exp": 1
    },
    {
     "name": "Arian Smith",
@@ -11179,11 +11524,6 @@
    {
     "name": "Chip Trayanum",
     "pos": "RB",
-    "exp": 0
-   },
-   {
-    "name": "Jalen Walthall",
-    "pos": "WR",
     "exp": 0
    },
    {
@@ -11282,6 +11622,11 @@
     "exp": 9
    },
    {
+    "name": "Keenan Garber",
+    "pos": "CB",
+    "exp": 1
+   },
+   {
     "name": "Jack Heflin",
     "pos": "DT",
     "exp": 2
@@ -11292,14 +11637,14 @@
     "exp": 0
    },
    {
-    "name": "Kingsley Jonathan",
-    "pos": "DE",
-    "exp": 3
-   },
-   {
     "name": "Jaden Keller",
     "pos": "LB",
     "exp": 0
+   },
+   {
+    "name": "Nate Lynn",
+    "pos": "DE",
+    "exp": 2
    },
    {
     "name": "Kiko Mauigoa",
@@ -11367,11 +11712,6 @@
     "exp": 6
    },
    {
-    "name": "Keidron Smith",
-    "pos": "S",
-    "exp": 2
-   },
-   {
     "name": "Mazi Smith",
     "pos": "DT",
     "exp": 4
@@ -11392,6 +11732,11 @@
     "exp": 3
    },
    {
+    "name": "Junior Tafuna",
+    "pos": "DT",
+    "exp": 1
+   },
+   {
     "name": "Azareye'h Thomas",
     "pos": "CB",
     "exp": 2
@@ -11407,11 +11752,6 @@
     "exp": 6
    },
    {
-    "name": "Eric Watts",
-    "pos": "DE",
-    "exp": 2
-   },
-   {
     "name": "Chase Wilson",
     "pos": "LB",
     "exp": 0
@@ -11425,11 +11765,6 @@
     "name": "Nahshon Wright",
     "pos": "CB",
     "exp": 6
-   },
-   {
-    "name": "Garrison Grimes",
-    "pos": "LS",
-    "exp": 0
    },
    {
     "name": "Thomas Hennessy",
@@ -11449,6 +11784,11 @@
    {
     "name": "Cade York",
     "pos": "PK",
+    "exp": 3
+   },
+   {
+    "name": "Kingsley Jonathan",
+    "pos": "DE",
     "exp": 3
    },
    {
@@ -11529,6 +11869,11 @@
     "exp": 7
    },
    {
+    "name": "Ja'Quinden Jackson",
+    "pos": "RB",
+    "exp": 1
+   },
+   {
     "name": "E.J. Jenkins",
     "pos": "TE",
     "exp": 2
@@ -11589,11 +11934,6 @@
     "exp": 4
    },
    {
-    "name": "Elijah Mitchell",
-    "pos": "RB",
-    "exp": 6
-   },
-   {
     "name": "Elijah Moore",
     "pos": "WR",
     "exp": 6
@@ -11622,16 +11962,6 @@
     "name": "Dameon Pierce",
     "pos": "RB",
     "exp": 5
-   },
-   {
-    "name": "Hollin Pierce",
-    "pos": "OT",
-    "exp": 1
-   },
-   {
-    "name": "Jaeden Roberts",
-    "pos": "G",
-    "exp": 0
    },
    {
     "name": "Will Shipley",
@@ -11689,11 +12019,6 @@
     "exp": 3
    },
    {
-    "name": "Dae'Quan Wright",
-    "pos": "TE",
-    "exp": 0
-   },
-   {
     "name": "Zack Baun",
     "pos": "LB",
     "exp": 7
@@ -11707,6 +12032,16 @@
     "name": "Uar Bernard",
     "pos": "DT",
     "exp": 0
+   },
+   {
+    "name": "David Blay Jr.",
+    "pos": "DT",
+    "exp": 0
+   },
+   {
+    "name": "Isaiah Bolden",
+    "pos": "CB",
+    "exp": 3
    },
    {
     "name": "Chance Campbell",
@@ -11759,9 +12094,9 @@
     "exp": 8
    },
    {
-    "name": "Ta'Quon Graham",
-    "pos": "DE",
-    "exp": 6
+    "name": "Brandon George",
+    "pos": "LB",
+    "exp": 2
    },
    {
     "name": "J.T. Gray",
@@ -11787,6 +12122,11 @@
     "name": "Jalyx Hunt",
     "pos": "LB",
     "exp": 3
+   },
+   {
+    "name": "Tarron Jackson",
+    "pos": "LB",
+    "exp": 4
    },
    {
     "name": "Keyshawn James-Newby",
@@ -11941,11 +12281,6 @@
     "exp": 0
    },
    {
-    "name": "Cole Burgess",
-    "pos": "WR",
-    "exp": 1
-   },
-   {
     "name": "Dylan Cook",
     "pos": "OT",
     "exp": 3
@@ -11989,11 +12324,6 @@
     "name": "Pat Freiermuth",
     "pos": "TE",
     "exp": 6
-   },
-   {
-    "name": "JJ Galbreath",
-    "pos": "TE",
-    "exp": 1
    },
    {
     "name": "Eli Heidenreich",
@@ -12041,6 +12371,16 @@
     "exp": 1
    },
    {
+    "name": "Jakobie Keeney-James",
+    "pos": "WR",
+    "exp": 1
+   },
+   {
+    "name": "Lance Mason",
+    "pos": "TE",
+    "exp": 0
+   },
+   {
     "name": "Ryan McCollum",
     "pos": "C",
     "exp": 4
@@ -12076,14 +12416,14 @@
     "exp": 0
    },
    {
-    "name": "A.T. Perry",
-    "pos": "WR",
-    "exp": 2
-   },
-   {
     "name": "Michael Pittman Jr.",
     "pos": "WR",
     "exp": 7
+   },
+   {
+    "name": "Cornell Powell",
+    "pos": "WR",
+    "exp": 5
    },
    {
     "name": "Aaron Rodgers",
@@ -12103,11 +12443,6 @@
    {
     "name": "Brandon Smith",
     "pos": "WR",
-    "exp": 1
-   },
-   {
-    "name": "Lorenzo Thompson",
-    "pos": "OT",
     "exp": 1
    },
    {
@@ -12139,6 +12474,11 @@
     "name": "Roman Wilson",
     "pos": "WR",
     "exp": 3
+   },
+   {
+    "name": "Isaiah Winstead",
+    "pos": "WR",
+    "exp": 1
    },
    {
     "name": "Kyler Baugh",
@@ -12216,11 +12556,6 @@
     "exp": 7
    },
    {
-    "name": "Ahmari Harvey",
-    "pos": "CB",
-    "exp": 0
-   },
-   {
     "name": "Jack Henderson",
     "pos": "S",
     "exp": 1
@@ -12251,6 +12586,11 @@
     "exp": 2
    },
    {
+    "name": "Rayshawn Jenkins",
+    "pos": "S",
+    "exp": 10
+   },
+   {
     "name": "Kevin Jobity Jr.",
     "pos": "DT",
     "exp": 0
@@ -12266,11 +12606,6 @@
     "exp": 2
    },
    {
-    "name": "Logan Lee",
-    "pos": "DT",
-    "exp": 3
-   },
-   {
     "name": "Dean Lowry",
     "pos": "DT",
     "exp": 11
@@ -12281,12 +12616,17 @@
     "exp": 0
    },
    {
+    "name": "Israel Mukuamu",
+    "pos": "S",
+    "exp": 5
+   },
+   {
     "name": "Esezi Otomewo",
     "pos": "DT",
     "exp": 4
    },
    {
-    "name": "Daryl Porter Jr.",
+    "name": "Daryl Porter",
     "pos": "CB",
     "exp": 1
    },
@@ -12306,6 +12646,11 @@
     "exp": 11
    },
    {
+    "name": "Elandon Roberts",
+    "pos": "LB",
+    "exp": 10
+   },
+   {
     "name": "Gabriel Rubio",
     "pos": "DE",
     "exp": 0
@@ -12314,11 +12659,6 @@
     "name": "Asante Samuel Jr.",
     "pos": "CB",
     "exp": 6
-   },
-   {
-    "name": "Darnell Savage",
-    "pos": "S",
-    "exp": 8
    },
    {
     "name": "Jack Sawyer",
@@ -12376,9 +12716,19 @@
     "exp": 0
    },
    {
+    "name": "Cole Burgess",
+    "pos": "WR",
+    "exp": 1
+   },
+   {
     "name": "Daequan Hardy",
     "pos": "CB",
     "exp": 1
+   },
+   {
+    "name": "Logan Lee",
+    "pos": "DT",
+    "exp": 3
    }
   ],
   "San Francisco 49ers": [
@@ -12390,11 +12740,6 @@
    {
     "name": "Isaac Alarcon",
     "pos": "OT",
-    "exp": 1
-   },
-   {
-    "name": "Junior Bergen",
-    "pos": "WR",
     "exp": 1
    },
    {
@@ -12423,14 +12768,9 @@
     "exp": 0
    },
    {
-    "name": "Khalil Dinkins",
+    "name": "Josiah Deguara",
     "pos": "TE",
-    "exp": 0
-   },
-   {
-    "name": "Colton Dowell",
-    "pos": "WR",
-    "exp": 2
+    "exp": 6
    },
    {
     "name": "Mike Evans",
@@ -12451,6 +12791,16 @@
     "name": "Isaac Guerendo",
     "pos": "RB",
     "exp": 3
+   },
+   {
+    "name": "KhaDarel Hodge",
+    "pos": "WR",
+    "exp": 9
+   },
+   {
+    "name": "Trenton Irwin",
+    "pos": "WR",
+    "exp": 6
    },
    {
     "name": "Jordan James",
@@ -12481,6 +12831,11 @@
     "name": "George Kittle",
     "pos": "TE",
     "exp": 10
+   },
+   {
+    "name": "Doug Kramer Jr.",
+    "pos": "C",
+    "exp": 4
    },
    {
     "name": "Vederian Lowe",
@@ -12523,11 +12878,6 @@
     "exp": 0
    },
    {
-    "name": "Ricky Pearsall",
-    "pos": "WR",
-    "exp": 3
-   },
-   {
     "name": "Austen Pleasants",
     "pos": "OT",
     "exp": 2
@@ -12556,6 +12906,11 @@
     "name": "Hayden Rucci",
     "pos": "TE",
     "exp": 1
+   },
+   {
+    "name": "Deebo Samuel Sr.",
+    "pos": "WR",
+    "exp": 8
    },
    {
     "name": "De'Zhaun Stribling",
@@ -12588,6 +12943,11 @@
     "exp": 2
    },
    {
+    "name": "Zamir White",
+    "pos": "RB",
+    "exp": 4
+   },
+   {
     "name": "Trent Williams",
     "pos": "OT",
     "exp": 17
@@ -12618,6 +12978,11 @@
     "exp": 10
    },
    {
+    "name": "Quinton Bell",
+    "pos": "DE",
+    "exp": 5
+   },
+   {
     "name": "Tatum Bethune",
     "pos": "LB",
     "exp": 3
@@ -12628,19 +12993,9 @@
     "exp": 8
    },
    {
-    "name": "William Bradley-King",
-    "pos": "DE",
-    "exp": 1
-   },
-   {
     "name": "Ji'Ayir Brown",
     "pos": "S",
     "exp": 4
-   },
-   {
-    "name": "Derrick Canteen",
-    "pos": "CB",
-    "exp": 1
    },
    {
     "name": "Alfred Collins",
@@ -12653,6 +13008,11 @@
     "exp": 7
    },
    {
+    "name": "Victor Dimukeje",
+    "pos": "DE",
+    "exp": 6
+   },
+   {
     "name": "Jaden Dugger",
     "pos": "LB",
     "exp": 0
@@ -12663,19 +13023,9 @@
     "exp": 0
    },
    {
-    "name": "Andrew Farmer II",
-    "pos": "DE",
-    "exp": 2
-   },
-   {
     "name": "Luke Gifford",
     "pos": "LB",
     "exp": 8
-   },
-   {
-    "name": "Kevin Givens",
-    "pos": "DT",
-    "exp": 7
    },
    {
     "name": "Jalen Graham",
@@ -12713,11 +13063,6 @@
     "exp": 5
    },
    {
-    "name": "Mikail Kamara",
-    "pos": "DE",
-    "exp": 0
-   },
-   {
     "name": "Deommodore Lenoir",
     "pos": "CB",
     "exp": 6
@@ -12735,7 +13080,7 @@
    {
     "name": "Patrick McMorris",
     "pos": "S",
-    "exp": 2
+    "exp": 3
    },
    {
     "name": "Malik Mustapha",
@@ -12753,6 +13098,11 @@
     "exp": 6
    },
    {
+    "name": "Ogbo Okoronkwo",
+    "pos": "LB",
+    "exp": 9
+   },
+   {
     "name": "Sam Okuayinonu",
     "pos": "DT",
     "exp": 4
@@ -12768,11 +13118,6 @@
     "exp": 2
    },
    {
-    "name": "Cameron Sample",
-    "pos": "DE",
-    "exp": 6
-   },
-   {
     "name": "Marques Sigle",
     "pos": "S",
     "exp": 2
@@ -12786,6 +13131,11 @@
     "name": "Jalen Stroman",
     "pos": "S",
     "exp": 0
+   },
+   {
+    "name": "Xavier Thomas",
+    "pos": "LB",
+    "exp": 2
    },
    {
     "name": "James Thompson Jr.",
@@ -12828,11 +13178,6 @@
     "exp": 0
    },
    {
-    "name": "Jack Bouwmeester",
-    "pos": "P",
-    "exp": 0
-   },
-   {
     "name": "Eddy Pineiro",
     "pos": "PK",
     "exp": 9
@@ -12848,9 +13193,34 @@
     "exp": 17
    },
    {
+    "name": "Andrew Farmer II",
+    "pos": "DE",
+    "exp": 2
+   },
+   {
     "name": "Darrick Forrest",
     "pos": "S",
     "exp": 5
+   },
+   {
+    "name": "Mikail Kamara",
+    "pos": "DE",
+    "exp": 0
+   },
+   {
+    "name": "Titus Leo",
+    "pos": "DE",
+    "exp": 3
+   },
+   {
+    "name": "Tanner McLachlan",
+    "pos": "TE",
+    "exp": 2
+   },
+   {
+    "name": "Ricky Pearsall",
+    "pos": "WR",
+    "exp": 3
    }
   ],
   "Seattle Seahawks": [
@@ -12878,11 +13248,6 @@
     "name": "Logan Brown",
     "pos": "OT",
     "exp": 1
-   },
-   {
-    "name": "Harrison Bryant",
-    "pos": "TE",
-    "exp": 7
    },
    {
     "name": "Bryce Cabeldue",
@@ -12915,6 +13280,11 @@
     "exp": 1
    },
    {
+    "name": "Anthony Hankerson",
+    "pos": "RB",
+    "exp": 0
+   },
+   {
     "name": "Bobby Hart",
     "pos": "OT",
     "exp": 10
@@ -12928,6 +13298,11 @@
     "name": "Emmanuel Henderson Jr.",
     "pos": "WR",
     "exp": 0
+   },
+   {
+    "name": "Julian Hicks",
+    "pos": "WR",
+    "exp": 1
    },
    {
     "name": "George Holani",
@@ -12965,6 +13340,11 @@
     "exp": 10
    },
    {
+    "name": "Brock Lampe",
+    "pos": "FB",
+    "exp": 1
+   },
+   {
     "name": "Drew Lock",
     "pos": "QB",
     "exp": 8
@@ -12980,16 +13360,6 @@
     "exp": 1
    },
    {
-    "name": "Lance Mason",
-    "pos": "TE",
-    "exp": 0
-   },
-   {
-    "name": "Kenny McIntosh",
-    "pos": "RB",
-    "exp": 4
-   },
-   {
     "name": "Jalen Milroe",
     "pos": "QB",
     "exp": 2
@@ -12998,11 +13368,6 @@
     "name": "Olu Oluwatimi",
     "pos": "C",
     "exp": 4
-   },
-   {
-    "name": "Robbie Ouzts",
-    "pos": "FB",
-    "exp": 2
    },
    {
     "name": "Jadarian Price",
@@ -13050,6 +13415,11 @@
     "exp": 3
    },
    {
+    "name": "Nick Vannett",
+    "pos": "TE",
+    "exp": 11
+   },
+   {
     "name": "Cody White",
     "pos": "WR",
     "exp": 5
@@ -13075,14 +13445,14 @@
     "exp": 2
    },
    {
+    "name": "Terrion Arnold",
+    "pos": "CB",
+    "exp": 4
+   },
+   {
     "name": "D'Anthony Bell",
     "pos": "S",
     "exp": 5
-   },
-   {
-    "name": "Tyrone Broden",
-    "pos": "CB",
-    "exp": 1
    },
    {
     "name": "Bud Clark",
@@ -13098,6 +13468,11 @@
     "name": "Deven Eastern",
     "pos": "DT",
     "exp": 0
+   },
+   {
+    "name": "Power Echols",
+    "pos": "LB",
+    "exp": 1
    },
    {
     "name": "Nick Emmanwori",
@@ -13148,11 +13523,6 @@
     "name": "Jared Ivey",
     "pos": "LB",
     "exp": 2
-   },
-   {
-    "name": "Shemar Jean-Charles",
-    "pos": "CB",
-    "exp": 5
    },
    {
     "name": "Josh Jobe",
@@ -13260,6 +13630,11 @@
     "exp": 1
    },
    {
+    "name": "Aaron Smith",
+    "pos": "LB",
+    "exp": 1
+   },
+   {
     "name": "Chazz Surratt",
     "pos": "LB",
     "exp": 5
@@ -13280,9 +13655,9 @@
     "exp": 5
    },
    {
-    "name": "Ja'Markis Weston",
-    "pos": "LB",
-    "exp": 2
+    "name": "Jordan Washington",
+    "pos": "CB",
+    "exp": 0
    },
    {
     "name": "Leonard Williams",
@@ -13308,6 +13683,21 @@
     "name": "Chris Stoll",
     "pos": "LS",
     "exp": 4
+   },
+   {
+    "name": "Shemar Jean-Charles",
+    "pos": "CB",
+    "exp": 5
+   },
+   {
+    "name": "Robbie Ouzts",
+    "pos": "FB",
+    "exp": 2
+   },
+   {
+    "name": "Joseph Vaughn",
+    "pos": "LB",
+    "exp": 1
    }
   ],
   "Tampa Bay Buccaneers": [
@@ -13330,11 +13720,6 @@
     "name": "Jake Browning",
     "pos": "QB",
     "exp": 4
-   },
-   {
-    "name": "Kadarius Calloway",
-    "pos": "RB",
-    "exp": 0
    },
    {
     "name": "Benjamin Chukwuma",
@@ -13437,6 +13822,11 @@
     "exp": 3
    },
    {
+    "name": "Barika Kpeenu",
+    "pos": "RB",
+    "exp": 0
+   },
+   {
     "name": "Henry Lutovsky",
     "pos": "G",
     "exp": 0
@@ -13527,11 +13917,6 @@
     "exp": 0
    },
    {
-    "name": "Marcus Banks",
-    "pos": "S",
-    "exp": 1
-   },
-   {
     "name": "Chris Braswell",
     "pos": "LB",
     "exp": 3
@@ -13544,11 +13929,6 @@
    {
     "name": "DeMonte Capehart",
     "pos": "DT",
-    "exp": 0
-   },
-   {
-    "name": "Ja'Qurious Conley",
-    "pos": "S",
     "exp": 0
    },
    {
@@ -13575,11 +13955,6 @@
     "name": "Josiah Green",
     "pos": "DT",
     "exp": 0
-   },
-   {
-    "name": "Kemon Hall",
-    "pos": "CB",
-    "exp": 4
    },
    {
     "name": "Josh Hayes",
@@ -13622,19 +13997,24 @@
     "exp": 11
    },
    {
-    "name": "Chase Lucas",
-    "pos": "CB",
-    "exp": 4
-   },
-   {
     "name": "Zyon McCollum",
     "pos": "CB",
     "exp": 5
    },
    {
+    "name": "Robert McDaniel",
+    "pos": "S",
+    "exp": 1
+   },
+   {
     "name": "Deshawn McKnight",
     "pos": "DT",
     "exp": 0
+   },
+   {
+    "name": "Ifeatu Melifonwu",
+    "pos": "S",
+    "exp": 6
    },
    {
     "name": "Benjamin Morrison",
@@ -13647,11 +14027,6 @@
     "exp": 9
    },
    {
-    "name": "Haggai Ndubuisi",
-    "pos": "DT",
-    "exp": 1
-   },
-   {
     "name": "Anthony Nelson",
     "pos": "LB",
     "exp": 8
@@ -13660,6 +14035,11 @@
     "name": "Rakeem Nunez-Roches",
     "pos": "DT",
     "exp": 12
+   },
+   {
+    "name": "Roman Parodie",
+    "pos": "CB",
+    "exp": 0
    },
    {
     "name": "Jacob Parrish",
@@ -13697,6 +14077,11 @@
     "exp": 0
    },
    {
+    "name": "Travis Shaw",
+    "pos": "DT",
+    "exp": 0
+   },
+   {
     "name": "Elijah Simmons",
     "pos": "DT",
     "exp": 2
@@ -13725,6 +14110,11 @@
     "name": "Damarion Williams",
     "pos": "CB",
     "exp": 3
+   },
+   {
+    "name": "Xavier Williams",
+    "pos": "S",
+    "exp": 0
    },
    {
     "name": "Antoine Winfield Jr.",
@@ -13765,6 +14155,16 @@
     "name": "B.T. Potter",
     "pos": "PK",
     "exp": 1
+   },
+   {
+    "name": "Marcus Banks",
+    "pos": "S",
+    "exp": 1
+   },
+   {
+    "name": "Kadarius Calloway",
+    "pos": "RB",
+    "exp": 0
    }
   ],
   "Tennessee Titans": [
@@ -13829,11 +14229,6 @@
     "exp": 6
    },
    {
-    "name": "Ryan Hayes",
-    "pos": "OT",
-    "exp": 1
-   },
-   {
     "name": "Gunnar Helm",
     "pos": "TE",
     "exp": 2
@@ -13854,11 +14249,6 @@
     "exp": 8
    },
    {
-    "name": "Jaren Kanak",
-    "pos": "TE",
-    "exp": 0
-   },
-   {
     "name": "Mason Kinsey",
     "pos": "WR",
     "exp": 4
@@ -13867,6 +14257,11 @@
     "name": "JC Latham",
     "pos": "OT",
     "exp": 3
+   },
+   {
+    "name": "Matt Lauter",
+    "pos": "TE",
+    "exp": 0
    },
    {
     "name": "Will Levis",
@@ -13929,6 +14324,11 @@
     "exp": 1
    },
    {
+    "name": "Dominic Richardson",
+    "pos": "RB",
+    "exp": 0
+   },
+   {
     "name": "Calvin Ridley",
     "pos": "WR",
     "exp": 8
@@ -13969,6 +14369,11 @@
     "exp": 0
    },
    {
+    "name": "Zachary Thomas",
+    "pos": "OT",
+    "exp": 4
+   },
+   {
     "name": "Mitchell Trubisky",
     "pos": "QB",
     "exp": 10
@@ -13999,16 +14404,6 @@
     "exp": 5
    },
    {
-    "name": "David Ebuka Agoha",
-    "pos": "DE",
-    "exp": 1
-   },
-   {
-    "name": "Shad Banks Jr.",
-    "pos": "LB",
-    "exp": 0
-   },
-   {
     "name": "Cody Barton",
     "pos": "LB",
     "exp": 8
@@ -14019,17 +14414,17 @@
     "exp": 2
    },
    {
-    "name": "Sean Brown",
-    "pos": "LB",
-    "exp": 0
-   },
-   {
     "name": "Earnest Brown IV",
     "pos": "DE",
     "exp": 3
    },
    {
     "name": "Keydrain Calligan",
+    "pos": "CB",
+    "exp": 1
+   },
+   {
+    "name": "Derrick Canteen",
     "pos": "CB",
     "exp": 1
    },
@@ -14064,6 +14459,11 @@
     "exp": 9
    },
    {
+    "name": "Mario Goodrich III",
+    "pos": "CB",
+    "exp": 2
+   },
+   {
     "name": "Cedric Gray",
     "pos": "LB",
     "exp": 3
@@ -14074,9 +14474,9 @@
     "exp": 2
    },
    {
-    "name": "Jaylen Harrell",
+    "name": "Dominique Hampton",
     "pos": "LB",
-    "exp": 3
+    "exp": 2
    },
    {
     "name": "Marcus Harris",
@@ -14109,9 +14509,9 @@
     "exp": 4
    },
    {
-    "name": "Cam Horsley",
-    "pos": "DT",
-    "exp": 1
+    "name": "Nazeeh Johnson",
+    "pos": "S",
+    "exp": 5
    },
    {
     "name": "Jermaine Johnson II",
@@ -14122,16 +14522,6 @@
     "name": "Truman Jones",
     "pos": "DE",
     "exp": 2
-   },
-   {
-    "name": "Sanoussi Kane",
-    "pos": "S",
-    "exp": 3
-   },
-   {
-    "name": "Jeadyn Lukus",
-    "pos": "CB",
-    "exp": 0
    },
    {
     "name": "Jackie Marshall",
@@ -14149,9 +14539,9 @@
     "exp": 2
    },
    {
-    "name": "Latrell McCutchin Sr.",
+    "name": "Corey Mayfield Jr.",
     "pos": "CB",
-    "exp": 0
+    "exp": 1
    },
    {
     "name": "Jalen McMurray",
@@ -14179,9 +14569,19 @@
     "exp": 2
    },
    {
+    "name": "Khalen Saunders",
+    "pos": "DT",
+    "exp": 8
+   },
+   {
     "name": "Jeffery Simmons",
     "pos": "DT",
     "exp": 8
+   },
+   {
+    "name": "Laki Tasi",
+    "pos": "DT",
+    "exp": 1
    },
    {
     "name": "Alontae Taylor",
@@ -14222,6 +14622,26 @@
     "name": "Tommy Townsend",
     "pos": "P",
     "exp": 7
+   },
+   {
+    "name": "Sean Brown",
+    "pos": "LB",
+    "exp": 0
+   },
+   {
+    "name": "Jaylen Harrell",
+    "pos": "LB",
+    "exp": 3
+   },
+   {
+    "name": "Jaren Kanak",
+    "pos": "TE",
+    "exp": 0
+   },
+   {
+    "name": "Sanoussi Kane",
+    "pos": "S",
+    "exp": 3
    }
   ],
   "Washington Commanders": [
@@ -14234,11 +14654,6 @@
     "name": "Kaytron Allen",
     "pos": "RB",
     "exp": 0
-   },
-   {
-    "name": "Malaesala Aumavae-Laulu",
-    "pos": "G",
-    "exp": 3
    },
    {
     "name": "John Bates",
@@ -14254,6 +14669,11 @@
     "name": "Dyami Brown",
     "pos": "WR",
     "exp": 6
+   },
+   {
+    "name": "Daniel Brunskill",
+    "pos": "C",
+    "exp": 8
    },
    {
     "name": "Treylon Burks",
@@ -14276,11 +14696,6 @@
     "exp": 2
    },
    {
-    "name": "Tyler Cooper",
-    "pos": "G",
-    "exp": 1
-   },
-   {
     "name": "Sam Cosmi",
     "pos": "G",
     "exp": 6
@@ -14296,14 +14711,9 @@
     "exp": 3
    },
    {
-    "name": "Anthony Firkser",
-    "pos": "TE",
-    "exp": 8
-   },
-   {
-    "name": "Jerome Ford",
-    "pos": "RB",
-    "exp": 5
+    "name": "Stefon Diggs",
+    "pos": "WR",
+    "exp": 12
    },
    {
     "name": "Julian Good-Jones",
@@ -14326,9 +14736,9 @@
     "exp": 0
    },
    {
-    "name": "Chris Hilton Jr.",
-    "pos": "WR",
-    "exp": 0
+    "name": "Trey Hill",
+    "pos": "C",
+    "exp": 4
    },
    {
     "name": "Van Jefferson",
@@ -14361,9 +14771,9 @@
     "exp": 3
    },
    {
-    "name": "Timothy McKay",
-    "pos": "G",
-    "exp": 1
+    "name": "Tre' McKitty",
+    "pos": "TE",
+    "exp": 4
    },
    {
     "name": "Terry McLaurin",
@@ -14396,9 +14806,24 @@
     "exp": 5
    },
    {
+    "name": "Nicholas Petit-Frere",
+    "pos": "OT",
+    "exp": 4
+   },
+   {
+    "name": "Craig Reynolds",
+    "pos": "RB",
+    "exp": 7
+   },
+   {
     "name": "Foster Sarell",
     "pos": "OT",
     "exp": 5
+   },
+   {
+    "name": "Max Scharping",
+    "pos": "G",
+    "exp": 8
    },
    {
     "name": "Trent Scott",
@@ -14456,19 +14881,14 @@
     "exp": 1
    },
    {
-    "name": "Nick Bellore",
+    "name": "Krys Barnes",
     "pos": "LB",
-    "exp": 16
+    "exp": 7
    },
    {
     "name": "Percy Butler",
     "pos": "S",
     "exp": 5
-   },
-   {
-    "name": "Andre Carter II",
-    "pos": "LB",
-    "exp": 2
    },
    {
     "name": "K'Lavon Chaisson",
@@ -14481,13 +14901,13 @@
     "exp": 5
    },
    {
-    "name": "Nick Cross",
-    "pos": "S",
-    "exp": 5
+    "name": "Byron Cowart",
+    "pos": "DT",
+    "exp": 6
    },
    {
-    "name": "DJ Davidson",
-    "pos": "DT",
+    "name": "Nick Cross",
+    "pos": "S",
     "exp": 5
    },
    {
@@ -14511,14 +14931,19 @@
     "exp": 8
    },
    {
-    "name": "Tre Hawkins III",
-    "pos": "CB",
-    "exp": 3
+    "name": "Maurice Hurst II",
+    "pos": "DT",
+    "exp": 8
    },
    {
     "name": "Drake Jackson",
     "pos": "DE",
     "exp": 4
+   },
+   {
+    "name": "Curtis Jacobs",
+    "pos": "LB",
+    "exp": 2
    },
    {
     "name": "Javontae Jean-Baptiste",
@@ -14576,14 +15001,14 @@
     "exp": 4
    },
    {
-    "name": "Robert McDaniel",
-    "pos": "S",
-    "exp": 1
-   },
-   {
     "name": "Kain Medrano",
     "pos": "LB",
     "exp": 2
+   },
+   {
+    "name": "Fabian Moreau",
+    "pos": "CB",
+    "exp": 10
    },
    {
     "name": "Jer'Zhan Newton",
@@ -14661,16 +15086,6 @@
     "exp": 9
    },
    {
-    "name": "Ahkello Witherspoon",
-    "pos": "CB",
-    "exp": 10
-   },
-   {
-    "name": "Jake Moody",
-    "pos": "PK",
-    "exp": 4
-   },
-   {
     "name": "Tyler Ott",
     "pos": "LS",
     "exp": 12
@@ -14684,6 +15099,16 @@
     "name": "Tress Way",
     "pos": "P",
     "exp": 13
+   },
+   {
+    "name": "River Cracraft",
+    "pos": "WR",
+    "exp": 7
+   },
+   {
+    "name": "Jerome Ford",
+    "pos": "RB",
+    "exp": 5
    }
   ]
  }

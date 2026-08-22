@@ -1,0 +1,685 @@
+[
+ {
+  "from": "2026-07-19T05:06:46+00:00",
+  "to": "2026-08-19T18:51:06+00:00",
+  "teams": {
+   "Arizona Cardinals": {
+    "added": [
+     "Baylor Cupp",
+     "Brodric Martin-Rhodes",
+     "Cam Horsley",
+     "Eugene Asante",
+     "Evan Hull",
+     "Keveion'ta Spears",
+     "Quinton Newsome",
+     "Shawn Bowman",
+     "Tre Stewart"
+    ],
+    "removed": [
+     "Jaden Davis",
+     "Kenny Yeboah",
+     "PJ Mustipher",
+     "Tejhaun Palmer"
+    ],
+    "churn_share": 0.13
+   },
+   "Atlanta Falcons": {
+    "added": [
+     "Antwane Wells Jr.",
+     "Beaux Collins",
+     "Cameron Sample",
+     "Cooper Rush",
+     "Jaeden Roberts",
+     "Josh Woods",
+     "Keidron Smith",
+     "Marlon Tuipulotu",
+     "Nick Muse",
+     "Trey Sermon",
+     "Za'Darius Smith"
+    ],
+    "removed": [
+     "Jack Nelson",
+     "Juice Wells Jr.",
+     "Layden Robinson",
+     "Le'Meke Brockington",
+     "Matthew Hayball",
+     "Philip Florenzo",
+     "Ross Blacklock",
+     "Trevor Siemian",
+     "Troy Andersen"
+    ],
+    "churn_share": 0.194,
+    "qb_changes": {
+     "in": [
+      "Cooper Rush"
+     ],
+     "out": [
+      "Trevor Siemian"
+     ]
+    }
+   },
+   "Baltimore Ravens": {
+    "added": [
+     "Austin Reed",
+     "Chris Moore",
+     "David Sharpe",
+     "Ethan Pocic",
+     "Jamon Johnson",
+     "Jonathan Ward"
+    ],
+    "removed": [
+     "Diego Pavia",
+     "Jared Penning",
+     "Luke Elzinga",
+     "Matthew McDoom"
+    ],
+    "churn_share": 0.103,
+    "qb_changes": {
+     "in": [
+      "Austin Reed"
+     ],
+     "out": [
+      "Diego Pavia"
+     ]
+    }
+   },
+   "Buffalo Bills": {
+    "added": [
+     "Anthony Kendall",
+     "D.J. Miller",
+     "Dante Pettis",
+     "Otis Reese IV"
+    ],
+    "removed": [
+     "Jackson Acker",
+     "Jalen Virgil",
+     "Kody Huisman"
+    ],
+    "churn_share": 0.073
+   },
+   "Carolina Panthers": {
+    "added": [
+     "Caden Prieskorn",
+     "Cam Gill",
+     "Casey Washington",
+     "Darren Waller",
+     "DeCarlos Nicholson",
+     "Elijah Cooks",
+     "Elijah Garcia",
+     "Jake Curhan",
+     "Jeremiah Moon",
+     "Kyle Trask",
+     "Kyon Barrs",
+     "Roc Taylor",
+     "Ryan Hayes"
+    ],
+    "removed": [
+     "Ainias Smith",
+     "Jared Bartlett",
+     "Jaylon Guilbeau",
+     "Joshua Gray",
+     "Kobe Prentice",
+     "LaBryan Ray",
+     "Malick Meiga",
+     "Michael Reid",
+     "Nick Hampton",
+     "Saahdiq Charles"
+    ],
+    "churn_share": 0.221,
+    "qb_changes": {
+     "in": [
+      "Kyle Trask"
+     ],
+     "out": []
+    }
+   },
+   "Chicago Bears": {
+    "added": [
+     "Beanie Bishop Jr.",
+     "De'Antre Prince",
+     "Marcus Davenport",
+     "Marlen Sewell",
+     "Ray-Ray McCloud III",
+     "Wesley French",
+     "William Wright",
+     "Xavier Woods"
+    ],
+    "removed": [
+     "Coleman Bennett",
+     "Gervarrius Owens",
+     "KC Eziomume",
+     "Kyron Hudson",
+     "Luke Elkin"
+    ],
+    "churn_share": 0.131
+   },
+   "Cincinnati Bengals": {
+    "added": [
+     "Matthew McDoom"
+    ],
+    "removed": [
+     "Ceyair Wright",
+     "Isaiah Nwokobia"
+    ],
+    "churn_share": 0.033
+   },
+   "Cleveland Browns": {
+    "added": [
+     "Ben Patterson",
+     "Coziah Izzard",
+     "Dae'Quan Wright",
+     "Damarri Mathis",
+     "Jeadyn Lukus",
+     "Jeremiah McClendon",
+     "Jermaine Terry II",
+     "Patrick Jenkins",
+     "Travis Bell",
+     "Tyler Hall"
+    ],
+    "removed": [
+     "Aaron Anderson",
+     "Dom Jones",
+     "Jack Conley",
+     "Reid Carrico",
+     "T.J. Harden"
+    ],
+    "churn_share": 0.147
+   },
+   "Dallas Cowboys": {
+    "added": [
+     "Jashaun Corbin",
+     "Sebastian Gutierrez",
+     "Von Miller",
+     "Zack Kuntz"
+    ],
+    "removed": [
+     "Charles Snowden",
+     "Dominic Richardson",
+     "Traeshon Holden"
+    ],
+    "churn_share": 0.073
+   },
+   "Denver Broncos": {
+    "added": [
+     "Kyre Duplessis",
+     "Kyrese Rowan",
+     "Lecitus Smith",
+     "Ricardo Hallman"
+    ],
+    "removed": [
+     "Blake Cotton",
+     "Jaden Robinson"
+    ],
+    "churn_share": 0.063
+   },
+   "Detroit Lions": {
+    "added": [
+     "Amen Ogbongbemiga",
+     "Ben Stille",
+     "Devin White",
+     "Ekow Boye-Doe",
+     "Joshua Dobbs",
+     "Raheem Blackshear",
+     "Ryan Cooper Jr.",
+     "Trayveon Williams",
+     "Troy Reeder"
+    ],
+    "removed": [
+     "Aidan Keanaaina",
+     "De'Shawn Rucker",
+     "Jay Tufele",
+     "Lawrence Keys III",
+     "Miles Kitselman",
+     "Teddy Bridgewater"
+    ],
+    "churn_share": 0.149,
+    "qb_changes": {
+     "in": [
+      "Joshua Dobbs"
+     ],
+     "out": [
+      "Teddy Bridgewater"
+     ]
+    }
+   },
+   "Green Bay Packers": {
+    "added": [
+     "Arden Walker",
+     "Cal Adomitis",
+     "Chris Hilton Jr.",
+     "Kaden Prather",
+     "Kisean Johnson",
+     "McCallan Castles",
+     "Thomas Yassmin",
+     "Tra Fluellen",
+     "Trey Dean III",
+     "Zach Bako-Bewele"
+    ],
+    "removed": [
+     "Brenden Rice",
+     "Dante Barnett",
+     "Karsen Barnhart",
+     "Kyron Drones",
+     "Lucas Havrisik",
+     "Luke Lachey",
+     "RJ Maryland",
+     "Zach Tom"
+    ],
+    "churn_share": 0.178,
+    "qb_changes": {
+     "in": [],
+     "out": [
+      "Kyron Drones"
+     ]
+    }
+   },
+   "Houston Texans": {
+    "added": [
+     "Brett Rypien",
+     "Bryce Hall",
+     "Jadeveon Clowney",
+     "Juwann Winfree",
+     "Mario Edwards Jr.",
+     "Owen Wright"
+    ],
+    "removed": [
+     "Derrick Graham",
+     "Evan Hull",
+     "Jack Stonehouse",
+     "Junior Tafuna"
+    ],
+    "churn_share": 0.104,
+    "qb_changes": {
+     "in": [
+      "Brett Rypien"
+     ],
+     "out": []
+    }
+   },
+   "Indianapolis Colts": {
+    "added": [
+     "D.J. Montgomery",
+     "Keenan Allen",
+     "Mekhi Rodgers",
+     "Pharaoh Brown",
+     "Roy Mbaeteka",
+     "Roydell Williams",
+     "Trey Wedig",
+     "Tyler Moore"
+    ],
+    "removed": [
+     "Bayron Matos",
+     "EJ Horton Jr.",
+     "Lincoln Pare"
+    ],
+    "churn_share": 0.112
+   },
+   "Jacksonville Jaguars": {
+    "added": [
+     "Amari Burney",
+     "Baylon Spector",
+     "Corey Ballentine",
+     "Devin Neal Jr.",
+     "Geron Christian",
+     "Jahlani Tavai",
+     "Jared Bartlett",
+     "Sam Mustipher",
+     "Timothy McKay"
+    ],
+    "removed": [
+     "Ben Patterson",
+     "Dane Jackson",
+     "Devin Neal",
+     "Ethan Conner",
+     "Keni-H Lovely",
+     "Trystan Colon"
+    ],
+    "churn_share": 0.15
+   },
+   "Kansas City Chiefs": {
+    "added": [
+     "Emmanuel Ogbah",
+     "Ethan Hurkett",
+     "Jeff Weimer"
+    ],
+    "removed": [
+     "Bryce Phillips"
+    ],
+    "churn_share": 0.043
+   },
+   "Las Vegas Raiders": {
+    "added": [
+     "Braeden Daniels",
+     "Buddy Johnson",
+     "Chris Myarick",
+     "Dare Ogunbowale",
+     "Deven Thompkins",
+     "Folorunso Fatukasi",
+     "Noah Brown",
+     "Patrick Johnson"
+    ],
+    "removed": [
+     "Benito Jones",
+     "Chris Thomas",
+     "Jonathan Brady",
+     "Laki Tasi",
+     "Tanner Wall"
+    ],
+    "churn_share": 0.129
+   },
+   "Los Angeles Chargers": {
+    "added": [
+     "Andre Carter II",
+     "Peter Bowden"
+    ],
+    "removed": [
+     "Ben Cleveland",
+     "Mante Morrow"
+    ],
+    "churn_share": 0.043
+   },
+   "Los Angeles Rams": {
+    "added": [
+     "Alex Bachman",
+     "Alex Cook",
+     "Bill Murray",
+     "Blake Hance",
+     "Daniel Rickert",
+     "Jack Bouwmeester",
+     "Monty Rice",
+     "Zech McPhearson"
+    ],
+    "removed": [
+     "Drey Norwood"
+    ],
+    "churn_share": 0.096
+   },
+   "Miami Dolphins": {
+    "added": [
+     "Ahmari Harvey",
+     "Caedan Wallace",
+     "Cam Rice",
+     "Cam Riley",
+     "Clelin Ferrell",
+     "Fatorma Mulbah",
+     "Jeremiah Franklin",
+     "Nick McCloud",
+     "Seth Coleman-Lyles"
+    ],
+    "removed": [
+     "Anthony Hankerson",
+     "Kahlil Saunders",
+     "Omar Brown",
+     "Seth Coleman"
+    ],
+    "churn_share": 0.129
+   },
+   "Minnesota Vikings": {
+    "added": [
+     "Bryce Phillips",
+     "Dwight McGlothern Jr.",
+     "Jamal Adams",
+     "Jarod Washington",
+     "Jermar Jefferson",
+     "Kenny Dyson Jr."
+    ],
+    "removed": [
+     "Arden Walker",
+     "Dwight McGlothern",
+     "Kejon Owens",
+     "Keli Lawson",
+     "Luke Wysong"
+    ],
+    "churn_share": 0.113
+   },
+   "New England Patriots": {
+    "added": [
+     "Casey Rogers",
+     "Darrian Dalcourt",
+     "Eric Butler",
+     "Greg Van Roten",
+     "Hassan Haskins",
+     "Isaiah Iton",
+     "JaMycal Hasty",
+     "Joe Michalski",
+     "Kobe Prentice",
+     "Riley Wilson",
+     "Tejhaun Palmer"
+    ],
+    "removed": [
+     "Brock Lampe",
+     "Caedan Wallace",
+     "David Blay Jr.",
+     "Otis Reese",
+     "Sebastian Gutierrez",
+     "Terrell Jennings"
+    ],
+    "churn_share": 0.165
+   },
+   "New Orleans Saints": {
+    "added": [
+     "Brien Taylor",
+     "Deion Jones",
+     "Garrett Nelson",
+     "Kahlil Saunders",
+     "Malakai Williams",
+     "Mike Reid",
+     "TJ Hall Jr."
+    ],
+    "removed": [
+     "Beanie Bishop",
+     "Ja'Lynn Polk",
+     "Keeshawn Silver",
+     "TJ Hall",
+     "Zxavian Harris"
+    ],
+    "churn_share": 0.121
+   },
+   "New York Giants": {
+    "added": [
+     "Anfernee Orji",
+     "Brenden Jaimes",
+     "Chandler Martin",
+     "DJ James",
+     "Grant Finley",
+     "JT Woods",
+     "Jake Haener",
+     "Marlon Davidson",
+     "Najee Harris",
+     "Ugo Amadi"
+    ],
+    "removed": [
+     "Beaux Collins",
+     "Ben Barten",
+     "C.J. Ravenell",
+     "Cam Jones",
+     "JuJu Smith-Schuster",
+     "Sam Roberts"
+    ],
+    "churn_share": 0.154,
+    "qb_changes": {
+     "in": [
+      "Jake Haener"
+     ],
+     "out": []
+    }
+   },
+   "New York Jets": {
+    "added": [
+     "Cam Camper",
+     "Connor Hulstein",
+     "Junior Tafuna",
+     "Keenan Garber",
+     "Nate Lynn",
+     "Quincy Skinner Jr."
+    ],
+    "removed": [
+     "Eric Watts",
+     "Garrison Grimes",
+     "Gee Scott Jr.",
+     "Jalen Walthall",
+     "Keidron Smith"
+    ],
+    "churn_share": 0.112
+   },
+   "Philadelphia Eagles": {
+    "added": [
+     "Brandon George",
+     "David Blay Jr.",
+     "Isaiah Bolden",
+     "Ja'Quinden Jackson",
+     "Tarron Jackson"
+    ],
+    "removed": [
+     "Dae'Quan Wright",
+     "Elijah Mitchell",
+     "Hollin Pierce",
+     "Jaeden Roberts",
+     "Ta'Quon Graham"
+    ],
+    "churn_share": 0.103
+   },
+   "Pittsburgh Steelers": {
+    "added": [
+     "Cornell Powell",
+     "Daryl Porter",
+     "Elandon Roberts",
+     "Isaiah Winstead",
+     "Israel Mukuamu",
+     "Jakobie Keeney-James",
+     "Lance Mason",
+     "Rayshawn Jenkins"
+    ],
+    "removed": [
+     "A.T. Perry",
+     "Ahmari Harvey",
+     "Darnell Savage",
+     "Daryl Porter Jr.",
+     "JJ Galbreath",
+     "Lorenzo Thompson"
+    ],
+    "churn_share": 0.14
+   },
+   "San Francisco 49ers": {
+    "added": [
+     "Deebo Samuel Sr.",
+     "Doug Kramer Jr.",
+     "Josiah Deguara",
+     "KhaDarel Hodge",
+     "Ogbo Okoronkwo",
+     "Quinton Bell",
+     "Tanner McLachlan",
+     "Titus Leo",
+     "Trenton Irwin",
+     "Victor Dimukeje",
+     "Xavier Thomas",
+     "Zamir White"
+    ],
+    "removed": [
+     "Cameron Sample",
+     "Colton Dowell",
+     "Derrick Canteen",
+     "Jack Bouwmeester",
+     "Junior Bergen",
+     "Kevin Givens",
+     "Khalil Dinkins",
+     "William Bradley-King"
+    ],
+    "churn_share": 0.189
+   },
+   "Seattle Seahawks": {
+    "added": [
+     "Aaron Smith",
+     "Anthony Hankerson",
+     "Brock Lampe",
+     "Jordan Washington",
+     "Joseph Vaughn",
+     "Julian Hicks",
+     "Nick Vannett",
+     "Power Echols",
+     "Terrion Arnold"
+    ],
+    "removed": [
+     "Harrison Bryant",
+     "Ja'Markis Weston",
+     "Kenny McIntosh",
+     "Lance Mason",
+     "Tyrone Broden"
+    ],
+    "churn_share": 0.14
+   },
+   "Tampa Bay Buccaneers": {
+    "added": [
+     "Barika Kpeenu",
+     "Ifeatu Melifonwu",
+     "Robert McDaniel",
+     "Roman Parodie",
+     "Travis Shaw",
+     "Xavier Williams"
+    ],
+    "removed": [
+     "Chase Lucas",
+     "Haggai Ndubuisi",
+     "Ja'Qurious Conley",
+     "Kemon Hall"
+    ],
+    "churn_share": 0.103
+   },
+   "Tennessee Titans": {
+    "added": [
+     "Corey Mayfield Jr.",
+     "Derrick Canteen",
+     "Dominic Richardson",
+     "Dominique Hampton",
+     "Khalen Saunders",
+     "Laki Tasi",
+     "Mario Goodrich III",
+     "Matt Lauter",
+     "Nazeeh Johnson",
+     "Zachary Thomas"
+    ],
+    "removed": [
+     "Cam Horsley",
+     "David Ebuka Agoha",
+     "Jeadyn Lukus",
+     "Latrell McCutchin Sr.",
+     "Ryan Hayes",
+     "Shad Banks Jr."
+    ],
+    "churn_share": 0.158
+   },
+   "Washington Commanders": {
+    "added": [
+     "Byron Cowart",
+     "Craig Reynolds",
+     "Curtis Jacobs",
+     "Daniel Brunskill",
+     "Fabian Moreau",
+     "Krys Barnes",
+     "Maurice Hurst II",
+     "Max Scharping",
+     "Nicholas Petit-Frere",
+     "River Cracraft",
+     "Stefon Diggs",
+     "Tre' McKitty",
+     "Trey Hill"
+    ],
+    "removed": [
+     "Ahkello Witherspoon",
+     "Andre Carter II",
+     "Anthony Firkser",
+     "Chris Hilton Jr.",
+     "DJ Davidson",
+     "Jake Moody",
+     "Malaesala Aumavae-Laulu",
+     "Nick Bellore",
+     "Robert McDaniel",
+     "Timothy McKay",
+     "Tre Hawkins III",
+     "Tyler Cooper"
+    ],
+    "churn_share": 0.238
+   }
+  }
+ }
+]

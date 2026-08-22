@@ -1,23 +1,23 @@
 {
  "meta": {
-  "fetched_at": "2026-07-17T14:12:25+00:00",
+  "fetched_at": "2026-08-19T20:06:18+00:00",
   "source": "FIVB World Ranking API (en.volleyballworld.com)",
   "k_match": 0.0169,
-  "k_set": 0.0104,
-  "n_matches_fit": 3199,
-  "n_sets_fit": 11710,
-  "favorite_accuracy": 0.7618,
+  "k_set": 0.0099,
+  "n_matches_fit": 3087,
+  "n_sets_fit": 11307,
+  "favorite_accuracy": 0.7603,
   "method": "logistic on WR-score diff, scale fitted by MLE on real results"
  },
  "men": {
   "Poland": {
    "rank": 1,
-   "points": 382.24,
+   "points": 407.56,
    "code": "POL"
   },
   "Italy": {
    "rank": 2,
-   "points": 363.37,
+   "points": 355.84,
    "code": "ITA"
   },
   "Russia": {
@@ -25,90 +25,90 @@
    "points": 352.1,
    "code": "RUS"
   },
-  "USA": {
+  "Slovenia": {
    "rank": 4,
-   "points": 347.28,
+   "points": 344.53,
+   "code": "SLO"
+  },
+  "USA": {
+   "rank": 5,
+   "points": 344.41,
    "code": "USA"
   },
   "Japan": {
-   "rank": 5,
-   "points": 341.71,
-   "code": "JPN"
-  },
-  "Slovenia": {
    "rank": 6,
-   "points": 322.76,
-   "code": "SLO"
+   "points": 333.33,
+   "code": "JPN"
   },
   "Brazil": {
    "rank": 7,
-   "points": 316.67,
+   "points": 312.13,
    "code": "BRA"
   },
   "France": {
    "rank": 8,
-   "points": 295.9,
+   "points": 302.59,
    "code": "FRA"
   },
-  "Türkiye": {
-   "rank": 9,
-   "points": 272.26,
-   "code": "TUR"
-  },
   "Bulgaria": {
-   "rank": 10,
-   "points": 269.4,
+   "rank": 9,
+   "points": 272.25,
    "code": "BUL"
   },
-  "Serbia": {
+  "Türkiye": {
+   "rank": 10,
+   "points": 268.49,
+   "code": "TUR"
+  },
+  "Ukraine": {
    "rank": 11,
-   "points": 245.21,
-   "code": "SRB"
+   "points": 247.16,
+   "code": "UKR"
   },
   "Germany": {
    "rank": 12,
-   "points": 244.94,
+   "points": 241.87,
    "code": "GER"
   },
-  "Ukraine": {
+  "Serbia": {
    "rank": 13,
-   "points": 242.88,
-   "code": "UKR"
+   "points": 234.98,
+   "code": "SRB"
   },
   "Argentina": {
    "rank": 14,
-   "points": 240.99,
+   "points": 232.41,
    "code": "ARG"
   },
-  "Canada": {
+  "Cuba": {
    "rank": 15,
-   "points": 231.28,
-   "code": "CAN"
+   "points": 224.23,
+   "code": "CUB"
   },
   "Finland": {
    "rank": 16,
    "points": 218.01,
    "code": "FIN"
   },
-  "Iran": {
+  "Belgium": {
    "rank": 17,
-   "points": 214.28,
+   "points": 211.6,
+   "code": "BEL"
+  },
+  "Canada": {
+   "rank": 18,
+   "points": 209.21,
+   "code": "CAN"
+  },
+  "Iran": {
+   "rank": 19,
+   "points": 205.6,
    "code": "IRI"
   },
-  "Cuba": {
-   "rank": 18,
-   "points": 213.97,
-   "code": "CUB"
-  },
   "Czech Republic": {
-   "rank": 19,
+   "rank": 20,
    "points": 203.22,
    "code": "CZE"
-  },
-  "Belgium": {
-   "rank": 20,
-   "points": 200.5,
-   "code": "BEL"
   },
   "Netherlands": {
    "rank": 21,
@@ -117,28 +117,28 @@
   },
   "Puerto Rico": {
    "rank": 22,
-   "points": 168.59,
+   "points": 174.27,
    "code": "PUR"
   },
-  "Qatar": {
-   "rank": 23,
-   "points": 149.81,
-   "code": "QAT"
-  },
   "Greece": {
-   "rank": 24,
+   "rank": 23,
    "points": 148.96,
    "code": "GRE"
   },
-  "Portugal": {
-   "rank": 25,
-   "points": 138.86,
-   "code": "POR"
+  "Qatar": {
+   "rank": 24,
+   "points": 147.82,
+   "code": "QAT"
   },
   "Korea": {
-   "rank": 26,
-   "points": 137.22,
+   "rank": 25,
+   "points": 140.15,
    "code": "KOR"
+  },
+  "Portugal": {
+   "rank": 26,
+   "points": 138.86,
+   "code": "POR"
   },
   "Egypt": {
    "rank": 27,
@@ -160,127 +160,127 @@
    "points": 133.14,
    "code": "EST"
   },
-  "Denmark": {
+  "Mexico": {
    "rank": 31,
-   "points": 130.66,
+   "points": 131.67,
+   "code": "MEX"
+  },
+  "Denmark": {
+   "rank": 32,
+   "points": 130.79,
    "code": "DEN"
   },
+  "Sweden": {
+   "rank": 33,
+   "points": 125.29,
+   "code": "SWE"
+  },
   "Chile": {
-   "rank": 32,
-   "points": 125.32,
+   "rank": 34,
+   "points": 125.06,
    "code": "CHI"
   },
   "Romania": {
-   "rank": 33,
+   "rank": 35,
    "points": 124.47,
    "code": "ROU"
   },
-  "China": {
-   "rank": 34,
-   "points": 123.69,
-   "code": "CHN"
-  },
   "Spain": {
-   "rank": 35,
+   "rank": 36,
    "points": 121.73,
    "code": "ESP"
   },
+  "China": {
+   "rank": 37,
+   "points": 121.16,
+   "code": "CHN"
+  },
   "Belarus": {
-   "rank": 36,
+   "rank": 38,
    "points": 120.51,
    "code": "BLR"
   },
-  "Mexico": {
-   "rank": 37,
-   "points": 116.96,
-   "code": "MEX"
-  },
-  "Sweden": {
-   "rank": 38,
-   "points": 113.41,
-   "code": "SWE"
+  "Pakistan": {
+   "rank": 39,
+   "points": 116.69,
+   "code": "PAK"
   },
   "Croatia": {
-   "rank": 39,
+   "rank": 40,
    "points": 112.96,
    "code": "CRO"
   },
+  "Colombia": {
+   "rank": 41,
+   "points": 111.26,
+   "code": "COL"
+  },
   "Tunisia": {
-   "rank": 40,
+   "rank": 42,
    "points": 108.93,
    "code": "TUN"
   },
   "Slovak Republic": {
-   "rank": 41,
+   "rank": 43,
    "points": 108.8,
    "code": "SVK"
   },
   "Bahrain": {
-   "rank": 42,
+   "rank": 44,
    "points": 102.66,
    "code": "BRN"
   },
+  "Indonesia": {
+   "rank": 45,
+   "points": 102.51,
+   "code": "INA"
+  },
   "India": {
-   "rank": 43,
+   "rank": 46,
    "points": 101.86,
    "code": "IND"
   },
-  "Indonesia": {
-   "rank": 44,
-   "points": 101.75,
-   "code": "INA"
-  },
-  "Dominican Republic": {
-   "rank": 45,
-   "points": 97.71,
-   "code": "DOM"
-  },
   "Hungary": {
-   "rank": 46,
+   "rank": 47,
    "points": 94.3,
    "code": "HUN"
   },
-  "Venezuela": {
-   "rank": 47,
-   "points": 94.25,
-   "code": "VEN"
-  },
-  "Pakistan": {
+  "Australia": {
    "rank": 48,
-   "points": 92.83,
-   "code": "PAK"
+   "points": 93.81,
+   "code": "AUS"
+  },
+  "Dominican Republic": {
+   "rank": 49,
+   "points": 93.74,
+   "code": "DOM"
   },
   "Latvia": {
-   "rank": 49,
+   "rank": 50,
    "points": 92.47,
    "code": "LAT"
-  },
-  "Colombia": {
-   "rank": 50,
-   "points": 90.91,
-   "code": "COL"
   }
  },
  "women": {
   "Italy": {
    "rank": 1,
-   "points": 467.01,
+   "points": 461.17,
    "code": "ITA"
   },
   "Brazil": {
    "rank": 2,
-   "points": 400.56,
+   "points": 403.61,
    "code": "BRA"
   },
-  "USA": {
-   "rank": 3,
-   "points": 371.71,
-   "code": "USA"
-  },
   "Türkiye": {
-   "rank": 4,
-   "points": 369.04,
+   "rank": 3,
+   "points": 388.35,
    "code": "TUR"
+  },
+  "USA": {
+   "rank": 4,
+   "points": 363.57,
+   "code": "USA"
   },
   "Poland": {
    "rank": 5,
@@ -289,17 +289,17 @@
   },
   "Japan": {
    "rank": 6,
-   "points": 335.27,
+   "points": 331.36,
    "code": "JPN"
   },
   "China": {
    "rank": 7,
-   "points": 315.2,
+   "points": 315.51,
    "code": "CHN"
   },
   "Netherlands": {
    "rank": 8,
-   "points": 294.84,
+   "points": 292.64,
    "code": "NED"
   },
   "Russia": {
@@ -314,7 +314,7 @@
   },
   "Canada": {
    "rank": 11,
-   "points": 276.34,
+   "points": 273.76,
    "code": "CAN"
   },
   "Germany": {
@@ -352,15 +352,15 @@
    "points": 188.1,
    "code": "UKR"
   },
-  "Argentina": {
-   "rank": 19,
-   "points": 182.42,
-   "code": "ARG"
-  },
   "Slovenia": {
-   "rank": 20,
+   "rank": 19,
    "points": 182.01,
    "code": "SLO"
+  },
+  "Argentina": {
+   "rank": 20,
+   "points": 181.09,
+   "code": "ARG"
   },
   "Sweden": {
    "rank": 21,
@@ -372,15 +372,15 @@
    "points": 178.93,
    "code": "MEX"
   },
-  "Kenya": {
+  "Colombia": {
    "rank": 23,
+   "points": 172.55,
+   "code": "COL"
+  },
+  "Kenya": {
+   "rank": 24,
    "points": 158.49,
    "code": "KEN"
-  },
-  "Colombia": {
-   "rank": 24,
-   "points": 157.31,
-   "code": "COL"
   },
   "Puerto Rico": {
    "rank": 25,
@@ -392,35 +392,35 @@
    "points": 149.28,
    "code": "HUN"
   },
-  "Romania": {
+  "Korea": {
    "rank": 27,
+   "points": 144.15,
+   "code": "KOR"
+  },
+  "Romania": {
+   "rank": 28,
    "points": 142.4,
    "code": "ROU"
-  },
-  "Vietnam": {
-   "rank": 28,
-   "points": 142.26,
-   "code": "VIE"
   },
   "Greece": {
    "rank": 29,
    "points": 138.71,
    "code": "GRE"
   },
-  "Korea": {
-   "rank": 30,
-   "points": 138.56,
-   "code": "KOR"
-  },
   "Spain": {
-   "rank": 31,
+   "rank": 30,
    "points": 137.04,
    "code": "ESP"
   },
   "Bulgaria": {
-   "rank": 32,
+   "rank": 31,
    "points": 136.02,
    "code": "BUL"
+  },
+  "Vietnam": {
+   "rank": 32,
+   "points": 134.65,
+   "code": "VIE"
   },
   "Switzerland": {
    "rank": 33,
@@ -442,15 +442,15 @@
    "points": 127.77,
    "code": "FIN"
   },
-  "Belarus": {
+  "Chinese Taipei": {
    "rank": 37,
+   "points": 119.7,
+   "code": "TPE"
+  },
+  "Belarus": {
+   "rank": 38,
    "points": 116.06,
    "code": "BLR"
-  },
-  "Chinese Taipei": {
-   "rank": 38,
-   "points": 114.76,
-   "code": "TPE"
   },
   "Kazakhstan": {
    "rank": 39,
@@ -464,7 +464,7 @@
   },
   "Peru": {
    "rank": 41,
-   "points": 99.82,
+   "points": 102.95,
    "code": "PER"
   },
   "Iran": {
@@ -487,30 +487,30 @@
    "points": 85.07,
    "code": "SCO"
   },
-  "Montenegro": {
+  "Bermuda": {
    "rank": 46,
+   "points": 84.89,
+   "code": "BER"
+  },
+  "Montenegro": {
+   "rank": 47,
    "points": 84.53,
    "code": "MNE"
   },
   "Portugal": {
-   "rank": 47,
+   "rank": 48,
    "points": 84.16,
    "code": "POR"
   },
   "Azerbaijan": {
-   "rank": 48,
+   "rank": 49,
    "points": 77.36,
    "code": "AZE"
   },
-  "Cameroon": {
-   "rank": 49,
-   "points": 76.72,
-   "code": "CMR"
-  },
-  "San Marino": {
+  "St. Lucia": {
    "rank": 50,
-   "points": 76.49,
-   "code": "SMR"
+   "points": 77.31,
+   "code": "LCA"
   }
  }
 }
