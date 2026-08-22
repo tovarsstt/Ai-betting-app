@@ -32,7 +32,11 @@ OUT = Path(__file__).parent.parent / "data" / "wc_player_stats.json"
 SCOREBOARD = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?dates={d}"
 SUMMARY = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/summary?event={eid}"
 WC_START = datetime.date(2026, 6, 11)
-_UA = {"User-Agent": "Mozilla/5.0"}
+# ESPN's edge (Akamai) 403s browser-spoofed User-Agents — any "Mozilla/..."
+# string is refused while urllib's own default UA is served normally
+# (verified 2026-08-19). Send no UA header here; do NOT "fix" this by
+# adding a browser UA back, that is exactly what gets blocked.
+_UA: dict[str, str] = {}
 
 # ESPN roster stat name -> our stat key
 STAT_MAP = {

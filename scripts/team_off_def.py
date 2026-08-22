@@ -39,7 +39,11 @@ from typing import Optional
 import fetch_wc_player_stats as wc_fetch
 
 OUT = Path(__file__).parent.parent / "data" / "team_off_def.json"
-_UA = {"User-Agent": "Mozilla/5.0"}
+# ESPN's edge (Akamai) 403s browser-spoofed User-Agents — any "Mozilla/..."
+# string is refused while urllib's own default UA is served normally
+# (verified 2026-08-19). Send no UA header here; do NOT "fix" this by
+# adding a browser UA back, that is exactly what gets blocked.
+_UA: dict[str, str] = {}
 
 CORE = ("https://sports.core.api.espn.com/v2/sports/{sport}/leagues/{lg}/"
         "seasons/{yr}/types/2/teams/{tid}/statistics")

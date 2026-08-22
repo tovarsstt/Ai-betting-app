@@ -33,7 +33,11 @@ from typing import Optional
 import fetch_wc_player_stats as wc_fetch
 
 DATA = Path(__file__).parent.parent / "data"
-_UA = {"User-Agent": "Mozilla/5.0"}
+# ESPN's edge (Akamai) 403s browser-spoofed User-Agents — any "Mozilla/..."
+# string is refused while urllib's own default UA is served normally
+# (verified 2026-08-19). Send no UA header here; do NOT "fix" this by
+# adding a browser UA back, that is exactly what gets blocked.
+_UA: dict[str, str] = {}
 
 SHRINK_GAMES = 4                 # factor pulled toward 1.0: weight n/(n+4)
 FACTOR_MIN, FACTOR_MAX = 0.6, 1.5

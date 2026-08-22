@@ -26,7 +26,11 @@ from pathlib import Path
 OUT = Path(__file__).parent.parent / "data" / "summer_league_2026.json"
 SL = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba-summer-las-vegas"
 NBA = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba"
-UA = {"User-Agent": "Mozilla/5.0"}
+# ESPN's edge (Akamai) 403s browser-spoofed User-Agents — any "Mozilla/..."
+# string is refused while urllib's own default UA is served normally
+# (verified 2026-08-19). Send no UA header here; do NOT "fix" this by
+# adding a browser UA back, that is exactly what gets blocked.
+UA: dict[str, str] = {}
 SL_FIRST_DAY = date(2026, 7, 5)
 BASELINE_DATES = ("20260405", "20260407", "20260409")   # late 2025-26 regular season
 TOP_N_PROFILE = 40      # profile-check only the top producers (rookie flag)

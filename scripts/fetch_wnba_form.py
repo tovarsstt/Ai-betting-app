@@ -30,7 +30,7 @@ def fetch_day(d: datetime.date) -> list:
     url = SCOREBOARD.format(d=d.strftime("%Y%m%d"))
     try:
         raw = urllib.request.urlopen(urllib.request.Request(
-            url, headers={"User-Agent": "Mozilla/5.0"}), timeout=15).read()
+            url, headers={}), timeout=15).read()
         data = json.loads(raw)
     except Exception:
         return []

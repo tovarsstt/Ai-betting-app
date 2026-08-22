@@ -15,6 +15,7 @@ the field that matters.
 """
 import json
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -25,23 +26,40 @@ TOURS = ("atp", "wta")
 # ESPN serves the OFFICIAL ATP/WTA ranking numbers (licensed) over a free, reliable
 # JSON API. The official sites (atptour.com / wtatennis.com) are Cloudflare-gated and
 # block scripted fetches, so ESPN is the honest way to pull official ranks weekly.
-URL = "https://site.api.espn.com/apis/site/v2/sports/tennis/{}/rankings"
+# Host note (verified 2026-08-19): site.api.espn.com now 403s every sport from
+# scripted clients, which silently froze ranks at 2026-07-18. sports.core.api
+# still serves the same official numbers, so we read the ranking index there,
+# follow it to the current week, and resolve each athlete $ref for the name.
+BASE_URL = "https://sports.core.api.espn.com/v2/sports/tennis/leagues/{}/rankings"
+
+
+def _get(url: str) -> dict:
+    # The index hands back http:// refs; force https so the fetch isn't downgraded.
+    req = urllib.request.Request(url.replace("http://", "https://"),
+                                 headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(req, timeout=20) as r:
+        return json.load(r)
 
 
 def fetch_tour(tour: str) -> dict:
-    req = urllib.request.Request(URL.format(tour), headers={"User-Agent": "Mozilla/5.0"})
-    with urllib.request.urlopen(req, timeout=20) as r:
-        data = json.load(r)
+    index = _get(BASE_URL.format(tour))
+    items = index.get("items") or []
+    if not items:
+        return {}
+    # items[0] = the most recent published week's singles ranking.
+    page = _get(items[0]["$ref"])
+    ranks = [rk for rk in page.get("ranks", [])
+             if rk.get("current") and (rk.get("athlete") or {}).get("$ref")]
+    # Names live behind one $ref per athlete — fetch them concurrently so a
+    # weekly refresh of ~150 players per tour stays under a few seconds.
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        athletes = list(pool.map(lambda rk: _get(rk["athlete"]["$ref"]), ranks))
     out = {}
-    for group in data.get("rankings", []):
-        for rk in group.get("ranks", []):
-            ath = rk.get("athlete") or {}
-            name = ath.get("displayName")
-            cur = rk.get("current")
-            if name and cur:
-                out[name] = {"rank": float(cur), "points": rk.get("points"),
-                             "tour": tour.upper()}
-        break  # first group = singles rankings
+    for rk, ath in zip(ranks, athletes):
+        name = ath.get("displayName") or ath.get("fullName")
+        if name:
+            out[name] = {"rank": float(rk["current"]), "points": rk.get("points"),
+                         "tour": tour.upper()}
     return out
 
 

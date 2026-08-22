@@ -26,7 +26,11 @@ from pathlib import Path
 SNAP = Path(__file__).parent.parent / "data" / "nfl_rosters.json"
 DIFF = Path(__file__).parent.parent / "data" / "nfl_roster_changes.json"
 API = "https://site.api.espn.com/apis/site/v2/sports/football/nfl"
-UA = {"User-Agent": "Mozilla/5.0"}
+# ESPN's edge (Akamai) 403s browser-spoofed User-Agents — any "Mozilla/..."
+# string is refused while urllib's own default UA is served normally
+# (verified 2026-08-19). Send no UA header here; do NOT "fix" this by
+# adding a browser UA back, that is exactly what gets blocked.
+UA: dict[str, str] = {}
 
 
 def get(url: str) -> dict:
