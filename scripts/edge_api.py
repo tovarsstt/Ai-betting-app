@@ -39,6 +39,7 @@ import betting_insider as tbi
 import market_context as mctx
 import win_simulator as wsim
 import tennis_scanner as tsc
+import period_model as pmod
 from typing import List
 
 BASE = Path(__file__).parent.parent / "data"
@@ -2309,6 +2310,47 @@ class SimReq(BaseModel):
     seed: Optional[int] = None
     bankroll: Optional[float] = None
     stake: Optional[float] = None
+
+
+class PeriodReq(BaseModel):
+    sport: str = "nfl"
+    proj_total: float
+    proj_margin_home: float          # HOME minus AWAY; home fav by 6.5 = +6.5
+    seed: Optional[int] = None
+
+
+@app.post("/period-board")
+def period_board(req: PeriodReq):
+    """Quarter / half / OT / full-game spreads and totals for one fixture.
+
+    Importance-weighted bootstrap over REAL games, so period correlation (game
+    script) and integer scoring both survive — the two things an
+    independent-increments proxy destroys, and the two things that decide a
+    first-quarter −2.5.
+    """
+    return pmod.board(req.sport, req.proj_total, req.proj_margin_home, req.seed)
+
+
+class PeriodPriceReq(PeriodReq):
+    segment: str = "through_P1"       # P1..P4 / through_Pn / 1H / 2H / FULL
+    market: str = "spread"            # spread | total
+    line: float = -2.5
+
+
+@app.post("/period-price")
+def period_price(req: PeriodPriceReq):
+    """Price ONE period line — e.g. a 1st-quarter −2.5 spread."""
+    sim = pmod.simulate(req.sport, req.proj_total, req.proj_margin_home,
+                        seed=req.seed)
+    if "error" in sim:
+        return sim
+    out = pmod.price(sim, req.segment, req.market, req.line)
+    if "error" not in out:
+        v, note = wsim._verdict(out["win_prob"])
+        out.update(verdict=v, note=note,
+                   p_overtime=sim.get("p_overtime"),
+                   historical_games=sim.get("historical_games"))
+    return out
 
 
 @app.post("/simulate-ticket")
