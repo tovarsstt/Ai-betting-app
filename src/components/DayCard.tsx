@@ -52,6 +52,11 @@ interface MatchVerdict {
   verdict: "BET" | "LEAN" | "NO_BET";
   min_odds: number;
   kill?: KillPath | null;
+  // Rule 30 — set only when this sport's model was measured losing to the
+  // market (model_gate.py). min_odds above is still the model's own floor;
+  // it must NOT be read as "bet it above this price" the way a normal
+  // NO_BET's floor can, because the probability behind it is unvalidated.
+  model_gate?: string | null;
 }
 
 interface DayCardData {
@@ -77,6 +82,17 @@ function KillLine({ kill }: { kill?: KillPath | null }) {
   return (
     <span className="font-mono text-[10px] text-muted-foreground/70 whitespace-nowrap">
       dies on: {kill.event} ({(kill.prob * 100).toFixed(0)}%)
+    </span>
+  );
+}
+
+/* Rule 30 — this sport's model was measured losing to the market. The floor
+   number is still the model's own math, so it must NOT read as "bet it
+   above this price" the way a normal NO_BET's floor does. */
+function GateNote() {
+  return (
+    <span className="font-mono text-[10px] font-black uppercase tracking-widest text-muted-foreground whitespace-nowrap">
+      no bet — rule 30
     </span>
   );
 }
@@ -201,8 +217,9 @@ export function DayCard({ sport }: { sport: string }) {
           <div className="rounded-xl border border-white/10 bg-white/5 p-4">
             <p className="text-sm font-black uppercase tracking-wide">No ticket, no sized single today.</p>
             <p className="text-xs text-muted-foreground mt-1">
-              Best option per match below — BET rows are playable, NO BET rows
-              show the Stake price that would make them playable.
+              {data.per_match && data.per_match.length > 0 && data.per_match.every((m) => m.model_gate)
+                ? `${sport}'s model was measured losing to the market (rule 30) — this board issues no standalone picks today, price or not.`
+                : "Best option per match below — BET rows are playable, NO BET rows show the Stake price that would make them playable."}
             </p>
           </div>
         )}
@@ -255,34 +272,45 @@ export function DayCard({ sport }: { sport: string }) {
             <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
               Every match — best option on its board
             </p>
-            {data.per_match.map((m, i) => (
-              <div key={i} className="flex items-center justify-between gap-2 rounded-lg border border-white/5 bg-white/[0.03] px-3 py-2 text-sm">
-                <span className="flex items-center gap-2 min-w-0">
-                  <Badge className={cn(
-                    "text-[9px] font-black shrink-0 border",
-                    m.verdict === "BET" && "bg-primary/15 text-primary border-primary/30",
-                    m.verdict === "LEAN" && "bg-white/5 text-foreground border-white/15",
-                    m.verdict === "NO_BET" && "bg-transparent text-muted-foreground border-white/10",
-                  )}>
-                    {m.verdict === "NO_BET" ? "NO BET" : m.verdict}
-                  </Badge>
-                  <span className={cn("font-bold truncate", m.verdict === "NO_BET" && "text-muted-foreground font-medium")}>
-                    {m.selection}
-                    <span className="text-muted-foreground font-normal text-xs ml-2">{m.match}</span>
+            {data.per_match.map((m, i) => {
+              const gated = !!m.model_gate;
+              return (
+                <div key={i} className="flex items-center justify-between gap-2 rounded-lg border border-white/5 bg-white/[0.03] px-3 py-2 text-sm">
+                  <span className="flex items-center gap-2 min-w-0">
+                    <Badge className={cn(
+                      "text-[9px] font-black shrink-0 border",
+                      m.verdict === "BET" && "bg-primary/15 text-primary border-primary/30",
+                      m.verdict === "LEAN" && "bg-white/5 text-foreground border-white/15",
+                      m.verdict === "NO_BET" && "bg-transparent text-muted-foreground border-white/10",
+                    )}>
+                      {m.verdict === "NO_BET" ? "NO BET" : m.verdict}
+                    </Badge>
+                    <span className={cn("font-bold truncate", m.verdict === "NO_BET" && "text-muted-foreground font-medium")}>
+                      {m.selection}
+                      <span className="text-muted-foreground font-normal text-xs ml-2">{m.match}</span>
+                    </span>
                   </span>
-                </span>
-                <span className="flex items-center gap-3 shrink-0 font-mono text-xs text-muted-foreground">
-                  <KillLine kill={m.kill} />
-                  <span>win {(m.prob * 100).toFixed(0)}%</span>
-                  <span>EV {m.ev_pct > 0 ? "+" : ""}{m.ev_pct.toFixed(1)}%</span>
-                  <StakeFloor floor={m.min_odds} />
-                </span>
-              </div>
-            ))}
-            <p className="text-[10px] text-muted-foreground pt-1">
-              NO BET = every option on that board loses money at feed prices — play it
-              only if Stake shows ≥ the floor. Forcing NO BET rows is how banks die.
-            </p>
+                  <span className="flex items-center gap-3 shrink-0 font-mono text-xs text-muted-foreground">
+                    <KillLine kill={m.kill} />
+                    <span>win {(m.prob * 100).toFixed(0)}%</span>
+                    <span>EV {m.ev_pct > 0 ? "+" : ""}{m.ev_pct.toFixed(1)}%</span>
+                    {gated ? <GateNote /> : <StakeFloor floor={m.min_odds} />}
+                  </span>
+                </div>
+              );
+            })}
+            {data.per_match.some((m) => m.model_gate) && (
+              <p className="text-[10px] text-muted-foreground pt-1">
+                <b className="text-foreground/80">RULE 30</b> — {data.per_match.find((m) => m.model_gate)?.model_gate}.
+                Rows marked "no bet — rule 30" are not the floor's fault; the model itself is unvalidated.
+              </p>
+            )}
+            {data.per_match.some((m) => !m.model_gate) && (
+              <p className="text-[10px] text-muted-foreground pt-1">
+                NO BET = every option on that board loses money at feed prices — play it
+                only if Stake shows ≥ the floor. Forcing NO BET rows is how banks die.
+              </p>
+            )}
           </div>
         )}
 
