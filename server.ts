@@ -2438,6 +2438,7 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
             pick_quality?: string; quality_note?: string;
             method?: string; surface?: string; profile?: Record<string, number>;
             live?: { sets_won_home: number; sets_won_away: number; pregame_match_prob_home: number };
+            model_gate?: { standalone_allowed: boolean; reason?: string } | null;
           };
           if (t.bet_signal === 'NO_DATA' || t.home_cover_prob == null) {
             quantCtx = `━━ TENNIS MODEL: no ranking data for one/both players — model offers NO opinion. Rely on market devig + surface heuristics only.`;
@@ -2465,7 +2466,13 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
               `Comparative profile (home − away, surface-aware):${profileLine}\n` +
               `Signal: ${t.bet_signal ?? 'NO_EDGE'}. Tennis is noisy — trust the bet_signal over raw EV%.\n` +
               `Pick quality: ${t.pick_quality ?? 'n/a'} — ${t.quality_note ?? ''} (LOCK=anchor · PICK=parlay-ok · LEAN=single/small, NEVER a parlay anchor)\n` +
-              `⚠️ OVERRIDE: confirmed day-of data (injury, withdrawal, conditions) beats this historical model. If a player is hurt or just withdrew, ignore the model edge.`;
+              `⚠️ OVERRIDE: confirmed day-of data (injury, withdrawal, conditions) beats this historical model. If a player is hurt or just withdrew, ignore the model edge.` +
+              (t.model_gate?.standalone_allowed === false
+                ? `\n🚫 RULE 30 ACTIVE: ${t.model_gate.reason ?? 'this model was measured losing to the market'}. ` +
+                  `The win-prob numbers above are NOT a bet — do not produce a standalone primary_single from ` +
+                  `them. Set primary_single to "PASS — rule 30, model unvalidated" unless you have a SPECIFIC ` +
+                  `cited reason (injury/news/line-move) independent of the model.`
+                : '');
           }
         }
       } else if (oddsGame && league !== 'SOCCER') {
@@ -2708,6 +2715,17 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
               `>>> DRAW-INSURED PICK: ${mr.primary_pick.side} [${mr.primary_pick.market}] @ ${(mr.primary_pick.model_prob*100).toFixed(0)}%` +
               upsetLine + chaosLine + profileBlock + `\n` +
               `Rule: straight Win only when the price isn't heavy chalk (≳ -250) AND beats its devig; if "better but not dominant", insure the draw with DC/DNB when DC pays ~1.40-2.50; if the fav is HEAVY chalk (e.g. -511) the ML/DC have NO value — take the handicap (-1.5/-2.5), team total or correct score, else PASS. Build correlated SGP from calibrated legs (e.g. fav handicap + Over + BTTS that agree).`;
+          } else if (modelGate?.standalone_allowed === false) {
+            // No market board (mr came back null — /predict-soccer nulled it
+            // for rule 30). Without an explicit reminder here the LLM's only
+            // signal is the rule-30 paragraph buried in global_heuristics.md —
+            // this makes it impossible to miss for THIS specific match.
+            marketsCtx =
+              `━━ SOCCER MARKET BOARD: WITHHELD — RULE 30 ACTIVE.\n` +
+              `${modelGate.reason ?? 'this model was measured losing to the market'}. ` +
+              `Do NOT produce a standalone primary_single from model/stats reasoning for this match. ` +
+              `Set primary_single to "PASS — rule 30, model unvalidated" unless you have a SPECIFIC cited ` +
+              `reason (injury/news/line-move) independent of the model.`;
           }
         }
       } else if (league === 'UFC' && oddsGame) {
