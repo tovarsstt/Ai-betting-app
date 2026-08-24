@@ -142,6 +142,7 @@ export interface SwarmFinalPayload extends SwarmAgentData {
   simulated_ladder?: LadderRow[];         // win prob of every market priced
   most_likely_pick?: LadderRow;           // highest-win-prob market
   model_skill?: ModelSkill | null;        // measured league skill (rule 19)
+  model_gate?: { standalone_allowed: boolean; reason?: string } | null;  // rule 30
   club_profile?: ClubProfilePayload | null;
   swarm_report: {
     quant?: SwarmAgentData;

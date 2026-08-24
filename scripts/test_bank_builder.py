@@ -4,8 +4,11 @@ import math
 import sys
 from pathlib import Path
 
+import pytest
+
 sys.path.insert(0, str(Path(__file__).parent))
 import bank_builder as bb
+import model_gate as mg
 
 
 def leg(match, sel, dec, prob):
@@ -168,6 +171,19 @@ GAME = {
     "dc_x2": 2.90,
 }
 
+# Ticket-building tests below exercise the LANE/EV/leg logic, not rule 30 — pin
+# the gate to passing so they stay meaningful regardless of what the live
+# market_validation.json currently says (soccer happens to be blocked today;
+# see test_model_gate.py for the rule-30-specific coverage on this same path).
+_PASSING_GATE = {"results": {"soccer_close": {
+    "vs_market": {"model_brier": 0.50, "market_brier": 0.58},
+    "betting": {"roi": 0.04}}}}
+
+
+@pytest.fixture
+def gate_passing(monkeypatch):
+    monkeypatch.setattr(mg, "_load", lambda: _PASSING_GATE)
+
 
 def test_candidates_from_slate_carry_real_prices():
     cands = bb.candidates_from_slate([GAME])
@@ -177,9 +193,10 @@ def test_candidates_from_slate_carry_real_prices():
     for c in cands:
         assert c["match"] == "Brasil v Chile"
         assert 0.0 < c["prob"] < 1.0
+        assert c["sport"] == "SOCCER"
 
 
-def test_day_card_returns_tickets_and_singles():
+def test_day_card_returns_tickets_and_singles(gate_passing):
     games = [
         GAME,
         {"name": "Francia v Peru", "h2h": [1.48, 4.40, 7.50], "totals": [[2.5, 1.88, 1.92]]},
@@ -187,6 +204,7 @@ def test_day_card_returns_tickets_and_singles():
     ]
     card = bb.day_card(games, bankroll=200.0)
     assert "tickets" in card and "singles" in card
+    assert card["singles"]                          # gate open -> board is live
     for s in card["singles"]:
         assert s["decimal"] >= bb.SINGLE_MIN_ODDS
         assert s["prob"] >= 0.58

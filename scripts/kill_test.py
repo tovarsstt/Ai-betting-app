@@ -32,13 +32,27 @@ def dec2am(d: float) -> float:
     return (d - 1) * 100 if d >= 2 else -100 / (d - 1)
 
 
-def _tier_line(name: str, prob: float, price: float | None) -> str:
+def _tier_line(name: str, prob: float, price: float | None, blocked: bool = False) -> str:
     floor = 1.05 / prob if prob > 0 else float("inf")
     if price is None:
         return f"  {name:28s} P {prob:5.1%}  bet at >= {floor:.2f}"
     ev = prob * price - 1
-    verdict = "BET" if price >= floor else ("thin" if ev > 0 else "PASS")
+    if blocked:
+        verdict = "BLOCKED(r30)"
+    else:
+        verdict = "BET" if price >= floor else ("thin" if ev > 0 else "PASS")
     return f"  {name:28s} P {prob:5.1%}  @ {price:.2f}  EV {ev:+6.1%}  {verdict}"
+
+
+def _gate_notice(out: dict) -> bool:
+    """Print rule 30 if this sport's model measured losing to the market.
+    Returns whether it's blocked, so the caller can silence BET/thin/PASS."""
+    st = out.get("model_gate") or {}
+    if st.get("standalone_allowed", True):
+        return False
+    print(f"\nRULE 30: {st.get('reason')}\n"
+          f"Numbers below are for comparison only — not a bet.")
+    return True
 
 
 def _print_ladder(rows: list | None) -> None:
@@ -65,6 +79,7 @@ def tennis(a: argparse.Namespace) -> None:
     if out.get("bet_signal") == "NO_DATA":
         print(f"NO DATA: {out.get('model_note')}")
         return
+    blocked = _gate_notice(out)
     hcp = out["home_cover_prob"]
     print(f"== TENNIS KILL-TEST: {a.home} vs {a.away} ({a.surface}) ==")
     print(f"points model (form/surface/context): {a.home} {hcp:.1%}"
@@ -90,10 +105,10 @@ def tennis(a: argparse.Namespace) -> None:
         import tennis_live as tlive
         ps = tlive.implied_set_prob(hcp, a.best_of)
         print("\nengines AGREE — pick ladder:")
-        print(_tier_line(f"{a.home} ML", hcp, a.price_home))
-        print(_tier_line(f"{a.away} ML", 1 - hcp, a.price_away))
-        print(_tier_line(f"{a.home} wins a set", 1 - (1 - ps) ** 2, None))
-        print(_tier_line(f"{a.away} wins a set", 1 - ps ** 2, None))
+        print(_tier_line(f"{a.home} ML", hcp, a.price_home, blocked))
+        print(_tier_line(f"{a.away} ML", 1 - hcp, a.price_away, blocked))
+        print(_tier_line(f"{a.home} wins a set", 1 - (1 - ps) ** 2, None, blocked))
+        print(_tier_line(f"{a.away} wins a set", 1 - ps ** 2, None, blocked))
     _print_ladder(out.get("market_ladder"))
     if a.price_home:
         print(f"\nmarket devig check: {a.home} implied "
@@ -120,16 +135,17 @@ def soccer(a: argparse.Namespace) -> None:
           f" ({'home venue' if a.home_venue else 'neutral'}) ==")
     print(f"lambdas {out['lambda_home']:.2f}/{out['lambda_away']:.2f} "
           f"({out['lambda_source']}) | xG total {m['expected_total_goals']}")
+    blocked = _gate_notice(out)
     x = m["1x2"]
     print(f"1x2: home {x['home']:.1%} draw {x['draw']:.1%} away {x['away']:.1%}")
-    print(_tier_line("home ML", x["home"], a.price_home))
-    print(_tier_line("draw", x["draw"], a.price_draw))
-    print(_tier_line("away ML", x["away"], a.price_away))
+    print(_tier_line("home ML", x["home"], a.price_home, blocked))
+    print(_tier_line("draw", x["draw"], a.price_draw, blocked))
+    print(_tier_line("away ML", x["away"], a.price_away, blocked))
     dc = m["double_chance"]
-    print(_tier_line("DC 1X", dc["1X"], None))
-    print(_tier_line("DC X2", dc["X2"], None))
-    print(_tier_line("under 2.5", m["totals"]["2.5"]["under"], None))
-    print(_tier_line("BTTS No", m["btts"]["no"], None))
+    print(_tier_line("DC 1X", dc["1X"], None, blocked))
+    print(_tier_line("DC X2", dc["X2"], None, blocked))
+    print(_tier_line("under 2.5", m["totals"]["2.5"]["under"], None, blocked))
+    print(_tier_line("BTTS No", m["btts"]["no"], None, blocked))
     top = m["correct_score"][:3]
     print("top scores: " + ", ".join(f"{s['score']} {s['prob']:.1%}" for s in top))
     print("REMINDER: props via player_props.py (ET-aware); joint-sim any multi-leg")

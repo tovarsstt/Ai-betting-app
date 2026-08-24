@@ -17,6 +17,7 @@ interface SplitMarket {
   points: number; serve: number; blend: number; worst: number;
   floor_odds: number | null; blend_floor_odds: number | null;
 }
+interface ModelGate { standalone_allowed: boolean; reason?: string }
 interface TennisReport {
   home_cover_prob: number | null;
   serve_model_home_prob?: number;
@@ -25,6 +26,7 @@ interface TennisReport {
   method?: string; context?: Record<string, number>;
   ranks_stale?: string; model_note?: string;
   bet_signal?: string;
+  model_gate?: ModelGate;
 }
 interface SoccerReport {
   status?: string;
@@ -37,6 +39,7 @@ interface SoccerReport {
     expected_total_goals: number;
     correct_score: { score: string; prob: number; fair_decimal_odds: number }[];
   };
+  model_gate?: ModelGate;
 }
 interface MlbReport {
   expected_runs?: { home: number; away: number; total: number };
@@ -56,43 +59,67 @@ const pct = (p: number | null | undefined) => (p == null ? "—" : `${(p * 100).
 /* floor rule: given a prob, min price for +5% EV */
 const floor = (p: number) => (p > 0 ? (1.05 / p).toFixed(2) : "—");
 
-function Row({ label, prob, note, hot }: { label: string; prob: number; note?: string; hot?: boolean }) {
+function Row({ label, prob, note, hot, blocked }: {
+  label: string; prob: number; note?: string; hot?: boolean; blocked?: boolean;
+}) {
+  const lit = hot && !blocked;
   return (
     <div className={cn("flex items-baseline justify-between border-b border-white/5 py-2",
-      hot && "cave-border-ochre px-3 -mx-1 border-b-0 my-1")}>
-      <span className={cn("font-display uppercase tracking-wide", hot ? "text-primary text-lg" : "text-sm text-foreground/80")}>
+      lit && "cave-border-ochre px-3 -mx-1 border-b-0 my-1")}>
+      <span className={cn("font-display uppercase tracking-wide", lit ? "text-primary text-lg" : "text-sm text-foreground/80")}>
         {label}
       </span>
       <span className="font-mono tabular-nums text-right">
-        <span className={cn(hot ? "text-primary text-lg font-bold" : "text-foreground")}>{pct(prob)}</span>
-        <span className="ml-3 text-xs text-foreground/50">bet ≥ {floor(prob)}</span>
+        <span className={cn(lit ? "text-primary text-lg font-bold" : "text-foreground")}>{pct(prob)}</span>
+        {blocked
+          ? <span className="ml-3 text-xs text-foreground/40">no bet — rule 30</span>
+          : <span className="ml-3 text-xs text-foreground/50">bet ≥ {floor(prob)}</span>}
         {note && <span className="ml-2 text-xs text-foreground/40">{note}</span>}
       </span>
     </div>
   );
 }
 
-function MarketLadder({ rows }: { rows?: LadderRow[] }) {
+/* Rule 30: this sport's model was measured against real closing prices and
+   LOST — the numbers below stay for comparison, the call to action does not.
+   Same finding kill_test.py prints to the terminal; this is its web twin. */
+function GateNotice({ reason }: { reason?: string }) {
+  return (
+    <div className="mt-4 border border-primary/30 bg-primary/[0.06] px-3 py-2.5">
+      <span className="font-display uppercase tracking-widest text-[11px] text-primary">
+        Rule 30 — model loses to the market
+      </span>
+      <p className="mt-1 text-xs text-foreground/60 font-mono leading-relaxed">
+        {reason ?? "measured against real prices and lost — numbers below are for comparison only, not a bet"}
+      </p>
+    </div>
+  );
+}
+
+function MarketLadder({ rows, blocked }: { rows?: LadderRow[]; blocked?: boolean }) {
   if (!rows?.length) return null;
   return (
     <div className="mt-5">
-      <h2 className="text-xl">Market ladder — best bet in the match</h2>
+      <h2 className="text-xl">Market ladder — {blocked ? "for comparison" : "best bet in the match"}</h2>
       <p className="text-xs text-foreground/50 mt-1">
-        Ranked by win probability. Bet a market only when the book price ≥ its floor.
+        {blocked
+          ? "Ranked by win probability. Rule 30 — this model does not clear a bet here."
+          : "Ranked by win probability. Bet a market only when the book price ≥ its floor."}
       </p>
       <div className="mt-2 font-mono text-sm">
         <div className="grid grid-cols-3 gap-1 text-[10px] uppercase text-foreground/40 border-b border-white/10 pb-1">
-          <span>market</span><span className="text-right">win P</span><span className="text-right">bet at ≥</span>
+          <span>market</span><span className="text-right">win P</span>
+          <span className="text-right">{blocked ? "no bet" : "bet at ≥"}</span>
         </div>
         {rows.map((r, i) => (
           <div key={r.market}
             className={cn("grid grid-cols-3 gap-1 py-2 border-b border-white/5 tabular-nums",
-              i === 0 && "cave-border-ochre px-2 -mx-1 border-b-0 my-1")}>
-            <span className={cn("uppercase text-xs", i === 0 && "text-primary font-bold")}>
+              i === 0 && !blocked && "cave-border-ochre px-2 -mx-1 border-b-0 my-1")}>
+            <span className={cn("uppercase text-xs", i === 0 && !blocked && "text-primary font-bold")}>
               {r.market.replace(/_/g, " ")}
             </span>
-            <span className={cn("text-right", i === 0 && "text-primary font-bold")}>{pct(r.prob)}</span>
-            <span className="text-right">{r.min_odds ?? "—"}</span>
+            <span className={cn("text-right", i === 0 && !blocked && "text-primary font-bold")}>{pct(r.prob)}</span>
+            <span className="text-right">{blocked ? "—" : (r.min_odds ?? "—")}</span>
           </div>
         ))}
       </div>
@@ -187,6 +214,7 @@ export default function PickReportPage() {
                 <span>points engine: {pct(r.home_cover_prob)}</span>
                 <span>serve engine: {pct(r.serve_model_home_prob)}</span>
               </div>
+              {r.model_gate?.standalone_allowed === false && <GateNotice reason={r.model_gate.reason} />}
               {r.ranks_stale && <p className="mt-2 text-xs text-yellow-500/80 font-mono">{r.ranks_stale}</p>}
               {split ? (
                 <div className="mt-4">
@@ -215,13 +243,13 @@ export default function PickReportPage() {
                   <div className="mt-4">
                     <h2 className="text-xl">Engines agree — pick ladder</h2>
                     <Row label={`${m.data.data.home} ML`} prob={r.home_cover_prob}
-                      hot={r.home_cover_prob >= 0.58} />
+                      hot={r.home_cover_prob >= 0.58} blocked={r.model_gate?.standalone_allowed === false} />
                     <Row label={`${m.data.data.away} ML`} prob={1 - r.home_cover_prob}
-                      hot={1 - r.home_cover_prob >= 0.58} />
+                      hot={1 - r.home_cover_prob >= 0.58} blocked={r.model_gate?.standalone_allowed === false} />
                   </div>
                 )
               )}
-              <MarketLadder rows={r.market_ladder} />
+              <MarketLadder rows={r.market_ladder} blocked={r.model_gate?.standalone_allowed === false} />
             </>
           )}
         </div>
@@ -234,13 +262,18 @@ export default function PickReportPage() {
             xG {r.lambda_home?.toFixed(2)} vs {r.lambda_away?.toFixed(2)} · total {r.markets.expected_total_goals}
           </div>
           <h2 className="mt-3 text-xl">Full board</h2>
-          <Row label={`${m.data.data.home} win`} prob={r.markets["1x2"].home} hot={r.markets["1x2"].home >= 0.5} />
-          <Row label="Draw" prob={r.markets["1x2"].draw} hot={r.markets["1x2"].draw >= 0.34} />
-          <Row label={`${m.data.data.away} win`} prob={r.markets["1x2"].away} hot={r.markets["1x2"].away >= 0.5} />
-          <Row label="DC 1X" prob={r.markets.double_chance["1X"]} />
-          <Row label="DC X2" prob={r.markets.double_chance.X2} />
-          <Row label="Under 2.5" prob={r.markets.totals["2.5"].under} hot={r.markets.totals["2.5"].under >= 0.62} />
-          <Row label="BTTS No" prob={r.markets.btts.no} />
+          {r.model_gate?.standalone_allowed === false && <GateNotice reason={r.model_gate.reason} />}
+          <Row label={`${m.data.data.home} win`} prob={r.markets["1x2"].home} hot={r.markets["1x2"].home >= 0.5}
+            blocked={r.model_gate?.standalone_allowed === false} />
+          <Row label="Draw" prob={r.markets["1x2"].draw} hot={r.markets["1x2"].draw >= 0.34}
+            blocked={r.model_gate?.standalone_allowed === false} />
+          <Row label={`${m.data.data.away} win`} prob={r.markets["1x2"].away} hot={r.markets["1x2"].away >= 0.5}
+            blocked={r.model_gate?.standalone_allowed === false} />
+          <Row label="DC 1X" prob={r.markets.double_chance["1X"]} blocked={r.model_gate?.standalone_allowed === false} />
+          <Row label="DC X2" prob={r.markets.double_chance.X2} blocked={r.model_gate?.standalone_allowed === false} />
+          <Row label="Under 2.5" prob={r.markets.totals["2.5"].under} hot={r.markets.totals["2.5"].under >= 0.62}
+            blocked={r.model_gate?.standalone_allowed === false} />
+          <Row label="BTTS No" prob={r.markets.btts.no} blocked={r.model_gate?.standalone_allowed === false} />
           <p className="mt-3 text-xs font-mono text-foreground/50">
             top scores: {r.markets.correct_score.slice(0, 3).map((s) => `${s.score} ${pct(s.prob)}`).join(" · ")}
           </p>

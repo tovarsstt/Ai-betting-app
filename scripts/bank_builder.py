@@ -22,6 +22,8 @@ from __future__ import annotations
 
 import json
 import math
+
+import model_gate as gate
 import sys
 from itertools import combinations
 from pathlib import Path
@@ -46,8 +48,17 @@ KELLY_CAP_PCT = 3.0                  # never more than 3% of bank on one bet
 
 
 def _leg_ok(c: dict) -> bool:
-    """Gate a candidate leg: probable (>=56%) AND not -EV at the quoted price."""
+    """Gate a candidate leg: probable (>=56%), not -EV, and from a model that
+    has not already been measured losing to the market.
+
+    That last condition is rule 30 enforced rather than described. A leg whose
+    probability comes from a model with negative measured ROI against real
+    prices is not a 56% leg; it is a leg the model *believes* is 56% while the
+    same belief has been shown to run ~6 sigma overconfident.
+    """
     prob, dec = float(c["prob"]), float(c["decimal"])
+    if not gate.allows_standalone(c.get("sport") or ""):
+        return False
     return prob >= MIN_LEG_PROB and (prob * dec - 1.0) >= 0.0
 
 
@@ -140,6 +151,8 @@ def strong_singles(candidates: list[dict], bankroll: float | None = None) -> lis
     for c in candidates:
         dec, prob = float(c["decimal"]), float(c["prob"])
         ev = prob * dec - 1.0
+        if not gate.allows_standalone(c.get("sport") or ""):
+            continue                      # rule 30 — model loses to the price
         if dec < SINGLE_MIN_ODDS or prob < NORMAL_MIN or ev < SINGLE_MIN_EV:
             continue
         kelly = ev / (dec - 1.0)                      # full Kelly fraction
@@ -252,6 +265,27 @@ def apply_data_gate(rows: list[dict], sport_key: str | None) -> list[dict]:
     return out
 
 
+def apply_model_gate(rows: list[dict], sport_key: str | None) -> list[dict]:
+    """Force verdict -> NO_BET wherever rule 30 has this sport's model blocked.
+
+    Stronger than apply_data_gate: a measured loss against the market is a
+    negative-expectation finding, not a data-quality caveat, so a blocked
+    sport never shows BET or LEAN here — only NO_BET, description only.
+    """
+    st = gate.status(_gate_sport(sport_key))
+    if st["standalone_allowed"]:
+        return rows
+    out = []
+    for r in rows:
+        r = dict(r)
+        if r.get("verdict") != "NO_BET":
+            r["verdict"] = "NO_BET"
+        r["model_gate"] = ("rule 30: model measured losing to the market price — "
+                            "description only, not a bet")
+        out.append(r)
+    return out
+
+
 def best_per_match(candidates: list[dict]) -> list[dict]:
     """EVERY match -> its single best option + honest verdict.
 
@@ -284,12 +318,29 @@ def best_per_match(candidates: list[dict]) -> list[dict]:
     return out
 
 
+def _gate_sport(sport_key: str | None) -> str:
+    """Normalise an odds-api / UI sport key to the name model_gate.py measures.
+
+    _leg_ok/strong_singles only block a candidate that CARRIES a "sport" —
+    candidates built here previously had none, so the gate was silently a
+    no-op for the live day card (both soccer's Poisson board and tennis's
+    2-way feed). This is what tags them.
+    """
+    s = (sport_key or "").upper()
+    if s.startswith("SOCCER"):
+        return "SOCCER"
+    if s.startswith("TENNIS"):
+        return "TENNIS"
+    return s
+
+
 def candidates_from_slate(games: list[dict]) -> list[dict]:
     """Whole slate -> candidate legs, priced by the BOOK (never invented).
 
     Runs the same Dixon-Coles engine as /predict-soccer over every game
     (scan_slate.scan_game) and flattens each priced edge into the candidate
-    shape build_tickets/strong_singles consume.
+    shape build_tickets/strong_singles consume. Always soccer — tagged so
+    rule 30 (model_gate.py) can see it.
     """
     from scan_slate import scan_game  # deferred: keeps CLI import cheap
     cands = []
@@ -298,6 +349,7 @@ def candidates_from_slate(games: list[dict]) -> list[dict]:
         for mkt, _ev, prob, price in r["edges"]:
             cands.append({"match": r["name"], "selection": mkt,
                           "decimal": float(price), "prob": float(prob),
+                          "sport": "SOCCER",
                           "kill": r.get("kill_paths", {}).get(mkt)})
     return cands
 
@@ -334,13 +386,14 @@ def candidates_from_2way(games: list[dict], sport_key: str | None = None) -> lis
     surfaces as model_warn so a starter mismatch is visible before LOG."""
     from soccer_markets import devig_2way
     cands = []
+    sport = _gate_sport(sport_key)
     for g in games:
         dv = devig_2way(g["pinnacle"][0], g["pinnacle"][1])
         model = _mlb_model_read(g) if sport_key == "baseball_mlb" else None
         for key, side, prob, price in (("home", g["home"], dv["a"], g["best"][0]),
                                        ("away", g["away"], dv["b"], g["best"][1])):
             c = {"match": g["name"], "selection": f"{side} ML",
-                 "decimal": float(price), "prob": float(prob)}
+                 "decimal": float(price), "prob": float(prob), "sport": sport}
             if model:
                 delta = model[key] - float(prob)
                 c["model_prob"] = round(model[key], 4)
@@ -360,9 +413,12 @@ def day_card(games: list[dict], n_tickets: int = DEFAULT_TICKETS,
     mode="soccer" runs the Poisson board; mode="2way" runs sharp-anchored ML."""
     cands = (candidates_from_2way(games, sport_key) if mode == "2way"
              else candidates_from_slate(games))
+    gate_sport_key = "SOCCER" if mode == "soccer" else sport_key
+    per_match = apply_model_gate(
+        apply_data_gate(best_per_match(cands), sport_key), gate_sport_key)
     return {**build_tickets(cands, n_tickets),
             "singles": strong_singles(cands, bankroll),
-            "per_match": apply_data_gate(best_per_match(cands), sport_key)}
+            "per_match": per_match}
 
 
 def _main() -> None:

@@ -2560,6 +2560,11 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
     let bestPick: LadderRow | null = null;
     let modelSkill: ModelSkill | null = null;
     let clubProfile: ClubProfilePayload | null = null;
+    // Rule 30 — soccer's model measured losing to the market (model_gate.py).
+    // most_likely_pick already comes back null from /predict-soccer when
+    // blocked; this carries the WHY through so the UI can say so instead of
+    // just silently showing nothing.
+    let modelGate: { standalone_allowed: boolean; reason?: string } | null = null;
     try {
       // Odds feed missing this match must NOT kill the board — edge_api falls
       // back to the data-fit Poisson regression ratings when no 1X2 is sent,
@@ -2588,6 +2593,7 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
           const s = await sRes.json() as {
             simulated_ladder?: LadderRow[];
             most_likely_pick?: LadderRow;
+            model_gate?: { standalone_allowed: boolean; reason?: string } | null;
             model_skill?: ModelSkill | null;
             profile?: ClubProfilePayload | null;
             markets?: {
@@ -2625,6 +2631,7 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
           // being computed and never leaving the server.
           simLadder = s.simulated_ladder ?? null;
           bestPick = s.most_likely_pick ?? null;
+          modelGate = s.model_gate ?? null;
           modelSkill = s.model_skill ?? null;
           clubProfile = s.profile ?? null;
           const mr = s.market_recommendation;
@@ -2876,6 +2883,7 @@ Output ONLY this raw JSON (no markdown):
       market_context: marketContext ?? undefined,
       simulated_ladder: simLadder ?? undefined,
       most_likely_pick: bestPick ?? undefined,
+      model_gate: modelGate ?? undefined,
       model_skill: modelSkill ?? undefined,
       club_profile: clubProfile ?? undefined,
       pick_grade: soccerGrade ?? undefined,

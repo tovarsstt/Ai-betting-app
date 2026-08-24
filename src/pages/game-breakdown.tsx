@@ -138,6 +138,7 @@ interface AnalyzeResult {
   market_context?: MarketContextPayload;
   simulated_ladder?: LadderRow[];
   most_likely_pick?: LadderRow & { rule?: string };
+  model_gate?: { standalone_allowed: boolean; reason?: string } | null;
   model_skill?: {
     league?: string; accuracy?: number; baseline?: number;
     n_games?: number; skill_demonstrated?: boolean; warning?: string | null;
@@ -501,13 +502,15 @@ function LadderBars({ rows, best }: { rows: LadderRow[]; best?: string }) {
 }
 
 function WinLadderCard({
-  rows, best, skill,
+  rows, best, skill, gate,
 }: {
   rows: LadderRow[];
   best?: LadderRow & { rule?: string };
   skill?: AnalyzeResult["model_skill"];
+  gate?: AnalyzeResult["model_gate"];
 }) {
   if (!rows?.length) return null;
+  const blocked = gate?.standalone_allowed === false;
   return (
     <Card className="border-white/5 bg-[#1A1A1A]">
       <CardHeader className="pb-2">
@@ -520,6 +523,13 @@ function WinLadderCard({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
+        {blocked && (
+          <div className="border-l-2 pl-3 text-[10px] leading-relaxed text-[#C87A2E]">
+            <b>Rule 30 — model loses to the market.</b>{" "}
+            {gate?.reason ?? "measured against real prices and lost"} — numbers
+            below are for comparison only, no pick is recommended.
+          </div>
+        )}
         {best && (
           <div className="border-l-2 pl-3" style={{ borderColor: OCHRE }}>
             <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
@@ -1421,6 +1431,7 @@ export default function GameBreakdown() {
                 rows={swarmData.simulated_ladder}
                 best={swarmData.most_likely_pick}
                 skill={swarmData.model_skill}
+                gate={swarmData.model_gate}
               />
             )}
             {swarmData.club_profile && <ClubFormCard p={swarmData.club_profile} />}

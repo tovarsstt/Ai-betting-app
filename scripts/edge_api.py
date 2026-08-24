@@ -45,6 +45,7 @@ import team_style as tstyle
 import tennis_style as tnstyle
 import pace_profile as pace
 import f1_style as f1
+import model_gate as gate
 import nfl_week1_prior as nflw1
 import line_shop as lshop
 from typing import List
@@ -1410,7 +1411,10 @@ def predict(req: PredictReq):
         if stale_flag:
             extra["stale_rank_suspect"] = stale_flag
 
-    return {
+    # Rule 30, ENFORCED. A sport whose model was measured against real prices
+    # and lost does not get to issue a standalone selection — the numbers stay
+    # for comparison, the call to action is removed.
+    return gate.gate(sport, {
         "sport": sport, "home_team": req.home_team, "away_team": req.away_team,
         "predicted_margin": round(pred_margin,2), "spread": req.spread,
         "model_edge": edge,
@@ -1429,7 +1433,7 @@ def predict(req: PredictReq):
         # verified-coincidence ledger — tie-breaker display only, never math
         "omens": nv.omens_for(req.home_team, req.away_team, sport=sport.lower()),
         **extra,
-    }
+    })
 
 # ── Full soccer market board (1X2 / DC / DNB / O-U / BTTS / corners) ───────────
 class SoccerMarketReq(BaseModel):
@@ -1720,6 +1724,26 @@ def predict_soccer(req: SoccerMarketReq):
             "rule": "highest WIN PROBABILITY across every soccer market priced "
                     "here — winning first, price second (rules 0 then 1)",
         }
+
+    # Rule 30, ENFORCED. This is the engine model_gate.py's docstring calls
+    # out by name — soccer was measured against real prices and lost, so it
+    # does not get to issue a standalone pick. Numbers stay for comparison
+    # under a "_model" key; the call to action is removed.
+    resp["model_gate"] = gate.status("SOCCER")
+    if not resp["model_gate"]["standalone_allowed"]:
+        resp["recommendation_model"] = resp["recommendation"]
+        resp["recommendation"] = None
+        if resp.get("market_recommendation") is not None:
+            resp["market_recommendation_model"] = resp["market_recommendation"]
+            resp["market_recommendation"] = None
+        if resp.get("most_likely_pick") is not None:
+            resp["most_likely_pick_model"] = resp["most_likely_pick"]
+            resp["most_likely_pick"] = None
+        resp["gate_note"] = (
+            "Numbers shown for comparison only. Soccer's model was measured "
+            "against real prices and lost, so it does not issue a standalone "
+            "pick here (rule 30). Shop the price instead (line_shop.py)."
+        )
     return resp
 
 
