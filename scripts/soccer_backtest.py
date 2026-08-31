@@ -81,7 +81,10 @@ def backtest(start_from: str = DEFAULT_FROM) -> dict:
         for g in games:
             if g["date"][:7] != month or g["date"] < start_from:
                 continue
-            league = ratings.get(g["league"])
+            # UEFA cup games cross leagues — price them off the pooled Europe
+            # fit (the per-cup fit is too sparse to constrain 36+ teams).
+            pool = "Europe" if g["league"] in ("Champions League", "Europa League") else g["league"]
+            league = ratings.get(pool)
             if not league:
                 continue
             probs = game_probs(league, g["home_team"], g["away_team"])

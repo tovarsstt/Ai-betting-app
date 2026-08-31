@@ -6,6 +6,7 @@ import { spawn } from 'child_process';
 import Anthropic from '@anthropic-ai/sdk';
 import { GoogleGenAI } from '@google/genai';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { readFileSync, writeFileSync } from 'fs';
 import { impliedProb, devig, toDecimal, marginToWinProb, normalCDF } from './src/utils/mathUtils.js';
@@ -4438,6 +4439,7 @@ app.post('/api/ledger/capture-clv', async (req: express.Request, res: express.Re
 // ─────────────────────────────────────────────────────────────────────────────
 const SLIP_LINTER   = path.resolve(process.cwd(), 'scripts/slip_linter.py');
 const LEDGER_REPORT = path.resolve(process.cwd(), 'scripts/ledger_report.py');
+const CFB_FETCH = path.resolve(process.cwd(), 'scripts/fetch_cfb_data.py');
 const BANK_BUILDER  = path.resolve(process.cwd(), 'scripts/bank_builder.py');
 const KILL_TEST     = path.resolve(process.cwd(), 'scripts/kill_test.py');
 // Live day-card cache — repeat clicks must not burn Odds API quota.
@@ -4591,6 +4593,27 @@ app.post('/api/bank-builder', async (req: express.Request, res: express.Response
     res.json({ success: true, data });
   } catch {
     res.status(500).json({ error: 'BUILDER_FAILED' });
+  }
+});
+
+// CFB WEEK BOARD — ESPN scoreboard (free): ranks, records, embedded DK lines.
+// Cached to data/cfb_board.json; ?refresh=1 re-pulls (free API, still throttled
+// by rate limit). CFB has no local model — this is the profile/context layer.
+const cfbBoardCache = { at: 0 };
+app.get('/api/cfb-board', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 20, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  const boardPath = path.resolve(process.cwd(), 'data/cfb_board.json');
+  const wantRefresh = req.query.refresh === '1' || Date.now() - cfbBoardCache.at > 30 * 60_000;
+  try {
+    if (wantRefresh) {
+      const data = await spawnPythonJson(CFB_FETCH, ['--json'], null, 30_000);
+      cfbBoardCache.at = Date.now();
+      return res.json({ success: true, data });
+    }
+    const raw = await fs.promises.readFile(boardPath, 'utf8');
+    return res.json({ success: true, data: JSON.parse(raw), cached: true });
+  } catch (e: unknown) {
+    return res.status(503).json({ error: 'CFB_BOARD_FAILED', message: e instanceof Error ? e.message : String(e) });
   }
 });
 

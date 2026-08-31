@@ -1,0 +1,2336 @@
+{
+ "generated_at": "2026-08-31T17:55:10+00:00",
+ "source": "ESPN college-football scoreboard (free)",
+ "week": 1,
+ "n_games": 99,
+ "games": [
+  {
+   "name": "San Jos\u00e9 State Spartans at USC Trojans",
+   "date": "2026-08-29T19:00Z",
+   "status": "Final",
+   "home": {
+    "team": "USC Trojans",
+    "rank": 14,
+    "record": "1-0",
+    "score": "42"
+   },
+   "away": {
+    "team": "San Jos\u00e9 State Spartans",
+    "rank": null,
+    "record": "0-1",
+    "score": "26"
+   },
+   "odds": null
+  },
+  {
+   "name": "North Carolina Tar Heels at TCU Horned Frogs",
+   "date": "2026-08-29T16:00Z",
+   "status": "Final",
+   "home": {
+    "team": "TCU Horned Frogs",
+    "rank": null,
+    "record": "0-1",
+    "score": "10"
+   },
+   "away": {
+    "team": "North Carolina Tar Heels",
+    "rank": null,
+    "record": "1-0",
+    "score": "15"
+   },
+   "odds": null
+  },
+  {
+   "name": "NC State Wolfpack at Virginia Cavaliers",
+   "date": "2026-08-29T19:30Z",
+   "status": "Final",
+   "home": {
+    "team": "Virginia Cavaliers",
+    "rank": null,
+    "record": "1-0",
+    "score": "34"
+   },
+   "away": {
+    "team": "NC State Wolfpack",
+    "rank": null,
+    "record": "0-1",
+    "score": "8"
+   },
+   "odds": null
+  },
+  {
+   "name": "Jacksonville State Gamecocks at North Dakota State Bison",
+   "date": "2026-08-29T21:30Z",
+   "status": "Final",
+   "home": {
+    "team": "North Dakota State Bison",
+    "rank": null,
+    "record": "1-0",
+    "score": "33"
+   },
+   "away": {
+    "team": "Jacksonville State Gamecocks",
+    "rank": null,
+    "record": "0-1",
+    "score": "7"
+   },
+   "odds": null
+  },
+  {
+   "name": "Sacramento State Hornets at Eastern Michigan Eagles",
+   "date": "2026-08-29T22:30Z",
+   "status": "Final",
+   "home": {
+    "team": "Eastern Michigan Eagles",
+    "rank": null,
+    "record": "1-0",
+    "score": "28"
+   },
+   "away": {
+    "team": "Sacramento State Hornets",
+    "rank": null,
+    "record": "0-1",
+    "score": "17"
+   },
+   "odds": null
+  },
+  {
+   "name": "Hawai'i Rainbow Warriors at Stanford Cardinal",
+   "date": "2026-08-29T23:00Z",
+   "status": "Final",
+   "home": {
+    "team": "Stanford Cardinal",
+    "rank": null,
+    "record": "1-0",
+    "score": "37"
+   },
+   "away": {
+    "team": "Hawai'i Rainbow Warriors",
+    "rank": null,
+    "record": "0-1",
+    "score": "27"
+   },
+   "odds": null
+  },
+  {
+   "name": "New Mexico State Aggies at Florida State Seminoles",
+   "date": "2026-08-29T23:00Z",
+   "status": "Final",
+   "home": {
+    "team": "Florida State Seminoles",
+    "rank": null,
+    "record": "1-0",
+    "score": "34"
+   },
+   "away": {
+    "team": "New Mexico State Aggies",
+    "rank": null,
+    "record": "0-1",
+    "score": "17"
+   },
+   "odds": null
+  },
+  {
+   "name": "Memphis Tigers at UNLV Rebels",
+   "date": "2026-08-30T02:00Z",
+   "status": "Final",
+   "home": {
+    "team": "UNLV Rebels",
+    "rank": null,
+    "record": "0-1",
+    "score": "21"
+   },
+   "away": {
+    "team": "Memphis Tigers",
+    "rank": null,
+    "record": "1-0",
+    "score": "27"
+   },
+   "odds": null
+  },
+  {
+   "name": "Massachusetts Minutemen at Rutgers Scarlet Knights",
+   "date": "2026-09-03T22:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Rutgers Scarlet Knights",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Massachusetts Minutemen",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "RUTG -28.5",
+    "over_under": 51.5,
+    "home_ml": "-8000",
+    "away_ml": "+2200"
+   }
+  },
+  {
+   "name": "Bethune-Cookman Wildcats at UCF Knights",
+   "date": "2026-09-03T23:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "UCF Knights",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Bethune-Cookman Wildcats",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "UCF -42.5",
+    "over_under": 57.5,
+    "home_ml": "OFF",
+    "away_ml": "OFF"
+   }
+  },
+  {
+   "name": "Akron Zips at Wake Forest Demon Deacons",
+   "date": "2026-09-03T23:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Wake Forest Demon Deacons",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Akron Zips",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "WAKE -24.5",
+    "over_under": 48.5,
+    "home_ml": "-3200",
+    "away_ml": "+1400"
+   }
+  },
+  {
+   "name": "Merrimack Warriors at Delaware Blue Hens",
+   "date": "2026-09-03T23:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Delaware Blue Hens",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Merrimack Warriors",
+    "rank": null,
+    "record": "0-1",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "DEL -27.5",
+    "over_under": 55.5,
+    "home_ml": "-20000",
+    "away_ml": "+3500"
+   }
+  },
+  {
+   "name": "West Georgia Wolves at Kennesaw State Owls",
+   "date": "2026-09-03T23:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Kennesaw State Owls",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "West Georgia Wolves",
+    "rank": null,
+    "record": "0-1",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "KENN -23.5",
+    "over_under": 51.5,
+    "home_ml": "-6500",
+    "away_ml": "+2000"
+   }
+  },
+  {
+   "name": "UAlbany Great Danes at Buffalo Bulls",
+   "date": "2026-09-03T23:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Buffalo Bulls",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "UAlbany Great Danes",
+    "rank": null,
+    "record": "1-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "BUF -24.5",
+    "over_under": 48.5,
+    "home_ml": "-5000",
+    "away_ml": "+1800"
+   }
+  },
+  {
+   "name": "Arkansas-Pine Bluff Golden Lions at Missouri Tigers",
+   "date": "2026-09-04T00:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Missouri Tigers",
+    "rank": 25,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Arkansas-Pine Bluff Golden Lions",
+    "rank": null,
+    "record": "1-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "MIZ -54.5",
+    "over_under": 60.5,
+    "home_ml": "OFF",
+    "away_ml": "OFF"
+   }
+  },
+  {
+   "name": "Colorado Buffaloes at Georgia Tech Yellow Jackets",
+   "date": "2026-09-04T00:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Georgia Tech Yellow Jackets",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Colorado Buffaloes",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "GT -6.5",
+    "over_under": 51.5,
+    "home_ml": "-245",
+    "away_ml": "+200"
+   }
+  },
+  {
+   "name": "Eastern Illinois Panthers at Minnesota Golden Gophers",
+   "date": "2026-09-04T00:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Minnesota Golden Gophers",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Eastern Illinois Panthers",
+    "rank": null,
+    "record": "1-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "MINN -42.5",
+    "over_under": 51.5,
+    "home_ml": "OFF",
+    "away_ml": "OFF"
+   }
+  },
+  {
+   "name": "Idaho Vandals at Utah Utes",
+   "date": "2026-09-04T01:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Utah Utes",
+    "rank": 21,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Idaho Vandals",
+    "rank": null,
+    "record": "0-1",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "UTAH -34.5",
+    "over_under": 57.5,
+    "home_ml": "-20000",
+    "away_ml": "+3500"
+   }
+  },
+  {
+   "name": "UAB Blazers at Illinois Fighting Illini",
+   "date": "2026-09-04T01:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Illinois Fighting Illini",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "UAB Blazers",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "ILL -27.5",
+    "over_under": 55.5,
+    "home_ml": "-6500",
+    "away_ml": "+2000"
+   }
+  },
+  {
+   "name": "San Jos\u00e9 State Spartans at Eastern Michigan Eagles",
+   "date": "2026-09-04T22:30Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Eastern Michigan Eagles",
+    "rank": null,
+    "record": "1-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "San Jos\u00e9 State Spartans",
+    "rank": null,
+    "record": "0-1",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "EMU -3.5",
+    "over_under": 55.5,
+    "home_ml": "-175",
+    "away_ml": "+145"
+   }
+  },
+  {
+   "name": "Indiana State Sycamores at Purdue Boilermakers",
+   "date": "2026-09-04T23:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Purdue Boilermakers",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Indiana State Sycamores",
+    "rank": null,
+    "record": "0-1",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "PUR -35.5",
+    "over_under": 56.5,
+    "home_ml": "OFF",
+    "away_ml": "OFF"
+   }
+  },
+  {
+   "name": "North Carolina A&T Aggies at Georgia State Panthers",
+   "date": "2026-09-04T23:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Georgia State Panthers",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "North Carolina A&T Aggies",
+    "rank": null,
+    "record": "0-1",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "GAST -28.5",
+    "over_under": 63.5,
+    "home_ml": "-6500",
+    "away_ml": "+2000"
+   }
+  },
+  {
+   "name": "UTEP Miners at Oklahoma Sooners",
+   "date": "2026-09-05T00:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Oklahoma Sooners",
+    "rank": 10,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "UTEP Miners",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "OU -41.5",
+    "over_under": 50.5,
+    "home_ml": "OFF",
+    "away_ml": "OFF"
+   }
+  },
+  {
+   "name": "Long Island University Sharks at Kansas Jayhawks",
+   "date": "2026-09-05T00:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Kansas Jayhawks",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Long Island University Sharks",
+    "rank": null,
+    "record": "0-1",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "KU -39.5",
+    "over_under": 53.5,
+    "home_ml": "OFF",
+    "away_ml": "OFF"
+   }
+  },
+  {
+   "name": "Toledo Rockets at Michigan State Spartans",
+   "date": "2026-09-05T00:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Michigan State Spartans",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Toledo Rockets",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "MSU -10",
+    "over_under": 47.5,
+    "home_ml": "-425",
+    "away_ml": "+330"
+   }
+  },
+  {
+   "name": "Miami Hurricanes at Stanford Cardinal",
+   "date": "2026-09-05T01:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Stanford Cardinal",
+    "rank": null,
+    "record": "1-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Miami Hurricanes",
+    "rank": 7,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "MIA -24.5",
+    "over_under": 47.5,
+    "home_ml": "+1700",
+    "away_ml": "-4500"
+   }
+  },
+  {
+   "name": "Fresno State Bulldogs at USC Trojans",
+   "date": "2026-09-05T01:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "USC Trojans",
+    "rank": 14,
+    "record": "1-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Fresno State Bulldogs",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "USC -22.5",
+    "over_under": 51.5,
+    "home_ml": "-2800",
+    "away_ml": "+1300"
+   }
+  },
+  {
+   "name": "North Texas Mean Green at Indiana Hoosiers",
+   "date": "2026-09-05T16:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Indiana Hoosiers",
+    "rank": 6,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "North Texas Mean Green",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "IU -40.5",
+    "over_under": 55.5,
+    "home_ml": "OFF",
+    "away_ml": "OFF"
+   }
+  },
+  {
+   "name": "East Carolina Pirates at Alabama Crimson Tide",
+   "date": "2026-09-05T16:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Alabama Crimson Tide",
+    "rank": 13,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "East Carolina Pirates",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "ALA -28.5",
+    "over_under": 52.5,
+    "home_ml": "-10000",
+    "away_ml": "+3000"
+   }
+  },
+  {
+   "name": "Oregon State Beavers at Houston Cougars",
+   "date": "2026-09-05T16:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Houston Cougars",
+    "rank": 23,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Oregon State Beavers",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "HOU -20.5",
+    "over_under": 49.5,
+    "home_ml": "-1800",
+    "away_ml": "+1000"
+   }
+  },
+  {
+   "name": "Coastal Carolina Chanticleers at West Virginia Mountaineers",
+   "date": "2026-09-05T16:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "West Virginia Mountaineers",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Coastal Carolina Chanticleers",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "WVU -21.5",
+    "over_under": 55.5,
+    "home_ml": "-1800",
+    "away_ml": "+1000"
+   }
+  },
+  {
+   "name": "New Hampshire Wildcats at Syracuse Orange",
+   "date": "2026-09-05T16:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Syracuse Orange",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "New Hampshire Wildcats",
+    "rank": null,
+    "record": "0-1",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "SYR -33.5",
+    "over_under": 55.5,
+    "home_ml": "OFF",
+    "away_ml": "OFF"
+   }
+  },
+  {
+   "name": "Ohio Bobcats at Nebraska Cornhuskers",
+   "date": "2026-09-05T16:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Nebraska Cornhuskers",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Ohio Bobcats",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "NEB -24.5",
+    "over_under": 46.5,
+    "home_ml": "-2800",
+    "away_ml": "+1300"
+   }
+  },
+  {
+   "name": "Lafayette Leopards at UConn Huskies",
+   "date": "2026-09-05T16:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "UConn Huskies",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Lafayette Leopards",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "CONN -19.5",
+    "over_under": 57.5,
+    "home_ml": "-1350",
+    "away_ml": "+800"
+   }
+  },
+  {
+   "name": "Bryant Bulldogs at Army Black Knights",
+   "date": "2026-09-05T16:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Army Black Knights",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Bryant Bulldogs",
+    "rank": null,
+    "record": "1-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "ARMY -36.5",
+    "over_under": 51.5,
+    "home_ml": "OFF",
+    "away_ml": "OFF"
+   }
+  },
+  {
+   "name": "Tarleton State Texans at Bowling Green Falcons",
+   "date": "2026-09-05T16:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Bowling Green Falcons",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Tarleton State Texans",
+    "rank": null,
+    "record": "1-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "BGSU -2.5",
+    "over_under": 47.5,
+    "home_ml": "-142",
+    "away_ml": "+120"
+   }
+  },
+  {
+   "name": "Liberty Flames at James Madison Dukes",
+   "date": "2026-09-05T16:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "James Madison Dukes",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Liberty Flames",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "JMU -6.5",
+    "over_under": 51.5,
+    "home_ml": "-245",
+    "away_ml": "+200"
+   }
+  },
+  {
+   "name": "Ball State Cardinals at Ohio State Buckeyes",
+   "date": "2026-09-05T16:30Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Ohio State Buckeyes",
+    "rank": 1,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Ball State Cardinals",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "OSU -50.5",
+    "over_under": 56.5,
+    "home_ml": "OFF",
+    "away_ml": "OFF"
+   }
+  },
+  {
+   "name": "Miami (OH) RedHawks at Pittsburgh Panthers",
+   "date": "2026-09-05T16:30Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Pittsburgh Panthers",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Miami (OH) RedHawks",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "PITT -16.5",
+    "over_under": 48.5,
+    "home_ml": "-850",
+    "away_ml": "+575"
+   }
+  },
+  {
+   "name": "Kent State Golden Flashes at South Carolina Gamecocks",
+   "date": "2026-09-05T16:45Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "South Carolina Gamecocks",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Kent State Golden Flashes",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "SC -36.5",
+    "over_under": 53.5,
+    "home_ml": "-100000",
+    "away_ml": "+5000"
+   }
+  },
+  {
+   "name": "Youngstown State Penguins at Kentucky Wildcats",
+   "date": "2026-09-05T17:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Kentucky Wildcats",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Youngstown State Penguins",
+    "rank": null,
+    "record": "1-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "UK -23.5",
+    "over_under": 62.5,
+    "home_ml": "-3600",
+    "away_ml": "+1500"
+   }
+  },
+  {
+   "name": "Southeast Missouri State Redhawks at Iowa State Cyclones",
+   "date": "2026-09-05T17:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Iowa State Cyclones",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Southeast Missouri State Redhawks",
+    "rank": null,
+    "record": "1-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "ISU -29.5",
+    "over_under": 53.5,
+    "home_ml": "-20000",
+    "away_ml": "+3500"
+   }
+  },
+  {
+   "name": "Duquesne Dukes at Air Force Falcons",
+   "date": "2026-09-05T17:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Air Force Falcons",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Duquesne Dukes",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "AF -28.5",
+    "over_under": 57.5,
+    "home_ml": "-100000",
+    "away_ml": "+5000"
+   }
+  },
+  {
+   "name": "Rhode Island Rams at Temple Owls",
+   "date": "2026-09-05T18:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Temple Owls",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Rhode Island Rams",
+    "rank": null,
+    "record": "1-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "TEM -10.5",
+    "over_under": 51.5,
+    "home_ml": "-455",
+    "away_ml": "+350"
+   }
+  },
+  {
+   "name": "Tennessee State Tigers at Georgia Bulldogs",
+   "date": "2026-09-05T19:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Georgia Bulldogs",
+    "rank": 3,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Tennessee State Tigers",
+    "rank": null,
+    "record": "0-1",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "UGA -46.5",
+    "over_under": 56.5,
+    "home_ml": "OFF",
+    "away_ml": "OFF"
+   }
+  },
+  {
+   "name": "Boise State Broncos at Oregon Ducks",
+   "date": "2026-09-05T19:30Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Oregon Ducks",
+    "rank": 2,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Boise State Broncos",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "ORE -24.5",
+    "over_under": 51.5,
+    "home_ml": "-4000",
+    "away_ml": "+1600"
+   }
+  },
+  {
+   "name": "Texas State Bobcats at Texas Longhorns",
+   "date": "2026-09-05T19:30Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Texas Longhorns",
+    "rank": 5,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Texas State Bobcats",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "TEX -30.5",
+    "over_under": 59.5,
+    "home_ml": "-10000",
+    "away_ml": "+3000"
+   }
+  },
+  {
+   "name": "Marshall Thundering Herd at Penn State Nittany Lions",
+   "date": "2026-09-05T19:30Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Penn State Nittany Lions",
+    "rank": 18,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Marshall Thundering Herd",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "PSU -24.5",
+    "over_under": 52.5,
+    "home_ml": "-4000",
+    "away_ml": "+1600"
+   }
+  },
+  {
+   "name": "Furman Paladins at Tennessee Volunteers",
+   "date": "2026-09-05T19:30Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Tennessee Volunteers",
+    "rank": 20,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Furman Paladins",
+    "rank": null,
+    "record": "1-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "TENN -46.5",
+    "over_under": 66.5,
+    "home_ml": "OFF",
+    "away_ml": "OFF"
+   }
+  },
+  {
+   "name": "Baylor Bears at Auburn Tigers",
+   "date": "2026-09-05T19:30Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Auburn Tigers",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Baylor Bears",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "AUB -7",
+    "over_under": 59.5,
+    "home_ml": "-298",
+    "away_ml": "+240"
+   }
+  },
+  {
+   "name": "Boston College Eagles at Cincinnati Bearcats",
+   "date": "2026-09-05T19:30Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Cincinnati Bearcats",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Boston College Eagles",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "CIN -7.5",
+    "over_under": 49.5,
+    "home_ml": "-298",
+    "away_ml": "+240"
+   }
+  },
+  {
+   "name": "Tulane Green Wave at Duke Blue Devils",
+   "date": "2026-09-05T19:30Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Duke Blue Devils",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Tulane Green Wave",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "DUKE -9.5",
+    "over_under": 50.5,
+    "home_ml": "-380",
+    "away_ml": "+300"
+   }
+  },
+  {
+   "name": "The Citadel Bulldogs at Charlotte 49ers",
+   "date": "2026-09-05T19:30Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Charlotte 49ers",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "The Citadel Bulldogs",
+    "rank": null,
+    "record": "0-1",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "CLT -19.5",
+    "over_under": 46.5,
+    "home_ml": "-2800",
+    "away_ml": "+1300"
+   }
+  },
+  {
+   "name": "Towson Tigers at Navy Midshipmen",
+   "date": "2026-09-05T19:30Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Navy Midshipmen",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Towson Tigers",
+    "rank": null,
+    "record": "0-1",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "NAVY -30.5",
+    "over_under": 53.5,
+    "home_ml": "-20000",
+    "away_ml": "+3500"
+   }
+  },
+  {
+   "name": "UT Rio Grande Valley Vaqueros at UTSA Roadrunners",
+   "date": "2026-09-05T19:30Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "UTSA Roadrunners",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "UT Rio Grande Valley Vaqueros",
+    "rank": null,
+    "record": "1-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "UTSA -28.5",
+    "over_under": 59.5,
+    "home_ml": "-9000",
+    "away_ml": "+2500"
+   }
+  },
+  {
+   "name": "Fordham Rams at North Dakota State Bison",
+   "date": "2026-09-05T19:30Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "North Dakota State Bison",
+    "rank": null,
+    "record": "1-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Fordham Rams",
+    "rank": null,
+    "record": "0-1",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "NDSU -39.5",
+    "over_under": 57.5,
+    "home_ml": "OFF",
+    "away_ml": "OFF"
+   }
+  },
+  {
+   "name": "Maine Black Bears at App State Mountaineers",
+   "date": "2026-09-05T19:30Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "App State Mountaineers",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Maine Black Bears",
+    "rank": null,
+    "record": "1-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "APP -18.5",
+    "over_under": 53.5,
+    "home_ml": "-1050",
+    "away_ml": "+675"
+   }
+  },
+  {
+   "name": "Oklahoma State Cowboys at Tulsa Golden Hurricane",
+   "date": "2026-09-05T19:45Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Tulsa Golden Hurricane",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Oklahoma State Cowboys",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "OKST -14",
+    "over_under": 57.5,
+    "home_ml": "+440",
+    "away_ml": "-600"
+   }
+  },
+  {
+   "name": "Northern Illinois Huskies at Iowa Hawkeyes",
+   "date": "2026-09-05T20:15Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Iowa Hawkeyes",
+    "rank": 22,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Northern Illinois Huskies",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "IOWA -31.5",
+    "over_under": 44.5,
+    "home_ml": "-100000",
+    "away_ml": "+5000"
+   }
+  },
+  {
+   "name": "North Alabama Lions at Arkansas Razorbacks",
+   "date": "2026-09-05T20:15Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Arkansas Razorbacks",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "North Alabama Lions",
+    "rank": null,
+    "record": "1-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "ARK -40.5",
+    "over_under": 63.5,
+    "home_ml": "OFF",
+    "away_ml": "OFF"
+   }
+  },
+  {
+   "name": "Alcorn State Braves at Southern Miss Golden Eagles",
+   "date": "2026-09-05T21:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Southern Miss Golden Eagles",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Alcorn State Braves",
+    "rank": null,
+    "record": "1-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "USM -21.5",
+    "over_under": 50.5,
+    "home_ml": "-5000",
+    "away_ml": "+1800"
+   }
+  },
+  {
+   "name": "Wyoming Cowboys at Colorado State Rams",
+   "date": "2026-09-05T22:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Colorado State Rams",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Wyoming Cowboys",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "CSU -3",
+    "over_under": 46.5,
+    "home_ml": "-162",
+    "away_ml": "+136"
+   }
+  },
+  {
+   "name": "Norfolk State Spartans at Old Dominion Monarchs",
+   "date": "2026-09-05T22:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Old Dominion Monarchs",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Norfolk State Spartans",
+    "rank": null,
+    "record": "1-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "ODU -41.5",
+    "over_under": 54.5,
+    "home_ml": "OFF",
+    "away_ml": "OFF"
+   }
+  },
+  {
+   "name": "Missouri State Bears at Texas A&M Aggies",
+   "date": "2026-09-05T23:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Texas A&M Aggies",
+    "rank": 8,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Missouri State Bears",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "TA&M -41.5",
+    "over_under": 53.5,
+    "home_ml": "OFF",
+    "away_ml": "OFF"
+   }
+  },
+  {
+   "name": "Abilene Christian Wildcats at Texas Tech Red Raiders",
+   "date": "2026-09-05T23:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Texas Tech Red Raiders",
+    "rank": 12,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Abilene Christian Wildcats",
+    "rank": null,
+    "record": "0-1",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "TTU -42.5",
+    "over_under": 59.5,
+    "home_ml": "OFF",
+    "away_ml": "OFF"
+   }
+  },
+  {
+   "name": "Austin Peay Governors at Vanderbilt Commodores",
+   "date": "2026-09-05T23:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Vanderbilt Commodores",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Austin Peay Governors",
+    "rank": null,
+    "record": "1-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "VAN -30.5",
+    "over_under": 60.5,
+    "home_ml": "-9000",
+    "away_ml": "+2500"
+   }
+  },
+  {
+   "name": "Nicholls Colonels at Kansas State Wildcats",
+   "date": "2026-09-05T23:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Kansas State Wildcats",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Nicholls Colonels",
+    "rank": null,
+    "record": "1-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "KSU -40.5",
+    "over_under": 55.5,
+    "home_ml": "OFF",
+    "away_ml": "OFF"
+   }
+  },
+  {
+   "name": "Idaho State Bengals at Utah State Aggies",
+   "date": "2026-09-05T23:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Utah State Aggies",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Idaho State Bengals",
+    "rank": null,
+    "record": "1-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "USU -12.5",
+    "over_under": 62.5,
+    "home_ml": "-550",
+    "away_ml": "+410"
+   }
+  },
+  {
+   "name": "Arkansas State Red Wolves at Memphis Tigers",
+   "date": "2026-09-05T23:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Memphis Tigers",
+    "rank": null,
+    "record": "1-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Arkansas State Red Wolves",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "MEM -10.5",
+    "over_under": 52.5,
+    "home_ml": "-395",
+    "away_ml": "+310"
+   }
+  },
+  {
+   "name": "Houston Christian Huskies at Rice Owls",
+   "date": "2026-09-05T23:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Rice Owls",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Houston Christian Huskies",
+    "rank": null,
+    "record": "1-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "RICE -22.5",
+    "over_under": 47.5,
+    "home_ml": "-1450",
+    "away_ml": "+850"
+   }
+  },
+  {
+   "name": "Florida International Panthers at South Florida Bulls",
+   "date": "2026-09-05T23:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "South Florida Bulls",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Florida International Panthers",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "USF -13.5",
+    "over_under": 52.5,
+    "home_ml": "-575",
+    "away_ml": "+425"
+   }
+  },
+  {
+   "name": "Murray State Racers at Middle Tennessee Blue Raiders",
+   "date": "2026-09-05T23:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Middle Tennessee Blue Raiders",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Murray State Racers",
+    "rank": null,
+    "record": "0-1",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "MTSU -20.5",
+    "over_under": 59.5,
+    "home_ml": "-1650",
+    "away_ml": "+950"
+   }
+  },
+  {
+   "name": "Eastern Kentucky Colonels at Jacksonville State Gamecocks",
+   "date": "2026-09-05T23:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Jacksonville State Gamecocks",
+    "rank": null,
+    "record": "0-1",
+    "score": "0"
+   },
+   "away": {
+    "team": "Eastern Kentucky Colonels",
+    "rank": null,
+    "record": "0-1",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "JXST -19.5",
+    "over_under": 54.5,
+    "home_ml": "-2100",
+    "away_ml": "+1100"
+   }
+  },
+  {
+   "name": "Charleston Southern Buccaneers at Georgia Southern Eagles",
+   "date": "2026-09-05T23:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Georgia Southern Eagles",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Charleston Southern Buccaneers",
+    "rank": null,
+    "record": "0-1",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "GASO -25.5",
+    "over_under": 51.5,
+    "home_ml": "-4500",
+    "away_ml": "+1700"
+   }
+  },
+  {
+   "name": "SE Louisiana Lions at South Alabama Jaguars",
+   "date": "2026-09-05T23:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "South Alabama Jaguars",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "SE Louisiana Lions",
+    "rank": null,
+    "record": "0-1",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "USA -12.5",
+    "over_under": 52.5,
+    "home_ml": "-600",
+    "away_ml": "+440"
+   }
+  },
+  {
+   "name": "Sam Houston Bearkats at Troy Trojans",
+   "date": "2026-09-05T23:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Troy Trojans",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Sam Houston Bearkats",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "TROY -16.5",
+    "over_under": 53.5,
+    "home_ml": "-1000",
+    "away_ml": "+650"
+   }
+  },
+  {
+   "name": "Clemson Tigers at LSU Tigers",
+   "date": "2026-09-05T23:30Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "LSU Tigers",
+    "rank": 11,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Clemson Tigers",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "LSU -10.5",
+    "over_under": 51.5,
+    "home_ml": "-380",
+    "away_ml": "+300"
+   }
+  },
+  {
+   "name": "Western Michigan Broncos at Michigan Wolverines",
+   "date": "2026-09-05T23:30Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Michigan Wolverines",
+    "rank": 16,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Western Michigan Broncos",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "MICH -27.5",
+    "over_under": 48.5,
+    "home_ml": "-5000",
+    "away_ml": "+1800"
+   }
+  },
+  {
+   "name": "UL Monroe Warhawks at Mississippi State Bulldogs",
+   "date": "2026-09-05T23:30Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Mississippi State Bulldogs",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "UL Monroe Warhawks",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "MSST -28.5",
+    "over_under": 54.5,
+    "home_ml": "-6500",
+    "away_ml": "+2000"
+   }
+  },
+  {
+   "name": "VMI Keydets at Virginia Tech Hokies",
+   "date": "2026-09-05T23:30Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Virginia Tech Hokies",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "VMI Keydets",
+    "rank": null,
+    "record": "0-1",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "VT -54.5",
+    "over_under": 61.5,
+    "home_ml": "OFF",
+    "away_ml": "OFF"
+   }
+  },
+  {
+   "name": "Northwestern State Demons at Louisiana Tech Bulldogs",
+   "date": "2026-09-05T23:30Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Louisiana Tech Bulldogs",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Northwestern State Demons",
+    "rank": null,
+    "record": "0-1",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "LT -44.5",
+    "over_under": 55.5,
+    "home_ml": "OFF",
+    "away_ml": "OFF"
+   }
+  },
+  {
+   "name": "Florida Atlantic Owls at Florida Gators",
+   "date": "2026-09-05T23:45Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Florida Gators",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Florida Atlantic Owls",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "FLA -27.5",
+    "over_under": 59.5,
+    "home_ml": "-5000",
+    "away_ml": "+1800"
+   }
+  },
+  {
+   "name": "Utah Tech Trailblazers at BYU Cougars",
+   "date": "2026-09-06T00:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "BYU Cougars",
+    "rank": 14,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Utah Tech Trailblazers",
+    "rank": null,
+    "record": "0-1",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "BYU -51.5",
+    "over_under": 59.5,
+    "home_ml": "OFF",
+    "away_ml": "OFF"
+   }
+  },
+  {
+   "name": "Hampton Pirates at Maryland Terrapins",
+   "date": "2026-09-06T00:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Maryland Terrapins",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Hampton Pirates",
+    "rank": null,
+    "record": "1-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "MD -45.5",
+    "over_under": 56.5,
+    "home_ml": "OFF",
+    "away_ml": "OFF"
+   }
+  },
+  {
+   "name": "South Dakota State Jackrabbits at Northwestern Wildcats",
+   "date": "2026-09-06T00:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Northwestern Wildcats",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "South Dakota State Jackrabbits",
+    "rank": null,
+    "record": "1-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "NU -12.5",
+    "over_under": 46.5,
+    "home_ml": "-675",
+    "away_ml": "+490"
+   }
+  },
+  {
+   "name": "Lamar Cardinals at Louisiana Ragin' Cajuns",
+   "date": "2026-09-06T00:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Louisiana Ragin' Cajuns",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Lamar Cardinals",
+    "rank": null,
+    "record": "1-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "UL -20.5",
+    "over_under": 48.5,
+    "home_ml": "-950",
+    "away_ml": "+625"
+   }
+  },
+  {
+   "name": "Mercyhurst Lakers at New Mexico State Aggies",
+   "date": "2026-09-06T01:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "New Mexico State Aggies",
+    "rank": null,
+    "record": "0-1",
+    "score": "0"
+   },
+   "away": {
+    "team": "Mercyhurst Lakers",
+    "rank": null,
+    "record": "0-1",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "NMSU -28.5",
+    "over_under": 51.5,
+    "home_ml": "-10000",
+    "away_ml": "+3000"
+   }
+  },
+  {
+   "name": "Northern Arizona Lumberjacks at Arizona Wildcats",
+   "date": "2026-09-06T01:30Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Arizona Wildcats",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Northern Arizona Lumberjacks",
+    "rank": null,
+    "record": "1-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "ARIZ -31.5",
+    "over_under": 56.5,
+    "home_ml": "-8000",
+    "away_ml": "+2200"
+   }
+  },
+  {
+   "name": "Portland State Vikings at San Diego State Aztecs",
+   "date": "2026-09-06T01:30Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "San Diego State Aztecs",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Portland State Vikings",
+    "rank": null,
+    "record": "0-1",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "SDSU -40.5",
+    "over_under": 57.5,
+    "home_ml": "OFF",
+    "away_ml": "OFF"
+   }
+  },
+  {
+   "name": "Morgan State Bears at Arizona State Sun Devils",
+   "date": "2026-09-06T02:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Arizona State Sun Devils",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Morgan State Bears",
+    "rank": null,
+    "record": "1-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "ASU -43.5",
+    "over_under": 52.5,
+    "home_ml": "OFF",
+    "away_ml": "OFF"
+   }
+  },
+  {
+   "name": "UNLV Rebels at Hawai'i Rainbow Warriors",
+   "date": "2026-09-06T02:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Hawai'i Rainbow Warriors",
+    "rank": null,
+    "record": "0-1",
+    "score": "0"
+   },
+   "away": {
+    "team": "UNLV Rebels",
+    "rank": null,
+    "record": "0-1",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "UNLV -3",
+    "over_under": 58.5,
+    "home_ml": "+124",
+    "away_ml": "-148"
+   }
+  },
+  {
+   "name": "Central Michigan Chippewas at New Mexico Lobos",
+   "date": "2026-09-06T02:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "New Mexico Lobos",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Central Michigan Chippewas",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "UNM -10",
+    "over_under": 46.5,
+    "home_ml": "-410",
+    "away_ml": "+320"
+   }
+  },
+  {
+   "name": "Mississippi Valley State Delta Devils at Sacramento State Hornets",
+   "date": "2026-09-06T02:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Sacramento State Hornets",
+    "rank": null,
+    "record": "0-1",
+    "score": "0"
+   },
+   "away": {
+    "team": "Mississippi Valley State Delta Devils",
+    "rank": null,
+    "record": "0-1",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "SAC -35.5",
+    "over_under": 56.5,
+    "home_ml": "OFF",
+    "away_ml": "OFF"
+   }
+  },
+  {
+   "name": "UCLA Bruins at California Golden Bears",
+   "date": "2026-09-06T02:30Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "California Golden Bears",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "UCLA Bruins",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "UCLA -1.5",
+    "over_under": 53.5,
+    "home_ml": "+100",
+    "away_ml": "-120"
+   }
+  },
+  {
+   "name": "Western Kentucky Hilltoppers at Nevada Wolf Pack",
+   "date": "2026-09-06T02:30Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Nevada Wolf Pack",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Western Kentucky Hilltoppers",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "WKU -2.5",
+    "over_under": 52.5,
+    "home_ml": "+110",
+    "away_ml": "-130"
+   }
+  },
+  {
+   "name": "Washington State Cougars at Washington Huskies",
+   "date": "2026-09-06T20:00Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Washington Huskies",
+    "rank": 17,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Washington State Cougars",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "WASH -23.5",
+    "over_under": 50.5,
+    "home_ml": "-2800",
+    "away_ml": "+1300"
+   }
+  },
+  {
+   "name": "Wisconsin Badgers at Notre Dame Fighting Irish",
+   "date": "2026-09-06T23:30Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Notre Dame Fighting Irish",
+    "rank": 4,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Wisconsin Badgers",
+    "rank": null,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "ND -20.5",
+    "over_under": 47.5,
+    "home_ml": "-1800",
+    "away_ml": "+1000"
+   }
+  },
+  {
+   "name": "Louisville Cardinals at Ole Miss Rebels",
+   "date": "2026-09-06T23:30Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Ole Miss Rebels",
+    "rank": 9,
+    "record": "0-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "Louisville Cardinals",
+    "rank": 24,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "MISS -7",
+    "over_under": 55.5,
+    "home_ml": "-258",
+    "away_ml": "+210"
+   }
+  },
+  {
+   "name": "SMU Mustangs at Florida State Seminoles",
+   "date": "2026-09-07T23:30Z",
+   "status": "Scheduled",
+   "home": {
+    "team": "Florida State Seminoles",
+    "rank": null,
+    "record": "1-0",
+    "score": "0"
+   },
+   "away": {
+    "team": "SMU Mustangs",
+    "rank": 19,
+    "record": "0-0",
+    "score": "0"
+   },
+   "odds": {
+    "provider": "DraftKings",
+    "details": "SMU -3",
+    "over_under": 53.5,
+    "home_ml": "+130",
+    "away_ml": "-155"
+   }
+  }
+ ]
+}

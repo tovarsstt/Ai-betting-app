@@ -1,43 +1,57 @@
 {
- "generated_at": "2026-08-22T19:02:44+00:00",
+ "generated_at": "2026-08-31T17:53:01+00:00",
  "window_from": "2025-11-01",
- "n_games": 1322,
- "overall_accuracy": 0.5061,
- "always_home_baseline": 0.4372,
+ "n_games": 1649,
+ "overall_accuracy": 0.5167,
+ "always_home_baseline": 0.4457,
  "leagues": {
   "Bundesliga": {
-   "n": 233,
-   "accuracy": 0.515,
-   "rps": 0.1996,
-   "edge_vs_baseline": 0.0778,
+   "n": 238,
+   "accuracy": 0.521,
+   "rps": 0.1977,
+   "edge_vs_baseline": 0.0753,
+   "beats_baseline": true
+  },
+  "Champions League": {
+   "n": 135,
+   "accuracy": 0.5704,
+   "rps": 0.2293,
+   "edge_vs_baseline": 0.1247,
+   "beats_baseline": true
+  },
+  "Europa League": {
+   "n": 135,
+   "accuracy": 0.5259,
+   "rps": 0.2187,
+   "edge_vs_baseline": 0.0802,
    "beats_baseline": true
   },
   "La Liga": {
-   "n": 285,
-   "accuracy": 0.5298,
-   "rps": 0.2057,
-   "edge_vs_baseline": 0.0926,
+   "n": 299,
+   "accuracy": 0.5284,
+   "rps": 0.2053,
+   "edge_vs_baseline": 0.0827,
    "beats_baseline": true
   },
   "Ligue 1": {
-   "n": 218,
-   "accuracy": 0.5092,
-   "rps": 0.2128,
-   "edge_vs_baseline": 0.072,
+   "n": 230,
+   "accuracy": 0.5087,
+   "rps": 0.2125,
+   "edge_vs_baseline": 0.063,
    "beats_baseline": true
   },
   "Premier League": {
-   "n": 294,
-   "accuracy": 0.449,
-   "rps": 0.2096,
+   "n": 306,
+   "accuracy": 0.4575,
+   "rps": 0.2079,
    "edge_vs_baseline": 0.0118,
    "beats_baseline": false
   },
   "Serie A": {
-   "n": 292,
-   "accuracy": 0.5308,
-   "rps": 0.2034,
-   "edge_vs_baseline": 0.0936,
+   "n": 306,
+   "accuracy": 0.5392,
+   "rps": 0.2021,
+   "edge_vs_baseline": 0.0935,
    "beats_baseline": true
   }
  }
