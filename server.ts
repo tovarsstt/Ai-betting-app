@@ -4552,8 +4552,9 @@ app.post('/api/bank-builder', async (req: express.Request, res: express.Response
   // UI sport names -> odds-api keys; soccer runs the Poisson board, the rest
   // run sharp-anchored 2-way ML (Pinnacle fair prob x best price).
   const DAY_CARD_SPORTS: Record<string, string> = {
-    SOCCER: 'soccer_fifa_world_cup', NBA: 'basketball_nba', WNBA: 'basketball_wnba',
-    NFL: 'americanfootball_nfl', MLB: 'baseball_mlb', NHL: 'icehockey_nhl', TENNIS: 'tennis',
+    SOCCER: 'soccer_epl', UCL: 'soccer_uefa_champs_league', NBA: 'basketball_nba',
+    WNBA: 'basketball_wnba', NFL: 'americanfootball_nfl', CFB: 'americanfootball_ncaaf',
+    MLB: 'baseball_mlb', NHL: 'icehockey_nhl', TENNIS: 'tennis',
   };
   if (live) {
     const mapped = DAY_CARD_SPORTS[String(sport || 'SOCCER').toUpperCase()];
@@ -4620,6 +4621,29 @@ app.post('/api/full-board', async (req: express.Request, res: express.Response) 
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ home_team, away_team, home_odds, draw_odds, away_odds }),
       signal: AbortSignal.timeout(4000),
+    });
+    if (!r.ok) return res.status(502).json({ error: 'EDGE_API_ERROR', status: r.status });
+    res.json({ success: true, data: await r.json() });
+  } catch (e: unknown) {
+    res.status(503).json({ error: 'EDGE_API_UNAVAILABLE', message: e instanceof Error ? e.message : String(e) });
+  }
+});
+
+// Live soccer pricing — time-decayed Poisson offset by the live score (edge_api
+// /soccer-live). Auto-pulls minute/score/shots from ESPN (free) when omitted;
+// prices supplied Stake asian lines in cold + tempo-adjusted scenarios.
+app.post('/api/soccer-live', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 20, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  const { league, home, away, minute, score_home, score_away, tempo_mult, total_sot, lines } = req.body ?? {};
+  if (!league || !home || !away) {
+    return res.status(400).json({ error: 'NEED_LEAGUE_HOME_AWAY' });
+  }
+  try {
+    const r = await fetch('http://127.0.0.1:8001/soccer-live', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ league, home, away, minute, score_home, score_away, tempo_mult, total_sot, lines: lines ?? [] }),
+      signal: AbortSignal.timeout(25_000), // may fetch ESPN scoreboard + summary
     });
     if (!r.ok) return res.status(502).json({ error: 'EDGE_API_ERROR', status: r.status });
     res.json({ success: true, data: await r.json() });

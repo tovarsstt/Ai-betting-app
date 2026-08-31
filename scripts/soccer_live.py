@@ -32,9 +32,10 @@ def lambdas_from_ratings(league: str, home: str, away: str) -> tuple[float, floa
     """
     with open(CLUB_RATINGS) as f:
         leagues = json.load(f)["leagues"]
-    if league not in leagues:
-        raise KeyError(f"league not fitted: {league!r} (have {sorted(leagues)})")
-    lg = leagues[league]
+    pool_name = RATINGS_POOL.get(league, league)
+    if pool_name not in leagues:
+        raise KeyError(f"league not fitted: {pool_name!r} (have {sorted(leagues)})")
+    lg = leagues[pool_name]
     teams = lg["teams"]
     missing = [t for t in (home, away) if t not in teams]
     if missing:
@@ -205,6 +206,14 @@ ESPN_LEAGUE_CODES = {
     "La Liga": "esp.1",
     "Bundesliga": "ger.1",
     "Ligue 1": "fra.1",
+    "Champions League": "uefa.champions",
+    "Europa League": "uefa.europa",
+}
+# UEFA cup matches cross leagues, so they price off the pooled "Europe" fit
+# (anchored by real cross-league results — see fit_club_ratings.py).
+RATINGS_POOL = {
+    "Champions League": "Europe",
+    "Europa League": "Europe",
 }
 
 

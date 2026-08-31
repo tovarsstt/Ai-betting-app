@@ -45,6 +45,16 @@ LEAGUES = {
     "ger.1": "Bundesliga",
     "fra.1": "Ligue 1",
 }
+# UEFA cups: the ONLY source of cross-league matches, which is what lets
+# fit_club_ratings pool a joint "Europe" fit whose scales mean something
+# between leagues. Clubs outside the big-5 pool (Porto, Ajax, Celtic…) are
+# accepted VERBATIM under their ESPN name — football-data never covers these
+# competitions, so there is no second spelling to collide with; the hard
+# anti-split guard still applies to any name that resolves into the pool.
+UEFA_LEAGUES = {
+    "uefa.champions": "Champions League",
+    "uefa.europa": "Europa League",
+}
 TIMEOUT = 25
 
 
@@ -72,14 +82,29 @@ def fetch(since: str, until: str | None = None) -> list[dict]:
     until = until or date.today().isoformat()
     rows, unmapped = [], set()
 
-    for slug, league in LEAGUES.items():
-        span = f"{since.replace('-', '')}-{until.replace('-', '')}"
-        try:
-            d = _get("https://site.api.espn.com/apis/site/v2/sports/soccer/"
-                     f"{slug}/scoreboard?dates={span}&limit=400")
-        except (urllib.error.HTTPError, urllib.error.URLError, OSError):
-            continue
-        for ev in d.get("events", []):
+    # ESPN rejects long date spans (a ~14-month query returns an empty body,
+    # verified 2026-08-31) — chunk into windows of at most 120 days.
+    start = date.fromisoformat(since)
+    end = date.fromisoformat(until)
+    windows = []
+    cur = start
+    while cur <= end:
+        w_end = min(cur + timedelta(days=119), end)
+        windows.append((cur, w_end))
+        cur = w_end + timedelta(days=1)
+
+    for slug, league in {**LEAGUES, **UEFA_LEAGUES}.items():
+        is_uefa = slug in UEFA_LEAGUES
+        events = []
+        for w_start, w_end in windows:
+            span = f"{w_start.isoformat().replace('-', '')}-{w_end.isoformat().replace('-', '')}"
+            try:
+                d = _get("https://site.api.espn.com/apis/site/v2/sports/soccer/"
+                         f"{slug}/scoreboard?dates={span}&limit=400")
+            except (urllib.error.HTTPError, urllib.error.URLError, OSError, json.JSONDecodeError):
+                continue
+            events.extend(d.get("events", []))
+        for ev in events:
             st = (ev.get("status") or {}).get("type") or {}
             if not st.get("completed"):
                 continue
@@ -98,7 +123,11 @@ def fetch(since: str, until: str | None = None) -> list[dict]:
             # than invent a second spelling for a club we already track.
             hk = e.resolve_club(hn, pool) if pool else None
             ak = e.resolve_club(an, pool) if pool else None
-            if not hk or not ak:
+            if is_uefa:
+                # UEFA-only clubs enter the pool under their ESPN name.
+                hk = hk or hn
+                ak = ak or an
+            elif not hk or not ak:
                 unmapped.add(hn if not hk else an)
                 continue
             # HARD GUARD: only ever write a name the ratings ALREADY use.
@@ -106,7 +135,7 @@ def fetch(since: str, until: str | None = None) -> list[dict]:
             # that let "Atl. Madrid" and "Rayo Vallecano" into the file as NEW
             # clubs beside "Ath Madrid" and "Vallecano" — one club's history
             # silently split in two, and the next refit baked the split in.
-            if hk not in pool or ak not in pool:
+            if not is_uefa and (hk not in pool or ak not in pool):
                 unmapped.add(hk if hk not in pool else ak)
                 continue
             rows.append({"date": ev.get("date", "")[:10],

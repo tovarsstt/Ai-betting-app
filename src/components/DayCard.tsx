@@ -69,7 +69,7 @@ interface DayCardData {
 
 const BANKROLL_KEY = "caveman_bankroll";
 // F1 excluded: outright race markets don't fit the ML/day-card shape.
-const SUPPORTED = ["SOCCER", "NBA", "WNBA", "NFL", "MLB", "NHL", "TENNIS"];
+const SUPPORTED = ["SOCCER", "UCL", "NBA", "WNBA", "NFL", "CFB", "MLB", "NHL", "TENNIS"];
 
 // Ledger stores American odds; the card works in decimal.
 function decToAmerican(dec: number): number {

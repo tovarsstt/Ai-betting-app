@@ -2,18 +2,21 @@ export const SPORT_KEYS: Record<string, string[]> = {
   NBA:    ["basketball_nba"],
   WNBA:   ["basketball_wnba"],
   NFL:    ["americanfootball_nfl"],
+  CFB:    ["americanfootball_ncaaf"], // college football — sharp-anchor engine, no local model
   MLB:    ["baseball_mlb"],
   NHL:    ["icehockey_nhl"],
   UFC:    ["mma_mixed_martial_arts"], // UFC fight nights + PPV
   F1:     [], // No Odds API coverage — circuit context from local data
-  // World Cup 2026 live — prioritized first
-  // World Cup 2026 (June) is primary. EPL/MLS/La Liga offseason — swapped for
-  // CONMEBOL cups (active, LatAm audience). uefa_euro/copa_america = 404 on Odds API.
+  // 2026-27 club season live (WC 2026 over) — big-5 domestic + UCL first.
   SOCCER: [
-    "soccer_fifa_world_cup",
-    "soccer_conmebol_copa_libertadores",
-    "soccer_conmebol_copa_sudamericana",
+    "soccer_uefa_champs_league",
+    "soccer_epl",
+    "soccer_italy_serie_a",
+    "soccer_spain_la_liga",
+    "soccer_germany_bundesliga",
+    "soccer_france_ligue_one",
   ],
+  UCL: ["soccer_uefa_champs_league"], // own tab: Champions League day card
   // Grass season → Wimbledon → US Open pipeline (inactive keys just return empty)
   TENNIS: [
     "tennis_wta_queens_club_champ",

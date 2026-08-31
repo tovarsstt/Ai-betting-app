@@ -27,6 +27,13 @@ module.exports = {
                 NODE_ENV: "production",
                 PORT: 3001
             }
+        },
+        {
+            name: "god-engine-static",
+            script: "static_server.js",
+            env: {
+                NODE_ENV: "production"
+            }
         }
     ]
 };

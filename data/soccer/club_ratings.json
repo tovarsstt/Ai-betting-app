@@ -1,722 +1,2087 @@
 {
-  "generated_at": "2026-08-22T14:07:16",
+  "generated_at": "2026-08-31T12:37:33",
   "source": "football-data.co.uk",
   "method": "PoissonRidgeMLE(time_decay_halflife=730d) + KeenerEigenvector(power_iteration), fit per-league",
   "leagues": {
     "La Liga": {
-      "n_matches_poisson": 768,
-      "n_matches_eigen": 768,
+      "n_matches_poisson": 785,
+      "n_matches_eigen": 785,
       "n_teams": 25,
-      "mu": 0.0834,
-      "home_advantage": 0.2936,
+      "mu": 0.1129,
+      "home_advantage": 0.2889,
       "teams": {
         "Alaves": {
-          "attack": -0.0816,
-          "defense": 0.0093,
-          "n_matches": 78,
-          "eigen_rating": 0.040317
+          "attack": -0.1079,
+          "defense": 0.0359,
+          "n_matches": 79,
+          "eigen_rating": 0.040287
         },
         "Ath Bilbao": {
-          "attack": -0.0005,
-          "defense": 0.0942,
-          "n_matches": 77,
-          "eigen_rating": 0.045087
+          "attack": -0.0217,
+          "defense": 0.1309,
+          "n_matches": 79,
+          "eigen_rating": 0.045461
         },
         "Ath Madrid": {
-          "attack": 0.304,
-          "defense": 0.2774,
-          "n_matches": 76,
-          "eigen_rating": 0.058924
+          "attack": 0.2991,
+          "defense": 0.2689,
+          "n_matches": 78,
+          "eigen_rating": 0.05874
         },
         "Barcelona": {
-          "attack": 0.7121,
-          "defense": 0.2927,
-          "n_matches": 76,
-          "eigen_rating": 0.071108
+          "attack": 0.7025,
+          "defense": 0.3335,
+          "n_matches": 78,
+          "eigen_rating": 0.070862
         },
         "Betis": {
-          "attack": 0.2065,
-          "defense": 0.0663,
-          "n_matches": 77,
-          "eigen_rating": 0.051307
+          "attack": 0.1871,
+          "defense": 0.0392,
+          "n_matches": 79,
+          "eigen_rating": 0.050549
         },
         "Celta": {
-          "attack": 0.1722,
-          "defense": 0.0047,
-          "n_matches": 76,
-          "eigen_rating": 0.049964
+          "attack": 0.107,
+          "defense": 0.0048,
+          "n_matches": 79,
+          "eigen_rating": 0.048179
         },
         "Dep. A Coruna": {
-          "attack": -0.4403,
-          "defense": 0.1347,
-          "n_matches": 1,
-          "eigen_rating": 0.003721
+          "attack": 0.2149,
+          "defense": 0.0816,
+          "n_matches": 2,
+          "eigen_rating": 0.006921
         },
         "Elche": {
-          "attack": 0.0625,
-          "defense": -0.0892,
-          "n_matches": 39,
-          "eigen_rating": 0.03803
+          "attack": 0.0268,
+          "defense": -0.1295,
+          "n_matches": 41,
+          "eigen_rating": 0.037594
         },
         "Espanol": {
-          "attack": -0.0945,
-          "defense": 0.0015,
-          "n_matches": 77,
-          "eigen_rating": 0.040831
+          "attack": -0.1151,
+          "defense": -0.0019,
+          "n_matches": 79,
+          "eigen_rating": 0.040503
         },
         "Getafe": {
-          "attack": -0.3831,
-          "defense": 0.2843,
-          "n_matches": 77,
-          "eigen_rating": 0.039737
+          "attack": -0.4117,
+          "defense": 0.3079,
+          "n_matches": 78,
+          "eigen_rating": 0.039998
         },
         "Girona": {
-          "attack": -0.1341,
-          "defense": -0.0737,
+          "attack": -0.1558,
+          "defense": -0.069,
           "n_matches": 76,
-          "eigen_rating": 0.036702
+          "eigen_rating": 0.036426
         },
         "Las Palmas": {
-          "attack": -0.1861,
-          "defense": -0.1558,
+          "attack": -0.2067,
+          "defense": -0.1523,
           "n_matches": 38,
-          "eigen_rating": 0.030019
+          "eigen_rating": 0.029768
         },
         "Leganes": {
-          "attack": -0.1854,
-          "defense": -0.0717,
+          "attack": -0.2062,
+          "defense": -0.0682,
           "n_matches": 38,
-          "eigen_rating": 0.034661
+          "eigen_rating": 0.034331
         },
         "Levante": {
-          "attack": -0.0003,
-          "defense": -0.1669,
-          "n_matches": 39,
-          "eigen_rating": 0.033636
+          "attack": 0.0375,
+          "defense": -0.1416,
+          "n_matches": 41,
+          "eigen_rating": 0.035047
         },
         "Mallorca": {
-          "attack": -0.1077,
-          "defense": 0.0174,
+          "attack": -0.1291,
+          "defense": 0.0219,
           "n_matches": 76,
-          "eigen_rating": 0.040768
+          "eigen_rating": 0.040411
         },
         "Osasuna": {
-          "attack": -0.0236,
-          "defense": 0.0262,
-          "n_matches": 76,
-          "eigen_rating": 0.041346
+          "attack": -0.0569,
+          "defense": 0.0555,
+          "n_matches": 78,
+          "eigen_rating": 0.04167
         },
         "Oviedo": {
-          "attack": -0.5586,
-          "defense": -0.1087,
+          "attack": -0.5805,
+          "defense": -0.1032,
           "n_matches": 38,
-          "eigen_rating": 0.026779
+          "eigen_rating": 0.026465
         },
         "Real Madrid": {
-          "attack": 0.4801,
-          "defense": 0.3316,
-          "n_matches": 76,
-          "eigen_rating": 0.065023
+          "attack": 0.4742,
+          "defense": 0.3304,
+          "n_matches": 78,
+          "eigen_rating": 0.064448
         },
         "Santander": {
-          "attack": 0.3615,
-          "defense": -0.1821,
-          "n_matches": 1,
-          "eigen_rating": 0.00466
+          "attack": 0.2384,
+          "defense": -0.2749,
+          "n_matches": 3,
+          "eigen_rating": 0.00789
         },
         "Sevilla": {
-          "attack": -0.0143,
-          "defense": -0.0914,
-          "n_matches": 78,
-          "eigen_rating": 0.03962
+          "attack": -0.0359,
+          "defense": -0.103,
+          "n_matches": 79,
+          "eigen_rating": 0.03911
         },
         "Sociedad": {
-          "attack": 0.0403,
-          "defense": -0.0519,
-          "n_matches": 77,
-          "eigen_rating": 0.043074
+          "attack": 0.0287,
+          "defense": -0.0652,
+          "n_matches": 79,
+          "eigen_rating": 0.042841
         },
         "Valencia": {
-          "attack": -0.0211,
-          "defense": -0.0332,
-          "n_matches": 76,
-          "eigen_rating": 0.044063
+          "attack": -0.0854,
+          "defense": -0.0196,
+          "n_matches": 79,
+          "eigen_rating": 0.043005
         },
         "Valladolid": {
-          "attack": -0.566,
-          "defense": -0.5443,
+          "attack": -0.5867,
+          "defense": -0.5409,
           "n_matches": 38,
-          "eigen_rating": 0.020471
+          "eigen_rating": 0.020299
         },
         "Vallecano": {
-          "attack": -0.1421,
-          "defense": 0.1541,
+          "attack": -0.1636,
+          "defense": 0.1585,
           "n_matches": 78,
-          "eigen_rating": 0.04245
+          "eigen_rating": 0.042166
         },
         "Villarreal": {
-          "attack": 0.4188,
-          "defense": 0.0558,
-          "n_matches": 77,
-          "eigen_rating": 0.057702
+          "attack": 0.3866,
+          "defense": 0.0608,
+          "n_matches": 79,
+          "eigen_rating": 0.057029
         }
       }
     },
     "Premier League": {
-      "n_matches_poisson": 764,
-      "n_matches_eigen": 764,
+      "n_matches_poisson": 776,
+      "n_matches_eigen": 776,
       "n_teams": 23,
-      "mu": 0.2185,
-      "home_advantage": 0.1584,
+      "mu": 0.2243,
+      "home_advantage": 0.1582,
       "teams": {
         "Arsenal": {
-          "attack": 0.3087,
-          "defense": 0.5844,
+          "attack": 0.302,
+          "defense": 0.5915,
           "n_matches": 76,
-          "eigen_rating": 0.066785
+          "eigen_rating": 0.066778
         },
         "Aston Villa": {
-          "attack": 0.1289,
-          "defense": 0.0915,
-          "n_matches": 76,
-          "eigen_rating": 0.051789
+          "attack": 0.1067,
+          "defense": 0.066,
+          "n_matches": 77,
+          "eigen_rating": 0.05022
         },
         "Bournemouth": {
-          "attack": 0.1401,
-          "defense": 0.0864,
-          "n_matches": 76,
-          "eigen_rating": 0.050218
+          "attack": 0.1281,
+          "defense": 0.094,
+          "n_matches": 78,
+          "eigen_rating": 0.050093
         },
         "Brentford": {
-          "attack": 0.1817,
-          "defense": 0.0335,
-          "n_matches": 77,
-          "eigen_rating": 0.046203
+          "attack": 0.17,
+          "defense": 0.0458,
+          "n_matches": 78,
+          "eigen_rating": 0.046233
         },
         "Brighton": {
-          "attack": 0.1413,
-          "defense": 0.0599,
-          "n_matches": 76,
-          "eigen_rating": 0.048948
+          "attack": 0.1842,
+          "defense": 0.0503,
+          "n_matches": 78,
+          "eigen_rating": 0.050218
         },
         "Burnley": {
-          "attack": -0.2351,
-          "defense": -0.2846,
+          "attack": -0.24,
+          "defense": -0.2786,
           "n_matches": 38,
-          "eigen_rating": 0.025652
+          "eigen_rating": 0.025665
         },
         "Chelsea": {
-          "attack": 0.1662,
-          "defense": 0.1157,
-          "n_matches": 76,
-          "eigen_rating": 0.048879
+          "attack": 0.2069,
+          "defense": 0.086,
+          "n_matches": 78,
+          "eigen_rating": 0.049347
         },
         "Crystal Palace": {
-          "attack": -0.1152,
-          "defense": 0.0585,
-          "n_matches": 77,
-          "eigen_rating": 0.042578
+          "attack": -0.1189,
+          "defense": 0.0355,
+          "n_matches": 78,
+          "eigen_rating": 0.042477
         },
         "Everton": {
-          "attack": -0.0944,
-          "defense": 0.166,
-          "n_matches": 77,
-          "eigen_rating": 0.04294
+          "attack": -0.1023,
+          "defense": 0.1791,
+          "n_matches": 78,
+          "eigen_rating": 0.043036
         },
         "Fulham": {
-          "attack": -0.0116,
-          "defense": 0.0553,
-          "n_matches": 76,
-          "eigen_rating": 0.04432
+          "attack": -0.0228,
+          "defense": 0.0437,
+          "n_matches": 78,
+          "eigen_rating": 0.043896
         },
         "Ipswich": {
-          "attack": -0.2961,
-          "defense": -0.4035,
-          "n_matches": 39,
-          "eigen_rating": 0.028845
+          "attack": -0.2534,
+          "defense": -0.4436,
+          "n_matches": 40,
+          "eigen_rating": 0.028357
         },
         "Leeds": {
-          "attack": 0.0062,
-          "defense": 0.0436,
-          "n_matches": 39,
-          "eigen_rating": 0.040639
+          "attack": -0.0087,
+          "defense": 0.0592,
+          "n_matches": 40,
+          "eigen_rating": 0.040669
         },
         "Leicester": {
-          "attack": -0.4554,
-          "defense": -0.3733,
+          "attack": -0.4652,
+          "defense": -0.3645,
           "n_matches": 38,
-          "eigen_rating": 0.024731
+          "eigen_rating": 0.02474
         },
         "Liverpool": {
-          "attack": 0.3639,
-          "defense": 0.1034,
-          "n_matches": 76,
-          "eigen_rating": 0.057589
+          "attack": 0.3627,
+          "defense": 0.092,
+          "n_matches": 78,
+          "eigen_rating": 0.057677
         },
         "Man City": {
-          "attack": 0.385,
-          "defense": 0.334,
-          "n_matches": 76,
-          "eigen_rating": 0.060876
+          "attack": 0.3998,
+          "defense": 0.3384,
+          "n_matches": 78,
+          "eigen_rating": 0.061009
         },
         "Man United": {
-          "attack": 0.1589,
-          "defense": 0.0597,
-          "n_matches": 76,
-          "eigen_rating": 0.050871
+          "attack": 0.1807,
+          "defense": 0.0499,
+          "n_matches": 77,
+          "eigen_rating": 0.05115
         },
         "Newcastle": {
-          "attack": 0.1729,
-          "defense": 0.0485,
-          "n_matches": 76,
-          "eigen_rating": 0.048167
+          "attack": 0.1741,
+          "defense": 0.0708,
+          "n_matches": 78,
+          "eigen_rating": 0.048634
         },
         "Nott'm Forest": {
-          "attack": 0.0287,
-          "defense": 0.1228,
-          "n_matches": 77,
-          "eigen_rating": 0.046661
+          "attack": 0.0336,
+          "defense": 0.1269,
+          "n_matches": 78,
+          "eigen_rating": 0.046426
         },
         "Southampton": {
-          "attack": -0.6654,
-          "defense": -0.4451,
+          "attack": -0.6751,
+          "defense": -0.437,
           "n_matches": 38,
-          "eigen_rating": 0.021076
+          "eigen_rating": 0.021092
         },
         "Sunderland": {
-          "attack": -0.1646,
-          "defense": 0.1187,
-          "n_matches": 39,
-          "eigen_rating": 0.040317
+          "attack": -0.1776,
+          "defense": 0.1518,
+          "n_matches": 40,
+          "eigen_rating": 0.040725
         },
         "Tottenham": {
-          "attack": 0.0589,
-          "defense": -0.1212,
-          "n_matches": 77,
-          "eigen_rating": 0.041902
+          "attack": 0.0329,
+          "defense": -0.1172,
+          "n_matches": 78,
+          "eigen_rating": 0.041592
         },
         "West Ham": {
-          "attack": -0.0738,
-          "defense": -0.1299,
+          "attack": -0.0806,
+          "defense": -0.1229,
           "n_matches": 76,
-          "eigen_rating": 0.039712
+          "eigen_rating": 0.039737
         },
         "Wolves": {
-          "attack": -0.2596,
-          "defense": -0.1945,
+          "attack": -0.2665,
+          "defense": -0.1875,
           "n_matches": 76,
-          "eigen_rating": 0.030301
+          "eigen_rating": 0.030231
         }
       }
     },
     "Ligue 1": {
-      "n_matches_poisson": 614,
-      "n_matches_eigen": 614,
+      "n_matches_poisson": 626,
+      "n_matches_eigen": 626,
       "n_teams": 21,
-      "mu": 0.2098,
-      "home_advantage": 0.2089,
+      "mu": 0.2082,
+      "home_advantage": 0.2078,
       "teams": {
         "Angers": {
-          "attack": -0.4195,
-          "defense": 0.022,
-          "n_matches": 68,
-          "eigen_rating": 0.035851
+          "attack": -0.3833,
+          "defense": 0.0137,
+          "n_matches": 70,
+          "eigen_rating": 0.036206
         },
         "Auxerre": {
-          "attack": -0.1044,
-          "defense": 0.0428,
-          "n_matches": 69,
-          "eigen_rating": 0.04461
+          "attack": -0.1071,
+          "defense": 0.009,
+          "n_matches": 70,
+          "eigen_rating": 0.044169
         },
         "Brest": {
-          "attack": 0.0274,
-          "defense": -0.1176,
-          "n_matches": 68,
-          "eigen_rating": 0.045951
+          "attack": 0.0387,
+          "defense": -0.1288,
+          "n_matches": 69,
+          "eigen_rating": 0.046111
         },
         "Le Havre": {
-          "attack": -0.236,
-          "defense": -0.0754,
-          "n_matches": 68,
-          "eigen_rating": 0.037958
+          "attack": -0.2545,
+          "defense": -0.0539,
+          "n_matches": 70,
+          "eigen_rating": 0.037962
         },
         "Lens": {
-          "attack": 0.2384,
-          "defense": 0.2676,
-          "n_matches": 69,
-          "eigen_rating": 0.062252
+          "attack": 0.2341,
+          "defense": 0.2547,
+          "n_matches": 70,
+          "eigen_rating": 0.061922
         },
         "Lille": {
-          "attack": 0.0997,
-          "defense": 0.3276,
-          "n_matches": 68,
-          "eigen_rating": 0.062217
+          "attack": 0.1218,
+          "defense": 0.3294,
+          "n_matches": 70,
+          "eigen_rating": 0.062607
         },
         "Lorient": {
-          "attack": 0.072,
-          "defense": 0.0214,
-          "n_matches": 34,
-          "eigen_rating": 0.041766
+          "attack": 0.0389,
+          "defense": 0.0576,
+          "n_matches": 35,
+          "eigen_rating": 0.041784
         },
         "Lyon": {
-          "attack": 0.2362,
-          "defense": 0.1491,
-          "n_matches": 68,
-          "eigen_rating": 0.058195
+          "attack": 0.2316,
+          "defense": 0.165,
+          "n_matches": 70,
+          "eigen_rating": 0.059793
         },
         "Marseille": {
-          "attack": 0.3964,
-          "defense": 0.08,
-          "n_matches": 69,
-          "eigen_rating": 0.060065
+          "attack": 0.3805,
+          "defense": 0.0766,
+          "n_matches": 70,
+          "eigen_rating": 0.059604
         },
         "Metz": {
-          "attack": -0.313,
-          "defense": -0.3737,
+          "attack": -0.3093,
+          "defense": -0.3768,
           "n_matches": 34,
-          "eigen_rating": 0.027389
+          "eigen_rating": 0.027376
         },
         "Monaco": {
-          "attack": 0.2968,
-          "defense": 0.0179,
-          "n_matches": 68,
-          "eigen_rating": 0.058498
+          "attack": 0.2887,
+          "defense": 0.0585,
+          "n_matches": 70,
+          "eigen_rating": 0.059057
         },
         "Montpellier": {
-          "attack": -0.7065,
-          "defense": -0.4391,
+          "attack": -0.7071,
+          "defense": -0.4421,
           "n_matches": 34,
-          "eigen_rating": 0.024771
+          "eigen_rating": 0.024796
         },
         "Nantes": {
-          "attack": -0.3215,
-          "defense": -0.0059,
+          "attack": -0.3197,
+          "defense": -0.0088,
           "n_matches": 68,
-          "eigen_rating": 0.038695
+          "eigen_rating": 0.038596
         },
         "Nice": {
-          "attack": 0.0661,
-          "defense": -0.0298,
-          "n_matches": 68,
-          "eigen_rating": 0.046619
+          "attack": 0.0273,
+          "defense": -0.0302,
+          "n_matches": 70,
+          "eigen_rating": 0.04601
         },
         "Paris FC": {
-          "attack": 0.0508,
-          "defense": 0.0477,
-          "n_matches": 34,
-          "eigen_rating": 0.044703
+          "attack": 0.0863,
+          "defense": 0.0736,
+          "n_matches": 35,
+          "eigen_rating": 0.045418
         },
         "Paris SG": {
-          "attack": 0.5542,
-          "defense": 0.4244,
-          "n_matches": 68,
-          "eigen_rating": 0.07587
+          "attack": 0.5601,
+          "defense": 0.386,
+          "n_matches": 70,
+          "eigen_rating": 0.0753
         },
         "Reims": {
-          "attack": -0.3849,
-          "defense": 0.0703,
+          "attack": -0.3852,
+          "defense": 0.0672,
           "n_matches": 34,
-          "eigen_rating": 0.038683
+          "eigen_rating": 0.038568
         },
         "Rennes": {
-          "attack": 0.2079,
-          "defense": -0.0036,
-          "n_matches": 68,
-          "eigen_rating": 0.052037
+          "attack": 0.2188,
+          "defense": -0.0047,
+          "n_matches": 69,
+          "eigen_rating": 0.052363
         },
         "St Etienne": {
-          "attack": -0.1251,
-          "defense": -0.4381,
+          "attack": -0.1256,
+          "defense": -0.4411,
           "n_matches": 34,
-          "eigen_rating": 0.031517
+          "eigen_rating": 0.031559
         },
         "Strasbourg": {
-          "attack": 0.2051,
-          "defense": 0.0571,
-          "n_matches": 69,
-          "eigen_rating": 0.058465
+          "attack": 0.2135,
+          "defense": 0.0601,
+          "n_matches": 70,
+          "eigen_rating": 0.058915
         },
         "Toulouse": {
-          "attack": -0.0015,
-          "defense": 0.1165,
-          "n_matches": 68,
-          "eigen_rating": 0.053889
+          "attack": -0.0091,
+          "defense": 0.0957,
+          "n_matches": 70,
+          "eigen_rating": 0.051884
         }
       }
     },
     "Serie A": {
-      "n_matches_poisson": 762,
-      "n_matches_eigen": 762,
+      "n_matches_poisson": 776,
+      "n_matches_eigen": 776,
       "n_teams": 23,
-      "mu": 0.1006,
-      "home_advantage": 0.0978,
+      "mu": 0.1003,
+      "home_advantage": 0.0969,
       "teams": {
         "Atalanta": {
-          "attack": 0.3448,
-          "defense": 0.2627,
-          "n_matches": 76,
-          "eigen_rating": 0.060853
+          "attack": 0.349,
+          "defense": 0.2606,
+          "n_matches": 77,
+          "eigen_rating": 0.061239
         },
         "Bologna": {
-          "attack": 0.185,
-          "defense": 0.0205,
-          "n_matches": 76,
-          "eigen_rating": 0.048393
+          "attack": 0.1687,
+          "defense": 0.0242,
+          "n_matches": 77,
+          "eigen_rating": 0.048059
         },
         "Cagliari": {
-          "attack": -0.0702,
-          "defense": -0.1144,
-          "n_matches": 76,
-          "eigen_rating": 0.036047
+          "attack": -0.0869,
+          "defense": -0.0824,
+          "n_matches": 78,
+          "eigen_rating": 0.036104
         },
         "Como": {
-          "attack": 0.2889,
-          "defense": 0.2139,
-          "n_matches": 77,
-          "eigen_rating": 0.054704
+          "attack": 0.3019,
+          "defense": 0.2189,
+          "n_matches": 78,
+          "eigen_rating": 0.056261
         },
         "Cremonese": {
-          "attack": -0.3011,
-          "defense": -0.1658,
+          "attack": -0.2975,
+          "defense": -0.1654,
           "n_matches": 38,
-          "eigen_rating": 0.032494
+          "eigen_rating": 0.032584
         },
         "Empoli": {
-          "attack": -0.262,
-          "defense": -0.2195,
+          "attack": -0.2631,
+          "defense": -0.2213,
           "n_matches": 38,
-          "eigen_rating": 0.031465
+          "eigen_rating": 0.031531
         },
         "Fiorentina": {
-          "attack": 0.118,
-          "defense": 0.0395,
-          "n_matches": 76,
-          "eigen_rating": 0.048535
+          "attack": 0.1092,
+          "defense": 0.0037,
+          "n_matches": 77,
+          "eigen_rating": 0.04821
         },
         "Genoa": {
-          "attack": -0.0902,
-          "defense": -0.0292,
-          "n_matches": 76,
-          "eigen_rating": 0.040614
+          "attack": -0.1185,
+          "defense": -0.0294,
+          "n_matches": 78,
+          "eigen_rating": 0.040163
         },
         "Inter": {
-          "attack": 0.6597,
-          "defense": 0.2631,
-          "n_matches": 77,
-          "eigen_rating": 0.066755
+          "attack": 0.649,
+          "defense": 0.2817,
+          "n_matches": 78,
+          "eigen_rating": 0.066911
         },
         "Juventus": {
-          "attack": 0.3031,
-          "defense": 0.3082,
-          "n_matches": 76,
-          "eigen_rating": 0.060813
+          "attack": 0.3074,
+          "defense": 0.3208,
+          "n_matches": 77,
+          "eigen_rating": 0.06098
         },
         "Lazio": {
-          "attack": 0.1176,
-          "defense": 0.084,
-          "n_matches": 76,
-          "eigen_rating": 0.049297
+          "attack": 0.1087,
+          "defense": 0.1203,
+          "n_matches": 78,
+          "eigen_rating": 0.049697
         },
         "Lecce": {
-          "attack": -0.4357,
-          "defense": -0.0786,
-          "n_matches": 76,
-          "eigen_rating": 0.033968
+          "attack": -0.4061,
+          "defense": -0.0675,
+          "n_matches": 77,
+          "eigen_rating": 0.034299
         },
         "Milan": {
-          "attack": 0.2457,
-          "defense": 0.203,
-          "n_matches": 76,
-          "eigen_rating": 0.053924
+          "attack": 0.253,
+          "defense": 0.2131,
+          "n_matches": 78,
+          "eigen_rating": 0.054216
         },
         "Monza": {
-          "attack": -0.4023,
-          "defense": -0.3825,
-          "n_matches": 39,
-          "eigen_rating": 0.024289
+          "attack": -0.3386,
+          "defense": -0.4154,
+          "n_matches": 40,
+          "eigen_rating": 0.023536
         },
         "Napoli": {
-          "attack": 0.2781,
-          "defense": 0.3811,
-          "n_matches": 76,
-          "eigen_rating": 0.062268
+          "attack": 0.2823,
+          "defense": 0.3752,
+          "n_matches": 78,
+          "eigen_rating": 0.061187
         },
         "Parma": {
-          "attack": -0.2227,
-          "defense": -0.0402,
-          "n_matches": 76,
-          "eigen_rating": 0.038498
+          "attack": -0.2558,
+          "defense": -0.0422,
+          "n_matches": 78,
+          "eigen_rating": 0.03813
         },
         "Pisa": {
-          "attack": -0.4903,
-          "defense": -0.384,
+          "attack": -0.4861,
+          "defense": -0.3837,
           "n_matches": 38,
-          "eigen_rating": 0.023429
+          "eigen_rating": 0.023516
         },
         "Roma": {
-          "attack": 0.2879,
-          "defense": 0.3722,
-          "n_matches": 76,
-          "eigen_rating": 0.058512
+          "attack": 0.3175,
+          "defense": 0.3886,
+          "n_matches": 77,
+          "eigen_rating": 0.058908
         },
         "Sassuolo": {
-          "attack": 0.0642,
-          "defense": -0.0396,
-          "n_matches": 38,
-          "eigen_rating": 0.03832
+          "attack": 0.0825,
+          "defense": -0.042,
+          "n_matches": 40,
+          "eigen_rating": 0.03838
         },
         "Torino": {
-          "attack": -0.0248,
-          "defense": -0.1417,
-          "n_matches": 76,
-          "eigen_rating": 0.039145
+          "attack": -0.0239,
+          "defense": -0.1524,
+          "n_matches": 78,
+          "eigen_rating": 0.038467
         },
         "Udinese": {
-          "attack": 0.0004,
-          "defense": -0.0503,
-          "n_matches": 77,
-          "eigen_rating": 0.040789
+          "attack": 0.0239,
+          "defense": -0.0665,
+          "n_matches": 78,
+          "eigen_rating": 0.041291
         },
         "Venezia": {
-          "attack": -0.2991,
-          "defense": -0.1416,
-          "n_matches": 38,
-          "eigen_rating": 0.02955
+          "attack": -0.3827,
+          "defense": -0.1786,
+          "n_matches": 40,
+          "eigen_rating": 0.02899
         },
         "Verona": {
-          "attack": -0.4145,
-          "defense": -0.2411,
+          "attack": -0.4127,
+          "defense": -0.2414,
           "n_matches": 76,
-          "eigen_rating": 0.027338
+          "eigen_rating": 0.027343
         }
       }
     },
     "Bundesliga": {
-      "n_matches_poisson": 612,
-      "n_matches_eigen": 612,
+      "n_matches_poisson": 617,
+      "n_matches_eigen": 617,
       "n_teams": 20,
-      "mu": 0.3428,
-      "home_advantage": 0.1499,
+      "mu": 0.3391,
+      "home_advantage": 0.1604,
       "teams": {
         "Augsburg": {
-          "attack": -0.2231,
-          "defense": -0.0096,
+          "attack": -0.2261,
+          "defense": -0.0063,
           "n_matches": 68,
-          "eigen_rating": 0.045724
+          "eigen_rating": 0.045699
         },
         "Bayern Munich": {
-          "attack": 0.7675,
-          "defense": 0.3919,
-          "n_matches": 68,
-          "eigen_rating": 0.084197
+          "attack": 0.7748,
+          "defense": 0.3996,
+          "n_matches": 69,
+          "eigen_rating": 0.084326
         },
         "Bochum": {
-          "attack": -0.4382,
-          "defense": -0.1717,
+          "attack": -0.4411,
+          "defense": -0.1679,
           "n_matches": 34,
-          "eigen_rating": 0.034219
+          "eigen_rating": 0.034353
         },
         "Dortmund": {
-          "attack": 0.3157,
-          "defense": 0.2786,
-          "n_matches": 68,
-          "eigen_rating": 0.067991
+          "attack": 0.3107,
+          "defense": 0.2967,
+          "n_matches": 69,
+          "eigen_rating": 0.068454
         },
         "Ein Frankfurt": {
-          "attack": 0.2157,
-          "defense": -0.0436,
-          "n_matches": 68,
-          "eigen_rating": 0.055555
+          "attack": 0.2283,
+          "defense": -0.0612,
+          "n_matches": 69,
+          "eigen_rating": 0.055716
         },
         "FC Koln": {
-          "attack": -0.0224,
-          "defense": -0.1386,
+          "attack": -0.0254,
+          "defense": -0.1358,
           "n_matches": 34,
-          "eigen_rating": 0.041567
+          "eigen_rating": 0.041582
         },
         "Freiburg": {
-          "attack": -0.0138,
-          "defense": -0.0042,
-          "n_matches": 68,
-          "eigen_rating": 0.049477
+          "attack": 0.0148,
+          "defense": -0.0,
+          "n_matches": 69,
+          "eigen_rating": 0.049418
         },
         "Hamburg": {
-          "attack": -0.2188,
-          "defense": 0.0339,
-          "n_matches": 34,
-          "eigen_rating": 0.041361
+          "attack": -0.2472,
+          "defense": 0.0414,
+          "n_matches": 35,
+          "eigen_rating": 0.040639
         },
         "Heidenheim": {
-          "attack": -0.2364,
-          "defense": -0.2016,
+          "attack": -0.2394,
+          "defense": -0.1982,
           "n_matches": 68,
-          "eigen_rating": 0.035785
+          "eigen_rating": 0.035842
         },
         "Hoffenheim": {
-          "attack": 0.1164,
-          "defense": -0.0739,
+          "attack": 0.1136,
+          "defense": -0.0708,
           "n_matches": 68,
-          "eigen_rating": 0.051498
+          "eigen_rating": 0.051522
         },
         "Holstein Kiel": {
-          "attack": -0.0253,
-          "defense": -0.3688,
+          "attack": -0.0282,
+          "defense": -0.3647,
           "n_matches": 34,
-          "eigen_rating": 0.031936
+          "eigen_rating": 0.032015
         },
         "Leverkusen": {
-          "attack": 0.2979,
-          "defense": 0.1779,
+          "attack": 0.2953,
+          "defense": 0.1813,
           "n_matches": 68,
-          "eigen_rating": 0.064519
+          "eigen_rating": 0.064579
         },
         "M'gladbach": {
-          "attack": -0.0693,
-          "defense": 0.0145,
-          "n_matches": 68,
-          "eigen_rating": 0.045081
+          "attack": -0.0881,
+          "defense": 0.0048,
+          "n_matches": 69,
+          "eigen_rating": 0.043702
         },
         "Mainz": {
-          "attack": -0.0479,
-          "defense": 0.1282,
+          "attack": -0.0507,
+          "defense": 0.1316,
           "n_matches": 68,
-          "eigen_rating": 0.053173
+          "eigen_rating": 0.053239
         },
         "RB Leipzig": {
-          "attack": 0.1649,
-          "defense": 0.1302,
-          "n_matches": 68,
-          "eigen_rating": 0.062083
+          "attack": 0.1737,
+          "defense": 0.1498,
+          "n_matches": 69,
+          "eigen_rating": 0.063114
         },
         "St Pauli": {
-          "attack": -0.5878,
-          "defense": 0.0793,
+          "attack": -0.5907,
+          "defense": 0.0826,
           "n_matches": 68,
-          "eigen_rating": 0.036731
+          "eigen_rating": 0.036769
         },
         "Stuttgart": {
-          "attack": 0.2934,
-          "defense": 0.0669,
-          "n_matches": 68,
-          "eigen_rating": 0.064689
+          "attack": 0.2891,
+          "defense": 0.0478,
+          "n_matches": 69,
+          "eigen_rating": 0.064642
         },
         "Union Berlin": {
-          "attack": -0.2283,
-          "defense": 0.0038,
-          "n_matches": 68,
-          "eigen_rating": 0.045761
+          "attack": -0.2024,
+          "defense": -0.01,
+          "n_matches": 69,
+          "eigen_rating": 0.045635
         },
         "Werder Bremen": {
-          "attack": -0.1502,
-          "defense": -0.0478,
-          "n_matches": 68,
-          "eigen_rating": 0.043889
+          "attack": -0.1547,
+          "defense": -0.0717,
+          "n_matches": 69,
+          "eigen_rating": 0.043977
         },
         "Wolfsburg": {
-          "attack": -0.0311,
-          "defense": -0.1245,
+          "attack": -0.034,
+          "defense": -0.1211,
           "n_matches": 68,
-          "eigen_rating": 0.044766
+          "eigen_rating": 0.044775
+        }
+      }
+    },
+    "Champions League": {
+      "n_matches_poisson": 189,
+      "n_matches_eigen": 189,
+      "n_teams": 36,
+      "mu": 0.2386,
+      "home_advantage": 0.2927,
+      "teams": {
+        "Ajax Amsterdam": {
+          "attack": -0.4786,
+          "defense": -0.7838,
+          "n_matches": 8,
+          "eigen_rating": 0.013834
+        },
+        "Arsenal": {
+          "attack": 0.3414,
+          "defense": 1.4013,
+          "n_matches": 15,
+          "eigen_rating": 0.056843
+        },
+        "Atalanta": {
+          "attack": -0.1985,
+          "defense": 0.0287,
+          "n_matches": 12,
+          "eigen_rating": 0.028614
+        },
+        "Ath Bilbao": {
+          "attack": -0.2999,
+          "defense": 0.0387,
+          "n_matches": 8,
+          "eigen_rating": 0.025327
+        },
+        "Ath Madrid": {
+          "attack": 0.532,
+          "defense": 0.1058,
+          "n_matches": 16,
+          "eigen_rating": 0.038873
+        },
+        "Barcelona": {
+          "attack": 0.4931,
+          "defense": 0.1414,
+          "n_matches": 12,
+          "eigen_rating": 0.030588
+        },
+        "Bayern Munich": {
+          "attack": 0.8814,
+          "defense": 0.4095,
+          "n_matches": 14,
+          "eigen_rating": 0.047703
+        },
+        "Benfica": {
+          "attack": -0.4769,
+          "defense": 0.2229,
+          "n_matches": 10,
+          "eigen_rating": 0.01889
+        },
+        "Bodo/Glimt": {
+          "attack": 0.3029,
+          "defense": -0.0842,
+          "n_matches": 12,
+          "eigen_rating": 0.032156
+        },
+        "Chelsea": {
+          "attack": 0.1333,
+          "defense": 0.057,
+          "n_matches": 10,
+          "eigen_rating": 0.028146
+        },
+        "Club Brugge": {
+          "attack": 0.402,
+          "defense": -0.1831,
+          "n_matches": 10,
+          "eigen_rating": 0.026006
+        },
+        "Dortmund": {
+          "attack": 0.286,
+          "defense": -0.4157,
+          "n_matches": 10,
+          "eigen_rating": 0.024211
+        },
+        "Ein Frankfurt": {
+          "attack": -0.2358,
+          "defense": -0.436,
+          "n_matches": 8,
+          "eigen_rating": 0.017638
+        },
+        "F.C. K\u00f8benhavn": {
+          "attack": -0.2781,
+          "defense": -0.6109,
+          "n_matches": 8,
+          "eigen_rating": 0.016928
+        },
+        "FK Qarabag": {
+          "attack": -0.1313,
+          "defense": -0.7697,
+          "n_matches": 10,
+          "eigen_rating": 0.019136
+        },
+        "Galatasaray": {
+          "attack": -0.0408,
+          "defense": -0.0348,
+          "n_matches": 12,
+          "eigen_rating": 0.025065
+        },
+        "Inter": {
+          "attack": -0.0141,
+          "defense": 0.2851,
+          "n_matches": 10,
+          "eigen_rating": 0.027944
+        },
+        "Juventus": {
+          "attack": 0.214,
+          "defense": -0.1106,
+          "n_matches": 10,
+          "eigen_rating": 0.028998
+        },
+        "Kairat Almaty": {
+          "attack": -0.4508,
+          "defense": -0.492,
+          "n_matches": 8,
+          "eigen_rating": 0.016554
+        },
+        "Leverkusen": {
+          "attack": -0.0253,
+          "defense": 0.0903,
+          "n_matches": 12,
+          "eigen_rating": 0.028099
+        },
+        "Liverpool": {
+          "attack": 0.2154,
+          "defense": 0.5957,
+          "n_matches": 12,
+          "eigen_rating": 0.035152
+        },
+        "Man City": {
+          "attack": -0.0396,
+          "defense": 0.2368,
+          "n_matches": 10,
+          "eigen_rating": 0.02495
+        },
+        "Marseille": {
+          "attack": -0.1411,
+          "defense": 0.0114,
+          "n_matches": 8,
+          "eigen_rating": 0.02184
+        },
+        "Monaco": {
+          "attack": -0.1168,
+          "defense": 0.1226,
+          "n_matches": 10,
+          "eigen_rating": 0.029485
+        },
+        "Napoli": {
+          "attack": -0.4899,
+          "defense": -0.2465,
+          "n_matches": 8,
+          "eigen_rating": 0.020787
+        },
+        "Newcastle": {
+          "attack": 0.3688,
+          "defense": 0.157,
+          "n_matches": 12,
+          "eigen_rating": 0.034381
+        },
+        "Olympiacos": {
+          "attack": -0.4416,
+          "defense": 0.0368,
+          "n_matches": 10,
+          "eigen_rating": 0.020895
+        },
+        "PSV Eindhoven": {
+          "attack": 0.3921,
+          "defense": -0.103,
+          "n_matches": 8,
+          "eigen_rating": 0.025374
+        },
+        "Pafos": {
+          "attack": -0.5213,
+          "defense": 0.0464,
+          "n_matches": 8,
+          "eigen_rating": 0.019782
+        },
+        "Paris SG": {
+          "attack": 0.8428,
+          "defense": 0.3979,
+          "n_matches": 17,
+          "eigen_rating": 0.057257
+        },
+        "Real Madrid": {
+          "attack": 0.6062,
+          "defense": 0.1039,
+          "n_matches": 14,
+          "eigen_rating": 0.033039
+        },
+        "Slavia Prague": {
+          "attack": -0.6485,
+          "defense": -0.4236,
+          "n_matches": 8,
+          "eigen_rating": 0.018262
+        },
+        "Sporting CP": {
+          "attack": 0.2796,
+          "defense": 0.4628,
+          "n_matches": 12,
+          "eigen_rating": 0.039795
+        },
+        "Tottenham": {
+          "attack": 0.1588,
+          "defense": 0.2278,
+          "n_matches": 10,
+          "eigen_rating": 0.03139
+        },
+        "Union St.-Gilloise": {
+          "attack": -0.3049,
+          "defense": -0.0214,
+          "n_matches": 8,
+          "eigen_rating": 0.02254
+        },
+        "Villarreal": {
+          "attack": -1.1176,
+          "defense": -0.4632,
+          "n_matches": 8,
+          "eigen_rating": 0.013516
+        }
+      }
+    },
+    "Europa League": {
+      "n_matches_poisson": 189,
+      "n_matches_eigen": 189,
+      "n_teams": 36,
+      "mu": 0.0478,
+      "home_advantage": 0.254,
+      "teams": {
+        "Aston Villa": {
+          "attack": 0.578,
+          "defense": 0.9758,
+          "n_matches": 15,
+          "eigen_rating": 0.051628
+        },
+        "Betis": {
+          "attack": 0.2151,
+          "defense": 0.2755,
+          "n_matches": 12,
+          "eigen_rating": 0.036608
+        },
+        "Bologna": {
+          "attack": 0.3314,
+          "defense": 0.0784,
+          "n_matches": 14,
+          "eigen_rating": 0.03394
+        },
+        "Braga": {
+          "attack": 0.3477,
+          "defense": 0.238,
+          "n_matches": 14,
+          "eigen_rating": 0.04355
+        },
+        "Celta": {
+          "attack": 0.2115,
+          "defense": 0.0773,
+          "n_matches": 14,
+          "eigen_rating": 0.033502
+        },
+        "Celtic": {
+          "attack": 0.2714,
+          "defense": -0.3418,
+          "n_matches": 10,
+          "eigen_rating": 0.024076
+        },
+        "Dinamo Zagreb": {
+          "attack": 0.2224,
+          "defense": -0.6293,
+          "n_matches": 10,
+          "eigen_rating": 0.021932
+        },
+        "FC Basel": {
+          "attack": 0.0448,
+          "defense": -0.0865,
+          "n_matches": 8,
+          "eigen_rating": 0.023342
+        },
+        "FC Midtjylland": {
+          "attack": 0.3997,
+          "defense": 0.3021,
+          "n_matches": 10,
+          "eigen_rating": 0.031069
+        },
+        "FC Porto": {
+          "attack": 0.2387,
+          "defense": 0.4172,
+          "n_matches": 12,
+          "eigen_rating": 0.031111
+        },
+        "FC Utrecht": {
+          "attack": -0.4669,
+          "defense": -0.2375,
+          "n_matches": 8,
+          "eigen_rating": 0.017879
+        },
+        "FCSB": {
+          "attack": -0.1889,
+          "defense": -0.52,
+          "n_matches": 8,
+          "eigen_rating": 0.019362
+        },
+        "Fenerbahce": {
+          "attack": 0.0088,
+          "defense": 0.2326,
+          "n_matches": 10,
+          "eigen_rating": 0.028623
+        },
+        "Ferencvaros": {
+          "attack": 0.0688,
+          "defense": -0.0509,
+          "n_matches": 12,
+          "eigen_rating": 0.030082
+        },
+        "Feyenoord Rotterdam": {
+          "attack": 0.1283,
+          "defense": -0.2846,
+          "n_matches": 8,
+          "eigen_rating": 0.02107
+        },
+        "Freiburg": {
+          "attack": 0.3595,
+          "defense": 0.4061,
+          "n_matches": 15,
+          "eigen_rating": 0.045582
+        },
+        "Go Ahead Eagles": {
+          "attack": -0.4917,
+          "defense": -0.1885,
+          "n_matches": 8,
+          "eigen_rating": 0.024694
+        },
+        "Lille": {
+          "attack": 0.0612,
+          "defense": 0.2617,
+          "n_matches": 12,
+          "eigen_rating": 0.031931
+        },
+        "Ludogorets Razgrad": {
+          "attack": 0.0047,
+          "defense": -0.4317,
+          "n_matches": 10,
+          "eigen_rating": 0.021839
+        },
+        "Lyon": {
+          "attack": 0.2983,
+          "defense": 0.3466,
+          "n_matches": 10,
+          "eigen_rating": 0.031318
+        },
+        "Maccabi Tel-Aviv": {
+          "attack": -1.4815,
+          "defense": -0.4778,
+          "n_matches": 8,
+          "eigen_rating": 0.01513
+        },
+        "Malm\u00f6 FF": {
+          "attack": -0.8952,
+          "defense": -0.3127,
+          "n_matches": 8,
+          "eigen_rating": 0.015501
+        },
+        "Nice": {
+          "attack": -0.2347,
+          "defense": -0.2792,
+          "n_matches": 8,
+          "eigen_rating": 0.019466
+        },
+        "Nott'm Forest": {
+          "attack": 0.4376,
+          "defense": 0.3671,
+          "n_matches": 16,
+          "eigen_rating": 0.035905
+        },
+        "PAOK": {
+          "attack": 0.3454,
+          "defense": -0.2928,
+          "n_matches": 10,
+          "eigen_rating": 0.027346
+        },
+        "Panathinaikos": {
+          "attack": 0.1332,
+          "defense": -0.1484,
+          "n_matches": 12,
+          "eigen_rating": 0.026196
+        },
+        "RB Salzburg": {
+          "attack": 0.2182,
+          "defense": -0.2002,
+          "n_matches": 8,
+          "eigen_rating": 0.023134
+        },
+        "Racing Genk": {
+          "attack": 0.1653,
+          "defense": -0.026,
+          "n_matches": 12,
+          "eigen_rating": 0.033132
+        },
+        "Rangers": {
+          "attack": -0.6252,
+          "defense": -0.3124,
+          "n_matches": 8,
+          "eigen_rating": 0.019408
+        },
+        "Red Star Belgrade": {
+          "attack": -0.4326,
+          "defense": 0.413,
+          "n_matches": 10,
+          "eigen_rating": 0.024377
+        },
+        "Roma": {
+          "attack": 0.3789,
+          "defense": 0.1855,
+          "n_matches": 10,
+          "eigen_rating": 0.032308
+        },
+        "SK Brann": {
+          "attack": -0.3107,
+          "defense": 0.0018,
+          "n_matches": 10,
+          "eigen_rating": 0.020577
+        },
+        "SK Sturm Graz": {
+          "attack": -0.6829,
+          "defense": -0.0494,
+          "n_matches": 8,
+          "eigen_rating": 0.019378
+        },
+        "Stuttgart": {
+          "attack": 0.2133,
+          "defense": 0.0273,
+          "n_matches": 12,
+          "eigen_rating": 0.030498
+        },
+        "Viktoria Plzen": {
+          "attack": -0.0782,
+          "defense": 0.7779,
+          "n_matches": 10,
+          "eigen_rating": 0.031285
+        },
+        "Young Boys": {
+          "attack": -0.0207,
+          "defense": -0.2869,
+          "n_matches": 8,
+          "eigen_rating": 0.023225
+        }
+      }
+    },
+    "Europe": {
+      "n_matches_poisson": 3958,
+      "n_matches_eigen": 3958,
+      "n_teams": 151,
+      "mu": 0.1678,
+      "home_advantage": 0.1936,
+      "teams": {
+        "Ajax Amsterdam": {
+          "attack": -0.1919,
+          "defense": -0.4218,
+          "n_matches": 8,
+          "eigen_rating": 0.002825
+        },
+        "Alaves": {
+          "attack": -0.0915,
+          "defense": 0.0581,
+          "n_matches": 79,
+          "eigen_rating": 0.007449
+        },
+        "Angers": {
+          "attack": -0.3545,
+          "defense": -0.0063,
+          "n_matches": 70,
+          "eigen_rating": 0.004743
+        },
+        "Arsenal": {
+          "attack": 0.5908,
+          "defense": 0.9381,
+          "n_matches": 91,
+          "eigen_rating": 0.018517
+        },
+        "Aston Villa": {
+          "attack": 0.4145,
+          "defense": 0.3878,
+          "n_matches": 92,
+          "eigen_rating": 0.01305
+        },
+        "Atalanta": {
+          "attack": 0.1451,
+          "defense": 0.1498,
+          "n_matches": 89,
+          "eigen_rating": 0.012433
+        },
+        "Ath Bilbao": {
+          "attack": -0.0059,
+          "defense": 0.142,
+          "n_matches": 87,
+          "eigen_rating": 0.010415
+        },
+        "Ath Madrid": {
+          "attack": 0.3915,
+          "defense": 0.2729,
+          "n_matches": 94,
+          "eigen_rating": 0.013553
+        },
+        "Augsburg": {
+          "attack": -0.1158,
+          "defense": -0.0482,
+          "n_matches": 68,
+          "eigen_rating": 0.00531
+        },
+        "Auxerre": {
+          "attack": -0.078,
+          "defense": -0.0107,
+          "n_matches": 70,
+          "eigen_rating": 0.005542
+        },
+        "Barcelona": {
+          "attack": 0.7329,
+          "defense": 0.3059,
+          "n_matches": 90,
+          "eigen_rating": 0.014602
+        },
+        "Bayern Munich": {
+          "attack": 0.9209,
+          "defense": 0.3516,
+          "n_matches": 83,
+          "eigen_rating": 0.012915
+        },
+        "Benfica": {
+          "attack": -0.0886,
+          "defense": 0.2259,
+          "n_matches": 10,
+          "eigen_rating": 0.003626
+        },
+        "Betis": {
+          "attack": 0.1863,
+          "defense": 0.0851,
+          "n_matches": 91,
+          "eigen_rating": 0.010829
+        },
+        "Bochum": {
+          "attack": -0.3307,
+          "defense": -0.2097,
+          "n_matches": 34,
+          "eigen_rating": 0.004313
+        },
+        "Bodo/Glimt": {
+          "attack": 0.5653,
+          "defense": 0.0297,
+          "n_matches": 12,
+          "eigen_rating": 0.005388
+        },
+        "Bologna": {
+          "attack": -0.005,
+          "defense": -0.0464,
+          "n_matches": 91,
+          "eigen_rating": 0.009322
+        },
+        "Bournemouth": {
+          "attack": 0.4286,
+          "defense": 0.3538,
+          "n_matches": 78,
+          "eigen_rating": 0.010426
+        },
+        "Braga": {
+          "attack": 0.1873,
+          "defense": 0.2289,
+          "n_matches": 14,
+          "eigen_rating": 0.004183
+        },
+        "Brentford": {
+          "attack": 0.4712,
+          "defense": 0.3071,
+          "n_matches": 78,
+          "eigen_rating": 0.009511
+        },
+        "Brest": {
+          "attack": 0.0679,
+          "defense": -0.1481,
+          "n_matches": 69,
+          "eigen_rating": 0.005698
+        },
+        "Brighton": {
+          "attack": 0.4857,
+          "defense": 0.3111,
+          "n_matches": 78,
+          "eigen_rating": 0.010439
+        },
+        "Burnley": {
+          "attack": 0.0609,
+          "defense": -0.0182,
+          "n_matches": 38,
+          "eigen_rating": 0.005806
+        },
+        "Cagliari": {
+          "attack": -0.2877,
+          "defense": -0.1625,
+          "n_matches": 78,
+          "eigen_rating": 0.00604
+        },
+        "Celta": {
+          "attack": 0.1142,
+          "defense": 0.0362,
+          "n_matches": 93,
+          "eigen_rating": 0.010983
+        },
+        "Celtic": {
+          "attack": 0.1704,
+          "defense": -0.3569,
+          "n_matches": 10,
+          "eigen_rating": 0.002725
+        },
+        "Chelsea": {
+          "attack": 0.5004,
+          "defense": 0.3022,
+          "n_matches": 88,
+          "eigen_rating": 0.013046
+        },
+        "Club Brugge": {
+          "attack": 0.5817,
+          "defense": -0.1596,
+          "n_matches": 10,
+          "eigen_rating": 0.004207
+        },
+        "Como": {
+          "attack": 0.1015,
+          "defense": 0.141,
+          "n_matches": 78,
+          "eigen_rating": 0.008754
+        },
+        "Cremonese": {
+          "attack": -0.4993,
+          "defense": -0.2445,
+          "n_matches": 38,
+          "eigen_rating": 0.005565
+        },
+        "Crystal Palace": {
+          "attack": 0.1816,
+          "defense": 0.2953,
+          "n_matches": 78,
+          "eigen_rating": 0.008942
+        },
+        "Dep. A Coruna": {
+          "attack": 0.2795,
+          "defense": 0.1488,
+          "n_matches": 2,
+          "eigen_rating": 0.002213
+        },
+        "Dinamo Zagreb": {
+          "attack": 0.0773,
+          "defense": -0.6317,
+          "n_matches": 10,
+          "eigen_rating": 0.002496
+        },
+        "Dortmund": {
+          "attack": 0.4479,
+          "defense": 0.1749,
+          "n_matches": 79,
+          "eigen_rating": 0.01019
+        },
+        "Ein Frankfurt": {
+          "attack": 0.3127,
+          "defense": -0.1334,
+          "n_matches": 77,
+          "eigen_rating": 0.007743
+        },
+        "Elche": {
+          "attack": 0.0406,
+          "defense": -0.1055,
+          "n_matches": 41,
+          "eigen_rating": 0.007074
+        },
+        "Empoli": {
+          "attack": -0.4641,
+          "defense": -0.3001,
+          "n_matches": 38,
+          "eigen_rating": 0.005426
+        },
+        "Espanol": {
+          "attack": -0.0981,
+          "defense": 0.0228,
+          "n_matches": 79,
+          "eigen_rating": 0.007528
+        },
+        "Everton": {
+          "attack": 0.1985,
+          "defense": 0.4398,
+          "n_matches": 78,
+          "eigen_rating": 0.008976
+        },
+        "F.C. K\u00f8benhavn": {
+          "attack": 0.1154,
+          "defense": -0.3525,
+          "n_matches": 8,
+          "eigen_rating": 0.003519
+        },
+        "FC Basel": {
+          "attack": -0.1901,
+          "defense": -0.1144,
+          "n_matches": 8,
+          "eigen_rating": 0.002875
+        },
+        "FC Koln": {
+          "attack": 0.0851,
+          "defense": -0.1773,
+          "n_matches": 34,
+          "eigen_rating": 0.004856
+        },
+        "FC Midtjylland": {
+          "attack": 0.2998,
+          "defense": 0.2489,
+          "n_matches": 10,
+          "eigen_rating": 0.003111
+        },
+        "FC Porto": {
+          "attack": 0.1535,
+          "defense": 0.4571,
+          "n_matches": 12,
+          "eigen_rating": 0.00334
+        },
+        "FC Utrecht": {
+          "attack": -0.6522,
+          "defense": -0.2602,
+          "n_matches": 8,
+          "eigen_rating": 0.002477
+        },
+        "FCSB": {
+          "attack": -0.2802,
+          "defense": -0.6144,
+          "n_matches": 8,
+          "eigen_rating": 0.002274
+        },
+        "FK Qarabag": {
+          "attack": 0.24,
+          "defense": -0.567,
+          "n_matches": 10,
+          "eigen_rating": 0.003402
+        },
+        "Fenerbahce": {
+          "attack": -0.1254,
+          "defense": 0.2489,
+          "n_matches": 10,
+          "eigen_rating": 0.003262
+        },
+        "Ferencvaros": {
+          "attack": -0.0289,
+          "defense": -0.1044,
+          "n_matches": 12,
+          "eigen_rating": 0.002585
+        },
+        "Feyenoord Rotterdam": {
+          "attack": -0.046,
+          "defense": -0.2705,
+          "n_matches": 8,
+          "eigen_rating": 0.002494
+        },
+        "Fiorentina": {
+          "attack": -0.0923,
+          "defense": -0.0733,
+          "n_matches": 77,
+          "eigen_rating": 0.007683
+        },
+        "Freiburg": {
+          "attack": 0.144,
+          "defense": 0.0184,
+          "n_matches": 84,
+          "eigen_rating": 0.008183
+        },
+        "Fulham": {
+          "attack": 0.2774,
+          "defense": 0.3041,
+          "n_matches": 78,
+          "eigen_rating": 0.009248
+        },
+        "Galatasaray": {
+          "attack": 0.2211,
+          "defense": 0.1362,
+          "n_matches": 12,
+          "eigen_rating": 0.003875
+        },
+        "Genoa": {
+          "attack": -0.3204,
+          "defense": -0.1084,
+          "n_matches": 78,
+          "eigen_rating": 0.00659
+        },
+        "Getafe": {
+          "attack": -0.3948,
+          "defense": 0.3316,
+          "n_matches": 78,
+          "eigen_rating": 0.007489
+        },
+        "Girona": {
+          "attack": -0.1392,
+          "defense": -0.0457,
+          "n_matches": 76,
+          "eigen_rating": 0.006838
+        },
+        "Go Ahead Eagles": {
+          "attack": -0.6448,
+          "defense": -0.1543,
+          "n_matches": 8,
+          "eigen_rating": 0.002923
+        },
+        "Hamburg": {
+          "attack": -0.138,
+          "defense": 0.0014,
+          "n_matches": 35,
+          "eigen_rating": 0.004815
+        },
+        "Heidenheim": {
+          "attack": -0.1288,
+          "defense": -0.2396,
+          "n_matches": 68,
+          "eigen_rating": 0.004359
+        },
+        "Hoffenheim": {
+          "attack": 0.224,
+          "defense": -0.1121,
+          "n_matches": 68,
+          "eigen_rating": 0.005761
+        },
+        "Holstein Kiel": {
+          "attack": 0.0822,
+          "defense": -0.4057,
+          "n_matches": 34,
+          "eigen_rating": 0.004099
+        },
+        "Inter": {
+          "attack": 0.4276,
+          "defense": 0.2325,
+          "n_matches": 88,
+          "eigen_rating": 0.012487
+        },
+        "Ipswich": {
+          "attack": 0.0464,
+          "defense": -0.1825,
+          "n_matches": 40,
+          "eigen_rating": 0.00634
+        },
+        "Juventus": {
+          "attack": 0.1613,
+          "defense": 0.2014,
+          "n_matches": 87,
+          "eigen_rating": 0.011736
+        },
+        "Kairat Almaty": {
+          "attack": -0.2195,
+          "defense": -0.3878,
+          "n_matches": 8,
+          "eigen_rating": 0.002704
+        },
+        "Las Palmas": {
+          "attack": -0.19,
+          "defense": -0.1294,
+          "n_matches": 38,
+          "eigen_rating": 0.005838
+        },
+        "Lazio": {
+          "attack": -0.0927,
+          "defense": 0.0422,
+          "n_matches": 78,
+          "eigen_rating": 0.007892
+        },
+        "Le Havre": {
+          "attack": -0.225,
+          "defense": -0.0742,
+          "n_matches": 70,
+          "eigen_rating": 0.004913
+        },
+        "Lecce": {
+          "attack": -0.6064,
+          "defense": -0.1455,
+          "n_matches": 77,
+          "eigen_rating": 0.005788
+        },
+        "Leeds": {
+          "attack": 0.2918,
+          "defense": 0.3194,
+          "n_matches": 40,
+          "eigen_rating": 0.008533
+        },
+        "Leganes": {
+          "attack": -0.1892,
+          "defense": -0.0457,
+          "n_matches": 38,
+          "eigen_rating": 0.006582
+        },
+        "Leicester": {
+          "attack": -0.1644,
+          "defense": -0.1041,
+          "n_matches": 38,
+          "eigen_rating": 0.005767
+        },
+        "Lens": {
+          "attack": 0.2632,
+          "defense": 0.2349,
+          "n_matches": 70,
+          "eigen_rating": 0.007214
+        },
+        "Levante": {
+          "attack": 0.0543,
+          "defense": -0.1217,
+          "n_matches": 41,
+          "eigen_rating": 0.006617
+        },
+        "Leverkusen": {
+          "attack": 0.3857,
+          "defense": 0.1669,
+          "n_matches": 80,
+          "eigen_rating": 0.010044
+        },
+        "Lille": {
+          "attack": 0.1146,
+          "defense": 0.2957,
+          "n_matches": 82,
+          "eigen_rating": 0.009218
+        },
+        "Liverpool": {
+          "attack": 0.6324,
+          "defense": 0.3933,
+          "n_matches": 90,
+          "eigen_rating": 0.015562
+        },
+        "Lorient": {
+          "attack": 0.0669,
+          "defense": 0.0371,
+          "n_matches": 35,
+          "eigen_rating": 0.005461
+        },
+        "Ludogorets Razgrad": {
+          "attack": -0.098,
+          "defense": -0.407,
+          "n_matches": 10,
+          "eigen_rating": 0.002967
+        },
+        "Lyon": {
+          "attack": 0.2478,
+          "defense": 0.1637,
+          "n_matches": 80,
+          "eigen_rating": 0.008528
+        },
+        "M'gladbach": {
+          "attack": 0.0225,
+          "defense": -0.0359,
+          "n_matches": 69,
+          "eigen_rating": 0.005015
+        },
+        "Maccabi Tel-Aviv": {
+          "attack": -1.6636,
+          "defense": -0.5125,
+          "n_matches": 8,
+          "eigen_rating": 0.002261
+        },
+        "Mainz": {
+          "attack": 0.06,
+          "defense": 0.0903,
+          "n_matches": 68,
+          "eigen_rating": 0.005854
+        },
+        "Mallorca": {
+          "attack": -0.1122,
+          "defense": 0.0442,
+          "n_matches": 76,
+          "eigen_rating": 0.007417
+        },
+        "Malm\u00f6 FF": {
+          "attack": -0.979,
+          "defense": -0.3525,
+          "n_matches": 8,
+          "eigen_rating": 0.002024
+        },
+        "Man City": {
+          "attack": 0.662,
+          "defense": 0.56,
+          "n_matches": 88,
+          "eigen_rating": 0.015198
+        },
+        "Man United": {
+          "attack": 0.4812,
+          "defense": 0.3105,
+          "n_matches": 77,
+          "eigen_rating": 0.010563
+        },
+        "Marseille": {
+          "attack": 0.3836,
+          "defense": 0.0602,
+          "n_matches": 78,
+          "eigen_rating": 0.008757
+        },
+        "Metz": {
+          "attack": -0.2801,
+          "defense": -0.3963,
+          "n_matches": 34,
+          "eigen_rating": 0.003929
+        },
+        "Milan": {
+          "attack": 0.0517,
+          "defense": 0.1346,
+          "n_matches": 78,
+          "eigen_rating": 0.00849
+        },
+        "Monaco": {
+          "attack": 0.2983,
+          "defense": 0.0473,
+          "n_matches": 80,
+          "eigen_rating": 0.009239
+        },
+        "Montpellier": {
+          "attack": -0.6786,
+          "defense": -0.4615,
+          "n_matches": 34,
+          "eigen_rating": 0.003693
+        },
+        "Monza": {
+          "attack": -0.5393,
+          "defense": -0.4936,
+          "n_matches": 40,
+          "eigen_rating": 0.004345
+        },
+        "Nantes": {
+          "attack": -0.2906,
+          "defense": -0.0283,
+          "n_matches": 68,
+          "eigen_rating": 0.004997
+        },
+        "Napoli": {
+          "attack": 0.0613,
+          "defense": 0.2489,
+          "n_matches": 86,
+          "eigen_rating": 0.010868
+        },
+        "Newcastle": {
+          "attack": 0.5054,
+          "defense": 0.3198,
+          "n_matches": 90,
+          "eigen_rating": 0.012933
+        },
+        "Nice": {
+          "attack": 0.0214,
+          "defense": -0.0821,
+          "n_matches": 78,
+          "eigen_rating": 0.006731
+        },
+        "Nott'm Forest": {
+          "attack": 0.3231,
+          "defense": 0.3801,
+          "n_matches": 94,
+          "eigen_rating": 0.011018
+        },
+        "Olympiacos": {
+          "attack": -0.1807,
+          "defense": 0.1737,
+          "n_matches": 10,
+          "eigen_rating": 0.003192
+        },
+        "Osasuna": {
+          "attack": -0.04,
+          "defense": 0.0782,
+          "n_matches": 78,
+          "eigen_rating": 0.007655
+        },
+        "Oviedo": {
+          "attack": -0.5636,
+          "defense": -0.0808,
+          "n_matches": 38,
+          "eigen_rating": 0.005305
+        },
+        "PAOK": {
+          "attack": 0.2139,
+          "defense": -0.2844,
+          "n_matches": 10,
+          "eigen_rating": 0.003422
+        },
+        "PSV Eindhoven": {
+          "attack": 0.6493,
+          "defense": -0.029,
+          "n_matches": 8,
+          "eigen_rating": 0.004362
+        },
+        "Pafos": {
+          "attack": -0.2165,
+          "defense": 0.1952,
+          "n_matches": 8,
+          "eigen_rating": 0.003422
+        },
+        "Panathinaikos": {
+          "attack": 0.0052,
+          "defense": -0.1823,
+          "n_matches": 12,
+          "eigen_rating": 0.002772
+        },
+        "Paris FC": {
+          "attack": 0.1147,
+          "defense": 0.054,
+          "n_matches": 35,
+          "eigen_rating": 0.005869
+        },
+        "Paris SG": {
+          "attack": 0.6696,
+          "defense": 0.4057,
+          "n_matches": 87,
+          "eigen_rating": 0.015327
+        },
+        "Parma": {
+          "attack": -0.4582,
+          "defense": -0.1193,
+          "n_matches": 78,
+          "eigen_rating": 0.0063
+        },
+        "Pisa": {
+          "attack": -0.6871,
+          "defense": -0.4625,
+          "n_matches": 38,
+          "eigen_rating": 0.004367
+        },
+        "RB Leipzig": {
+          "attack": 0.284,
+          "defense": 0.1075,
+          "n_matches": 69,
+          "eigen_rating": 0.006706
+        },
+        "RB Salzburg": {
+          "attack": 0.0222,
+          "defense": -0.2895,
+          "n_matches": 8,
+          "eigen_rating": 0.002652
+        },
+        "Racing Genk": {
+          "attack": 0.0,
+          "defense": -0.0881,
+          "n_matches": 12,
+          "eigen_rating": 0.003002
+        },
+        "Rangers": {
+          "attack": -0.7215,
+          "defense": -0.3601,
+          "n_matches": 8,
+          "eigen_rating": 0.002194
+        },
+        "Real Madrid": {
+          "attack": 0.5472,
+          "defense": 0.3395,
+          "n_matches": 92,
+          "eigen_rating": 0.014722
+        },
+        "Red Star Belgrade": {
+          "attack": -0.5385,
+          "defense": 0.4485,
+          "n_matches": 10,
+          "eigen_rating": 0.002808
+        },
+        "Reims": {
+          "attack": -0.3558,
+          "defense": 0.0473,
+          "n_matches": 34,
+          "eigen_rating": 0.005088
+        },
+        "Rennes": {
+          "attack": 0.2484,
+          "defense": -0.0217,
+          "n_matches": 69,
+          "eigen_rating": 0.006331
+        },
+        "Roma": {
+          "attack": 0.1345,
+          "defense": 0.2889,
+          "n_matches": 87,
+          "eigen_rating": 0.010605
+        },
+        "SK Brann": {
+          "attack": -0.4455,
+          "defense": -0.0974,
+          "n_matches": 10,
+          "eigen_rating": 0.002397
+        },
+        "SK Sturm Graz": {
+          "attack": -0.7985,
+          "defense": -0.0887,
+          "n_matches": 8,
+          "eigen_rating": 0.002388
+        },
+        "Santander": {
+          "attack": 0.2644,
+          "defense": -0.2583,
+          "n_matches": 3,
+          "eigen_rating": 0.002391
+        },
+        "Sassuolo": {
+          "attack": -0.12,
+          "defense": -0.12,
+          "n_matches": 40,
+          "eigen_rating": 0.006325
+        },
+        "Sevilla": {
+          "attack": -0.019,
+          "defense": -0.0778,
+          "n_matches": 79,
+          "eigen_rating": 0.007261
+        },
+        "Slavia Prague": {
+          "attack": -0.4707,
+          "defense": -0.2547,
+          "n_matches": 8,
+          "eigen_rating": 0.003305
+        },
+        "Sociedad": {
+          "attack": 0.0454,
+          "defense": -0.0433,
+          "n_matches": 79,
+          "eigen_rating": 0.007809
+        },
+        "Southampton": {
+          "attack": -0.3754,
+          "defense": -0.1766,
+          "n_matches": 38,
+          "eigen_rating": 0.005029
+        },
+        "Sporting CP": {
+          "attack": 0.4922,
+          "defense": 0.5132,
+          "n_matches": 12,
+          "eigen_rating": 0.005224
+        },
+        "St Etienne": {
+          "attack": -0.0962,
+          "defense": -0.46,
+          "n_matches": 34,
+          "eigen_rating": 0.004329
+        },
+        "St Pauli": {
+          "attack": -0.4805,
+          "defense": 0.0409,
+          "n_matches": 68,
+          "eigen_rating": 0.004454
+        },
+        "Strasbourg": {
+          "attack": 0.2426,
+          "defense": 0.0398,
+          "n_matches": 70,
+          "eigen_rating": 0.007029
+        },
+        "Stuttgart": {
+          "attack": 0.3575,
+          "defense": 0.006,
+          "n_matches": 81,
+          "eigen_rating": 0.008502
+        },
+        "Sunderland": {
+          "attack": 0.1231,
+          "defense": 0.4125,
+          "n_matches": 40,
+          "eigen_rating": 0.008672
+        },
+        "Torino": {
+          "attack": -0.2252,
+          "defense": -0.2317,
+          "n_matches": 78,
+          "eigen_rating": 0.006347
+        },
+        "Tottenham": {
+          "attack": 0.3706,
+          "defense": 0.1563,
+          "n_matches": 88,
+          "eigen_rating": 0.011975
+        },
+        "Toulouse": {
+          "attack": 0.0203,
+          "defense": 0.076,
+          "n_matches": 70,
+          "eigen_rating": 0.006231
+        },
+        "Udinese": {
+          "attack": -0.177,
+          "defense": -0.1456,
+          "n_matches": 78,
+          "eigen_rating": 0.006748
+        },
+        "Union Berlin": {
+          "attack": -0.0928,
+          "defense": -0.0525,
+          "n_matches": 69,
+          "eigen_rating": 0.005263
+        },
+        "Union St.-Gilloise": {
+          "attack": -0.0994,
+          "defense": 0.022,
+          "n_matches": 8,
+          "eigen_rating": 0.003487
+        },
+        "Valencia": {
+          "attack": -0.0663,
+          "defense": 0.0045,
+          "n_matches": 79,
+          "eigen_rating": 0.007809
+        },
+        "Valladolid": {
+          "attack": -0.5701,
+          "defense": -0.5179,
+          "n_matches": 38,
+          "eigen_rating": 0.004316
+        },
+        "Vallecano": {
+          "attack": -0.1461,
+          "defense": 0.181,
+          "n_matches": 78,
+          "eigen_rating": 0.007741
+        },
+        "Venezia": {
+          "attack": -0.5843,
+          "defense": -0.2568,
+          "n_matches": 40,
+          "eigen_rating": 0.005071
+        },
+        "Verona": {
+          "attack": -0.6145,
+          "defense": -0.3201,
+          "n_matches": 76,
+          "eigen_rating": 0.004914
+        },
+        "Viktoria Plzen": {
+          "attack": -0.2133,
+          "defense": 0.7069,
+          "n_matches": 10,
+          "eigen_rating": 0.003097
+        },
+        "Villarreal": {
+          "attack": 0.331,
+          "defense": 0.0343,
+          "n_matches": 87,
+          "eigen_rating": 0.011223
+        },
+        "Werder Bremen": {
+          "attack": -0.0429,
+          "defense": -0.1128,
+          "n_matches": 69,
+          "eigen_rating": 0.005044
+        },
+        "West Ham": {
+          "attack": 0.2207,
+          "defense": 0.1378,
+          "n_matches": 76,
+          "eigen_rating": 0.008263
+        },
+        "Wolfsburg": {
+          "attack": 0.0766,
+          "defense": -0.1624,
+          "n_matches": 68,
+          "eigen_rating": 0.005067
+        },
+        "Wolves": {
+          "attack": 0.0344,
+          "defense": 0.0732,
+          "n_matches": 76,
+          "eigen_rating": 0.006796
+        },
+        "Young Boys": {
+          "attack": -0.1708,
+          "defense": -0.2596,
+          "n_matches": 8,
+          "eigen_rating": 0.003003
         }
       }
     }

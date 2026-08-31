@@ -65,6 +65,13 @@ class TestRatingsLookup(unittest.TestCase):
         lam_h, lam_a = lambdas_from_ratings("Serie A", "Lecce", "Roma")
         self.assertGreater(lam_a, lam_h)  # Roma stronger away than Lecce home
 
+    def test_champions_league_uses_europe_pool(self):
+        # cross-league match — only priceable off the pooled Europe fit
+        from soccer_live import lambdas_from_ratings
+        lam_h, lam_a = lambdas_from_ratings("Champions League", "Real Madrid", "Arsenal")
+        self.assertGreater(lam_h, 0.3)
+        self.assertGreater(lam_a, 0.3)
+
 
 class TestAsianEv(unittest.TestCase):
     """Quarter-line EV decomposition — over X.25 half-LOSES on exact X, over X.75 half-WINS on exact X+1."""

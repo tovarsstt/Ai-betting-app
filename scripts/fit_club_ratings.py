@@ -50,6 +50,14 @@ def build(as_of: date | None = None) -> dict:
         )
     grouped = _by_league(rows)
 
+    # Pooled "Europe" fit: valid ONLY because UEFA cup rows (Champions/Europa
+    # League, from fetch_club_results_espn.py) provide real cross-league
+    # matches that anchor the leagues to one scale. Without them a pooled fit
+    # is meaningless (see module docstring) — so only fit it when they exist.
+    uefa_rows = [r for r in rows if r.get("league") in ("Champions League", "Europa League")]
+    if uefa_rows:
+        grouped = {**grouped, "Europe": list(rows)}
+
     leagues = {}
     for league, league_rows in grouped.items():
         poisson = pr.fit(league_rows, as_of=as_of)
