@@ -145,5 +145,51 @@ class TestTempoMultiplier(unittest.TestCase):
         self.assertLess(tempo_multiplier(total_sot=2, minute=5), 1.2)
 
 
-if __name__ == "__main__":
-    unittest.main()
+class TestEverLeads(unittest.TestCase):
+    """1UP / 2UP markets: pay out the moment the team goes N goals ahead."""
+
+    def test_ever_leads_exceeds_win_prob(self):
+        from soccer_live import ever_leads_prob, live_probs
+        p_ever = ever_leads_prob(1.4, 1.2, by=1, seed=11)
+        p_win = live_probs(1.4, 1.2, 0, 0, 0)["home"]
+        self.assertGreater(p_ever, p_win)  # leading at some point is easier than winning
+
+    def test_already_leading_is_certain(self):
+        from soccer_live import ever_leads_prob
+        p = ever_leads_prob(1.0, 1.0, by=1, score_home=1, score_away=0, seed=3)
+        self.assertEqual(p, 1.0)
+
+    def test_two_up_is_harder_than_one_up(self):
+        from soccer_live import ever_leads_prob
+        self.assertLess(ever_leads_prob(1.5, 1.0, by=2, seed=5),
+                        ever_leads_prob(1.5, 1.0, by=1, seed=5))
+
+    def test_no_time_left_means_no_chance(self):
+        from soccer_live import ever_leads_prob, REGULATION_MIN, STOPPAGE_MIN
+        p = ever_leads_prob(1.5, 1.0, by=1, minute=REGULATION_MIN + STOPPAGE_MIN, seed=5)
+        self.assertEqual(p, 0.0)
+
+    def test_stronger_team_leads_more_often(self):
+        from soccer_live import ever_leads_prob
+        self.assertGreater(ever_leads_prob(2.2, 0.6, by=1, seed=9),
+                           ever_leads_prob(1.0, 1.0, by=1, seed=9))
+
+    def test_trailing_team_can_still_go_up(self):
+        from soccer_live import ever_leads_prob
+        # 0-1 down at 30': must score twice net to ever lead — possible, not likely
+        p = ever_leads_prob(1.6, 0.8, by=1, minute=30, score_home=0, score_away=1, seed=7)
+        self.assertTrue(0.05 < p < 0.5)
+
+
+class TestLambdasFromMarket(unittest.TestCase):
+    def test_recovers_known_lambdas(self):
+        from soccer_live import lambdas_from_market, live_probs
+        target = live_probs(1.6, 1.1, 0, 0, 0)
+        lam_h, lam_a = lambdas_from_market(target["home"], target["draw"], target["away"])
+        self.assertAlmostEqual(lam_h, 1.6, delta=0.08)
+        self.assertAlmostEqual(lam_a, 1.1, delta=0.08)
+
+    def test_rejects_unnormalized_input(self):
+        from soccer_live import lambdas_from_market
+        with self.assertRaises(ValueError):
+            lambdas_from_market(0.5, 0.5, 0.5)

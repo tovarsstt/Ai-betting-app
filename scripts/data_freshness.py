@@ -32,6 +32,8 @@ SEASONS = {
     "nba": ((10, 20), (6, 20)),
     "wnba": ((5, 15), (10, 20)),
     "nfl": ((9, 4), (2, 15)),
+    "nfl_rosters": ((9, 4), (2, 15)),
+    "cfb": ((8, 23), (1, 20)),  # regular season kicks off ~last week of August
     "soccer_club": ((8, 8), (5, 31)),
     "soccer_intl": ((1, 1), (12, 31)),     # internationals run year-round (WC now)
     "tennis": ((1, 1), (11, 25)),
@@ -40,8 +42,9 @@ SEASONS = {
     "lmb": ((4, 15), (9, 15)),
 }
 # max data age in days while IN season
-BUDGET = {"mlb": 2, "nba": 4, "wnba": 4, "nfl": 8, "soccer_club": 8,
-          "soccer_intl": 21, "tennis": 8, "volleyball": 30, "cricket": 30, "lmb": 3}
+BUDGET = {"mlb": 2, "nba": 4, "wnba": 4, "nfl": 8, "nfl_rosters": 8, "cfb": 1,
+          "soccer_club": 8, "soccer_intl": 21, "tennis": 8, "volleyball": 30,
+          "cricket": 30, "lmb": 3}
 
 # sport -> (file, dotted path to its embedded ISO stamp; None = use file mtime)
 SOURCES = {
@@ -57,6 +60,8 @@ SOURCES = {
     "nba": ("all_ratings.json", None),
     "wnba": ("all_ratings.json", None),
     "nfl": ("all_ratings.json", None),
+    "nfl_rosters": ("nfl_rosters.json", "fetched_at"),
+    "cfb": ("cfb_board.json", "generated_at"),
 }
 # aliases whose season/budget follow another sport
 FOLLOWS = {"tennis_form": "tennis", "tennis_serve": "tennis"}

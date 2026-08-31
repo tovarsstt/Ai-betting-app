@@ -14,6 +14,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, LabelList } from "recharts";
 import { DayCard } from "@/components/DayCard";
 import { LiveScan } from "@/components/LiveScan";
+import { CfbBoard } from "@/components/CfbBoard";
 
 const SPORTS = ["NFL", "CFB", "UCL", "SOCCER", "NBA", "WNBA", "MLB", "NHL", "TENNIS", "F1"];
 
@@ -1212,6 +1213,9 @@ export default function GameBreakdown() {
 
         {/* ── Live Scan — in-play fair pricing, club soccer + UEFA cups ── */}
         {(sport === "SOCCER" || sport === "UCL") && <LiveScan />}
+
+        {/* ── CFB week board — ranks, records, DK line (sharp-anchor engine) ── */}
+        {sport === "CFB" && <CfbBoard />}
 
         {/* ── Search ── */}
         <div className="glass p-5 rounded-2xl shadow-2xl relative overflow-hidden group">

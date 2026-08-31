@@ -200,6 +200,96 @@ def total_pmf(
     return totals, margins
 
 
+def ever_leads_prob(
+    lam_home_full: float,
+    lam_away_full: float,
+    by: int = 1,
+    minute: int = 0,
+    score_home: int = 0,
+    score_away: int = 0,
+    n_sims: int = 60_000,
+    seed: int = 0,
+    stoppage_min: int = STOPPAGE_MIN,
+) -> float:
+    """P(home team's lead reaches `by` at ANY point) — the 1UP / 2UP markets.
+
+    Stake's "1x2 (1UP)" pays the moment your side goes a goal ahead, even if
+    the match is later drawn or lost, so it CANNOT be read off the final-score
+    matrix. Simulated as two independent Poisson processes over the remaining
+    clock, tracking the running lead.
+    """
+    if by < 1:
+        raise ValueError("by must be at least 1")
+    if score_home - score_away >= by:
+        return 1.0
+    total = REGULATION_MIN + stoppage_min
+    frac_left = max(0.0, (total - minute) / total)
+    if frac_left <= 0.0:
+        return 0.0
+
+    import random
+
+    rng = random.Random(seed)
+    lam_h = lam_home_full * frac_left
+    lam_a = lam_away_full * frac_left
+    hits = 0
+    for _ in range(n_sims):
+        # goal counts then uniform arrival times: equivalent to the process,
+        # far cheaper than stepping minute by minute
+        n_h = _poisson_draw(rng, lam_h)
+        n_a = _poisson_draw(rng, lam_a)
+        if n_h == 0:
+            continue  # cannot extend a lead without scoring
+        events = [(rng.random(), 1) for _ in range(n_h)] + [(rng.random(), -1) for _ in range(n_a)]
+        events.sort()
+        lead = score_home - score_away
+        for _, delta in events:
+            lead += delta
+            if lead >= by:
+                hits += 1
+                break
+    return hits / n_sims
+
+
+def _poisson_draw(rng, lam: float) -> int:
+    """Knuth sampler — small lambdas here, so the loop is short."""
+    limit = math.exp(-lam)
+    k, p = 0, 1.0
+    while True:
+        p *= rng.random()
+        if p <= limit:
+            return k
+        k += 1
+
+
+def lambdas_from_market(p_home: float, p_draw: float, p_away: float) -> tuple[float, float]:
+    """Back out (lambda_home, lambda_away) that reproduce devigged 1X2 probs.
+
+    For a match where one side is missing from the fitted ratings, the market
+    is the only honest source — this converts its 1X2 into the goal rates the
+    rest of the engine needs, instead of inventing a rating.
+    """
+    total = p_home + p_draw + p_away
+    if abs(total - 1.0) > 0.02:
+        raise ValueError(f"probs must be devigged and sum to 1 (got {total:.3f})")
+
+    def probs(lh: float, la: float) -> tuple[float, float, float]:
+        p = live_probs(lh, la, 0, 0, 0)
+        return p["home"], p["draw"], p["away"]
+
+    # 2-D bisection on (total goals, goal difference): both are monotone in
+    # the pair, so a coarse grid + refinement converges quickly and reliably.
+    best, best_err = (1.3, 1.3), 9.9
+    for tot in [x / 10 for x in range(15, 45)]:          # 1.5 – 4.4 expected goals
+        for share in [x / 100 for x in range(20, 81)]:   # home's share of them
+            lh, la = tot * share, tot * (1 - share)
+            ph, pd, pa = probs(lh, la)
+            err = (ph - p_home) ** 2 + (pd - p_draw) ** 2 + (pa - p_away) ** 2
+            if err < best_err:
+                best, best_err = (lh, la), err
+    return best
+
+
 ESPN_LEAGUE_CODES = {
     "Serie A": "ita.1",
     "Premier League": "eng.1",
