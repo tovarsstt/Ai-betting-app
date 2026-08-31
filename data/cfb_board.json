@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-08-31T17:55:10+00:00",
+ "generated_at": "2026-08-31T19:09:58+00:00",
  "source": "ESPN college-football scoreboard (free)",
  "week": 1,
  "n_games": 99,
@@ -20,7 +20,13 @@
     "record": "0-1",
     "score": "26"
    },
-   "odds": null
+   "odds": null,
+   "venue": {
+    "name": "Los Angeles Memorial Coliseum",
+    "city": "Los Angeles",
+    "state": "CA",
+    "indoor": false
+   }
   },
   {
    "name": "North Carolina Tar Heels at TCU Horned Frogs",
@@ -38,7 +44,13 @@
     "record": "1-0",
     "score": "15"
    },
-   "odds": null
+   "odds": null,
+   "venue": {
+    "name": "Aviva Stadium",
+    "city": "Dublin",
+    "state": null,
+    "indoor": false
+   }
   },
   {
    "name": "NC State Wolfpack at Virginia Cavaliers",
@@ -56,7 +68,13 @@
     "record": "0-1",
     "score": "8"
    },
-   "odds": null
+   "odds": null,
+   "venue": {
+    "name": "Scott Stadium",
+    "city": "Charlottesville",
+    "state": "VA",
+    "indoor": false
+   }
   },
   {
    "name": "Jacksonville State Gamecocks at North Dakota State Bison",
@@ -74,7 +92,13 @@
     "record": "0-1",
     "score": "7"
    },
-   "odds": null
+   "odds": null,
+   "venue": {
+    "name": "Fargodome",
+    "city": "Fargo",
+    "state": "ND",
+    "indoor": true
+   }
   },
   {
    "name": "Sacramento State Hornets at Eastern Michigan Eagles",
@@ -92,7 +116,13 @@
     "record": "0-1",
     "score": "17"
    },
-   "odds": null
+   "odds": null,
+   "venue": {
+    "name": "Rynearson Stadium",
+    "city": "Ypsilanti",
+    "state": "MI",
+    "indoor": false
+   }
   },
   {
    "name": "Hawai'i Rainbow Warriors at Stanford Cardinal",
@@ -110,7 +140,13 @@
     "record": "0-1",
     "score": "27"
    },
-   "odds": null
+   "odds": null,
+   "venue": {
+    "name": "Stanford Stadium",
+    "city": "Stanford",
+    "state": "CA",
+    "indoor": false
+   }
   },
   {
    "name": "New Mexico State Aggies at Florida State Seminoles",
@@ -128,7 +164,13 @@
     "record": "0-1",
     "score": "17"
    },
-   "odds": null
+   "odds": null,
+   "venue": {
+    "name": "Doak Campbell Stadium",
+    "city": "Tallahassee",
+    "state": "FL",
+    "indoor": false
+   }
   },
   {
    "name": "Memphis Tigers at UNLV Rebels",
@@ -146,7 +188,13 @@
     "record": "1-0",
     "score": "27"
    },
-   "odds": null
+   "odds": null,
+   "venue": {
+    "name": "Allegiant Stadium",
+    "city": "Las Vegas",
+    "state": "NV",
+    "indoor": true
+   }
   },
   {
    "name": "Massachusetts Minutemen at Rutgers Scarlet Knights",
@@ -170,6 +218,12 @@
     "over_under": 51.5,
     "home_ml": "-8000",
     "away_ml": "+2200"
+   },
+   "venue": {
+    "name": "SHI Stadium",
+    "city": "Piscataway",
+    "state": "NJ",
+    "indoor": false
    }
   },
   {
@@ -194,6 +248,12 @@
     "over_under": 57.5,
     "home_ml": "OFF",
     "away_ml": "OFF"
+   },
+   "venue": {
+    "name": "Acrisure Bounce House",
+    "city": "Orlando",
+    "state": "FL",
+    "indoor": false
    }
   },
   {
@@ -218,6 +278,12 @@
     "over_under": 48.5,
     "home_ml": "-3200",
     "away_ml": "+1400"
+   },
+   "venue": {
+    "name": "Allegacy Federal Credit Union Stadium",
+    "city": "Winston-Salem",
+    "state": "NC",
+    "indoor": false
    }
   },
   {
@@ -238,10 +304,16 @@
    },
    "odds": {
     "provider": "DraftKings",
-    "details": "DEL -27.5",
+    "details": "DEL -28.5",
     "over_under": 55.5,
     "home_ml": "-20000",
     "away_ml": "+3500"
+   },
+   "venue": {
+    "name": "Delaware Stadium",
+    "city": "Newark",
+    "state": "DE",
+    "indoor": false
    }
   },
   {
@@ -266,6 +338,12 @@
     "over_under": 51.5,
     "home_ml": "-6500",
     "away_ml": "+2000"
+   },
+   "venue": {
+    "name": "Walens Family Field at Fifth Third Stadium",
+    "city": "Kennesaw",
+    "state": "GA",
+    "indoor": false
    }
   },
   {
@@ -290,6 +368,12 @@
     "over_under": 48.5,
     "home_ml": "-5000",
     "away_ml": "+1800"
+   },
+   "venue": {
+    "name": "Broadview Stadium",
+    "city": "Buffalo",
+    "state": "NY",
+    "indoor": false
    }
   },
   {
@@ -314,6 +398,12 @@
     "over_under": 60.5,
     "home_ml": "OFF",
     "away_ml": "OFF"
+   },
+   "venue": {
+    "name": "Memorial Stadium",
+    "city": "Columbia",
+    "state": "MO",
+    "indoor": false
    }
   },
   {
@@ -338,6 +428,12 @@
     "over_under": 51.5,
     "home_ml": "-245",
     "away_ml": "+200"
+   },
+   "venue": {
+    "name": "Bobby Dodd Stadium",
+    "city": "Atlanta",
+    "state": "GA",
+    "indoor": false
    }
   },
   {
@@ -359,9 +455,15 @@
    "odds": {
     "provider": "DraftKings",
     "details": "MINN -42.5",
-    "over_under": 51.5,
+    "over_under": 50.5,
     "home_ml": "OFF",
     "away_ml": "OFF"
+   },
+   "venue": {
+    "name": "Huntington Bank Stadium",
+    "city": "Minneapolis",
+    "state": "MN",
+    "indoor": false
    }
   },
   {
@@ -386,6 +488,12 @@
     "over_under": 57.5,
     "home_ml": "-20000",
     "away_ml": "+3500"
+   },
+   "venue": {
+    "name": "Rice-Eccles Stadium",
+    "city": "Salt Lake City",
+    "state": "UT",
+    "indoor": false
    }
   },
   {
@@ -410,6 +518,12 @@
     "over_under": 55.5,
     "home_ml": "-6500",
     "away_ml": "+2000"
+   },
+   "venue": {
+    "name": "Gies Memorial Stadium",
+    "city": "Champaign",
+    "state": "IL",
+    "indoor": false
    }
   },
   {
@@ -434,6 +548,12 @@
     "over_under": 55.5,
     "home_ml": "-175",
     "away_ml": "+145"
+   },
+   "venue": {
+    "name": "Rynearson Stadium",
+    "city": "Ypsilanti",
+    "state": "MI",
+    "indoor": false
    }
   },
   {
@@ -458,6 +578,12 @@
     "over_under": 56.5,
     "home_ml": "OFF",
     "away_ml": "OFF"
+   },
+   "venue": {
+    "name": "Ross-Ade Stadium",
+    "city": "West Lafayette",
+    "state": "IN",
+    "indoor": false
    }
   },
   {
@@ -482,6 +608,12 @@
     "over_under": 63.5,
     "home_ml": "-6500",
     "away_ml": "+2000"
+   },
+   "venue": {
+    "name": "Center Parc Stadium",
+    "city": "Atlanta",
+    "state": "GA",
+    "indoor": false
    }
   },
   {
@@ -506,6 +638,12 @@
     "over_under": 50.5,
     "home_ml": "OFF",
     "away_ml": "OFF"
+   },
+   "venue": {
+    "name": "Memorial Stadium (Norman, OK)",
+    "city": "Norman",
+    "state": "OK",
+    "indoor": false
    }
   },
   {
@@ -530,6 +668,12 @@
     "over_under": 53.5,
     "home_ml": "OFF",
     "away_ml": "OFF"
+   },
+   "venue": {
+    "name": "David Booth Kansas Memorial Stadium",
+    "city": "Lawrence",
+    "state": "KS",
+    "indoor": false
    }
   },
   {
@@ -554,6 +698,12 @@
     "over_under": 47.5,
     "home_ml": "-425",
     "away_ml": "+330"
+   },
+   "venue": {
+    "name": "Spartan Stadium",
+    "city": "East Lansing",
+    "state": "MI",
+    "indoor": false
    }
   },
   {
@@ -576,8 +726,14 @@
     "provider": "DraftKings",
     "details": "MIA -24.5",
     "over_under": 47.5,
-    "home_ml": "+1700",
-    "away_ml": "-4500"
+    "home_ml": "+1500",
+    "away_ml": "-3600"
+   },
+   "venue": {
+    "name": "Stanford Stadium",
+    "city": "Stanford",
+    "state": "CA",
+    "indoor": false
    }
   },
   {
@@ -602,6 +758,12 @@
     "over_under": 51.5,
     "home_ml": "-2800",
     "away_ml": "+1300"
+   },
+   "venue": {
+    "name": "Los Angeles Memorial Coliseum",
+    "city": "Los Angeles",
+    "state": "CA",
+    "indoor": false
    }
   },
   {
@@ -626,6 +788,12 @@
     "over_under": 55.5,
     "home_ml": "OFF",
     "away_ml": "OFF"
+   },
+   "venue": {
+    "name": "Memorial Stadium (Bloomington, IN)",
+    "city": "Bloomington",
+    "state": "IN",
+    "indoor": false
    }
   },
   {
@@ -650,6 +818,12 @@
     "over_under": 52.5,
     "home_ml": "-10000",
     "away_ml": "+3000"
+   },
+   "venue": {
+    "name": "Bryant-Denny Stadium",
+    "city": "Tuscaloosa",
+    "state": "AL",
+    "indoor": false
    }
   },
   {
@@ -674,6 +848,12 @@
     "over_under": 49.5,
     "home_ml": "-1800",
     "away_ml": "+1000"
+   },
+   "venue": {
+    "name": "TDECU Stadium",
+    "city": "Houston",
+    "state": "TX",
+    "indoor": false
    }
   },
   {
@@ -698,6 +878,12 @@
     "over_under": 55.5,
     "home_ml": "-1800",
     "away_ml": "+1000"
+   },
+   "venue": {
+    "name": "Milan Puskar Stadium",
+    "city": "Morgantown",
+    "state": "WV",
+    "indoor": false
    }
   },
   {
@@ -722,6 +908,12 @@
     "over_under": 55.5,
     "home_ml": "OFF",
     "away_ml": "OFF"
+   },
+   "venue": {
+    "name": "JMA Wireless Dome",
+    "city": "Syracuse",
+    "state": "NY",
+    "indoor": true
    }
   },
   {
@@ -746,6 +938,12 @@
     "over_under": 46.5,
     "home_ml": "-2800",
     "away_ml": "+1300"
+   },
+   "venue": {
+    "name": "Memorial Stadium (Lincoln, NE)",
+    "city": "Lincoln",
+    "state": "NE",
+    "indoor": false
    }
   },
   {
@@ -770,6 +968,12 @@
     "over_under": 57.5,
     "home_ml": "-1350",
     "away_ml": "+800"
+   },
+   "venue": {
+    "name": "Pratt & Whitney Stadium",
+    "city": "East Hartford",
+    "state": "CT",
+    "indoor": false
    }
   },
   {
@@ -794,6 +998,12 @@
     "over_under": 51.5,
     "home_ml": "OFF",
     "away_ml": "OFF"
+   },
+   "venue": {
+    "name": "Michie Stadium",
+    "city": "West Point",
+    "state": "NY",
+    "indoor": false
    }
   },
   {
@@ -818,6 +1028,12 @@
     "over_under": 47.5,
     "home_ml": "-142",
     "away_ml": "+120"
+   },
+   "venue": {
+    "name": "Doyt L. Perry Stadium",
+    "city": "Bowling Green",
+    "state": "OH",
+    "indoor": false
    }
   },
   {
@@ -842,6 +1058,12 @@
     "over_under": 51.5,
     "home_ml": "-245",
     "away_ml": "+200"
+   },
+   "venue": {
+    "name": "Bridgeforth Stadium",
+    "city": "Harrisonburg",
+    "state": "VA",
+    "indoor": false
    }
   },
   {
@@ -866,6 +1088,12 @@
     "over_under": 56.5,
     "home_ml": "OFF",
     "away_ml": "OFF"
+   },
+   "venue": {
+    "name": "Ohio Stadium",
+    "city": "Columbus",
+    "state": "OH",
+    "indoor": false
    }
   },
   {
@@ -890,6 +1118,12 @@
     "over_under": 48.5,
     "home_ml": "-850",
     "away_ml": "+575"
+   },
+   "venue": {
+    "name": "Acrisure Stadium",
+    "city": "Pittsburgh",
+    "state": "PA",
+    "indoor": false
    }
   },
   {
@@ -914,6 +1148,12 @@
     "over_under": 53.5,
     "home_ml": "-100000",
     "away_ml": "+5000"
+   },
+   "venue": {
+    "name": "Williams-Brice Stadium",
+    "city": "Columbia",
+    "state": "SC",
+    "indoor": false
    }
   },
   {
@@ -938,6 +1178,12 @@
     "over_under": 62.5,
     "home_ml": "-3600",
     "away_ml": "+1500"
+   },
+   "venue": {
+    "name": "Kroger Field",
+    "city": "Lexington",
+    "state": "KY",
+    "indoor": false
    }
   },
   {
@@ -962,6 +1208,12 @@
     "over_under": 53.5,
     "home_ml": "-20000",
     "away_ml": "+3500"
+   },
+   "venue": {
+    "name": "Jack Trice Stadium",
+    "city": "Ames",
+    "state": "IA",
+    "indoor": false
    }
   },
   {
@@ -986,6 +1238,12 @@
     "over_under": 57.5,
     "home_ml": "-100000",
     "away_ml": "+5000"
+   },
+   "venue": {
+    "name": "Falcon Stadium",
+    "city": "USAF Academy",
+    "state": "CO",
+    "indoor": false
    }
   },
   {
@@ -1006,10 +1264,16 @@
    },
    "odds": {
     "provider": "DraftKings",
-    "details": "TEM -10.5",
+    "details": "TEM -9.5",
     "over_under": 51.5,
-    "home_ml": "-455",
-    "away_ml": "+350"
+    "home_ml": "-440",
+    "away_ml": "+340"
+   },
+   "venue": {
+    "name": "Lincoln Financial Field",
+    "city": "Philadelphia",
+    "state": "PA",
+    "indoor": false
    }
   },
   {
@@ -1034,6 +1298,12 @@
     "over_under": 56.5,
     "home_ml": "OFF",
     "away_ml": "OFF"
+   },
+   "venue": {
+    "name": "Sanford Stadium",
+    "city": "Athens",
+    "state": "GA",
+    "indoor": false
    }
   },
   {
@@ -1058,6 +1328,12 @@
     "over_under": 51.5,
     "home_ml": "-4000",
     "away_ml": "+1600"
+   },
+   "venue": {
+    "name": "Autzen Stadium",
+    "city": "Eugene",
+    "state": "OR",
+    "indoor": false
    }
   },
   {
@@ -1082,6 +1358,12 @@
     "over_under": 59.5,
     "home_ml": "-10000",
     "away_ml": "+3000"
+   },
+   "venue": {
+    "name": "DKR-Texas Memorial Stadium",
+    "city": "Austin",
+    "state": "TX",
+    "indoor": false
    }
   },
   {
@@ -1106,6 +1388,12 @@
     "over_under": 52.5,
     "home_ml": "-4000",
     "away_ml": "+1600"
+   },
+   "venue": {
+    "name": "Beaver Stadium",
+    "city": "University Park",
+    "state": "PA",
+    "indoor": false
    }
   },
   {
@@ -1130,6 +1418,12 @@
     "over_under": 66.5,
     "home_ml": "OFF",
     "away_ml": "OFF"
+   },
+   "venue": {
+    "name": "Neyland Stadium",
+    "city": "Knoxville",
+    "state": "TN",
+    "indoor": false
    }
   },
   {
@@ -1154,6 +1448,12 @@
     "over_under": 59.5,
     "home_ml": "-298",
     "away_ml": "+240"
+   },
+   "venue": {
+    "name": "Mercedes-Benz Stadium",
+    "city": "Atlanta",
+    "state": "GA",
+    "indoor": true
    }
   },
   {
@@ -1178,6 +1478,12 @@
     "over_under": 49.5,
     "home_ml": "-298",
     "away_ml": "+240"
+   },
+   "venue": {
+    "name": "Nippert Stadium",
+    "city": "Cincinnati",
+    "state": "OH",
+    "indoor": false
    }
   },
   {
@@ -1198,10 +1504,16 @@
    },
    "odds": {
     "provider": "DraftKings",
-    "details": "DUKE -9.5",
+    "details": "DUKE -8.5",
     "over_under": 50.5,
     "home_ml": "-380",
     "away_ml": "+300"
+   },
+   "venue": {
+    "name": "Wallace Wade Stadium",
+    "city": "Durham",
+    "state": "NC",
+    "indoor": false
    }
   },
   {
@@ -1226,6 +1538,12 @@
     "over_under": 46.5,
     "home_ml": "-2800",
     "away_ml": "+1300"
+   },
+   "venue": {
+    "name": "Jerry Richardson Stadium",
+    "city": "Charlotte",
+    "state": "NC",
+    "indoor": false
    }
   },
   {
@@ -1247,9 +1565,15 @@
    "odds": {
     "provider": "DraftKings",
     "details": "NAVY -30.5",
-    "over_under": 53.5,
-    "home_ml": "-20000",
-    "away_ml": "+3500"
+    "over_under": 52.5,
+    "home_ml": "-50000",
+    "away_ml": "+4000"
+   },
+   "venue": {
+    "name": "Navy-Marine Corps Memorial Stadium",
+    "city": "Annapolis",
+    "state": "MD",
+    "indoor": false
    }
   },
   {
@@ -1274,6 +1598,12 @@
     "over_under": 59.5,
     "home_ml": "-9000",
     "away_ml": "+2500"
+   },
+   "venue": {
+    "name": "Alamodome",
+    "city": "San Antonio",
+    "state": "TX",
+    "indoor": true
    }
   },
   {
@@ -1298,6 +1628,12 @@
     "over_under": 57.5,
     "home_ml": "OFF",
     "away_ml": "OFF"
+   },
+   "venue": {
+    "name": "Fargodome",
+    "city": "Fargo",
+    "state": "ND",
+    "indoor": true
    }
   },
   {
@@ -1322,6 +1658,12 @@
     "over_under": 53.5,
     "home_ml": "-1050",
     "away_ml": "+675"
+   },
+   "venue": {
+    "name": "Kidd Brewer Stadium",
+    "city": "Boone",
+    "state": "NC",
+    "indoor": false
    }
   },
   {
@@ -1346,6 +1688,12 @@
     "over_under": 57.5,
     "home_ml": "+440",
     "away_ml": "-600"
+   },
+   "venue": {
+    "name": "H. A. Chapman Stadium",
+    "city": "Tulsa",
+    "state": "OK",
+    "indoor": false
    }
   },
   {
@@ -1370,6 +1718,12 @@
     "over_under": 44.5,
     "home_ml": "-100000",
     "away_ml": "+5000"
+   },
+   "venue": {
+    "name": "Kinnick Stadium",
+    "city": "Iowa City",
+    "state": "IA",
+    "indoor": false
    }
   },
   {
@@ -1394,6 +1748,12 @@
     "over_under": 63.5,
     "home_ml": "OFF",
     "away_ml": "OFF"
+   },
+   "venue": {
+    "name": "Donald W. Reynolds Razorback Stadium",
+    "city": "Fayetteville",
+    "state": "AR",
+    "indoor": false
    }
   },
   {
@@ -1416,8 +1776,14 @@
     "provider": "DraftKings",
     "details": "USM -21.5",
     "over_under": 50.5,
-    "home_ml": "-5000",
-    "away_ml": "+1800"
+    "home_ml": "-3200",
+    "away_ml": "+1400"
+   },
+   "venue": {
+    "name": "M. M. Roberts Stadium",
+    "city": "Hattiesburg",
+    "state": "MS",
+    "indoor": false
    }
   },
   {
@@ -1442,6 +1808,12 @@
     "over_under": 46.5,
     "home_ml": "-162",
     "away_ml": "+136"
+   },
+   "venue": {
+    "name": "Canvas Stadium",
+    "city": "Fort Collins",
+    "state": "CO",
+    "indoor": false
    }
   },
   {
@@ -1466,6 +1838,12 @@
     "over_under": 54.5,
     "home_ml": "OFF",
     "away_ml": "OFF"
+   },
+   "venue": {
+    "name": "S.B. Ballard Stadium",
+    "city": "Norfolk",
+    "state": "VA",
+    "indoor": false
    }
   },
   {
@@ -1490,6 +1868,12 @@
     "over_under": 53.5,
     "home_ml": "OFF",
     "away_ml": "OFF"
+   },
+   "venue": {
+    "name": "Kyle Field",
+    "city": "College Station",
+    "state": "TX",
+    "indoor": false
    }
   },
   {
@@ -1514,6 +1898,12 @@
     "over_under": 59.5,
     "home_ml": "OFF",
     "away_ml": "OFF"
+   },
+   "venue": {
+    "name": "Galaxy Stadium",
+    "city": "Lubbock",
+    "state": "TX",
+    "indoor": false
    }
   },
   {
@@ -1538,6 +1928,12 @@
     "over_under": 60.5,
     "home_ml": "-9000",
     "away_ml": "+2500"
+   },
+   "venue": {
+    "name": "FirstBank Stadium",
+    "city": "Nashville",
+    "state": "TN",
+    "indoor": false
    }
   },
   {
@@ -1562,6 +1958,12 @@
     "over_under": 55.5,
     "home_ml": "OFF",
     "away_ml": "OFF"
+   },
+   "venue": {
+    "name": "Bill Snyder Family Stadium",
+    "city": "Manhattan",
+    "state": "KS",
+    "indoor": false
    }
   },
   {
@@ -1586,6 +1988,12 @@
     "over_under": 62.5,
     "home_ml": "-550",
     "away_ml": "+410"
+   },
+   "venue": {
+    "name": "Maverik Stadium",
+    "city": "Logan",
+    "state": "UT",
+    "indoor": false
    }
   },
   {
@@ -1610,6 +2018,12 @@
     "over_under": 52.5,
     "home_ml": "-395",
     "away_ml": "+310"
+   },
+   "venue": {
+    "name": "Simmons Bank Liberty Stadium",
+    "city": "Memphis",
+    "state": "TN",
+    "indoor": false
    }
   },
   {
@@ -1634,6 +2048,12 @@
     "over_under": 47.5,
     "home_ml": "-1450",
     "away_ml": "+850"
+   },
+   "venue": {
+    "name": "Rice Stadium",
+    "city": "Houston",
+    "state": "TX",
+    "indoor": false
    }
   },
   {
@@ -1658,6 +2078,12 @@
     "over_under": 52.5,
     "home_ml": "-575",
     "away_ml": "+425"
+   },
+   "venue": {
+    "name": "Raymond James Stadium",
+    "city": "Tampa",
+    "state": "FL",
+    "indoor": false
    }
   },
   {
@@ -1682,6 +2108,12 @@
     "over_under": 59.5,
     "home_ml": "-1650",
     "away_ml": "+950"
+   },
+   "venue": {
+    "name": "Johnny \"Red\" Floyd Stadium",
+    "city": "Murfreesboro",
+    "state": "TN",
+    "indoor": false
    }
   },
   {
@@ -1702,10 +2134,16 @@
    },
    "odds": {
     "provider": "DraftKings",
-    "details": "JXST -19.5",
+    "details": "JXST -20.5",
     "over_under": 54.5,
-    "home_ml": "-2100",
-    "away_ml": "+1100"
+    "home_ml": "-2400",
+    "away_ml": "+1200"
+   },
+   "venue": {
+    "name": "AmFirst Stadium",
+    "city": "Jacksonville",
+    "state": "AL",
+    "indoor": false
    }
   },
   {
@@ -1730,6 +2168,12 @@
     "over_under": 51.5,
     "home_ml": "-4500",
     "away_ml": "+1700"
+   },
+   "venue": {
+    "name": "Allen E. Paulson Stadium",
+    "city": "Statesboro",
+    "state": "GA",
+    "indoor": false
    }
   },
   {
@@ -1754,6 +2198,12 @@
     "over_under": 52.5,
     "home_ml": "-600",
     "away_ml": "+440"
+   },
+   "venue": {
+    "name": "Hancock Whitney Stadium",
+    "city": "Mobile",
+    "state": "AL",
+    "indoor": false
    }
   },
   {
@@ -1778,6 +2228,12 @@
     "over_under": 53.5,
     "home_ml": "-1000",
     "away_ml": "+650"
+   },
+   "venue": {
+    "name": "Veterans Memorial Stadium (AL)",
+    "city": "Troy",
+    "state": "AL",
+    "indoor": false
    }
   },
   {
@@ -1802,6 +2258,12 @@
     "over_under": 51.5,
     "home_ml": "-380",
     "away_ml": "+300"
+   },
+   "venue": {
+    "name": "Tiger Stadium (LA)",
+    "city": "Baton Rouge",
+    "state": "LA",
+    "indoor": false
    }
   },
   {
@@ -1826,6 +2288,12 @@
     "over_under": 48.5,
     "home_ml": "-5000",
     "away_ml": "+1800"
+   },
+   "venue": {
+    "name": "Michigan Stadium",
+    "city": "Ann Arbor",
+    "state": "MI",
+    "indoor": false
    }
   },
   {
@@ -1850,6 +2318,12 @@
     "over_under": 54.5,
     "home_ml": "-6500",
     "away_ml": "+2000"
+   },
+   "venue": {
+    "name": "Davis Wade Stadium",
+    "city": "Starkville",
+    "state": "MS",
+    "indoor": false
    }
   },
   {
@@ -1870,10 +2344,16 @@
    },
    "odds": {
     "provider": "DraftKings",
-    "details": "VT -54.5",
+    "details": "VT -55.5",
     "over_under": 61.5,
     "home_ml": "OFF",
     "away_ml": "OFF"
+   },
+   "venue": {
+    "name": "Lane Stadium",
+    "city": "Blacksburg",
+    "state": "VA",
+    "indoor": false
    }
   },
   {
@@ -1898,6 +2378,12 @@
     "over_under": 55.5,
     "home_ml": "OFF",
     "away_ml": "OFF"
+   },
+   "venue": {
+    "name": "Joe Aillet Stadium",
+    "city": "Ruston",
+    "state": "LA",
+    "indoor": false
    }
   },
   {
@@ -1922,6 +2408,12 @@
     "over_under": 59.5,
     "home_ml": "-5000",
     "away_ml": "+1800"
+   },
+   "venue": {
+    "name": "Ben Hill Griffin Stadium",
+    "city": "Gainesville",
+    "state": "FL",
+    "indoor": false
    }
   },
   {
@@ -1946,6 +2438,12 @@
     "over_under": 59.5,
     "home_ml": "OFF",
     "away_ml": "OFF"
+   },
+   "venue": {
+    "name": "LaVell Edwards Stadium",
+    "city": "Provo",
+    "state": "UT",
+    "indoor": false
    }
   },
   {
@@ -1970,6 +2468,12 @@
     "over_under": 56.5,
     "home_ml": "OFF",
     "away_ml": "OFF"
+   },
+   "venue": {
+    "name": "SECU Stadium",
+    "city": "College Park",
+    "state": "MD",
+    "indoor": false
    }
   },
   {
@@ -1992,8 +2496,14 @@
     "provider": "DraftKings",
     "details": "NU -12.5",
     "over_under": 46.5,
-    "home_ml": "-675",
-    "away_ml": "+490"
+    "home_ml": "-625",
+    "away_ml": "+455"
+   },
+   "venue": {
+    "name": "Northwestern Medicine Field at Martin Stadium",
+    "city": "Evanston",
+    "state": "IL",
+    "indoor": false
    }
   },
   {
@@ -2016,8 +2526,14 @@
     "provider": "DraftKings",
     "details": "UL -20.5",
     "over_under": 48.5,
-    "home_ml": "-950",
-    "away_ml": "+625"
+    "home_ml": "-1200",
+    "away_ml": "+750"
+   },
+   "venue": {
+    "name": "Our Lady of Lourdes Stadium",
+    "city": "Lafayette",
+    "state": "LA",
+    "indoor": false
    }
   },
   {
@@ -2042,6 +2558,12 @@
     "over_under": 51.5,
     "home_ml": "-10000",
     "away_ml": "+3000"
+   },
+   "venue": {
+    "name": "Aggie Memorial Stadium",
+    "city": "Las Cruces",
+    "state": "NM",
+    "indoor": false
    }
   },
   {
@@ -2066,6 +2588,12 @@
     "over_under": 56.5,
     "home_ml": "-8000",
     "away_ml": "+2200"
+   },
+   "venue": {
+    "name": "Casino Del Sol Stadium",
+    "city": "Tucson",
+    "state": "AZ",
+    "indoor": false
    }
   },
   {
@@ -2087,9 +2615,15 @@
    "odds": {
     "provider": "DraftKings",
     "details": "SDSU -40.5",
-    "over_under": 57.5,
+    "over_under": 61.5,
     "home_ml": "OFF",
     "away_ml": "OFF"
+   },
+   "venue": {
+    "name": "Snapdragon Stadium",
+    "city": "San Diego",
+    "state": "CA",
+    "indoor": false
    }
   },
   {
@@ -2114,6 +2648,12 @@
     "over_under": 52.5,
     "home_ml": "OFF",
     "away_ml": "OFF"
+   },
+   "venue": {
+    "name": "Mountain America Stadium",
+    "city": "Tempe",
+    "state": "AZ",
+    "indoor": false
    }
   },
   {
@@ -2138,6 +2678,12 @@
     "over_under": 58.5,
     "home_ml": "+124",
     "away_ml": "-148"
+   },
+   "venue": {
+    "name": "Clarence T.C. Ching Athletics Complex",
+    "city": "Honolulu",
+    "state": "HI",
+    "indoor": false
    }
   },
   {
@@ -2162,6 +2708,12 @@
     "over_under": 46.5,
     "home_ml": "-410",
     "away_ml": "+320"
+   },
+   "venue": {
+    "name": "University Stadium (NM)",
+    "city": "Albuquerque",
+    "state": "NM",
+    "indoor": false
    }
   },
   {
@@ -2186,6 +2738,12 @@
     "over_under": 56.5,
     "home_ml": "OFF",
     "away_ml": "OFF"
+   },
+   "venue": {
+    "name": "Hornet Stadium",
+    "city": "Sacramento",
+    "state": "CA",
+    "indoor": false
    }
   },
   {
@@ -2210,6 +2768,12 @@
     "over_under": 53.5,
     "home_ml": "+100",
     "away_ml": "-120"
+   },
+   "venue": {
+    "name": "California Memorial Stadium",
+    "city": "Berkeley",
+    "state": "CA",
+    "indoor": false
    }
   },
   {
@@ -2234,6 +2798,12 @@
     "over_under": 52.5,
     "home_ml": "+110",
     "away_ml": "-130"
+   },
+   "venue": {
+    "name": "Mackay Stadium",
+    "city": "Reno",
+    "state": "NV",
+    "indoor": false
    }
   },
   {
@@ -2258,6 +2828,12 @@
     "over_under": 50.5,
     "home_ml": "-2800",
     "away_ml": "+1300"
+   },
+   "venue": {
+    "name": "Husky Stadium",
+    "city": "Seattle",
+    "state": "WA",
+    "indoor": false
    }
   },
   {
@@ -2282,6 +2858,12 @@
     "over_under": 47.5,
     "home_ml": "-1800",
     "away_ml": "+1000"
+   },
+   "venue": {
+    "name": "Lambeau Field",
+    "city": "Green Bay",
+    "state": "WI",
+    "indoor": false
    }
   },
   {
@@ -2306,6 +2888,12 @@
     "over_under": 55.5,
     "home_ml": "-258",
     "away_ml": "+210"
+   },
+   "venue": {
+    "name": "Nissan Stadium",
+    "city": "Nashville",
+    "state": "TN",
+    "indoor": false
    }
   },
   {
@@ -2328,8 +2916,14 @@
     "provider": "DraftKings",
     "details": "SMU -3",
     "over_under": 53.5,
-    "home_ml": "+130",
-    "away_ml": "-155"
+    "home_ml": "+136",
+    "away_ml": "-162"
+   },
+   "venue": {
+    "name": "Doak Campbell Stadium",
+    "city": "Tallahassee",
+    "state": "FL",
+    "indoor": false
    }
   }
  ]

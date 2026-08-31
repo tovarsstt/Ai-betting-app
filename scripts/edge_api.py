@@ -27,6 +27,7 @@ import chaos_engine as ce
 import staking as stk
 import tennis_live as tlive
 import soccer_live as slive
+import game_weather as gwx
 import sofascore as sofa
 import player_props as props
 import team_off_def as tod
@@ -1875,6 +1876,24 @@ def soccer_live_price(req: SoccerLiveReq):
             "sees the run of play before the model does."
         ),
     }
+
+
+# ── Venue + weather context for outdoor games (NFL/CFB) ────────────────────────
+class VenueReq(BaseModel):
+    city: str
+    state: Optional[str] = None
+    indoor: bool = False
+    kickoff: str  # ISO 8601, e.g. "2026-09-07T18:00Z"
+
+
+@app.post("/game-weather")
+def game_weather_endpoint(req: VenueReq):
+    """
+    Wind/cold/precip context at kickoff — a flag for the pick report, never an
+    invented probability shift (dome games short-circuit with NONE/no fetch).
+    """
+    venue = {"fullName": None, "address": {"city": req.city, "state": req.state}, "indoor": req.indoor}
+    return gwx.game_weather(venue, req.kickoff)
 
 
 # ── Chaos slate: per-match chaos grades + slate weather + tiered card ──────────

@@ -1,6 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Flag } from "lucide-react";
+import { Flag, CloudRain } from "lucide-react";
 
 /* ─── Types mirror scripts/fetch_cfb_data.py output ─── */
 interface CfbTeamSide {
@@ -18,6 +19,13 @@ interface CfbOdds {
   away_ml?: string;
 }
 
+interface CfbVenue {
+  name: string;
+  city: string | null;
+  state: string | null;
+  indoor: boolean;
+}
+
 interface CfbGame {
   name: string;
   date: string;
@@ -25,7 +33,20 @@ interface CfbGame {
   home: CfbTeamSide;
   away: CfbTeamSide;
   odds: CfbOdds | null;
+  venue: CfbVenue | null;
 }
+
+interface WeatherImpact {
+  level: "NONE" | "MODERATE" | "HIGH" | "UNKNOWN";
+  note: string;
+}
+
+interface WeatherData {
+  indoor: boolean;
+  weather: { temp_f: number; wind_mph: number; precip_pct: number } | null;
+  impact: WeatherImpact;
+}
+
 
 interface CfbBoardData {
   week: number | null;
@@ -34,9 +55,64 @@ interface CfbBoardData {
 }
 
 const OCHRE = "#C8860A";
+const IMPACT_COLOR: Record<WeatherImpact["level"], string> = {
+  NONE: "#7BA05B",
+  MODERATE: OCHRE,
+  HIGH: "#B5533C",
+  UNKNOWN: "#8A8A8A",
+};
 
 function teamLabel(side: CfbTeamSide): string {
   return side.rank ? `#${side.rank} ${side.team}` : side.team;
+}
+
+function WeatherBadge({ venue, kickoff }: { venue: CfbVenue; kickoff: string }) {
+  const [open, setOpen] = useState(false);
+  const { mutate, data, isPending } = useMutation({
+    mutationFn: async (): Promise<WeatherData> => {
+      const res = await fetch("/api/game-weather", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ city: venue.city, state: venue.state, indoor: venue.indoor, kickoff }),
+      });
+      const body = await res.json();
+      if (!res.ok) throw new Error(body?.error ?? `HTTP ${res.status}`);
+      return body.data as WeatherData;
+    },
+  });
+
+  if (venue.indoor) {
+    return <span className="text-[10px] text-muted-foreground">{venue.name} · techo</span>;
+  }
+
+  return (
+    <div className="text-[10px]">
+      <button
+        onClick={() => {
+          setOpen(true);
+          if (!data) mutate();
+        }}
+        className="flex items-center gap-1 text-muted-foreground hover:text-[#F5F0E8]"
+      >
+        <CloudRain className="h-3 w-3" />
+        {venue.name}
+        {venue.state ? `, ${venue.state}` : ""}
+      </button>
+      {open && (
+        <div className="mt-1">
+          {isPending && <span className="text-muted-foreground">clima…</span>}
+          {data && (
+            <span style={{ color: IMPACT_COLOR[data.impact.level] }}>
+              {data.weather
+                ? `${data.weather.temp_f.toFixed(0)}°F · viento ${data.weather.wind_mph.toFixed(0)}mph · lluvia ${data.weather.precip_pct}% — `
+                : ""}
+              {data.impact.note}
+            </span>
+          )}
+        </div>
+      )}
+    </div>
+  );
 }
 
 export function CfbBoard() {
@@ -91,6 +167,7 @@ export function CfbBoard() {
                   <div className="text-[10px] text-muted-foreground">
                     {g.away.record ?? "0-0"} · {g.home.record ?? "0-0"} · {g.status}
                   </div>
+                  {g.venue && <WeatherBadge venue={g.venue} kickoff={g.date} />}
                 </div>
                 {g.odds && (
                   <div className="shrink-0 text-right font-mono tabular-nums" style={{ color: OCHRE }}>

@@ -4596,6 +4596,28 @@ app.post('/api/bank-builder', async (req: express.Request, res: express.Response
   }
 });
 
+// Venue + weather context — wind/cold/precip flag for outdoor NFL/CFB games
+// (dome games short-circuit server-side, no forecast call). Free, no key.
+app.post('/api/game-weather', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 20, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  const { city, state, indoor, kickoff } = req.body ?? {};
+  if (!city || !kickoff) {
+    return res.status(400).json({ error: 'NEED_CITY_AND_KICKOFF' });
+  }
+  try {
+    const r = await fetch('http://127.0.0.1:8001/game-weather', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ city, state, indoor: !!indoor, kickoff }),
+      signal: AbortSignal.timeout(15_000), // geocode + forecast, both free APIs
+    });
+    if (!r.ok) return res.status(502).json({ error: 'EDGE_API_ERROR', status: r.status });
+    res.json({ success: true, data: await r.json() });
+  } catch (e: unknown) {
+    res.status(503).json({ error: 'EDGE_API_UNAVAILABLE', message: e instanceof Error ? e.message : String(e) });
+  }
+});
+
 // CFB WEEK BOARD — ESPN scoreboard (free): ranks, records, embedded DK lines.
 // Cached to data/cfb_board.json; ?refresh=1 re-pulls (free API, still throttled
 // by rate limit). CFB has no local model — this is the profile/context layer.

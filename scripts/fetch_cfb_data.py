@@ -59,6 +59,16 @@ def parse_event(ev: dict) -> dict | None:
             price = ((ml.get(side) or {}).get("close") or {}).get("odds")
             if price is not None:
                 odds[f"{side}_ml"] = price
+    venue_raw = comp.get("venue") or {}
+    venue = None
+    if venue_raw.get("fullName"):
+        addr = venue_raw.get("address") or {}
+        venue = {
+            "name": venue_raw["fullName"],
+            "city": addr.get("city"),
+            "state": addr.get("state"),
+            "indoor": bool(venue_raw.get("indoor", False)),
+        }
     return {
         "name": ev.get("name"),
         "date": ev.get("date"),
@@ -66,6 +76,7 @@ def parse_event(ev: dict) -> dict | None:
         "home": sides["home"],
         "away": sides["away"],
         "odds": odds,
+        "venue": venue,
     }
 
 

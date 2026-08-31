@@ -13,6 +13,8 @@ def _event(odds=None, rank=14):
     }
     if odds is not None:
         comp["odds"] = [odds]
+    comp["venue"] = {"fullName": "Los Angeles Memorial Coliseum",
+                      "address": {"city": "Los Angeles", "state": "CA"}, "indoor": False}
     return {"name": "SJSU at USC", "date": "2026-09-05T19:30Z",
             "status": {"type": {"description": "Scheduled"}},
             "competitions": [comp]}
@@ -25,6 +27,12 @@ def test_parses_teams_ranks_records():
     assert row["away"]["rank"] is None  # 99 = unranked sentinel, not a rank
     assert row["home"]["record"] == "1-0"
     assert row["odds"] is None
+
+
+def test_parses_venue_for_weather_context():
+    row = parse_event(_event())
+    assert row["venue"]["city"] == "Los Angeles"
+    assert row["venue"]["indoor"] is False
 
 
 def test_parses_dk_line_and_moneylines():
