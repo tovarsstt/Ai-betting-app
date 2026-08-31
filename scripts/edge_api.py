@@ -26,6 +26,7 @@ import ufc_markets as um
 import chaos_engine as ce
 import staking as stk
 import tennis_live as tlive
+import soccer_live as slive
 import sofascore as sofa
 import player_props as props
 import team_off_def as tod
@@ -1791,6 +1792,88 @@ def simulate_match_generic(req: SimulateMatchReq):
             "simulated_btts_yes": pm.hit_rate(sim, pm.btts_yes),
             "simulated_over_2_5": pm.hit_rate(sim, pm.over(2.5)),
         },
+    }
+
+
+# ── Live soccer pricing: time-decayed Poisson + asian-line EV ─────────────────
+class AsianLineReq(BaseModel):
+    market: str            # "total" | "handicap_home" | "handicap_away"
+    line: float            # e.g. 4.25 for totals, -3.25 for a handicap
+    price: float
+    side: str = "over"     # totals only: "over" | "under"
+
+
+class SoccerLiveReq(BaseModel):
+    league: str
+    home: str
+    away: str
+    minute: Optional[int] = None       # omitted -> auto-fetch from ESPN
+    score_home: Optional[int] = None
+    score_away: Optional[int] = None
+    tempo_mult: Optional[float] = None  # omitted -> derived from live shots-on-target
+    total_sot: Optional[int] = None
+    lines: List[AsianLineReq] = []
+
+
+@app.post("/soccer-live")
+def soccer_live_price(req: SoccerLiveReq):
+    """
+    Live fair probs for a club match (soccer_skill.md in-play discipline:
+    remaining lambda = pre-match lambda x minutes left, matrix offset by the
+    current score). Prices supplied asian lines in a cold scenario and a
+    tempo-adjusted one (bounded run-of-play multiplier from shots-on-target).
+    """
+    try:
+        lam_h, lam_a = slive.lambdas_from_ratings(req.league, req.home, req.away)
+    except KeyError as exc:
+        return {"status": "NO_RATINGS", "error": str(exc)}
+
+    minute, sh, sa, sot = req.minute, req.score_home, req.score_away, req.total_sot
+    live_meta = None
+    if minute is None or sh is None or sa is None:
+        try:
+            state = slive.fetch_live_state(req.league, req.home)
+            minute = state["minute"] if minute is None else minute
+            sh = state["score_home"] if sh is None else sh
+            sa = state["score_away"] if sa is None else sa
+            sot = state["total_sot"] if sot is None else sot
+            live_meta = {"status": state["status"], "event": state["event_name"]}
+        except Exception as exc:
+            return {"status": "NO_LIVE_STATE", "error": str(exc)}
+
+    tempo = req.tempo_mult
+    if tempo is None:
+        tempo = slive.tempo_multiplier(sot, minute) if sot is not None else 1.0
+
+    probs_cold = slive.live_probs(lam_h, lam_a, minute, sh, sa)
+    scenarios = {"cold": 1.0, "tempo": tempo}
+    line_evs = []
+    for ln in req.lines:
+        row = {"market": ln.market, "line": ln.line, "side": ln.side, "price": ln.price}
+        for name, mult in scenarios.items():
+            totals, margins = slive.total_pmf(lam_h, lam_a, minute, sh, sa, tempo_mult=mult)
+            if ln.market == "total":
+                row[f"ev_{name}"] = round(slive.asian_ev(totals, ln.line, ln.price, ln.side), 4)
+            elif ln.market in ("handicap_home", "handicap_away"):
+                pmf = margins if ln.market == "handicap_home" else {-k: v for k, v in margins.items()}
+                row[f"ev_{name}"] = round(slive.asian_handicap_ev(pmf, ln.line, ln.price), 4)
+            else:
+                row["error"] = f"unknown market {ln.market!r}"
+                break
+        line_evs.append(row)
+
+    return {
+        "status": "OK",
+        "live": {"minute": minute, "score": f"{sh}-{sa}", "total_sot": sot, **(live_meta or {})},
+        "lambdas_prematch": {"home": round(lam_h, 3), "away": round(lam_a, 3)},
+        "tempo_mult": round(tempo, 3),
+        "probs": {k: round(v, 4) for k, v in probs_cold.items()},
+        "lines": line_evs,
+        "market_anchor_note": (
+            "Rule 30: the standalone soccer model loses to the price. Treat model "
+            "EV as a flag, not a bet signal — in-play vig runs ~7%+ and the book "
+            "sees the run of play before the model does."
+        ),
     }
 
 
