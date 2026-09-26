@@ -1,0 +1,368 @@
+{
+  "method": "walk-forward, lines from pre-game player quantiles; see module docstring",
+  "stats": {
+    "pass_yds": {
+      "samples": 1235,
+      "base_rate": 0.495,
+      "climatology": {
+        "n": 1235,
+        "logloss": 0.6931,
+        "brier": 0.25
+      },
+      "production": {
+        "n": 1235,
+        "logloss": 0.6317,
+        "brier": 0.2206
+      },
+      "beats_climatology": true,
+      "params": {
+        "halflife": 12,
+        "prior_k": 24,
+        "min_cv": 0.45,
+        "opp_k": 16.0
+      },
+      "calibration": [
+        {
+          "bin": "0.00-0.20",
+          "n": 52,
+          "pred": 0.146,
+          "actual": 0.192
+        },
+        {
+          "bin": "0.20-0.35",
+          "n": 209,
+          "pred": 0.281,
+          "actual": 0.249
+        },
+        {
+          "bin": "0.35-0.45",
+          "n": 215,
+          "pred": 0.4,
+          "actual": 0.405
+        },
+        {
+          "bin": "0.45-0.55",
+          "n": 256,
+          "pred": 0.5,
+          "actual": 0.496
+        },
+        {
+          "bin": "0.55-0.65",
+          "n": 225,
+          "pred": 0.601,
+          "actual": 0.591
+        },
+        {
+          "bin": "0.65-0.80",
+          "n": 266,
+          "pred": 0.714,
+          "actual": 0.714
+        }
+      ]
+    },
+    "rush_yds": {
+      "samples": 1998,
+      "base_rate": 0.469,
+      "climatology": {
+        "n": 1998,
+        "logloss": 0.6912,
+        "brier": 0.249
+      },
+      "production": {
+        "n": 1998,
+        "logloss": 0.6143,
+        "brier": 0.2126
+      },
+      "beats_climatology": true,
+      "params": {
+        "halflife": 8,
+        "prior_k": 8,
+        "min_cv": 0.6,
+        "opp_k": null,
+        "platt": [
+          -0.212,
+          1.102
+        ]
+      },
+      "calibration": [
+        {
+          "bin": "0.00-0.20",
+          "n": 139,
+          "pred": 0.172,
+          "actual": 0.158
+        },
+        {
+          "bin": "0.20-0.35",
+          "n": 537,
+          "pred": 0.269,
+          "actual": 0.274
+        },
+        {
+          "bin": "0.35-0.45",
+          "n": 262,
+          "pred": 0.408,
+          "actual": 0.424
+        },
+        {
+          "bin": "0.45-0.55",
+          "n": 328,
+          "pred": 0.497,
+          "actual": 0.485
+        },
+        {
+          "bin": "0.55-0.65",
+          "n": 239,
+          "pred": 0.601,
+          "actual": 0.577
+        },
+        {
+          "bin": "0.65-0.80",
+          "n": 478,
+          "pred": 0.717,
+          "actual": 0.73
+        }
+      ]
+    },
+    "rec_yds": {
+      "samples": 4662,
+      "base_rate": 0.449,
+      "climatology": {
+        "n": 4662,
+        "logloss": 0.6879,
+        "brier": 0.2474
+      },
+      "production": {
+        "n": 4662,
+        "logloss": 0.6311,
+        "brier": 0.2202
+      },
+      "beats_climatology": true,
+      "params": {
+        "halflife": 8,
+        "prior_k": 12,
+        "min_cv": 0.8,
+        "opp_k": 16.0,
+        "platt": [
+          -0.297,
+          0.959
+        ]
+      },
+      "calibration": [
+        {
+          "bin": "0.00-0.20",
+          "n": 307,
+          "pred": 0.158,
+          "actual": 0.179
+        },
+        {
+          "bin": "0.20-0.35",
+          "n": 1172,
+          "pred": 0.281,
+          "actual": 0.291
+        },
+        {
+          "bin": "0.35-0.45",
+          "n": 855,
+          "pred": 0.403,
+          "actual": 0.367
+        },
+        {
+          "bin": "0.45-0.55",
+          "n": 864,
+          "pred": 0.501,
+          "actual": 0.5
+        },
+        {
+          "bin": "0.55-0.65",
+          "n": 832,
+          "pred": 0.602,
+          "actual": 0.593
+        },
+        {
+          "bin": "0.65-0.80",
+          "n": 629,
+          "pred": 0.691,
+          "actual": 0.723
+        }
+      ]
+    },
+    "receptions": {
+      "samples": 4098,
+      "base_rate": 0.395,
+      "climatology": {
+        "n": 4098,
+        "logloss": 0.6711,
+        "brier": 0.239
+      },
+      "production": {
+        "n": 4098,
+        "logloss": 0.6115,
+        "brier": 0.211
+      },
+      "beats_climatology": true,
+      "params": {
+        "halflife": 8,
+        "prior_k": 8,
+        "min_cv": 0.3,
+        "opp_k": 16.0,
+        "platt": [
+          -0.227,
+          0.774
+        ]
+      },
+      "calibration": [
+        {
+          "bin": "0.00-0.20",
+          "n": 537,
+          "pred": 0.148,
+          "actual": 0.182
+        },
+        {
+          "bin": "0.20-0.35",
+          "n": 1200,
+          "pred": 0.275,
+          "actual": 0.253
+        },
+        {
+          "bin": "0.35-0.45",
+          "n": 799,
+          "pred": 0.399,
+          "actual": 0.393
+        },
+        {
+          "bin": "0.45-0.55",
+          "n": 671,
+          "pred": 0.498,
+          "actual": 0.486
+        },
+        {
+          "bin": "0.55-0.65",
+          "n": 630,
+          "pred": 0.597,
+          "actual": 0.624
+        },
+        {
+          "bin": "0.65-0.80",
+          "n": 253,
+          "pred": 0.689,
+          "actual": 0.711
+        }
+      ]
+    },
+    "pass_td": {
+      "samples": 398,
+      "base_rate": 0.457,
+      "climatology": {
+        "n": 398,
+        "logloss": 0.6895,
+        "brier": 0.2482
+      },
+      "production": {
+        "n": 398,
+        "logloss": 0.6851,
+        "brier": 0.246
+      },
+      "beats_climatology": true,
+      "params": {
+        "halflife": 16,
+        "freq_k": 16.0
+      },
+      "calibration": [
+        {
+          "bin": "0.35-0.45",
+          "n": 181,
+          "pred": 0.415,
+          "actual": 0.403
+        },
+        {
+          "bin": "0.45-0.55",
+          "n": 203,
+          "pred": 0.49,
+          "actual": 0.488
+        }
+      ]
+    },
+    "anytime_td": {
+      "samples": 2160,
+      "base_rate": 0.294,
+      "climatology": {
+        "n": 2160,
+        "logloss": 0.6057,
+        "brier": 0.2076
+      },
+      "production": {
+        "n": 2160,
+        "logloss": 0.5964,
+        "brier": 0.2037
+      },
+      "beats_climatology": true,
+      "params": {
+        "halflife": 8,
+        "freq_k": 16.0,
+        "platt": [
+          0.072,
+          1.546
+        ]
+      },
+      "calibration": [
+        {
+          "bin": "0.00-0.20",
+          "n": 43,
+          "pred": 0.19,
+          "actual": 0.256
+        },
+        {
+          "bin": "0.20-0.35",
+          "n": 1696,
+          "pred": 0.272,
+          "actual": 0.268
+        },
+        {
+          "bin": "0.35-0.45",
+          "n": 387,
+          "pred": 0.388,
+          "actual": 0.408
+        },
+        {
+          "bin": "0.45-0.55",
+          "n": 34,
+          "pred": 0.474,
+          "actual": 0.353
+        }
+      ]
+    }
+  },
+  "platt_out_of_sample_2026": {
+    "note": "logit recalibration fit on 2025 samples, scored on 2026 samples (never seen). Applied only where it helped.",
+    "pass_yds": {
+      "raw": 0.6599,
+      "calibrated": 0.662,
+      "applied": false
+    },
+    "rush_yds": {
+      "raw": 0.6481,
+      "calibrated": 0.6462,
+      "applied": true
+    },
+    "rec_yds": {
+      "raw": 0.638,
+      "calibrated": 0.6285,
+      "applied": true
+    },
+    "receptions": {
+      "raw": 0.6395,
+      "calibrated": 0.6263,
+      "applied": true
+    },
+    "pass_td": {
+      "raw": 0.6729,
+      "calibrated": 0.6758,
+      "applied": false
+    },
+    "anytime_td": {
+      "raw": 0.5882,
+      "calibrated": 0.5757,
+      "applied": true
+    }
+  }
+}

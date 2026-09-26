@@ -1,0 +1,22 @@
+[
+  {
+    "label": "Canada vs Bosnia (actual 1-1 draw)",
+    "home": {"name": "Canada", "gf": 1, "ga": 1, "gp": 1, "strength": 0.02},
+    "away": {"name": "Bosnia", "gf": 1, "ga": 1, "gp": 1, "strength": 0.01},
+    "market_home": 0.50, "market_draw": 0.27, "market_away": 0.23,
+    "fav_decimal_odds": 1.83, "draw_decimal_odds": 3.40,
+    "model_home": 0.46, "model_draw": 0.31, "model_away": 0.23,
+    "home_tag": "CAN_DRAW", "away_tag": null,
+    "actual": "DRAW"
+  },
+  {
+    "label": "Germany vs Curacao (actual 7-1)",
+    "home": {"name": "Germany", "gf": 7, "ga": 1, "gp": 1, "strength": 0.12},
+    "away": {"name": "Curacao", "gf": 1, "ga": 7, "gp": 1, "strength": 0.001},
+    "market_home": 0.93, "market_draw": 0.05, "market_away": 0.02,
+    "fav_decimal_odds": 1.04, "draw_decimal_odds": 12.0,
+    "model_home": 0.93, "model_draw": 0.05, "model_away": 0.02,
+    "home_tag": null, "away_tag": null,
+    "actual": "HOME"
+  }
+]

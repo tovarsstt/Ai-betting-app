@@ -1,0 +1,3855 @@
+{
+  "nfl_sigma": 12.75,
+  "rule": "win probability first; price/EV second",
+  "board": [
+    {
+      "label": "Kansas City Chiefs ML",
+      "kind": "ml",
+      "side": "away",
+      "line": 0.0,
+      "decimal": 1.16,
+      "win_prob": 0.8164,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.8164,
+        "ratings": 0.6619,
+        "sim": 0.8155
+      },
+      "worst_lens": 0.6619,
+      "lenses_agree": true,
+      "grade": "LOCK",
+      "fair_decimal": 1.22,
+      "ev_pct": -5.3,
+      "price_note": "OVERPRICED \u2014 fair 1.22, book pays 1.16",
+      "game": "Kansas City Chiefs @ Miami Dolphins"
+    },
+    {
+      "label": "San Francisco 49ers ML",
+      "kind": "ml",
+      "side": "home",
+      "line": 0.0,
+      "decimal": 1.2272727272727273,
+      "win_prob": 0.7718,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.7718,
+        "ratings": 0.8103,
+        "sim": 0.7713
+      },
+      "worst_lens": 0.7713,
+      "lenses_agree": true,
+      "grade": "LOCK",
+      "fair_decimal": 1.3,
+      "ev_pct": -5.3,
+      "price_note": "OVERPRICED \u2014 fair 1.30, book pays 1.23",
+      "game": "Arizona Cardinals @ San Francisco 49ers"
+    },
+    {
+      "label": "Seattle Seahawks ML",
+      "kind": "ml",
+      "side": "away",
+      "line": 0.0,
+      "decimal": 1.2531645569620253,
+      "win_prob": 0.7614,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.7614,
+        "ratings": 0.9512,
+        "sim": 0.7612
+      },
+      "worst_lens": 0.7612,
+      "lenses_agree": true,
+      "grade": "LOCK",
+      "fair_decimal": 1.31,
+      "ev_pct": -4.6,
+      "price_note": "OVERPRICED \u2014 fair 1.31, book pays 1.25",
+      "game": "Seattle Seahawks @ Washington Commanders"
+    },
+    {
+      "label": "Buffalo Bills ML",
+      "kind": "ml",
+      "side": "home",
+      "line": 0.0,
+      "decimal": 1.2941176470588236,
+      "win_prob": 0.7347,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.7347,
+        "ratings": 0.7564,
+        "sim": 0.734
+      },
+      "worst_lens": 0.734,
+      "lenses_agree": true,
+      "grade": "LOCK",
+      "fair_decimal": 1.36,
+      "ev_pct": -4.9,
+      "price_note": "OVERPRICED \u2014 fair 1.36, book pays 1.29",
+      "game": "Los Angeles Chargers @ Buffalo Bills"
+    },
+    {
+      "label": "Detroit Lions ML",
+      "kind": "ml",
+      "side": "home",
+      "line": 0.0,
+      "decimal": 1.3278688524590163,
+      "win_prob": 0.7183,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.7183,
+        "ratings": 0.7678,
+        "sim": 0.7176
+      },
+      "worst_lens": 0.7176,
+      "lenses_agree": true,
+      "grade": "LOCK",
+      "fair_decimal": 1.39,
+      "ev_pct": -4.6,
+      "price_note": "OVERPRICED \u2014 fair 1.39, book pays 1.33",
+      "game": "New York Jets @ Detroit Lions"
+    },
+    {
+      "label": "Philadelphia Eagles ML",
+      "kind": "ml",
+      "side": "away",
+      "line": 0.0,
+      "decimal": 1.4201680672268908,
+      "win_prob": 0.6727,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.6727,
+        "ratings": 0.4145,
+        "sim": 0.6717
+      },
+      "worst_lens": 0.4145,
+      "lenses_agree": true,
+      "grade": "PICK",
+      "fair_decimal": 1.49,
+      "ev_pct": -4.5,
+      "price_note": "OVERPRICED \u2014 fair 1.49, book pays 1.42",
+      "game": "Philadelphia Eagles @ Chicago Bears"
+    },
+    {
+      "label": "Cincinnati Bengals ML",
+      "kind": "ml",
+      "side": "away",
+      "line": 0.0,
+      "decimal": 1.5405405405405406,
+      "win_prob": 0.619,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.619,
+        "ratings": 0.4786,
+        "sim": 0.6182
+      },
+      "worst_lens": 0.4786,
+      "lenses_agree": true,
+      "grade": "LEAN",
+      "fair_decimal": 1.62,
+      "ev_pct": -4.6,
+      "price_note": "OVERPRICED \u2014 fair 1.62, book pays 1.54",
+      "game": "Cincinnati Bengals @ Pittsburgh Steelers"
+    },
+    {
+      "label": "New Orleans Saints ML",
+      "kind": "ml",
+      "side": "home",
+      "line": 0.0,
+      "decimal": 1.5405405405405406,
+      "win_prob": 0.6133,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.6133,
+        "ratings": 0.5702,
+        "sim": 0.6131
+      },
+      "worst_lens": 0.5702,
+      "lenses_agree": true,
+      "grade": "LEAN",
+      "fair_decimal": 1.63,
+      "ev_pct": -5.5,
+      "price_note": "OVERPRICED \u2014 fair 1.63, book pays 1.54",
+      "game": "Las Vegas Raiders @ New Orleans Saints"
+    },
+    {
+      "label": "Baltimore Ravens ML",
+      "kind": "ml",
+      "side": "away",
+      "line": 0.0,
+      "decimal": 1.5714285714285714,
+      "win_prob": 0.6092,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.6092,
+        "ratings": 0.6725,
+        "sim": 0.6078
+      },
+      "worst_lens": 0.6078,
+      "lenses_agree": true,
+      "grade": "LEAN",
+      "fair_decimal": 1.64,
+      "ev_pct": -4.3,
+      "price_note": "OVERPRICED \u2014 fair 1.64, book pays 1.57",
+      "game": "Baltimore Ravens @ Dallas Cowboys"
+    },
+    {
+      "label": "Jacksonville Jaguars ML",
+      "kind": "ml",
+      "side": "home",
+      "line": 0.0,
+      "decimal": 1.6451612903225805,
+      "win_prob": 0.5738,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.5738,
+        "ratings": 0.5561,
+        "sim": 0.5725
+      },
+      "worst_lens": 0.5561,
+      "lenses_agree": true,
+      "grade": "LEAN",
+      "fair_decimal": 1.74,
+      "ev_pct": -5.6,
+      "price_note": "OVERPRICED \u2014 fair 1.74, book pays 1.65",
+      "game": "New England Patriots @ Jacksonville Jaguars"
+    },
+    {
+      "label": "Carolina Panthers ML",
+      "kind": "ml",
+      "side": "away",
+      "line": 0.0,
+      "decimal": 1.704225352112676,
+      "win_prob": 0.5543,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.5543,
+        "ratings": 0.5855,
+        "sim": 0.5535
+      },
+      "worst_lens": 0.5535,
+      "lenses_agree": true,
+      "grade": "LEAN",
+      "fair_decimal": 1.8,
+      "ev_pct": -5.5,
+      "price_note": "OVERPRICED \u2014 fair 1.80, book pays 1.70",
+      "game": "Carolina Panthers @ Cleveland Browns"
+    },
+    {
+      "label": "New York Giants ML",
+      "kind": "ml",
+      "side": "home",
+      "line": 0.0,
+      "decimal": 1.7407407407407407,
+      "win_prob": 0.5461,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.5461,
+        "ratings": 0.6497,
+        "sim": 0.5449
+      },
+      "worst_lens": 0.5449,
+      "lenses_agree": true,
+      "grade": "LEAN",
+      "fair_decimal": 1.83,
+      "ev_pct": -4.9,
+      "price_note": "OVERPRICED \u2014 fair 1.83, book pays 1.74",
+      "game": "Tennessee Titans @ New York Giants"
+    },
+    {
+      "label": "Los Angeles Rams ML",
+      "kind": "ml",
+      "side": "away",
+      "line": 0.0,
+      "decimal": 1.7692307692307692,
+      "win_prob": 0.5363,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.5363,
+        "ratings": 0.6383,
+        "sim": 0.5355
+      },
+      "worst_lens": 0.5355,
+      "lenses_agree": true,
+      "grade": "LEAN",
+      "fair_decimal": 1.86,
+      "ev_pct": -5.1,
+      "price_note": "OVERPRICED \u2014 fair 1.86, book pays 1.77",
+      "game": "Los Angeles Rams @ Denver Broncos"
+    },
+    {
+      "label": "Houston Texans ML",
+      "kind": "ml",
+      "side": "away",
+      "line": 0.0,
+      "decimal": 1.8,
+      "win_prob": 0.536,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.536,
+        "ratings": 0.5273,
+        "sim": 0.5356
+      },
+      "worst_lens": 0.5273,
+      "lenses_agree": true,
+      "grade": "LEAN",
+      "fair_decimal": 1.87,
+      "ev_pct": -3.5,
+      "price_note": "OVERPRICED \u2014 fair 1.87, book pays 1.80",
+      "game": "Houston Texans @ Indianapolis Colts"
+    },
+    {
+      "label": "Minnesota Vikings ML",
+      "kind": "ml",
+      "side": "away",
+      "line": 0.0,
+      "decimal": 1.8333333333333335,
+      "win_prob": 0.5198,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.5198,
+        "ratings": 0.6144,
+        "sim": 0.5183
+      },
+      "worst_lens": 0.5183,
+      "lenses_agree": true,
+      "grade": "LEAN",
+      "fair_decimal": 1.92,
+      "ev_pct": -4.7,
+      "price_note": "OVERPRICED \u2014 fair 1.92, book pays 1.83",
+      "game": "Minnesota Vikings @ Tampa Bay Buccaneers"
+    }
+  ],
+  "winning_parlays": [
+    {
+      "legs": [
+        "Kansas City Chiefs ML @ 1.16 (82%)",
+        "San Francisco 49ers ML @ 1.23 (77%)"
+      ],
+      "sim_hit_rate": 0.6307,
+      "exact_hit_rate": 0.6301,
+      "decimal": 1.42,
+      "ev_pct": -10.2,
+      "n_sims": 2000000
+    },
+    {
+      "legs": [
+        "Kansas City Chiefs ML @ 1.16 (82%)",
+        "Seattle Seahawks ML @ 1.25 (76%)"
+      ],
+      "sim_hit_rate": 0.6213,
+      "exact_hit_rate": 0.6216,
+      "decimal": 1.45,
+      "ev_pct": -9.7,
+      "n_sims": 2000000
+    },
+    {
+      "legs": [
+        "Kansas City Chiefs ML @ 1.16 (82%)",
+        "Buffalo Bills ML @ 1.29 (73%)"
+      ],
+      "sim_hit_rate": 0.6002,
+      "exact_hit_rate": 0.5998,
+      "decimal": 1.5,
+      "ev_pct": -9.9,
+      "n_sims": 2000000
+    },
+    {
+      "legs": [
+        "San Francisco 49ers ML @ 1.23 (77%)",
+        "Seattle Seahawks ML @ 1.25 (76%)"
+      ],
+      "sim_hit_rate": 0.5874,
+      "exact_hit_rate": 0.5876,
+      "decimal": 1.54,
+      "ev_pct": -9.7,
+      "n_sims": 2000000
+    },
+    {
+      "legs": [
+        "Kansas City Chiefs ML @ 1.16 (82%)",
+        "Detroit Lions ML @ 1.33 (72%)"
+      ],
+      "sim_hit_rate": 0.5867,
+      "exact_hit_rate": 0.5864,
+      "decimal": 1.54,
+      "ev_pct": -9.6,
+      "n_sims": 2000000
+    },
+    {
+      "legs": [
+        "San Francisco 49ers ML @ 1.23 (77%)",
+        "Buffalo Bills ML @ 1.29 (73%)"
+      ],
+      "sim_hit_rate": 0.5666,
+      "exact_hit_rate": 0.567,
+      "decimal": 1.59,
+      "ev_pct": -10.0,
+      "n_sims": 2000000
+    },
+    {
+      "legs": [
+        "Kansas City Chiefs ML @ 1.16 (82%)",
+        "San Francisco 49ers ML @ 1.23 (77%)",
+        "Seattle Seahawks ML @ 1.25 (76%)"
+      ],
+      "sim_hit_rate": 0.4801,
+      "exact_hit_rate": 0.4798,
+      "decimal": 1.78,
+      "ev_pct": -14.3,
+      "n_sims": 2000000
+    },
+    {
+      "legs": [
+        "Kansas City Chiefs ML @ 1.16 (82%)",
+        "San Francisco 49ers ML @ 1.23 (77%)",
+        "Seattle Seahawks ML @ 1.25 (76%)",
+        "Buffalo Bills ML @ 1.29 (73%)"
+      ],
+      "sim_hit_rate": 0.3528,
+      "exact_hit_rate": 0.3525,
+      "decimal": 2.31,
+      "ev_pct": -18.5,
+      "n_sims": 2000000
+    }
+  ],
+  "games": [
+    {
+      "game": "Los Angeles Chargers @ Buffalo Bills",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": 8.03,
+        "market": 8.03,
+        "ratings": 8.9
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.0,
+        "engine": 0.0,
+        "agents": 0.0
+      },
+      "sigma": 12.75,
+      "n_sims": 2000000,
+      "ratings_detail": {
+        "conditions_applied": [
+          "Buffalo Bills: DL T.J. Sanders OUT \u2014 illness (-0.5 home margin) [https://www.buffalobills.com/news/buffalo-bills-injury-report-vs-chargers-week-3]",
+          "Los Angeles Chargers: S Elijah Molden OUT \u2014 hamstring (+0.5 home margin) [https://sports.yahoo.com/articles/chargers-week-3-injury-report-194341681.html]",
+          "Los Angeles Chargers: DL Dalvin Tomlinson OUT \u2014 hamstring (+0.5 home margin) [https://sports.yahoo.com/articles/chargers-week-3-injury-report-194341681.html]",
+          "Los Angeles Chargers: OL Trey Pipkins OUT \u2014 knee (+0.75 home margin) [https://sports.yahoo.com/articles/chargers-week-3-injury-report-194341681.html]",
+          "Los Angeles Chargers: TE Charlie Kolar OUT \u2014 forearm (+0.5 home margin) [https://sports.yahoo.com/articles/chargers-week-3-injury-report-194341681.html]"
+        ]
+      },
+      "total_projection": {
+        "blended": 50.1,
+        "market": 50.1,
+        "ratings": 49.7,
+        "ratings_weight": 0.0
+      },
+      "records": null,
+      "context": {
+        "qb": {
+          "home": "Josh Allen",
+          "away": "Justin Herbert"
+        },
+        "ratings": {
+          "home": {
+            "off": 5.63,
+            "def": -1.58,
+            "net": 4.05,
+            "games_this_season": 2,
+            "prior_weight_games": 4.0,
+            "qb_changed": false,
+            "prev_qb": "Josh Allen",
+            "qb": "Josh Allen"
+          },
+          "away": {
+            "off": -2.34,
+            "def": 0.76,
+            "net": -1.59,
+            "games_this_season": 2,
+            "prior_weight_games": 4.0,
+            "qb_changed": false,
+            "prev_qb": "Justin Herbert",
+            "qb": "Justin Herbert"
+          }
+        },
+        "playstyle": {
+          "home": {
+            "off_epa_play": 0.183,
+            "def_epa_play": 0.03,
+            "pass_rate": 0.572,
+            "plays_pg": 60.1
+          },
+          "away": {
+            "off_epa_play": -0.084,
+            "def_epa_play": -0.049,
+            "pass_rate": 0.625,
+            "plays_pg": 58.3
+          }
+        },
+        "rest_days": {
+          "home": 10,
+          "away": 7
+        },
+        "roof": "outdoors",
+        "div_game": false,
+        "injury_watch": {
+          "home": [
+            "WR DJ Moore: DNP, no game status yet"
+          ],
+          "away": []
+        }
+      },
+      "kickoff": "2026-09-27 13:00 ET",
+      "best_winning_pick": {
+        "label": "Buffalo Bills ML",
+        "kind": "ml",
+        "side": "home",
+        "line": 0.0,
+        "decimal": 1.2941176470588236,
+        "win_prob": 0.7347,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.7347,
+          "ratings": 0.7564,
+          "sim": 0.734
+        },
+        "worst_lens": 0.734,
+        "lenses_agree": true,
+        "grade": "LOCK",
+        "fair_decimal": 1.36,
+        "ev_pct": -4.9,
+        "price_note": "OVERPRICED \u2014 fair 1.36, book pays 1.29"
+      },
+      "markets": [
+        {
+          "label": "Buffalo Bills ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 1.2941176470588236,
+          "win_prob": 0.7347,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.7347,
+            "ratings": 0.7564,
+            "sim": 0.734
+          },
+          "worst_lens": 0.734,
+          "lenses_agree": true,
+          "grade": "LOCK",
+          "fair_decimal": 1.36,
+          "ev_pct": -4.9,
+          "price_note": "OVERPRICED \u2014 fair 1.36, book pays 1.29"
+        },
+        {
+          "label": "Over 49.5",
+          "kind": "total",
+          "side": "over",
+          "line": 49.5,
+          "decimal": 1.847457627118644,
+          "win_prob": 0.5174,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5174,
+            "ratings": 0.5061,
+            "sim": 0.5178
+          },
+          "worst_lens": 0.5061,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.93,
+          "ev_pct": -4.4,
+          "price_note": "OVERPRICED \u2014 fair 1.93, book pays 1.85"
+        },
+        {
+          "label": "Buffalo Bills -7",
+          "kind": "spread",
+          "side": "home",
+          "line": -7.0,
+          "decimal": 1.8695652173913042,
+          "win_prob": 0.4901,
+          "push_prob": 0.0553,
+          "lenses": {
+            "market": 0.4901,
+            "ratings": 0.5168,
+            "sim": 0.4905
+          },
+          "worst_lens": 0.4901,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.04,
+          "ev_pct": -8.4,
+          "price_note": "OVERPRICED \u2014 fair 2.04, book pays 1.87"
+        },
+        {
+          "label": "Under 49.5",
+          "kind": "total",
+          "side": "under",
+          "line": 49.5,
+          "decimal": 1.9803921568627452,
+          "win_prob": 0.4826,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4826,
+            "ratings": 0.4939,
+            "sim": 0.4822
+          },
+          "worst_lens": 0.4822,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.07,
+          "ev_pct": -4.4,
+          "price_note": "OVERPRICED \u2014 fair 2.07, book pays 1.98"
+        },
+        {
+          "label": "Los Angeles Chargers +7",
+          "kind": "spread",
+          "side": "away",
+          "line": 7.0,
+          "decimal": 1.9523809523809523,
+          "win_prob": 0.4546,
+          "push_prob": 0.0553,
+          "lenses": {
+            "market": 0.4546,
+            "ratings": 0.4282,
+            "sim": 0.4543
+          },
+          "worst_lens": 0.4282,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.2,
+          "ev_pct": -11.2,
+          "price_note": "OVERPRICED \u2014 fair 2.20, book pays 1.95"
+        },
+        {
+          "label": "Los Angeles Chargers ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 3.7,
+          "win_prob": 0.2653,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.2653,
+            "ratings": 0.2436,
+            "sim": 0.2647
+          },
+          "worst_lens": 0.2436,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 3.77,
+          "ev_pct": -1.8,
+          "price_note": "OVERPRICED \u2014 fair 3.77, book pays 3.70"
+        }
+      ],
+      "flags": [
+        "RATINGS_DISPLAY_ONLY: NFL backtest shows the market beats team ratings (best blend weight 0) \u2014 ratings shown for context, no vote"
+      ]
+    },
+    {
+      "game": "Carolina Panthers @ Cleveland Browns",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": -1.75,
+        "market": -1.75,
+        "ratings": -2.77
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.0,
+        "engine": 0.0,
+        "agents": 0.0
+      },
+      "sigma": 12.75,
+      "n_sims": 2000000,
+      "ratings_detail": {},
+      "total_projection": {
+        "blended": 42.5,
+        "market": 42.5,
+        "ratings": 42.0,
+        "ratings_weight": 0.0
+      },
+      "records": null,
+      "context": {
+        "qb": {
+          "home": "Deshaun Watson",
+          "away": "Bryce Young"
+        },
+        "ratings": {
+          "home": {
+            "off": -5.09,
+            "def": -0.62,
+            "net": -5.71,
+            "games_this_season": 2,
+            "prior_weight_games": 2.0,
+            "qb_changed": true,
+            "prev_qb": "Shedeur Sanders",
+            "qb": "Deshaun Watson"
+          },
+          "away": {
+            "off": -0.26,
+            "def": -1.16,
+            "net": -1.42,
+            "games_this_season": 2,
+            "prior_weight_games": 4.0,
+            "qb_changed": false,
+            "prev_qb": "Bryce Young",
+            "qb": "Bryce Young"
+          }
+        },
+        "playstyle": {
+          "home": {
+            "off_epa_play": -0.167,
+            "def_epa_play": -0.053,
+            "pass_rate": 0.627,
+            "plays_pg": 53.5
+          },
+          "away": {
+            "off_epa_play": 0.009,
+            "def_epa_play": 0.046,
+            "pass_rate": 0.615,
+            "plays_pg": 60.1
+          }
+        },
+        "rest_days": {
+          "home": 7,
+          "away": 7
+        },
+        "roof": "outdoors",
+        "div_game": false,
+        "injury_watch": {
+          "home": [
+            "G Teven Jenkins: DNP, no game status yet"
+          ],
+          "away": [
+            "S Nick Scott: DNP, no game status yet",
+            "LB Devin Lloyd: DNP, no game status yet"
+          ]
+        }
+      },
+      "kickoff": "2026-09-27 13:00 ET",
+      "best_winning_pick": {
+        "label": "Carolina Panthers ML",
+        "kind": "ml",
+        "side": "away",
+        "line": 0.0,
+        "decimal": 1.704225352112676,
+        "win_prob": 0.5543,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.5543,
+          "ratings": 0.5855,
+          "sim": 0.5535
+        },
+        "worst_lens": 0.5535,
+        "lenses_agree": true,
+        "grade": "LEAN",
+        "fair_decimal": 1.8,
+        "ev_pct": -5.5,
+        "price_note": "OVERPRICED \u2014 fair 1.80, book pays 1.70"
+      },
+      "markets": [
+        {
+          "label": "Carolina Panthers ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 1.704225352112676,
+          "win_prob": 0.5543,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5543,
+            "ratings": 0.5855,
+            "sim": 0.5535
+          },
+          "worst_lens": 0.5535,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.8,
+          "ev_pct": -5.5,
+          "price_note": "OVERPRICED \u2014 fair 1.80, book pays 1.70"
+        },
+        {
+          "label": "Carolina Panthers -2.5",
+          "kind": "spread",
+          "side": "away",
+          "line": -2.5,
+          "decimal": 1.8928571428571428,
+          "win_prob": 0.5136,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5136,
+            "ratings": 0.545,
+            "sim": 0.5136
+          },
+          "worst_lens": 0.5136,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.95,
+          "ev_pct": -2.8,
+          "price_note": "OVERPRICED \u2014 fair 1.95, book pays 1.89"
+        },
+        {
+          "label": "Over 42.5",
+          "kind": "total",
+          "side": "over",
+          "line": 42.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5,
+            "ratings": 0.4848,
+            "sim": 0.5004
+          },
+          "worst_lens": 0.4848,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.0,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.00, book pays 1.91"
+        },
+        {
+          "label": "Under 42.5",
+          "kind": "total",
+          "side": "under",
+          "line": 42.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5,
+            "ratings": 0.5152,
+            "sim": 0.4996
+          },
+          "worst_lens": 0.4996,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.0,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.00, book pays 1.91"
+        },
+        {
+          "label": "Cleveland Browns +2.5",
+          "kind": "spread",
+          "side": "home",
+          "line": 2.5,
+          "decimal": 1.925925925925926,
+          "win_prob": 0.4864,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4864,
+            "ratings": 0.455,
+            "sim": 0.4864
+          },
+          "worst_lens": 0.455,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.06,
+          "ev_pct": -6.3,
+          "price_note": "OVERPRICED \u2014 fair 2.06, book pays 1.93"
+        },
+        {
+          "label": "Cleveland Browns ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 2.2,
+          "win_prob": 0.4457,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4457,
+            "ratings": 0.4145,
+            "sim": 0.445
+          },
+          "worst_lens": 0.4145,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.24,
+          "ev_pct": -1.9,
+          "price_note": "OVERPRICED \u2014 fair 2.24, book pays 2.20"
+        }
+      ],
+      "flags": [
+        "RATINGS_DISPLAY_ONLY: NFL backtest shows the market beats team ratings (best blend weight 0) \u2014 ratings shown for context, no vote"
+      ]
+    },
+    {
+      "game": "New York Jets @ Detroit Lions",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": 7.41,
+        "market": 7.41,
+        "ratings": 9.37
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.0,
+        "engine": 0.0,
+        "agents": 0.0
+      },
+      "sigma": 12.75,
+      "n_sims": 2000000,
+      "ratings_detail": {
+        "conditions_applied": [
+          "Detroit Lions: S Thomas Harper OUT \u2014 ruled out (-0.5 home margin) [https://www.thegreymanes.com/post/week-3-jets-lions-final-injury-report]",
+          "New York Jets: S Minkah Fitzpatrick OUT \u2014 ruled out (+0.5 home margin) [https://www.si.com/nfl/jets/onsi/jets-rule-out-3-key-players-sunday-game-lions-hurt-why-matters-01m3ckkrqnqd]",
+          "New York Jets: LB Francisco Mauigoa OUT \u2014 ruled out (+0.5 home margin) [https://www.si.com/nfl/jets/onsi/jets-rule-out-3-key-players-sunday-game-lions-hurt-why-matters-01m3ckkrqnqd]",
+          "New York Jets: RB Kene Nwangwu DOUBTFUL \u2014 doubtful (+0.5625 home margin) [https://www.si.com/nfl/jets/onsi/jets-rule-out-3-key-players-sunday-game-lions-hurt-why-matters-01m3ckkrqnqd]"
+        ]
+      },
+      "total_projection": {
+        "blended": 48.4,
+        "market": 48.4,
+        "ratings": 49.6,
+        "ratings_weight": 0.0
+      },
+      "records": null,
+      "context": {
+        "qb": {
+          "home": "Jared Goff",
+          "away": "Geno Smith"
+        },
+        "ratings": {
+          "home": {
+            "off": 4.21,
+            "def": -2.29,
+            "net": 1.92,
+            "games_this_season": 2,
+            "prior_weight_games": 4.0,
+            "qb_changed": false,
+            "prev_qb": "Jared Goff",
+            "qb": "Jared Goff"
+          },
+          "away": {
+            "off": -3.71,
+            "def": -1.16,
+            "net": -4.87,
+            "games_this_season": 2,
+            "prior_weight_games": 2.0,
+            "qb_changed": true,
+            "prev_qb": "Tyrod Taylor",
+            "qb": "Geno Smith"
+          }
+        },
+        "playstyle": {
+          "home": {
+            "off_epa_play": 0.089,
+            "def_epa_play": 0.043,
+            "pass_rate": 0.603,
+            "plays_pg": 66.0
+          },
+          "away": {
+            "off_epa_play": -0.087,
+            "def_epa_play": 0.08,
+            "pass_rate": 0.596,
+            "plays_pg": 63.9
+          }
+        },
+        "rest_days": {
+          "home": 10,
+          "away": 7
+        },
+        "roof": "dome",
+        "div_game": false,
+        "injury_watch": {
+          "home": [],
+          "away": []
+        }
+      },
+      "kickoff": "2026-09-27 13:00 ET",
+      "best_winning_pick": {
+        "label": "Detroit Lions ML",
+        "kind": "ml",
+        "side": "home",
+        "line": 0.0,
+        "decimal": 1.3278688524590163,
+        "win_prob": 0.7183,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.7183,
+          "ratings": 0.7678,
+          "sim": 0.7176
+        },
+        "worst_lens": 0.7176,
+        "lenses_agree": true,
+        "grade": "LOCK",
+        "fair_decimal": 1.39,
+        "ev_pct": -4.6,
+        "price_note": "OVERPRICED \u2014 fair 1.39, book pays 1.33"
+      },
+      "markets": [
+        {
+          "label": "Detroit Lions ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 1.3278688524590163,
+          "win_prob": 0.7183,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.7183,
+            "ratings": 0.7678,
+            "sim": 0.7176
+          },
+          "worst_lens": 0.7176,
+          "lenses_agree": true,
+          "grade": "LOCK",
+          "fair_decimal": 1.39,
+          "ev_pct": -4.6,
+          "price_note": "OVERPRICED \u2014 fair 1.39, book pays 1.33"
+        },
+        {
+          "label": "Detroit Lions -6.5",
+          "kind": "spread",
+          "side": "home",
+          "line": -6.5,
+          "decimal": 1.8333333333333335,
+          "win_prob": 0.5261,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5261,
+            "ratings": 0.5861,
+            "sim": 0.5257
+          },
+          "worst_lens": 0.5257,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.9,
+          "ev_pct": -3.5,
+          "price_note": "OVERPRICED \u2014 fair 1.90, book pays 1.83"
+        },
+        {
+          "label": "Under 48.5",
+          "kind": "total",
+          "side": "under",
+          "line": 48.5,
+          "decimal": 1.8928571428571428,
+          "win_prob": 0.5043,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5043,
+            "ratings": 0.4665,
+            "sim": 0.5056
+          },
+          "worst_lens": 0.4665,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.98,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 1.98, book pays 1.89"
+        },
+        {
+          "label": "Over 48.5",
+          "kind": "total",
+          "side": "over",
+          "line": 48.5,
+          "decimal": 1.925925925925926,
+          "win_prob": 0.4957,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4957,
+            "ratings": 0.5335,
+            "sim": 0.4944
+          },
+          "worst_lens": 0.4944,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.02,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.02, book pays 1.93"
+        },
+        {
+          "label": "New York Jets +6.5",
+          "kind": "spread",
+          "side": "away",
+          "line": 6.5,
+          "decimal": 2.0,
+          "win_prob": 0.4739,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4739,
+            "ratings": 0.4139,
+            "sim": 0.4743
+          },
+          "worst_lens": 0.4139,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.11,
+          "ev_pct": -5.2,
+          "price_note": "OVERPRICED \u2014 fair 2.11, book pays 2.00"
+        },
+        {
+          "label": "New York Jets ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 3.45,
+          "win_prob": 0.2817,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.2817,
+            "ratings": 0.2322,
+            "sim": 0.2811
+          },
+          "worst_lens": 0.2322,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 3.55,
+          "ev_pct": -2.8,
+          "price_note": "OVERPRICED \u2014 fair 3.55, book pays 3.45"
+        }
+      ],
+      "flags": [
+        "RATINGS_DISPLAY_ONLY: NFL backtest shows the market beats team ratings (best blend weight 0) \u2014 ratings shown for context, no vote"
+      ]
+    },
+    {
+      "game": "Houston Texans @ Indianapolis Colts",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": -1.16,
+        "market": -1.16,
+        "ratings": -0.88
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.0,
+        "engine": 0.0,
+        "agents": 0.0
+      },
+      "sigma": 12.75,
+      "n_sims": 2000000,
+      "ratings_detail": {},
+      "total_projection": {
+        "blended": 43.1,
+        "market": 43.1,
+        "ratings": 48.5,
+        "ratings_weight": 0.0
+      },
+      "records": null,
+      "context": {
+        "qb": {
+          "home": "Daniel Jones",
+          "away": "C.J. Stroud"
+        },
+        "ratings": {
+          "home": {
+            "off": 4.21,
+            "def": -2.61,
+            "net": 1.6,
+            "games_this_season": 2,
+            "prior_weight_games": 4.0,
+            "qb_changed": false,
+            "prev_qb": "Daniel Jones",
+            "qb": "Daniel Jones"
+          },
+          "away": {
+            "off": 0.04,
+            "def": 3.96,
+            "net": 3.99,
+            "games_this_season": 2,
+            "prior_weight_games": 4.0,
+            "qb_changed": false,
+            "prev_qb": "C.J. Stroud",
+            "qb": "C.J. Stroud"
+          }
+        },
+        "playstyle": {
+          "home": {
+            "off_epa_play": 0.048,
+            "def_epa_play": 0.074,
+            "pass_rate": 0.593,
+            "plays_pg": 58.4
+          },
+          "away": {
+            "off_epa_play": -0.047,
+            "def_epa_play": -0.112,
+            "pass_rate": 0.628,
+            "plays_pg": 71.8
+          }
+        },
+        "rest_days": {
+          "home": 7,
+          "away": 7
+        },
+        "roof": null,
+        "div_game": true,
+        "injury_watch": {
+          "home": [
+            "DT Grover Stewart: DNP, no game status yet",
+            "WR Ashton Dulin: DNP, no game status yet"
+          ],
+          "away": [
+            "TE Dalton Schultz: DNP, no game status yet",
+            "WR Nico Collins: DNP, no game status yet",
+            "LB Jacob Hummel: DNP, no game status yet"
+          ]
+        }
+      },
+      "kickoff": "2026-09-27 13:00 ET",
+      "best_winning_pick": {
+        "label": "Houston Texans ML",
+        "kind": "ml",
+        "side": "away",
+        "line": 0.0,
+        "decimal": 1.8,
+        "win_prob": 0.536,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.536,
+          "ratings": 0.5273,
+          "sim": 0.5356
+        },
+        "worst_lens": 0.5273,
+        "lenses_agree": true,
+        "grade": "LEAN",
+        "fair_decimal": 1.87,
+        "ev_pct": -3.5,
+        "price_note": "OVERPRICED \u2014 fair 1.87, book pays 1.80"
+      },
+      "markets": [
+        {
+          "label": "Houston Texans ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 1.8,
+          "win_prob": 0.536,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.536,
+            "ratings": 0.5273,
+            "sim": 0.5356
+          },
+          "worst_lens": 0.5273,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.87,
+          "ev_pct": -3.5,
+          "price_note": "OVERPRICED \u2014 fair 1.87, book pays 1.80"
+        },
+        {
+          "label": "Over 42.5",
+          "kind": "total",
+          "side": "over",
+          "line": 42.5,
+          "decimal": 1.847457627118644,
+          "win_prob": 0.5174,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5174,
+            "ratings": 0.6765,
+            "sim": 0.5175
+          },
+          "worst_lens": 0.5174,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.93,
+          "ev_pct": -4.4,
+          "price_note": "OVERPRICED \u2014 fair 1.93, book pays 1.85"
+        },
+        {
+          "label": "Houston Texans -1.5",
+          "kind": "spread",
+          "side": "away",
+          "line": -1.5,
+          "decimal": 1.847457627118644,
+          "win_prob": 0.5138,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5138,
+            "ratings": 0.5051,
+            "sim": 0.514
+          },
+          "worst_lens": 0.5051,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.95,
+          "ev_pct": -5.1,
+          "price_note": "OVERPRICED \u2014 fair 1.95, book pays 1.85"
+        },
+        {
+          "label": "Indianapolis Colts +1.5",
+          "kind": "spread",
+          "side": "home",
+          "line": 1.5,
+          "decimal": 1.9803921568627452,
+          "win_prob": 0.4862,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4862,
+            "ratings": 0.4949,
+            "sim": 0.486
+          },
+          "worst_lens": 0.486,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.06,
+          "ev_pct": -3.7,
+          "price_note": "OVERPRICED \u2014 fair 2.06, book pays 1.98"
+        },
+        {
+          "label": "Under 42.5",
+          "kind": "total",
+          "side": "under",
+          "line": 42.5,
+          "decimal": 1.9803921568627452,
+          "win_prob": 0.4826,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4826,
+            "ratings": 0.3235,
+            "sim": 0.4825
+          },
+          "worst_lens": 0.3235,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.07,
+          "ev_pct": -4.4,
+          "price_note": "OVERPRICED \u2014 fair 2.07, book pays 1.98"
+        },
+        {
+          "label": "Indianapolis Colts ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 2.05,
+          "win_prob": 0.464,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.464,
+            "ratings": 0.4727,
+            "sim": 0.4629
+          },
+          "worst_lens": 0.4629,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.16,
+          "ev_pct": -4.9,
+          "price_note": "OVERPRICED \u2014 fair 2.16, book pays 2.05"
+        }
+      ],
+      "flags": [
+        "RATINGS_DISPLAY_ONLY: NFL backtest shows the market beats team ratings (best blend weight 0) \u2014 ratings shown for context, no vote"
+      ]
+    },
+    {
+      "game": "New England Patriots @ Jacksonville Jaguars",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": 2.39,
+        "market": 2.39,
+        "ratings": 1.81
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.0,
+        "engine": 0.0,
+        "agents": 0.0
+      },
+      "sigma": 12.75,
+      "n_sims": 2000000,
+      "ratings_detail": {},
+      "total_projection": {
+        "blended": 46.1,
+        "market": 46.1,
+        "ratings": 42.6,
+        "ratings_weight": 0.0
+      },
+      "records": null,
+      "context": {
+        "qb": {
+          "home": "Trevor Lawrence",
+          "away": "Drake Maye"
+        },
+        "ratings": {
+          "home": {
+            "off": 3.1,
+            "def": 2.62,
+            "net": 5.72,
+            "games_this_season": 2,
+            "prior_weight_games": 4.0,
+            "qb_changed": false,
+            "prev_qb": "Trevor Lawrence",
+            "qb": "Trevor Lawrence"
+          },
+          "away": {
+            "off": 0.99,
+            "def": 4.44,
+            "net": 5.43,
+            "games_this_season": 2,
+            "prior_weight_games": 4.0,
+            "qb_changed": false,
+            "prev_qb": "Drake Maye",
+            "qb": "Drake Maye"
+          }
+        },
+        "playstyle": {
+          "home": {
+            "off_epa_play": 0.055,
+            "def_epa_play": -0.072,
+            "pass_rate": 0.584,
+            "plays_pg": 56.2
+          },
+          "away": {
+            "off_epa_play": 0.052,
+            "def_epa_play": -0.11,
+            "pass_rate": 0.603,
+            "plays_pg": 59.4
+          }
+        },
+        "rest_days": {
+          "home": 7,
+          "away": 7
+        },
+        "roof": "outdoors",
+        "div_game": false,
+        "injury_watch": {
+          "home": [],
+          "away": [
+            "LB Dre'Mont Jones: DNP, no game status yet",
+            "S Craig Woodson: DNP, no game status yet"
+          ]
+        }
+      },
+      "kickoff": "2026-09-27 13:00 ET",
+      "best_winning_pick": {
+        "label": "Jacksonville Jaguars ML",
+        "kind": "ml",
+        "side": "home",
+        "line": 0.0,
+        "decimal": 1.6451612903225805,
+        "win_prob": 0.5738,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.5738,
+          "ratings": 0.5561,
+          "sim": 0.5725
+        },
+        "worst_lens": 0.5561,
+        "lenses_agree": true,
+        "grade": "LEAN",
+        "fair_decimal": 1.74,
+        "ev_pct": -5.6,
+        "price_note": "OVERPRICED \u2014 fair 1.74, book pays 1.65"
+      },
+      "markets": [
+        {
+          "label": "Jacksonville Jaguars ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 1.6451612903225805,
+          "win_prob": 0.5738,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5738,
+            "ratings": 0.5561,
+            "sim": 0.5725
+          },
+          "worst_lens": 0.5561,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.74,
+          "ev_pct": -5.6,
+          "price_note": "OVERPRICED \u2014 fair 1.74, book pays 1.65"
+        },
+        {
+          "label": "Under 46.5",
+          "kind": "total",
+          "side": "under",
+          "line": 46.5,
+          "decimal": 1.8695652173913042,
+          "win_prob": 0.5108,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5108,
+            "ratings": 0.617,
+            "sim": 0.511
+          },
+          "worst_lens": 0.5108,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.96,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 1.96, book pays 1.87"
+        },
+        {
+          "label": "Over 46.5",
+          "kind": "total",
+          "side": "over",
+          "line": 46.5,
+          "decimal": 1.9523809523809523,
+          "win_prob": 0.4892,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4892,
+            "ratings": 0.383,
+            "sim": 0.489
+          },
+          "worst_lens": 0.383,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.04,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.04, book pays 1.95"
+        },
+        {
+          "label": "New England Patriots +3",
+          "kind": "spread",
+          "side": "away",
+          "line": 3.0,
+          "decimal": 1.847457627118644,
+          "win_prob": 0.4668,
+          "push_prob": 0.0798,
+          "lenses": {
+            "market": 0.4668,
+            "ratings": 0.4846,
+            "sim": 0.4672
+          },
+          "worst_lens": 0.4668,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.14,
+          "ev_pct": -13.8,
+          "price_note": "OVERPRICED \u2014 fair 2.14, book pays 1.85"
+        },
+        {
+          "label": "Jacksonville Jaguars -3",
+          "kind": "spread",
+          "side": "home",
+          "line": -3.0,
+          "decimal": 1.9803921568627452,
+          "win_prob": 0.4534,
+          "push_prob": 0.0798,
+          "lenses": {
+            "market": 0.4534,
+            "ratings": 0.4359,
+            "sim": 0.4527
+          },
+          "worst_lens": 0.4359,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.21,
+          "ev_pct": -10.2,
+          "price_note": "OVERPRICED \u2014 fair 2.21, book pays 1.98"
+        },
+        {
+          "label": "New England Patriots ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 2.3,
+          "win_prob": 0.4262,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4262,
+            "ratings": 0.4439,
+            "sim": 0.426
+          },
+          "worst_lens": 0.426,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.35,
+          "ev_pct": -2.0,
+          "price_note": "OVERPRICED \u2014 fair 2.35, book pays 2.30"
+        }
+      ],
+      "flags": [
+        "RATINGS_DISPLAY_ONLY: NFL backtest shows the market beats team ratings (best blend weight 0) \u2014 ratings shown for context, no vote"
+      ]
+    },
+    {
+      "game": "Kansas City Chiefs @ Miami Dolphins",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": -11.54,
+        "market": -11.54,
+        "ratings": -5.36
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.0,
+        "engine": 0.0,
+        "agents": 0.0
+      },
+      "sigma": 12.75,
+      "n_sims": 2000000,
+      "ratings_detail": {
+        "conditions_applied": [
+          "Kansas City Chiefs: OL Josh Simmons OUT \u2014 LT, back (+0.75 home margin) [https://www.arrowheadpride.com/kansas-city-chiefs-injuries/211359/chiefs-dolphins-week-3-final-injury-report-chamarri-conner-doubtful]",
+          "Kansas City Chiefs: S Chamarri Conner DOUBTFUL \u2014 knee (+0.375 home margin) [https://www.arrowheadpride.com/kansas-city-chiefs-injuries/211359/chiefs-dolphins-week-3-final-injury-report-chamarri-conner-doubtful]"
+        ]
+      },
+      "total_projection": {
+        "blended": 45.4,
+        "market": 45.4,
+        "ratings": 42.9,
+        "ratings_weight": 0.0
+      },
+      "records": null,
+      "context": {
+        "qb": {
+          "home": "Malik Willis",
+          "away": "Patrick Mahomes"
+        },
+        "ratings": {
+          "home": {
+            "off": -2.85,
+            "def": -2.57,
+            "net": -5.42,
+            "games_this_season": 2,
+            "prior_weight_games": 2.0,
+            "qb_changed": true,
+            "prev_qb": "Tua Tagovailoa",
+            "qb": "Malik Willis"
+          },
+          "away": {
+            "off": 0.08,
+            "def": 2.5,
+            "net": 2.57,
+            "games_this_season": 2,
+            "prior_weight_games": 4.0,
+            "qb_changed": false,
+            "prev_qb": "Patrick Mahomes",
+            "qb": "Patrick Mahomes"
+          }
+        },
+        "playstyle": {
+          "home": {
+            "off_epa_play": -0.04,
+            "def_epa_play": 0.108,
+            "pass_rate": 0.577,
+            "plays_pg": 53.6
+          },
+          "away": {
+            "off_epa_play": 0.081,
+            "def_epa_play": -0.028,
+            "pass_rate": 0.64,
+            "plays_pg": 68.6
+          }
+        },
+        "rest_days": {
+          "home": 7,
+          "away": 7
+        },
+        "roof": "outdoors",
+        "div_game": false,
+        "injury_watch": {
+          "home": [],
+          "away": []
+        }
+      },
+      "kickoff": "2026-09-27 13:00 ET",
+      "best_winning_pick": {
+        "label": "Kansas City Chiefs ML",
+        "kind": "ml",
+        "side": "away",
+        "line": 0.0,
+        "decimal": 1.16,
+        "win_prob": 0.8164,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.8164,
+          "ratings": 0.6619,
+          "sim": 0.8155
+        },
+        "worst_lens": 0.6619,
+        "lenses_agree": true,
+        "grade": "LOCK",
+        "fair_decimal": 1.22,
+        "ev_pct": -5.3,
+        "price_note": "OVERPRICED \u2014 fair 1.22, book pays 1.16"
+      },
+      "markets": [
+        {
+          "label": "Kansas City Chiefs ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 1.16,
+          "win_prob": 0.8164,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.8164,
+            "ratings": 0.6619,
+            "sim": 0.8155
+          },
+          "worst_lens": 0.6619,
+          "lenses_agree": true,
+          "grade": "LOCK",
+          "fair_decimal": 1.22,
+          "ev_pct": -5.3,
+          "price_note": "OVERPRICED \u2014 fair 1.22, book pays 1.16"
+        },
+        {
+          "label": "Kansas City Chiefs -10",
+          "kind": "spread",
+          "side": "away",
+          "line": -10.0,
+          "decimal": 1.8695652173913042,
+          "win_prob": 0.5068,
+          "push_prob": 0.0399,
+          "lenses": {
+            "market": 0.5068,
+            "ratings": 0.3199,
+            "sim": 0.5071
+          },
+          "worst_lens": 0.3199,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.97,
+          "ev_pct": -5.2,
+          "price_note": "OVERPRICED \u2014 fair 1.97, book pays 1.87"
+        },
+        {
+          "label": "Under 45.5",
+          "kind": "total",
+          "side": "under",
+          "line": 45.5,
+          "decimal": 1.8928571428571428,
+          "win_prob": 0.5043,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5043,
+            "ratings": 0.5787,
+            "sim": 0.5041
+          },
+          "worst_lens": 0.5041,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.98,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 1.98, book pays 1.89"
+        },
+        {
+          "label": "Over 45.5",
+          "kind": "total",
+          "side": "over",
+          "line": 45.5,
+          "decimal": 1.925925925925926,
+          "win_prob": 0.4957,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4957,
+            "ratings": 0.4213,
+            "sim": 0.4959
+          },
+          "worst_lens": 0.4213,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.02,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.02, book pays 1.93"
+        },
+        {
+          "label": "Miami Dolphins +10",
+          "kind": "spread",
+          "side": "home",
+          "line": 10.0,
+          "decimal": 1.9523809523809523,
+          "win_prob": 0.4532,
+          "push_prob": 0.0399,
+          "lenses": {
+            "market": 0.4532,
+            "ratings": 0.6427,
+            "sim": 0.4534
+          },
+          "worst_lens": 0.4532,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.21,
+          "ev_pct": -11.5,
+          "price_note": "OVERPRICED \u2014 fair 2.21, book pays 1.95"
+        },
+        {
+          "label": "Miami Dolphins ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 5.55,
+          "win_prob": 0.1836,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.1836,
+            "ratings": 0.3381,
+            "sim": 0.1834
+          },
+          "worst_lens": 0.1834,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 5.45,
+          "ev_pct": 1.9,
+          "price_note": "VALUE"
+        }
+      ],
+      "flags": [
+        "RATINGS_DISPLAY_ONLY: NFL backtest shows the market beats team ratings (best blend weight 0) \u2014 ratings shown for context, no vote"
+      ]
+    },
+    {
+      "game": "Tennessee Titans @ New York Giants",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": 1.48,
+        "market": 1.48,
+        "ratings": 4.93
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.0,
+        "engine": 0.0,
+        "agents": 0.0
+      },
+      "sigma": 12.75,
+      "n_sims": 2000000,
+      "ratings_detail": {},
+      "total_projection": {
+        "blended": 38.4,
+        "market": 38.4,
+        "ratings": 45.3,
+        "ratings_weight": 0.0
+      },
+      "records": null,
+      "context": {
+        "qb": {
+          "home": "Jameis Winston",
+          "away": "Cam Ward"
+        },
+        "ratings": {
+          "home": {
+            "off": -1.36,
+            "def": -1.7,
+            "net": -3.05,
+            "games_this_season": 2,
+            "prior_weight_games": 2.0,
+            "qb_changed": true,
+            "prev_qb": "Jaxson Dart",
+            "qb": "Jameis Winston"
+          },
+          "away": {
+            "off": -3.55,
+            "def": -2.92,
+            "net": -6.46,
+            "games_this_season": 2,
+            "prior_weight_games": 4.0,
+            "qb_changed": false,
+            "prev_qb": "Cam Ward",
+            "qb": "Cam Ward"
+          }
+        },
+        "playstyle": {
+          "home": {
+            "off_epa_play": 0.01,
+            "def_epa_play": 0.126,
+            "pass_rate": 0.576,
+            "plays_pg": 60.9
+          },
+          "away": {
+            "off_epa_play": -0.128,
+            "def_epa_play": 0.1,
+            "pass_rate": 0.645,
+            "plays_pg": 52.2
+          }
+        },
+        "rest_days": {
+          "home": 6,
+          "away": 7
+        },
+        "roof": "outdoors",
+        "div_game": false,
+        "injury_watch": {
+          "home": [
+            "LB Brian Burns: DNP, no game status yet",
+            "T Andrew Thomas: DNP, no game status yet"
+          ],
+          "away": []
+        }
+      },
+      "kickoff": "2026-09-27 13:00 ET",
+      "best_winning_pick": {
+        "label": "New York Giants ML",
+        "kind": "ml",
+        "side": "home",
+        "line": 0.0,
+        "decimal": 1.7407407407407407,
+        "win_prob": 0.5461,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.5461,
+          "ratings": 0.6497,
+          "sim": 0.5449
+        },
+        "worst_lens": 0.5449,
+        "lenses_agree": true,
+        "grade": "LEAN",
+        "fair_decimal": 1.83,
+        "ev_pct": -4.9,
+        "price_note": "OVERPRICED \u2014 fair 1.83, book pays 1.74"
+      },
+      "markets": [
+        {
+          "label": "New York Giants ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 1.7407407407407407,
+          "win_prob": 0.5461,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5461,
+            "ratings": 0.6497,
+            "sim": 0.5449
+          },
+          "worst_lens": 0.5449,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.83,
+          "ev_pct": -4.9,
+          "price_note": "OVERPRICED \u2014 fair 1.83, book pays 1.74"
+        },
+        {
+          "label": "New York Giants -2.5",
+          "kind": "spread",
+          "side": "home",
+          "line": -2.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5054,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5054,
+            "ratings": 0.6104,
+            "sim": 0.5051
+          },
+          "worst_lens": 0.5051,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.98,
+          "ev_pct": -3.5,
+          "price_note": "OVERPRICED \u2014 fair 1.98, book pays 1.91"
+        },
+        {
+          "label": "Under 38.5",
+          "kind": "total",
+          "side": "under",
+          "line": 38.5,
+          "decimal": 1.8928571428571428,
+          "win_prob": 0.5043,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5043,
+            "ratings": 0.3019,
+            "sim": 0.504
+          },
+          "worst_lens": 0.3019,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.98,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 1.98, book pays 1.89"
+        },
+        {
+          "label": "Over 38.5",
+          "kind": "total",
+          "side": "over",
+          "line": 38.5,
+          "decimal": 1.925925925925926,
+          "win_prob": 0.4957,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4957,
+            "ratings": 0.6981,
+            "sim": 0.496
+          },
+          "worst_lens": 0.4957,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.02,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.02, book pays 1.93"
+        },
+        {
+          "label": "Tennessee Titans +2.5",
+          "kind": "spread",
+          "side": "away",
+          "line": 2.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.4946,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4946,
+            "ratings": 0.3896,
+            "sim": 0.4949
+          },
+          "worst_lens": 0.3896,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.02,
+          "ev_pct": -5.6,
+          "price_note": "OVERPRICED \u2014 fair 2.02, book pays 1.91"
+        },
+        {
+          "label": "Tennessee Titans ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 2.1399999999999997,
+          "win_prob": 0.4539,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4539,
+            "ratings": 0.3503,
+            "sim": 0.4536
+          },
+          "worst_lens": 0.3503,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.2,
+          "ev_pct": -2.9,
+          "price_note": "OVERPRICED \u2014 fair 2.20, book pays 2.14"
+        }
+      ],
+      "flags": [
+        "RATINGS_DISPLAY_ONLY: NFL backtest shows the market beats team ratings (best blend weight 0) \u2014 ratings shown for context, no vote"
+      ]
+    },
+    {
+      "game": "Cincinnati Bengals @ Pittsburgh Steelers",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": -3.88,
+        "market": -3.88,
+        "ratings": 0.69
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.0,
+        "engine": 0.0,
+        "agents": 0.0
+      },
+      "sigma": 12.75,
+      "n_sims": 2000000,
+      "ratings_detail": {
+        "conditions_applied": [
+          "Pittsburgh Steelers: CB Joey Porter Jr. OUT \u2014 ruled out (-1 home margin) [https://www.si.com/betting/bengals-vs-steelers-prediction-odds-spread-injuries-trends-for-nfl-week-3-01m32wwcjkpw]"
+        ]
+      },
+      "total_projection": {
+        "blended": 42.6,
+        "market": 42.6,
+        "ratings": 47.7,
+        "ratings_weight": 0.0
+      },
+      "records": null,
+      "context": {
+        "qb": {
+          "home": "Aaron Rodgers",
+          "away": "Joe Burrow"
+        },
+        "ratings": {
+          "home": {
+            "off": -1.83,
+            "def": 0.16,
+            "net": -1.67,
+            "games_this_season": 2,
+            "prior_weight_games": 4.0,
+            "qb_changed": false,
+            "prev_qb": "Aaron Rodgers",
+            "qb": "Aaron Rodgers"
+          },
+          "away": {
+            "off": 1.12,
+            "def": -2.96,
+            "net": -1.84,
+            "games_this_season": 2,
+            "prior_weight_games": 4.0,
+            "qb_changed": false,
+            "prev_qb": "Joe Burrow",
+            "qb": "Joe Burrow"
+          }
+        },
+        "playstyle": {
+          "home": {
+            "off_epa_play": -0.09,
+            "def_epa_play": -0.025,
+            "pass_rate": 0.634,
+            "plays_pg": 62.3
+          },
+          "away": {
+            "off_epa_play": -0.018,
+            "def_epa_play": 0.038,
+            "pass_rate": 0.646,
+            "plays_pg": 60.4
+          }
+        },
+        "rest_days": {
+          "home": 7,
+          "away": 7
+        },
+        "roof": "outdoors",
+        "div_game": true,
+        "injury_watch": {
+          "home": [],
+          "away": [
+            "DT Jonathan Allen: DNP, no game status yet"
+          ]
+        }
+      },
+      "kickoff": "2026-09-27 13:00 ET",
+      "best_winning_pick": {
+        "label": "Cincinnati Bengals ML",
+        "kind": "ml",
+        "side": "away",
+        "line": 0.0,
+        "decimal": 1.5405405405405406,
+        "win_prob": 0.619,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.619,
+          "ratings": 0.4786,
+          "sim": 0.6182
+        },
+        "worst_lens": 0.4786,
+        "lenses_agree": true,
+        "grade": "LEAN",
+        "fair_decimal": 1.62,
+        "ev_pct": -4.6,
+        "price_note": "OVERPRICED \u2014 fair 1.62, book pays 1.54"
+      },
+      "markets": [
+        {
+          "label": "Cincinnati Bengals ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 1.5405405405405406,
+          "win_prob": 0.619,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.619,
+            "ratings": 0.4786,
+            "sim": 0.6182
+          },
+          "worst_lens": 0.4786,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.62,
+          "ev_pct": -4.6,
+          "price_note": "OVERPRICED \u2014 fair 1.62, book pays 1.54"
+        },
+        {
+          "label": "Over 42.5",
+          "kind": "total",
+          "side": "over",
+          "line": 42.5,
+          "decimal": 1.8928571428571428,
+          "win_prob": 0.5043,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5043,
+            "ratings": 0.6543,
+            "sim": 0.5044
+          },
+          "worst_lens": 0.5043,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.98,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 1.98, book pays 1.89"
+        },
+        {
+          "label": "Pittsburgh Steelers +3.5",
+          "kind": "spread",
+          "side": "home",
+          "line": 3.5,
+          "decimal": 1.8928571428571428,
+          "win_prob": 0.5007,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5007,
+            "ratings": 0.6381,
+            "sim": 0.5008
+          },
+          "worst_lens": 0.5007,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 2.0,
+          "ev_pct": -5.2,
+          "price_note": "OVERPRICED \u2014 fair 2.00, book pays 1.89"
+        },
+        {
+          "label": "Cincinnati Bengals -3.5",
+          "kind": "spread",
+          "side": "away",
+          "line": -3.5,
+          "decimal": 1.925925925925926,
+          "win_prob": 0.4993,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4993,
+            "ratings": 0.3619,
+            "sim": 0.4992
+          },
+          "worst_lens": 0.3619,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.0,
+          "ev_pct": -3.8,
+          "price_note": "OVERPRICED \u2014 fair 2.00, book pays 1.93"
+        },
+        {
+          "label": "Under 42.5",
+          "kind": "total",
+          "side": "under",
+          "line": 42.5,
+          "decimal": 1.925925925925926,
+          "win_prob": 0.4957,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4957,
+            "ratings": 0.3457,
+            "sim": 0.4956
+          },
+          "worst_lens": 0.3457,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.02,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.02, book pays 1.93"
+        },
+        {
+          "label": "Pittsburgh Steelers ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 2.54,
+          "win_prob": 0.381,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.381,
+            "ratings": 0.5214,
+            "sim": 0.3803
+          },
+          "worst_lens": 0.3803,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.62,
+          "ev_pct": -3.2,
+          "price_note": "OVERPRICED \u2014 fair 2.62, book pays 2.54"
+        }
+      ],
+      "flags": [
+        "RATINGS_DISPLAY_ONLY: NFL backtest shows the market beats team ratings (best blend weight 0) \u2014 ratings shown for context, no vote"
+      ]
+    },
+    {
+      "game": "Seattle Seahawks @ Washington Commanders",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": -9.1,
+        "market": -9.1,
+        "ratings": -21.12
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.0,
+        "engine": 0.0,
+        "agents": 0.0
+      },
+      "sigma": 12.75,
+      "n_sims": 2000000,
+      "ratings_detail": {
+        "conditions_applied": [
+          "Washington Commanders: QB Jayden Daniels OUT \u2014 dislocated left elbow; Marcus Mariota starts. 4.98 = 12-oddsmaker avg Daniels-over-Mariota (-4.98 home margin) [https://www.nfl.com/news/marcus-mariota-commanders-week-3-qb-jayden-daniels-elbow ; https://uk.sports.yahoo.com/news/oddsmakers-rank-all-32-nfl-starting-qbs-by-point-spread-value-how-valuable-is-jayden-daniels-to-the-spread-150837317.html]",
+          "Washington Commanders: S Nick Cross OUT \u2014 ruled out (-0.5 home margin) [https://www.si.com/betting/seahawks-vs-commanders-prediction-odds-spread-injuries-trends-for-nfl-week-3-2026]",
+          "Washington Commanders: LB Frankie Luvu OUT \u2014 groin (-0.5 home margin) [https://www.hogshaven.com/washington-commanders-injuries/443424/commanders-seahawks-injury-report-frankie-luvu-chig-okonkwo-sam-cosmi-jayden-daniels-nick-cross]",
+          "Washington Commanders: TE Chig Okonkwo OUT \u2014 hamstring (-0.5 home margin) [https://www.hogshaven.com/washington-commanders-injuries/443424/commanders-seahawks-injury-report-frankie-luvu-chig-okonkwo-sam-cosmi-jayden-daniels-nick-cross]",
+          "Washington Commanders: OL Sam Cosmi OUT \u2014 concussion (-0.75 home margin) [https://www.hogshaven.com/washington-commanders-injuries/443424/commanders-seahawks-injury-report-frankie-luvu-chig-okonkwo-sam-cosmi-jayden-daniels-nick-cross]",
+          "Seattle Seahawks: S Julian Love OUT \u2014 ruled out (+0.5 home margin) [https://www.fieldgulls.com/seattle-seahawks-injury-report/175696/seahawks-commanders-injury-designations-sam-darnold-returns-julian-love-ruled-out]"
+        ]
+      },
+      "total_projection": {
+        "blended": 39.9,
+        "market": 39.9,
+        "ratings": 45.6,
+        "ratings_weight": 0.0
+      },
+      "records": null,
+      "context": {
+        "qb": {
+          "home": "Marcus Mariota",
+          "away": "Sam Darnold"
+        },
+        "ratings": {
+          "home": {
+            "off": -1.65,
+            "def": -3.39,
+            "net": -5.04,
+            "games_this_season": 2,
+            "prior_weight_games": 4.0,
+            "qb_changed": false,
+            "prev_qb": "Jayden Daniels",
+            "qb": "Jayden Daniels"
+          },
+          "away": {
+            "off": 4.57,
+            "def": 6.3,
+            "net": 10.87,
+            "games_this_season": 2,
+            "prior_weight_games": 4.0,
+            "qb_changed": false,
+            "prev_qb": "Sam Darnold",
+            "qb": "Sam Darnold"
+          }
+        },
+        "playstyle": {
+          "home": {
+            "off_epa_play": 0.023,
+            "def_epa_play": 0.145,
+            "pass_rate": 0.586,
+            "plays_pg": 64.9
+          },
+          "away": {
+            "off_epa_play": 0.058,
+            "def_epa_play": -0.139,
+            "pass_rate": 0.513,
+            "plays_pg": 57.6
+          }
+        },
+        "rest_days": {
+          "home": 7,
+          "away": 7
+        },
+        "roof": "outdoors",
+        "div_game": false,
+        "injury_watch": {
+          "home": [],
+          "away": [
+            "S Ty Okada: DNP, no game status yet"
+          ]
+        }
+      },
+      "kickoff": "2026-09-27 13:00 ET",
+      "best_winning_pick": {
+        "label": "Seattle Seahawks ML",
+        "kind": "ml",
+        "side": "away",
+        "line": 0.0,
+        "decimal": 1.2531645569620253,
+        "win_prob": 0.7614,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.7614,
+          "ratings": 0.9512,
+          "sim": 0.7612
+        },
+        "worst_lens": 0.7612,
+        "lenses_agree": true,
+        "grade": "LOCK",
+        "fair_decimal": 1.31,
+        "ev_pct": -4.6,
+        "price_note": "OVERPRICED \u2014 fair 1.31, book pays 1.25"
+      },
+      "markets": [
+        {
+          "label": "Seattle Seahawks ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 1.2531645569620253,
+          "win_prob": 0.7614,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.7614,
+            "ratings": 0.9512,
+            "sim": 0.7612
+          },
+          "worst_lens": 0.7612,
+          "lenses_agree": true,
+          "grade": "LOCK",
+          "fair_decimal": 1.31,
+          "ev_pct": -4.6,
+          "price_note": "OVERPRICED \u2014 fair 1.31, book pays 1.25"
+        },
+        {
+          "label": "Seattle Seahawks -7.5",
+          "kind": "spread",
+          "side": "away",
+          "line": -7.5,
+          "decimal": 1.847457627118644,
+          "win_prob": 0.5232,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5232,
+            "ratings": 0.841,
+            "sim": 0.5235
+          },
+          "worst_lens": 0.5232,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.91,
+          "ev_pct": -3.3,
+          "price_note": "OVERPRICED \u2014 fair 1.91, book pays 1.85"
+        },
+        {
+          "label": "Under 40.5",
+          "kind": "total",
+          "side": "under",
+          "line": 40.5,
+          "decimal": 1.847457627118644,
+          "win_prob": 0.5174,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5174,
+            "ratings": 0.3485,
+            "sim": 0.5176
+          },
+          "worst_lens": 0.3485,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.93,
+          "ev_pct": -4.4,
+          "price_note": "OVERPRICED \u2014 fair 1.93, book pays 1.85"
+        },
+        {
+          "label": "Over 40.5",
+          "kind": "total",
+          "side": "over",
+          "line": 40.5,
+          "decimal": 1.9803921568627452,
+          "win_prob": 0.4826,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4826,
+            "ratings": 0.6515,
+            "sim": 0.4824
+          },
+          "worst_lens": 0.4824,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.07,
+          "ev_pct": -4.4,
+          "price_note": "OVERPRICED \u2014 fair 2.07, book pays 1.98"
+        },
+        {
+          "label": "Washington Commanders +7.5",
+          "kind": "spread",
+          "side": "home",
+          "line": 7.5,
+          "decimal": 1.9803921568627452,
+          "win_prob": 0.4768,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4768,
+            "ratings": 0.159,
+            "sim": 0.4765
+          },
+          "worst_lens": 0.159,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.1,
+          "ev_pct": -5.6,
+          "price_note": "OVERPRICED \u2014 fair 2.10, book pays 1.98"
+        },
+        {
+          "label": "Washington Commanders ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 4.1,
+          "win_prob": 0.2386,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.2386,
+            "ratings": 0.0488,
+            "sim": 0.2376
+          },
+          "worst_lens": 0.0488,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 4.19,
+          "ev_pct": -2.2,
+          "price_note": "OVERPRICED \u2014 fair 4.19, book pays 4.10"
+        }
+      ],
+      "flags": [
+        "RATINGS_DISPLAY_ONLY: NFL backtest shows the market beats team ratings (best blend weight 0) \u2014 ratings shown for context, no vote"
+      ]
+    },
+    {
+      "game": "Arizona Cardinals @ San Francisco 49ers",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": 9.54,
+        "market": 9.54,
+        "ratings": 11.25
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.0,
+        "engine": 0.0,
+        "agents": 0.0
+      },
+      "sigma": 12.75,
+      "n_sims": 2000000,
+      "ratings_detail": {},
+      "total_projection": {
+        "blended": 47.9,
+        "market": 47.9,
+        "ratings": 47.1,
+        "ratings_weight": 0.0
+      },
+      "records": null,
+      "context": {
+        "qb": {
+          "home": "Brock Purdy",
+          "away": "Jacoby Brissett"
+        },
+        "ratings": {
+          "home": {
+            "off": 3.23,
+            "def": 2.72,
+            "net": 5.95,
+            "games_this_season": 2,
+            "prior_weight_games": 4.0,
+            "qb_changed": false,
+            "prev_qb": "Brock Purdy",
+            "qb": "Brock Purdy"
+          },
+          "away": {
+            "off": -1.41,
+            "def": -2.37,
+            "net": -3.78,
+            "games_this_season": 2,
+            "prior_weight_games": 4.0,
+            "qb_changed": false,
+            "prev_qb": "Jacoby Brissett",
+            "qb": "Jacoby Brissett"
+          }
+        },
+        "playstyle": {
+          "home": {
+            "off_epa_play": 0.111,
+            "def_epa_play": 0.026,
+            "pass_rate": 0.586,
+            "plays_pg": 57.2
+          },
+          "away": {
+            "off_epa_play": -0.025,
+            "def_epa_play": 0.06,
+            "pass_rate": 0.675,
+            "plays_pg": 59.3
+          }
+        },
+        "rest_days": {
+          "home": 7,
+          "away": 7
+        },
+        "roof": "outdoors",
+        "div_game": true,
+        "injury_watch": {
+          "home": [
+            "WR Mike Evans: DNP, no game status yet",
+            "DE Nick Bosa: DNP, no game status yet"
+          ],
+          "away": [
+            "DT Roy Lopez: DNP, no game status yet"
+          ]
+        }
+      },
+      "kickoff": "2026-09-27 16:05 ET",
+      "best_winning_pick": {
+        "label": "San Francisco 49ers ML",
+        "kind": "ml",
+        "side": "home",
+        "line": 0.0,
+        "decimal": 1.2272727272727273,
+        "win_prob": 0.7718,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.7718,
+          "ratings": 0.8103,
+          "sim": 0.7713
+        },
+        "worst_lens": 0.7713,
+        "lenses_agree": true,
+        "grade": "LOCK",
+        "fair_decimal": 1.3,
+        "ev_pct": -5.3,
+        "price_note": "OVERPRICED \u2014 fair 1.30, book pays 1.23"
+      },
+      "markets": [
+        {
+          "label": "San Francisco 49ers ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 1.2272727272727273,
+          "win_prob": 0.7718,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.7718,
+            "ratings": 0.8103,
+            "sim": 0.7713
+          },
+          "worst_lens": 0.7713,
+          "lenses_agree": true,
+          "grade": "LOCK",
+          "fair_decimal": 1.3,
+          "ev_pct": -5.3,
+          "price_note": "OVERPRICED \u2014 fair 1.30, book pays 1.23"
+        },
+        {
+          "label": "Over 47.5",
+          "kind": "total",
+          "side": "over",
+          "line": 47.5,
+          "decimal": 1.8695652173913042,
+          "win_prob": 0.5108,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5108,
+            "ratings": 0.4878,
+            "sim": 0.5107
+          },
+          "worst_lens": 0.4878,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.96,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 1.96, book pays 1.87"
+        },
+        {
+          "label": "San Francisco 49ers -8.5",
+          "kind": "spread",
+          "side": "home",
+          "line": -8.5,
+          "decimal": 1.925925925925926,
+          "win_prob": 0.5091,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5091,
+            "ratings": 0.5621,
+            "sim": 0.5092
+          },
+          "worst_lens": 0.5091,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.96,
+          "ev_pct": -2.0,
+          "price_note": "OVERPRICED \u2014 fair 1.96, book pays 1.93"
+        },
+        {
+          "label": "Arizona Cardinals +8.5",
+          "kind": "spread",
+          "side": "away",
+          "line": 8.5,
+          "decimal": 1.8928571428571428,
+          "win_prob": 0.4909,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4909,
+            "ratings": 0.4379,
+            "sim": 0.4908
+          },
+          "worst_lens": 0.4379,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.04,
+          "ev_pct": -7.1,
+          "price_note": "OVERPRICED \u2014 fair 2.04, book pays 1.89"
+        },
+        {
+          "label": "Under 47.5",
+          "kind": "total",
+          "side": "under",
+          "line": 47.5,
+          "decimal": 1.9523809523809523,
+          "win_prob": 0.4892,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4892,
+            "ratings": 0.5122,
+            "sim": 0.4893
+          },
+          "worst_lens": 0.4892,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.04,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.04, book pays 1.95"
+        },
+        {
+          "label": "Arizona Cardinals ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 4.4,
+          "win_prob": 0.2282,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.2282,
+            "ratings": 0.1897,
+            "sim": 0.2275
+          },
+          "worst_lens": 0.1897,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 4.38,
+          "ev_pct": 0.4,
+          "price_note": "VALUE"
+        }
+      ],
+      "flags": [
+        "RATINGS_DISPLAY_ONLY: NFL backtest shows the market beats team ratings (best blend weight 0) \u2014 ratings shown for context, no vote"
+      ]
+    },
+    {
+      "game": "Minnesota Vikings @ Tampa Bay Buccaneers",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": -0.64,
+        "market": -0.64,
+        "ratings": -3.73
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.0,
+        "engine": 0.0,
+        "agents": 0.0
+      },
+      "sigma": 12.75,
+      "n_sims": 2000000,
+      "ratings_detail": {},
+      "total_projection": {
+        "blended": 42.5,
+        "market": 42.5,
+        "ratings": 41.3,
+        "ratings_weight": 0.0
+      },
+      "records": null,
+      "context": {
+        "qb": {
+          "home": "Baker Mayfield",
+          "away": "Kyler Murray"
+        },
+        "ratings": {
+          "home": {
+            "off": 0.28,
+            "def": -1.83,
+            "net": -1.55,
+            "games_this_season": 2,
+            "prior_weight_games": 4.0,
+            "qb_changed": false,
+            "prev_qb": "Baker Mayfield",
+            "qb": "Baker Mayfield"
+          },
+          "away": {
+            "off": -1.37,
+            "def": 5.07,
+            "net": 3.7,
+            "games_this_season": 2,
+            "prior_weight_games": 2.0,
+            "qb_changed": true,
+            "prev_qb": "J.J. McCarthy",
+            "qb": "Kyler Murray"
+          }
+        },
+        "playstyle": {
+          "home": {
+            "off_epa_play": -0.045,
+            "def_epa_play": 0.011,
+            "pass_rate": 0.62,
+            "plays_pg": 58.1
+          },
+          "away": {
+            "off_epa_play": -0.098,
+            "def_epa_play": -0.113,
+            "pass_rate": 0.582,
+            "plays_pg": 55.1
+          }
+        },
+        "rest_days": {
+          "home": 7,
+          "away": 7
+        },
+        "roof": "outdoors",
+        "div_game": false,
+        "injury_watch": {
+          "home": [
+            "LB Rueben Bain Jr.: DNP, no game status yet",
+            "LB Josiah Trotter: DNP, no game status yet"
+          ],
+          "away": [
+            "P Brett Thorson: DNP, no game status yet"
+          ]
+        }
+      },
+      "kickoff": "2026-09-27 16:05 ET",
+      "best_winning_pick": {
+        "label": "Minnesota Vikings ML",
+        "kind": "ml",
+        "side": "away",
+        "line": 0.0,
+        "decimal": 1.8333333333333335,
+        "win_prob": 0.5198,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.5198,
+          "ratings": 0.6144,
+          "sim": 0.5183
+        },
+        "worst_lens": 0.5183,
+        "lenses_agree": true,
+        "grade": "LEAN",
+        "fair_decimal": 1.92,
+        "ev_pct": -4.7,
+        "price_note": "OVERPRICED \u2014 fair 1.92, book pays 1.83"
+      },
+      "markets": [
+        {
+          "label": "Minnesota Vikings ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 1.8333333333333335,
+          "win_prob": 0.5198,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5198,
+            "ratings": 0.6144,
+            "sim": 0.5183
+          },
+          "worst_lens": 0.5183,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.92,
+          "ev_pct": -4.7,
+          "price_note": "OVERPRICED \u2014 fair 1.92, book pays 1.83"
+        },
+        {
+          "label": "Tampa Bay Buccaneers +1.5",
+          "kind": "spread",
+          "side": "home",
+          "line": 1.5,
+          "decimal": 1.8928571428571428,
+          "win_prob": 0.5024,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5024,
+            "ratings": 0.4074,
+            "sim": 0.5032
+          },
+          "worst_lens": 0.4074,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.99,
+          "ev_pct": -4.9,
+          "price_note": "OVERPRICED \u2014 fair 1.99, book pays 1.89"
+        },
+        {
+          "label": "Over 42.5",
+          "kind": "total",
+          "side": "over",
+          "line": 42.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5,
+            "ratings": 0.4635,
+            "sim": 0.4997
+          },
+          "worst_lens": 0.4635,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.0,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.00, book pays 1.91"
+        },
+        {
+          "label": "Under 42.5",
+          "kind": "total",
+          "side": "under",
+          "line": 42.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5,
+            "ratings": 0.5365,
+            "sim": 0.5003
+          },
+          "worst_lens": 0.5,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.0,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.00, book pays 1.91"
+        },
+        {
+          "label": "Minnesota Vikings -1.5",
+          "kind": "spread",
+          "side": "away",
+          "line": -1.5,
+          "decimal": 1.925925925925926,
+          "win_prob": 0.4976,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4976,
+            "ratings": 0.5926,
+            "sim": 0.4968
+          },
+          "worst_lens": 0.4968,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.01,
+          "ev_pct": -4.2,
+          "price_note": "OVERPRICED \u2014 fair 2.01, book pays 1.93"
+        },
+        {
+          "label": "Tampa Bay Buccaneers ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 2.0,
+          "win_prob": 0.4802,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4802,
+            "ratings": 0.3856,
+            "sim": 0.4801
+          },
+          "worst_lens": 0.3856,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.08,
+          "ev_pct": -4.0,
+          "price_note": "OVERPRICED \u2014 fair 2.08, book pays 2.00"
+        }
+      ],
+      "flags": [
+        "RATINGS_DISPLAY_ONLY: NFL backtest shows the market beats team ratings (best blend weight 0) \u2014 ratings shown for context, no vote"
+      ]
+    },
+    {
+      "game": "Baltimore Ravens @ Dallas Cowboys",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": -3.56,
+        "market": -3.56,
+        "ratings": -5.73
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.0,
+        "engine": 0.0,
+        "agents": 0.0
+      },
+      "sigma": 12.75,
+      "n_sims": 2000000,
+      "ratings_detail": {
+        "conditions_applied": [
+          "Dallas Cowboys: S Malik Hooker OUT (Forearm) (-0.5 home margin) [nflverse injuries_2026.csv week 3 (official NFL injury report)]",
+          "Dallas Cowboys: CB Cobie Durant OUT (Hamstring) (-1 home margin) [nflverse injuries_2026.csv week 3 (official NFL injury report)]",
+          "Dallas Cowboys: LB DeMarvion Overshown OUT (Hamstring) (-0.5 home margin) [nflverse injuries_2026.csv week 3 (official NFL injury report)]"
+        ]
+      },
+      "total_projection": {
+        "blended": 53.4,
+        "market": 53.4,
+        "ratings": 56.6,
+        "ratings_weight": 0.0
+      },
+      "records": null,
+      "context": {
+        "qb": {
+          "home": "Dak Prescott",
+          "away": "Lamar Jackson"
+        },
+        "ratings": {
+          "home": {
+            "off": 3.37,
+            "def": -5.6,
+            "net": -2.23,
+            "games_this_season": 2,
+            "prior_weight_games": 4.0,
+            "qb_changed": false,
+            "prev_qb": "Dak Prescott",
+            "qb": "Dak Prescott"
+          },
+          "away": {
+            "off": 1.76,
+            "def": -0.26,
+            "net": 1.5,
+            "games_this_season": 2,
+            "prior_weight_games": 4.0,
+            "qb_changed": false,
+            "prev_qb": "Lamar Jackson",
+            "qb": "Lamar Jackson"
+          }
+        },
+        "playstyle": {
+          "home": {
+            "off_epa_play": 0.125,
+            "def_epa_play": 0.181,
+            "pass_rate": 0.632,
+            "plays_pg": 56.1
+          },
+          "away": {
+            "off_epa_play": 0.082,
+            "def_epa_play": 0.013,
+            "pass_rate": 0.538,
+            "plays_pg": 57.2
+          }
+        },
+        "rest_days": {
+          "home": 7,
+          "away": 7
+        },
+        "roof": null,
+        "div_game": false,
+        "injury_watch": {
+          "home": [],
+          "away": [
+            "T Ronnie Stanley: DNP, no game status yet",
+            "WR Zay Flowers: DNP, no game status yet"
+          ]
+        }
+      },
+      "kickoff": "2026-09-27 16:25 ET",
+      "best_winning_pick": {
+        "label": "Baltimore Ravens ML",
+        "kind": "ml",
+        "side": "away",
+        "line": 0.0,
+        "decimal": 1.5714285714285714,
+        "win_prob": 0.6092,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.6092,
+          "ratings": 0.6725,
+          "sim": 0.6078
+        },
+        "worst_lens": 0.6078,
+        "lenses_agree": true,
+        "grade": "LEAN",
+        "fair_decimal": 1.64,
+        "ev_pct": -4.3,
+        "price_note": "OVERPRICED \u2014 fair 1.64, book pays 1.57"
+      },
+      "markets": [
+        {
+          "label": "Baltimore Ravens ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 1.5714285714285714,
+          "win_prob": 0.6092,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.6092,
+            "ratings": 0.6725,
+            "sim": 0.6078
+          },
+          "worst_lens": 0.6078,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.64,
+          "ev_pct": -4.3,
+          "price_note": "OVERPRICED \u2014 fair 1.64, book pays 1.57"
+        },
+        {
+          "label": "Dallas Cowboys +3.5",
+          "kind": "spread",
+          "side": "home",
+          "line": 3.5,
+          "decimal": 1.8695652173913042,
+          "win_prob": 0.5108,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5108,
+            "ratings": 0.4442,
+            "sim": 0.5114
+          },
+          "worst_lens": 0.4442,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.96,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 1.96, book pays 1.87"
+        },
+        {
+          "label": "Under 53.5",
+          "kind": "total",
+          "side": "under",
+          "line": 53.5,
+          "decimal": 1.8928571428571428,
+          "win_prob": 0.5043,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5043,
+            "ratings": 0.4065,
+            "sim": 0.5047
+          },
+          "worst_lens": 0.4065,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.98,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 1.98, book pays 1.89"
+        },
+        {
+          "label": "Over 53.5",
+          "kind": "total",
+          "side": "over",
+          "line": 53.5,
+          "decimal": 1.925925925925926,
+          "win_prob": 0.4957,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4957,
+            "ratings": 0.5935,
+            "sim": 0.4953
+          },
+          "worst_lens": 0.4953,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.02,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.02, book pays 1.93"
+        },
+        {
+          "label": "Baltimore Ravens -3.5",
+          "kind": "spread",
+          "side": "away",
+          "line": -3.5,
+          "decimal": 1.9523809523809523,
+          "win_prob": 0.4892,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4892,
+            "ratings": 0.5558,
+            "sim": 0.4886
+          },
+          "worst_lens": 0.4886,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.04,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.04, book pays 1.95"
+        },
+        {
+          "label": "Dallas Cowboys ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 2.45,
+          "win_prob": 0.3908,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.3908,
+            "ratings": 0.3275,
+            "sim": 0.3907
+          },
+          "worst_lens": 0.3275,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.56,
+          "ev_pct": -4.3,
+          "price_note": "OVERPRICED \u2014 fair 2.56, book pays 2.45"
+        }
+      ],
+      "flags": [
+        "RATINGS_DISPLAY_ONLY: NFL backtest shows the market beats team ratings (best blend weight 0) \u2014 ratings shown for context, no vote"
+      ]
+    },
+    {
+      "game": "Las Vegas Raiders @ New Orleans Saints",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": 3.69,
+        "market": 3.69,
+        "ratings": 2.27
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.0,
+        "engine": 0.0,
+        "agents": 0.0
+      },
+      "sigma": 12.75,
+      "n_sims": 2000000,
+      "ratings_detail": {},
+      "total_projection": {
+        "blended": 44.1,
+        "market": 44.1,
+        "ratings": 38.8,
+        "ratings_weight": 0.0
+      },
+      "records": null,
+      "context": {
+        "qb": {
+          "home": "Tyler Shough",
+          "away": "Kirk Cousins"
+        },
+        "ratings": {
+          "home": {
+            "off": -2.77,
+            "def": 0.58,
+            "net": -2.19,
+            "games_this_season": 2,
+            "prior_weight_games": 4.0,
+            "qb_changed": false,
+            "prev_qb": "Tyler Shough",
+            "qb": "Tyler Shough"
+          },
+          "away": {
+            "off": -3.21,
+            "def": 0.27,
+            "net": -2.94,
+            "games_this_season": 2,
+            "prior_weight_games": 2.0,
+            "qb_changed": true,
+            "prev_qb": "Geno Smith",
+            "qb": "Kirk Cousins"
+          }
+        },
+        "playstyle": {
+          "home": {
+            "off_epa_play": -0.05,
+            "def_epa_play": -0.03,
+            "pass_rate": 0.645,
+            "plays_pg": 71.8
+          },
+          "away": {
+            "off_epa_play": -0.175,
+            "def_epa_play": -0.04,
+            "pass_rate": 0.606,
+            "plays_pg": 59.2
+          }
+        },
+        "rest_days": {
+          "home": 7,
+          "away": 7
+        },
+        "roof": "dome",
+        "div_game": false,
+        "injury_watch": {
+          "home": [
+            "WR Barion Brown: DNP, no game status yet"
+          ],
+          "away": [
+            "DE Kwity Paye: DNP, no game status yet",
+            "S Treydan Stukes: DNP, no game status yet"
+          ]
+        }
+      },
+      "kickoff": "2026-09-27 16:25 ET",
+      "best_winning_pick": {
+        "label": "New Orleans Saints ML",
+        "kind": "ml",
+        "side": "home",
+        "line": 0.0,
+        "decimal": 1.5405405405405406,
+        "win_prob": 0.6133,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.6133,
+          "ratings": 0.5702,
+          "sim": 0.6131
+        },
+        "worst_lens": 0.5702,
+        "lenses_agree": true,
+        "grade": "LEAN",
+        "fair_decimal": 1.63,
+        "ev_pct": -5.5,
+        "price_note": "OVERPRICED \u2014 fair 1.63, book pays 1.54"
+      },
+      "markets": [
+        {
+          "label": "New Orleans Saints ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 1.5405405405405406,
+          "win_prob": 0.6133,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.6133,
+            "ratings": 0.5702,
+            "sim": 0.6131
+          },
+          "worst_lens": 0.5702,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.63,
+          "ev_pct": -5.5,
+          "price_note": "OVERPRICED \u2014 fair 1.63, book pays 1.54"
+        },
+        {
+          "label": "Over 43.5",
+          "kind": "total",
+          "side": "over",
+          "line": 43.5,
+          "decimal": 1.847457627118644,
+          "win_prob": 0.5174,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5174,
+            "ratings": 0.3599,
+            "sim": 0.5173
+          },
+          "worst_lens": 0.3599,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.93,
+          "ev_pct": -4.4,
+          "price_note": "OVERPRICED \u2014 fair 1.93, book pays 1.85"
+        },
+        {
+          "label": "New Orleans Saints -3",
+          "kind": "spread",
+          "side": "home",
+          "line": -3.0,
+          "decimal": 1.819672131147541,
+          "win_prob": 0.4935,
+          "push_prob": 0.0798,
+          "lenses": {
+            "market": 0.4935,
+            "ratings": 0.4499,
+            "sim": 0.4942
+          },
+          "worst_lens": 0.4499,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.03,
+          "ev_pct": -10.2,
+          "price_note": "OVERPRICED \u2014 fair 2.03, book pays 1.82"
+        },
+        {
+          "label": "Under 43.5",
+          "kind": "total",
+          "side": "under",
+          "line": 43.5,
+          "decimal": 1.9803921568627452,
+          "win_prob": 0.4826,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4826,
+            "ratings": 0.6401,
+            "sim": 0.4827
+          },
+          "worst_lens": 0.4826,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.07,
+          "ev_pct": -4.4,
+          "price_note": "OVERPRICED \u2014 fair 2.07, book pays 1.98"
+        },
+        {
+          "label": "Las Vegas Raiders +3",
+          "kind": "spread",
+          "side": "away",
+          "line": 3.0,
+          "decimal": 2.02,
+          "win_prob": 0.4267,
+          "push_prob": 0.0798,
+          "lenses": {
+            "market": 0.4267,
+            "ratings": 0.4704,
+            "sim": 0.4262
+          },
+          "worst_lens": 0.4262,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.34,
+          "ev_pct": -13.8,
+          "price_note": "OVERPRICED \u2014 fair 2.34, book pays 2.02"
+        },
+        {
+          "label": "Las Vegas Raiders ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 2.54,
+          "win_prob": 0.3867,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.3867,
+            "ratings": 0.4298,
+            "sim": 0.3854
+          },
+          "worst_lens": 0.3854,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.59,
+          "ev_pct": -1.8,
+          "price_note": "OVERPRICED \u2014 fair 2.59, book pays 2.54"
+        }
+      ],
+      "flags": [
+        "RATINGS_DISPLAY_ONLY: NFL backtest shows the market beats team ratings (best blend weight 0) \u2014 ratings shown for context, no vote"
+      ]
+    },
+    {
+      "game": "Los Angeles Rams @ Denver Broncos",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": -1.17,
+        "market": -1.17,
+        "ratings": -4.54
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.0,
+        "engine": 0.0,
+        "agents": 0.0
+      },
+      "sigma": 12.75,
+      "n_sims": 2000000,
+      "ratings_detail": {},
+      "total_projection": {
+        "blended": 43.9,
+        "market": 43.9,
+        "ratings": 43.3,
+        "ratings_weight": 0.0
+      },
+      "records": null,
+      "context": {
+        "qb": {
+          "home": "Bo Nix",
+          "away": "Matthew Stafford"
+        },
+        "ratings": {
+          "home": {
+            "off": -1.18,
+            "def": 2.65,
+            "net": 1.47,
+            "games_this_season": 2,
+            "prior_weight_games": 4.0,
+            "qb_changed": false,
+            "prev_qb": "Bo Nix",
+            "qb": "Bo Nix"
+          },
+          "away": {
+            "off": 4.54,
+            "def": 2.99,
+            "net": 7.53,
+            "games_this_season": 2,
+            "prior_weight_games": 4.0,
+            "qb_changed": false,
+            "prev_qb": "Matthew Stafford",
+            "qb": "Matthew Stafford"
+          }
+        },
+        "playstyle": {
+          "home": {
+            "off_epa_play": 0.008,
+            "def_epa_play": -0.047,
+            "pass_rate": 0.632,
+            "plays_pg": 54.2
+          },
+          "away": {
+            "off_epa_play": 0.118,
+            "def_epa_play": -0.058,
+            "pass_rate": 0.585,
+            "plays_pg": 57.8
+          }
+        },
+        "rest_days": {
+          "home": 7,
+          "away": 6
+        },
+        "roof": "outdoors",
+        "div_game": false,
+        "injury_watch": {
+          "home": [],
+          "away": [
+            "TE Colby Parkinson: DNP, no game status yet",
+            "WR Puka Nacua: DNP, no game status yet",
+            "S Kamren Kinchens: DNP, no game status yet"
+          ]
+        }
+      },
+      "kickoff": "2026-09-27 20:20 ET",
+      "best_winning_pick": {
+        "label": "Los Angeles Rams ML",
+        "kind": "ml",
+        "side": "away",
+        "line": 0.0,
+        "decimal": 1.7692307692307692,
+        "win_prob": 0.5363,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.5363,
+          "ratings": 0.6383,
+          "sim": 0.5355
+        },
+        "worst_lens": 0.5355,
+        "lenses_agree": true,
+        "grade": "LEAN",
+        "fair_decimal": 1.86,
+        "ev_pct": -5.1,
+        "price_note": "OVERPRICED \u2014 fair 1.86, book pays 1.77"
+      },
+      "markets": [
+        {
+          "label": "Los Angeles Rams ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 1.7692307692307692,
+          "win_prob": 0.5363,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5363,
+            "ratings": 0.6383,
+            "sim": 0.5355
+          },
+          "worst_lens": 0.5355,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.86,
+          "ev_pct": -5.1,
+          "price_note": "OVERPRICED \u2014 fair 1.86, book pays 1.77"
+        },
+        {
+          "label": "Under 44.5",
+          "kind": "total",
+          "side": "under",
+          "line": 44.5,
+          "decimal": 1.847457627118644,
+          "win_prob": 0.5174,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5174,
+            "ratings": 0.5365,
+            "sim": 0.517
+          },
+          "worst_lens": 0.517,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.93,
+          "ev_pct": -4.4,
+          "price_note": "OVERPRICED \u2014 fair 1.93, book pays 1.85"
+        },
+        {
+          "label": "Denver Broncos +2.5",
+          "kind": "spread",
+          "side": "home",
+          "line": 2.5,
+          "decimal": 1.8695652173913042,
+          "win_prob": 0.5044,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5044,
+            "ratings": 0.4012,
+            "sim": 0.5044
+          },
+          "worst_lens": 0.4012,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.98,
+          "ev_pct": -5.7,
+          "price_note": "OVERPRICED \u2014 fair 1.98, book pays 1.87"
+        },
+        {
+          "label": "Los Angeles Rams -2.5",
+          "kind": "spread",
+          "side": "away",
+          "line": -2.5,
+          "decimal": 1.9523809523809523,
+          "win_prob": 0.4956,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4956,
+            "ratings": 0.5988,
+            "sim": 0.4956
+          },
+          "worst_lens": 0.4956,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.02,
+          "ev_pct": -3.2,
+          "price_note": "OVERPRICED \u2014 fair 2.02, book pays 1.95"
+        },
+        {
+          "label": "Over 44.5",
+          "kind": "total",
+          "side": "over",
+          "line": 44.5,
+          "decimal": 1.9803921568627452,
+          "win_prob": 0.4826,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4826,
+            "ratings": 0.4635,
+            "sim": 0.483
+          },
+          "worst_lens": 0.4635,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.07,
+          "ev_pct": -4.4,
+          "price_note": "OVERPRICED \u2014 fair 2.07, book pays 1.98"
+        },
+        {
+          "label": "Denver Broncos ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 2.1,
+          "win_prob": 0.4637,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4637,
+            "ratings": 0.3617,
+            "sim": 0.4629
+          },
+          "worst_lens": 0.3617,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.16,
+          "ev_pct": -2.6,
+          "price_note": "OVERPRICED \u2014 fair 2.16, book pays 2.10"
+        }
+      ],
+      "flags": [
+        "RATINGS_DISPLAY_ONLY: NFL backtest shows the market beats team ratings (best blend weight 0) \u2014 ratings shown for context, no vote"
+      ]
+    },
+    {
+      "game": "Philadelphia Eagles @ Chicago Bears",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": -5.74,
+        "market": -5.74,
+        "ratings": 2.77
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.0,
+        "engine": 0.0,
+        "agents": 0.0
+      },
+      "sigma": 12.75,
+      "n_sims": 2000000,
+      "ratings_detail": {},
+      "total_projection": {
+        "blended": 41.1,
+        "market": 41.1,
+        "ratings": 45.5,
+        "ratings_weight": 0.0
+      },
+      "records": null,
+      "context": {
+        "qb": {
+          "home": "Caleb Williams",
+          "away": "Jalen Hurts"
+        },
+        "ratings": {
+          "home": {
+            "off": 3.02,
+            "def": -0.5,
+            "net": 2.52,
+            "games_this_season": 2,
+            "prior_weight_games": 4.0,
+            "qb_changed": false,
+            "prev_qb": "Caleb Williams",
+            "qb": "Caleb Williams"
+          },
+          "away": {
+            "off": -1.2,
+            "def": 2.47,
+            "net": 1.27,
+            "games_this_season": 2,
+            "prior_weight_games": 4.0,
+            "qb_changed": false,
+            "prev_qb": "Jalen Hurts",
+            "qb": "Jalen Hurts"
+          }
+        },
+        "playstyle": {
+          "home": {
+            "off_epa_play": 0.091,
+            "def_epa_play": 0.039,
+            "pass_rate": 0.586,
+            "plays_pg": 68.6
+          },
+          "away": {
+            "off_epa_play": 0.029,
+            "def_epa_play": -0.038,
+            "pass_rate": 0.583,
+            "plays_pg": 60.9
+          }
+        },
+        "rest_days": {
+          "home": 8,
+          "away": 8
+        },
+        "roof": "outdoors",
+        "div_game": false,
+        "injury_watch": {
+          "home": [
+            "K Cairo Santos: DNP, no game status yet",
+            "DT Grady Jarrett: DNP, no game status yet",
+            "CB Tyrique Stevenson: DNP, no game status yet",
+            "QB Caleb Williams: DNP, no game status yet"
+          ],
+          "away": [
+            "TE Dallas Goedert: DNP, no game status yet",
+            "WR DeVonta Smith: DNP, no game status yet",
+            "RB Will Shipley: DNP, no game status yet"
+          ]
+        }
+      },
+      "kickoff": "2026-09-28 20:15 ET",
+      "best_winning_pick": {
+        "label": "Philadelphia Eagles ML",
+        "kind": "ml",
+        "side": "away",
+        "line": 0.0,
+        "decimal": 1.4201680672268908,
+        "win_prob": 0.6727,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.6727,
+          "ratings": 0.4145,
+          "sim": 0.6717
+        },
+        "worst_lens": 0.4145,
+        "lenses_agree": true,
+        "grade": "PICK",
+        "fair_decimal": 1.49,
+        "ev_pct": -4.5,
+        "price_note": "OVERPRICED \u2014 fair 1.49, book pays 1.42"
+      },
+      "markets": [
+        {
+          "label": "Philadelphia Eagles ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 1.4201680672268908,
+          "win_prob": 0.6727,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.6727,
+            "ratings": 0.4145,
+            "sim": 0.6717
+          },
+          "worst_lens": 0.4145,
+          "lenses_agree": true,
+          "grade": "PICK",
+          "fair_decimal": 1.49,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 1.49, book pays 1.42"
+        },
+        {
+          "label": "Philadelphia Eagles -4.5",
+          "kind": "spread",
+          "side": "away",
+          "line": -4.5,
+          "decimal": 1.819672131147541,
+          "win_prob": 0.5286,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5286,
+            "ratings": 0.2799,
+            "sim": 0.5283
+          },
+          "worst_lens": 0.2799,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.89,
+          "ev_pct": -3.8,
+          "price_note": "OVERPRICED \u2014 fair 1.89, book pays 1.82"
+        },
+        {
+          "label": "Under 41.5",
+          "kind": "total",
+          "side": "under",
+          "line": 41.5,
+          "decimal": 1.8695652173913042,
+          "win_prob": 0.5108,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5108,
+            "ratings": 0.3801,
+            "sim": 0.5107
+          },
+          "worst_lens": 0.3801,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.96,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 1.96, book pays 1.87"
+        },
+        {
+          "label": "Over 41.5",
+          "kind": "total",
+          "side": "over",
+          "line": 41.5,
+          "decimal": 1.9523809523809523,
+          "win_prob": 0.4892,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4892,
+            "ratings": 0.6199,
+            "sim": 0.4893
+          },
+          "worst_lens": 0.4892,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.04,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.04, book pays 1.95"
+        },
+        {
+          "label": "Chicago Bears +4.5",
+          "kind": "spread",
+          "side": "home",
+          "line": 4.5,
+          "decimal": 2.02,
+          "win_prob": 0.4714,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4714,
+            "ratings": 0.7201,
+            "sim": 0.4717
+          },
+          "worst_lens": 0.4714,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.12,
+          "ev_pct": -4.8,
+          "price_note": "OVERPRICED \u2014 fair 2.12, book pays 2.02"
+        },
+        {
+          "label": "Chicago Bears ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 2.95,
+          "win_prob": 0.3273,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.3273,
+            "ratings": 0.5855,
+            "sim": 0.3269
+          },
+          "worst_lens": 0.3269,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 3.06,
+          "ev_pct": -3.5,
+          "price_note": "OVERPRICED \u2014 fair 3.06, book pays 2.95"
+        }
+      ],
+      "flags": [
+        "RATINGS_DISPLAY_ONLY: NFL backtest shows the market beats team ratings (best blend weight 0) \u2014 ratings shown for context, no vote"
+      ]
+    }
+  ]
+}

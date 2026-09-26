@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Caveman Locks — TikTok Card</title>
+<!--
+  TikTok pick card — 1080x1920. Screenshot the .card element.
+  Modes via URL params:
+    ?mode=pick&sport=NBA&game=Celtics vs Knicks&pick=Celtics -4.5&odds=-110&prob=58&units=1&record=12-5
+    ?mode=result&pick=Celtics -4.5&odds=-110&result=W&profit=+0.91U&record=13-5
+    ?mode=record&wins=21&losses=9&units=+11.4&roi=12.2&clv=+2.1&streak=W4
+-->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: #000; }
+  .card {
+    width: 1080px; height: 1920px;
+    background: #1A1A1A;
+    position: relative; overflow: hidden;
+    font-family: "Archivo Black", Impact, "Arial Black", sans-serif;
+    color: #F5F0E8;
+    display: flex; flex-direction: column;
+    padding: 90px 80px;
+  }
+  /* grain texture */
+  .card::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E");
+  }
+  .topbar { display: flex; align-items: center; gap: 28px; }
+  .topbar img { width: 110px; height: 110px; }
+  .brand { font-size: 44px; letter-spacing: 4px; line-height: 1.1; }
+  .brand .ochre { color: #C8860A; letter-spacing: 10px; }
+  .sport-tag {
+    margin-left: auto; font-size: 30px; color: #1A1A1A; background: #C8860A;
+    padding: 14px 30px; letter-spacing: 6px;
+  }
+  .label { font-size: 34px; letter-spacing: 14px; color: #F5F0E8; opacity: 0.45; margin-bottom: 18px; }
+  .hero { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .game { font-size: 44px; opacity: 0.6; margin-bottom: 30px; letter-spacing: 2px; }
+  .pick { font-size: 110px; line-height: 1.05; color: #C8860A; text-transform: uppercase; }
+  .odds-row { display: flex; gap: 60px; margin-top: 70px; }
+  .stat .v { font-size: 76px; }
+  .stat .k { font-size: 26px; letter-spacing: 6px; opacity: 0.45; margin-top: 8px; }
+  .scratch { height: 8px; width: 340px; background: #C8860A; margin: 60px 0 0; transform: rotate(-1deg); }
+  .footer { display: flex; justify-content: space-between; align-items: flex-end; }
+  .record { font-size: 40px; color: #C8860A; letter-spacing: 3px; white-space: nowrap; margin-right: 30px; }
+  .disclaimer { font-family: ui-monospace, Menlo, monospace; font-size: 22px; opacity: 0.35; letter-spacing: 2px; }
+  .result-big { font-size: 300px; color: #C8860A; line-height: 1; }
+  .result-big.loss { color: #6b7280; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 70px 40px; margin-top: 40px; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="topbar">
+    <img src="../brand/caveman-locks-icon.svg" alt="">
+    <div class="brand">CAVEMAN<br><span class="ochre">LOCKS</span></div>
+    <div class="sport-tag" id="sportTag">NBA</div>
+  </div>
+
+  <!-- MODE: pick -->
+  <div class="hero" id="modePick">
+    <div class="label" id="lblPick">TODAY LOCK</div>
+    <div class="game" id="game">Team A vs Team B</div>
+    <div class="pick" id="pick">PICK HERE</div>
+    <div class="odds-row">
+      <div class="stat"><div class="v" id="odds">-110</div><div class="k" id="lblOdds">ODDS</div></div>
+      <div class="stat"><div class="v" id="prob">--%</div><div class="k" id="lblProb">WIN PROB</div></div>
+      <div class="stat"><div class="v" id="units">1U</div><div class="k" id="lblStake">STAKE</div></div>
+    </div>
+    <div class="scratch"></div>
+  </div>
+
+  <!-- MODE: result -->
+  <div class="hero hidden" id="modeResult">
+    <div class="label" id="lblResult">RESULT</div>
+    <div class="result-big" id="resultLetter">W</div>
+    <div class="pick" style="font-size:72px" id="resultPick">PICK HERE</div>
+    <div class="odds-row">
+      <div class="stat"><div class="v" id="resultOdds">-110</div><div class="k" id="lblOdds2">ODDS</div></div>
+      <div class="stat"><div class="v" id="profit">+0.0U</div><div class="k" id="lblProfit">PROFIT</div></div>
+    </div>
+    <div class="scratch"></div>
+  </div>
+
+  <!-- MODE: record (proof card) -->
+  <div class="hero hidden" id="modeRecord">
+    <div class="label" id="lblRecordHead">TRACK RECORD — ALL PICKS LOGGED</div>
+    <div class="grid">
+      <div class="stat"><div class="v" style="color:#C8860A" id="recWL">0-0</div><div class="k" id="lblRecord">RECORD</div></div>
+      <div class="stat"><div class="v" id="recUnits">+0.0U</div><div class="k" id="lblUnits">UNITS</div></div>
+      <div class="stat"><div class="v" id="recRoi">0%</div><div class="k">ROI</div></div>
+      <div class="stat"><div class="v" id="recClv">+0.0%</div><div class="k" id="lblClv">AVG CLV</div></div>
+    </div>
+    <div class="pick" style="font-size:80px;margin-top:70px" id="streak"></div>
+    <div class="scratch"></div>
+  </div>
+
+  <div class="footer">
+    <div class="record" id="recordFoot"></div>
+    <div class="disclaimer" id="disclaimer">21+ | ENTERTAINMENT ONLY | NO GUARANTEED RESULTS</div>
+  </div>
+</div>
+
+<script>
+  const q = new URLSearchParams(location.search);
+  const get = (k, d) => q.get(k) ?? d;
+  const mode = get('mode', 'pick');
+
+  // ── i18n: ?lang=es for Spanish cards ──
+  const lang = get('lang', 'en');
+  const T = {
+    en: {
+      pickLabel: 'TODAY LOCK', odds: 'ODDS', prob: 'WIN PROB', stake: 'STAKE',
+      result: 'RESULT', profit: 'PROFIT', win: 'CASH', loss: 'CHALK DUST',
+      recordHead: 'TRACK RECORD — ALL PICKS LOGGED', record: 'RECORD',
+      units: 'UNITS', clv: 'AVG CLV', streak: 'STREAK', season: 'SEASON',
+      disclaimer: '21+ | ENTERTAINMENT ONLY | NO GUARANTEED RESULTS',
+    },
+    es: {
+      pickLabel: 'LOCK DEL DIA', odds: 'CUOTA', prob: 'PROB. GANAR', stake: 'APUESTA',
+      result: 'RESULTADO', profit: 'GANANCIA', win: 'COBRAMOS', loss: 'SE FUE',
+      recordHead: 'RECORD — TODOS LOS PICKS REGISTRADOS', record: 'RECORD',
+      units: 'UNIDADES', clv: 'CLV PROM.', streak: 'RACHA', season: 'TEMPORADA',
+      disclaimer: '21+ | SOLO ENTRETENIMIENTO | SIN RESULTADOS GARANTIZADOS',
+    },
+  };
+  const t = T[lang] ?? T.en;
+  const setText = (id, txt) => { document.getElementById(id).textContent = txt; };
+  setText('lblPick', t.pickLabel); setText('lblOdds', t.odds); setText('lblProb', t.prob);
+  setText('lblStake', t.stake); setText('lblResult', t.result); setText('lblOdds2', t.odds);
+  setText('lblProfit', t.profit); setText('lblRecordHead', t.recordHead); setText('lblRecord', t.record);
+  setText('lblUnits', t.units); setText('lblClv', t.clv); setText('disclaimer', t.disclaimer);
+  const show = id => {
+    ['modePick', 'modeResult', 'modeRecord'].forEach(m =>
+      document.getElementById(m).classList.toggle('hidden', m !== id));
+  };
+  document.getElementById('sportTag').textContent = get('sport', 'NBA');
+  document.getElementById('recordFoot').textContent = q.get('record') ? `${t.season} ${get('record', '')}` : '';
+
+  if (mode === 'result') {
+    show('modeResult');
+    const r = get('result', 'W').toUpperCase();
+    const big = document.getElementById('resultLetter');
+    big.textContent = r === 'W' ? t.win : t.loss;
+    big.classList.toggle('loss', r !== 'W');
+    document.getElementById('resultPick').textContent = get('pick', '');
+    document.getElementById('resultOdds').textContent = get('odds', '-110');
+    document.getElementById('profit').textContent = get('profit', '');
+  } else if (mode === 'record') {
+    show('modeRecord');
+    document.getElementById('recWL').textContent = `${get('wins', '0')}-${get('losses', '0')}`;
+    document.getElementById('recUnits').textContent = `${get('units', '+0')}U`;
+    document.getElementById('recRoi').textContent = `${get('roi', '0')}%`;
+    document.getElementById('recClv').textContent = `${get('clv', '+0')}%`;
+    document.getElementById('streak').textContent = q.get('streak') ? `${t.streak} ${get('streak', '')}` : '';
+  } else {
+    show('modePick');
+    document.getElementById('game').textContent = get('game', 'Team A vs Team B');
+    document.getElementById('pick').textContent = get('pick', 'PICK HERE');
+    document.getElementById('odds').textContent = get('odds', '-110');
+    document.getElementById('prob').textContent = `${get('prob', '--')}%`;
+    document.getElementById('units').textContent = `${get('units', '1')}U`;
+  }
+</script>
+</body>
+</html>

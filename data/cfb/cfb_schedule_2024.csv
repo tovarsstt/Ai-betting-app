@@ -1,0 +1,967 @@
+game_id,season,week,season_type,game_date,neutral_site,conference_competition,home_id,away_id,home_team,away_team,home_abbreviation,away_abbreviation,home_score,away_score,home_winner,away_winner,venue,attendance,status
+401628579,2024,1,2,2024-08-29T23:00Z,false,false,48,2803,Delaware Blue Hens,Bryant Bulldogs,DEL,BRY,48,17,true,false,Delaware Stadium,17244,STATUS_FINAL
+401634180,2024,1,2,2024-09-01T01:00Z,false,false,149,2623,Montana Grizzlies,Missouri State Bears,MONT,MOST,29,24,true,false,Washington-Grizzly Stadium,26482,STATUS_FINAL
+401634207,2024,2,2,2024-09-07T19:30Z,false,false,2449,2634,North Dakota State Bison,Tennessee State Tigers,NDSU,TNST,52,3,true,false,Fargodome,16811,STATUS_FINAL
+401628609,2024,3,2,2024-09-14T17:00Z,false,true,2448,48,North Carolina A&T Aggies,Delaware Blue Hens,NCAT,DEL,13,42,false,true,Truist Stadium,11421,STATUS_FINAL
+401634135,2024,3,2,2024-09-14T21:30Z,false,false,2193,2449,East Tennessee State Buccaneers,North Dakota State Bison,ETSU,NDSU,35,38,false,true,William B. Greene Jr. Stadium,11040,STATUS_FINAL
+401634182,2024,3,2,2024-09-14T23:00Z,false,false,2623,2815,Missouri State Bears,Lindenwood Lions,MOST,LIN,28,14,true,false,Robert W. Plaster Stadium,9642,STATUS_FINAL
+401655618,2024,3,2,2024-09-15T01:00Z,false,false,16,2447,Sacramento State Hornets,Nicholls Colonels,SAC,NICH,34,7,true,false,Hornet Stadium,12494,STATUS_FINAL
+401628629,2024,4,2,2024-09-21T18:00Z,false,false,2449,119,North Dakota State Bison,Towson Tigers,NDSU,TOW,41,24,true,false,Fargodome,17185,STATUS_FINAL
+401628621,2024,4,2,2024-09-21T22:00Z,false,false,48,219,Delaware Blue Hens,Pennsylvania Quakers,DEL,PENN,29,22,true,false,Delaware Stadium,17848,STATUS_FINAL
+401634183,2024,4,2,2024-09-21T23:00Z,false,false,2630,2623,UT Martin Skyhawks,Missouri State Bears,UTM,MOST,24,31,false,true,Hardy M. Graham Stadium,3985,STATUS_FINAL
+401654851,2024,4,2,2024-09-21T23:00Z,false,false,2837,16,East Texas A&M Lions,Sacramento State Hornets,ETAM,SAC,0,34,false,true,"Memorial Stadium (Commerce, TX)",4477,STATUS_FINAL
+401634161,2024,5,2,2024-09-28T19:00Z,false,true,2287,2449,Illinois State Redbirds,North Dakota State Bison,ILST,NDSU,10,42,false,true,Hancock Stadium,11687,STATUS_FINAL
+401634184,2024,5,2,2024-09-28T19:00Z,false,true,2623,2754,Missouri State Bears,Youngstown State Penguins,MOST,YSU,38,31,true,false,Robert W. Plaster Stadium,12117,STATUS_FINAL
+401628635,2024,5,2,2024-09-28T19:30Z,false,false,48,2529,Delaware Blue Hens,Sacred Heart Pioneers,DEL,SHU,49,0,true,false,Delaware Stadium,19054,STATUS_FINAL
+401634050,2024,5,2,2024-09-28T20:00Z,false,true,2464,16,Northern Arizona Lumberjacks,Sacramento State Hornets,NAU,SAC,34,16,true,false,J. Lawrence Walkup Skydome,9232,STATUS_FINAL
+401628640,2024,6,2,2024-10-05T17:00Z,false,true,2405,48,Monmouth Hawks,Delaware Blue Hens,MONM,DEL,35,42,false,true,Kessler Stadium,3374,STATUS_FINAL
+401634201,2024,6,2,2024-10-05T19:30Z,false,true,2449,155,North Dakota State Bison,North Dakota Fighting Hawks,NDSU,UND,41,17,true,false,Fargodome,18723,STATUS_FINAL
+401628650,2024,7,2,2024-10-12T17:00Z,false,true,48,311,Delaware Blue Hens,Maine Black Bears,DEL,ME,44,21,true,false,Delaware Stadium,15564,STATUS_FINAL
+401634163,2024,7,2,2024-10-12T17:00Z,false,true,2287,2623,Illinois State Redbirds,Missouri State Bears,ILST,MOST,7,41,false,true,Hancock Stadium,6232,STATUS_FINAL
+401634208,2024,7,2,2024-10-12T19:00Z,false,true,79,2449,Southern Illinois Salukis,North Dakota State Bison,SIU,NDSU,3,24,false,true,Saluki Stadium,9610,STATUS_FINAL
+401634057,2024,7,2,2024-10-13T01:00Z,false,true,16,331,Sacramento State Hornets,Eastern Washington Eagles,SAC,EWU,28,35,false,true,Hornet Stadium,14916,STATUS_FINAL
+401634175,2024,8,2,2024-10-19T19:00Z,false,true,2623,282,Missouri State Bears,Indiana State Sycamores,MOST,INST,46,21,true,false,Robert W. Plaster Stadium,11280,STATUS_FINAL
+401628658,2024,8,2,2024-10-19T19:30Z,false,true,257,48,Richmond Spiders,Delaware Blue Hens,RICH,DEL,28,9,true,false,Robins Stadium,5382,STATUS_FINAL
+401634209,2024,8,2,2024-10-20T00:00Z,false,true,2449,2571,North Dakota State Bison,South Dakota State Jackrabbits,NDSU,SDST,13,9,true,false,Fargodome,18807,STATUS_FINAL
+401634106,2024,8,2,2024-10-20T01:00Z,false,true,16,2692,Sacramento State Hornets,Weber State Wildcats,SAC,WEB,51,48,true,false,Hornet Stadium,15530,STATUS_FINAL
+401634194,2024,9,2,2024-10-26T18:00Z,false,true,93,2449,Murray State Racers,North Dakota State Bison,MUR,NDSU,6,59,false,true,Roy Stewart Stadium,6133,STATUS_FINAL
+401628662,2024,9,2,2024-10-26T19:00Z,false,true,48,399,Delaware Blue Hens,UAlbany Great Danes,DEL,ALB,28,14,true,false,Delaware Stadium,17847,STATUS_FINAL
+401634185,2024,9,2,2024-10-26T21:00Z,false,true,2460,2623,Northern Iowa Panthers,Missouri State Bears,UNI,MOST,42,49,false,true,UNI-Dome,10848,STATUS_FINAL
+401634108,2024,9,2,2024-10-26T22:00Z,false,true,304,16,Idaho State Bengals,Sacramento State Hornets,IDST,SAC,30,27,true,false,ICCU Dome,5804,STATUS_FINAL
+401634186,2024,10,2,2024-11-02T19:00Z,false,true,2623,79,Missouri State Bears,Southern Illinois Salukis,MOST,SIU,38,17,true,false,Robert W. Plaster Stadium,8134,STATUS_FINAL
+401634210,2024,10,2,2024-11-02T19:30Z,false,true,2449,2460,North Dakota State Bison,Northern Iowa Panthers,NDSU,UNI,42,19,true,false,Fargodome,14528,STATUS_FINAL
+401634114,2024,10,2,2024-11-03T01:00Z,false,true,16,2502,Sacramento State Hornets,Portland State Vikings,SAC,PRST,38,58,false,true,Hornet Stadium,11055,STATUS_FINAL
+401628680,2024,11,2,2024-11-09T18:00Z,false,true,48,227,Delaware Blue Hens,Rhode Island Rams,DEL,URI,24,21,true,false,Delaware Stadium,17326,STATUS_FINAL
+401634187,2024,11,2,2024-11-09T19:00Z,false,true,93,2623,Murray State Racers,Missouri State Bears,MUR,MOST,31,59,false,true,Roy Stewart Stadium,5127,STATUS_FINAL
+401634120,2024,11,2,2024-11-09T20:00Z,false,true,147,16,Montana State Bobcats,Sacramento State Hornets,MTST,SAC,49,7,true,false,Bobcat Stadium (MT),21987,STATUS_FINAL
+401628691,2024,12,2,2024-11-16T18:00Z,false,true,48,2097,Delaware Blue Hens,Campbell Fighting Camels,DEL,CAM,41,22,true,false,Delaware Stadium,16422,STATUS_FINAL
+401634188,2024,12,2,2024-11-16T20:30Z,false,true,2449,2623,North Dakota State Bison,Missouri State Bears,NDSU,MOST,59,21,true,false,Fargodome,14679,STATUS_FINAL
+401634121,2024,12,2,2024-11-16T22:00Z,false,true,13,16,Cal Poly Mustangs,Sacramento State Hornets,CP,SAC,26,23,true,false,Mustang Memorial Field at Spanos Stadium,0,STATUS_FINAL
+401628694,2024,13,2,2024-11-23T18:00Z,false,true,222,48,Villanova Wildcats,Delaware Blue Hens,VILL,DEL,38,28,true,false,Villanova Stadium,7105,STATUS_FINAL
+401634211,2024,13,2,2024-11-23T19:00Z,false,true,233,2449,South Dakota Coyotes,North Dakota State Bison,SDAK,NDSU,29,28,true,false,The DakotaDome,9062,STATUS_FINAL
+401634189,2024,13,2,2024-11-23T20:00Z,false,true,2623,2571,Missouri State Bears,South Dakota State Jackrabbits,MOST,SDST,9,45,false,true,Robert W. Plaster Stadium,7142,STATUS_FINAL
+401634132,2024,13,2,2024-11-23T22:00Z,false,true,16,302,Sacramento State Hornets,UC Davis Aggies,SAC,UCD,39,42,false,true,Hornet Stadium,16239,STATUS_FINAL
+401729745,2024,15,2,2024-12-07T20:00Z,false,false,2449,2000,North Dakota State Bison,Abilene Christian Wildcats,NDSU,ACU,51,31,true,false,Fargodome,10373,STATUS_FINAL
+401729785,2024,16,2,2024-12-14T20:30Z,false,false,2449,2382,North Dakota State Bison,Mercer Bears,NDSU,MER,31,7,true,false,Fargodome,10353,STATUS_FINAL
+401729786,2024,1,3,2024-12-21T17:00Z,false,false,2449,2571,North Dakota State Bison,South Dakota State Jackrabbits,NDSU,SDST,28,21,true,false,Fargodome,17849,STATUS_FINAL
+401680057,2024,1,3,2025-01-07T00:00Z,true,false,147,2449,Montana State Bobcats,North Dakota State Bison,MTST,NDSU,32,35,false,true,Toyota Stadium,18005,STATUS_FINAL
+401635525,2024,1,2,2024-08-24T16:00Z,true,true,59,52,Georgia Tech Yellow Jackets,Florida State Seminoles,GT,FSU,24,21,true,false,Aviva Stadium,47998,STATUS_FINAL
+401643697,2024,1,2,2024-08-24T20:00Z,false,false,167,147,New Mexico Lobos,Montana State Bobcats,UNM,MTST,31,35,false,true,University Stadium (NM),17314,STATUS_FINAL
+401643696,2024,1,2,2024-08-25T00:00Z,false,false,2440,2567,Nevada Wolf Pack,SMU Mustangs,NEV,SMU,24,29,false,true,Mackay Stadium,20263,STATUS_FINAL
+401643858,2024,1,2,2024-08-25T03:59Z,false,false,62,2169,Hawai'i Rainbow Warriors,Delaware State Hornets,HAW,DSU,35,14,true,false,Clarence T.C. Ching Athletics Complex,12206,STATUS_FINAL
+401628327,2024,1,2,2024-08-30T00:00Z,false,false,142,93,Missouri Tigers,Murray State Racers,MIZ,MUR,51,0,true,false,Memorial Stadium,62621,STATUS_FINAL
+401636607,2024,1,2,2024-08-30T01:00Z,false,false,254,253,Utah Utes,Southern Utah Thunderbirds,UTAH,SUU,49,0,true,false,Rice-Eccles Stadium,52210,STATUS_FINAL
+401636606,2024,1,2,2024-08-30T00:00Z,false,false,2305,2815,Kansas Jayhawks,Lindenwood Lions,KU,LIN,48,3,true,false,Children's Mercy Park,20829,STATUS_FINAL
+401634299,2024,1,2,2024-08-29T23:32Z,false,false,152,2717,NC State Wolfpack,Western Carolina Catamounts,NCSU,WCU,38,21,true,false,Carter-Finley Stadium,56919,STATUS_FINAL
+401628458,2024,1,2,2024-08-29T22:00Z,false,false,164,47,Rutgers Scarlet Knights,Howard Bison,RUTG,HOW,44,7,true,false,SHI Stadium,47803,STATUS_FINAL
+401628581,2024,1,2,2024-08-29T23:00Z,false,false,154,2448,Wake Forest Demon Deacons,North Carolina A&T Aggies,WAKE,NCAT,45,13,true,false,Allegacy Federal Credit Union Stadium,29450,STATUS_FINAL
+401628582,2024,1,2,2024-08-29T23:00Z,false,false,2116,160,UCF Knights,New Hampshire Wildcats,UCF,UNH,57,3,true,false,Acrisure Bounce House,44206,STATUS_FINAL
+401644727,2024,1,2,2024-08-29T23:00Z,false,false,2084,322,Buffalo Bulls,Lafayette Leopards,BUFF,LAF,30,13,true,false,Broadview Stadium,16400,STATUS_FINAL
+401644729,2024,1,2,2024-08-29T23:00Z,false,false,189,2230,Bowling Green Falcons,Fordham Rams,BGSU,FOR,41,17,true,false,Doyt L. Perry Stadium,12786,STATUS_FINAL
+401644730,2024,1,2,2024-08-29T23:00Z,false,false,2117,2115,Central Michigan Chippewas,Central Connecticut Blue Devils,CMU,CCSU,66,10,true,false,Kelly/Shorts Stadium,18055,STATUS_FINAL
+401628320,2024,1,2,2024-08-29T23:30Z,true,false,8,2029,Arkansas Razorbacks,Arkansas-Pine Bluff Golden Lions,ARK,UAPB,70,0,true,false,War Memorial Stadium (AR),40127,STATUS_FINAL
+401644728,2024,1,2,2024-08-29T23:30Z,false,false,2649,2184,Toledo Rockets,Duquesne Dukes,TOL,DUQ,49,10,true,false,Glass Bowl,23515,STATUS_FINAL
+401634206,2024,1,2,2024-08-30T00:00Z,false,false,38,2449,Colorado Buffaloes,North Dakota State Bison,COLO,NDSU,31,26,true,false,Folsom Field,49438,STATUS_FINAL
+401640998,2024,1,2,2024-08-30T00:00Z,false,false,55,324,Jacksonville State Gamecocks,Coastal Carolina Chanticleers,JVST,CCU,27,55,false,true,AmFirst Stadium,18977,STATUS_FINAL
+401645316,2024,1,2,2024-08-30T00:00Z,false,false,5,2016,UAB Blazers,Alcorn State Braves,UAB,ALCN,41,3,true,false,Protective Stadium,21267,STATUS_FINAL
+401645317,2024,1,2,2024-08-30T00:00Z,false,false,2655,2545,Tulane Green Wave,SE Louisiana Lions,TULN,SELA,52,0,true,false,Yulman Stadium,20143,STATUS_FINAL
+401645318,2024,1,2,2024-08-30T00:00Z,false,false,202,2466,Tulsa Golden Hurricane,Northwestern State Demons,TLSA,NWST,62,28,true,false,H. A. Chapman Stadium,16483,STATUS_FINAL
+401628448,2024,1,2,2024-08-30T01:00Z,false,false,135,153,Minnesota Golden Gophers,North Carolina Tar Heels,MINN,UNC,17,19,false,true,Huntington Bank Stadium,50805,STATUS_FINAL
+401636387,2024,1,2,2024-08-30T01:00Z,false,false,2433,2296,UL Monroe Warhawks,Jackson State Tigers,ULM,JKST,30,14,true,false,Malone Stadium,11145,STATUS_FINAL
+401654845,2024,1,2,2024-08-30T01:15Z,false,false,356,2197,Illinois Fighting Illini,Eastern Illinois Panthers,ILL,EIU,45,0,true,false,Gies Memorial Stadium,43849,STATUS_FINAL
+401643698,2024,1,2,2024-08-30T02:00Z,false,false,23,16,San José State Spartans,Sacramento State Hornets,SJSU,SAC,42,24,true,false,CEFCU Stadium,13811,STATUS_FINAL
+401628328,2024,1,2,2024-08-30T23:00Z,false,false,201,218,Oklahoma Sooners,Temple Owls,OU,TEM,51,3,true,false,"Memorial Stadium (Norman, OK)",83329,STATUS_FINAL
+401645319,2024,1,2,2024-08-30T22:00Z,false,false,349,2329,Army Black Knights,Lehigh Mountain Hawks,ARMY,LEH,42,7,true,false,Michie Stadium,23760,STATUS_FINAL
+401628453,2024,1,2,2024-08-30T23:00Z,false,false,127,2226,Michigan State Spartans,Florida Atlantic Owls,MSU,FAU,16,10,true,false,Spartan Stadium,70271,STATUS_FINAL
+401628584,2024,1,2,2024-08-30T23:30Z,false,false,150,2210,Duke Blue Devils,Elon Phoenix,DUKE,ELON,26,3,true,false,Wallace Wade Stadium,18466,STATUS_FINAL
+401628461,2024,1,2,2024-08-31T01:00Z,false,false,275,2711,Wisconsin Badgers,Western Michigan Broncos,WIS,WMU,28,14,true,false,Camp Randall Stadium,75158,STATUS_FINAL
+401634300,2024,1,2,2024-08-31T02:30Z,false,false,24,2628,Stanford Cardinal,TCU Horned Frogs,STAN,TCU,27,34,false,true,Stanford Stadium,36026,STATUS_FINAL
+401628323,2024,1,2,2024-08-31T16:00Z,true,false,61,228,Georgia Bulldogs,Clemson Tigers,UGA,CLEM,34,3,true,false,Mercedes-Benz Stadium,78827,STATUS_FINAL
+401628455,2024,1,2,2024-08-31T19:30Z,false,false,194,2006,Ohio State Buckeyes,Akron Zips,OSU,AKR,52,6,true,false,Ohio Stadium,102011,STATUS_FINAL
+401628456,2024,1,2,2024-08-31T23:30Z,false,false,2483,70,Oregon Ducks,Idaho Vandals,ORE,IDHO,24,14,true,false,Autzen Stadium,57435,STATUS_FINAL
+401628331,2024,1,2,2024-08-31T19:30Z,false,false,251,36,Texas Longhorns,Colorado State Rams,TEX,CSU,52,0,true,false,DKR-Texas Memorial Stadium,99171,STATUS_FINAL
+401628319,2024,1,2,2024-08-31T23:00Z,false,false,333,98,Alabama Crimson Tide,Western Kentucky Hilltoppers,ALA,WKU,63,0,true,false,Bryant-Denny Stadium,100077,STATUS_FINAL
+401628325,2024,1,2,2024-08-31T23:00Z,false,false,145,231,Ole Miss Rebels,Furman Paladins,MISS,FUR,76,0,true,false,Vaught-Hemingway Stadium,66105,STATUS_FINAL
+401628332,2024,1,2,2024-08-31T23:30Z,false,false,245,87,Texas A&M Aggies,Notre Dame Fighting Irish,TA&M,ND,13,23,false,true,Kyle Field,0,STATUS_FINAL
+401628457,2024,1,2,2024-08-31T16:00Z,false,false,277,213,West Virginia Mountaineers,Penn State Nittany Lions,WVU,PSU,12,34,false,true,Milan Puskar Stadium,62084,STATUS_FINAL
+401628452,2024,1,2,2024-08-31T23:30Z,false,false,130,278,Michigan Wolverines,Fresno State Bulldogs,MICH,FRES,30,10,true,false,Michigan Stadium,110665,STATUS_FINAL
+401628330,2024,1,2,2024-08-31T16:45Z,false,false,2633,236,Tennessee Volunteers,Chattanooga Mocs,TENN,UTC,69,3,true,false,Neyland Stadium,101915,STATUS_FINAL
+401634212,2024,1,2,2024-08-31T18:00Z,false,false,197,2571,Oklahoma State Cowboys,South Dakota State Jackrabbits,OKST,SDST,44,20,true,false,Boone Pickens Stadium,52202,STATUS_FINAL
+401636612,2024,1,2,2024-08-31T23:00Z,false,false,2306,2630,Kansas State Wildcats,UT Martin Skyhawks,KSU,UTM,41,6,true,false,Bill Snyder Family Stadium,51240,STATUS_FINAL
+401628322,2024,1,2,2024-08-31T19:30Z,false,false,57,2390,Florida Gators,Miami Hurricanes,FLA,MIA,17,41,false,true,Ben Hill Griffin Stadium,90544,STATUS_FINAL
+401636608,2024,1,2,2024-09-01T02:30Z,false,false,12,167,Arizona Wildcats,New Mexico Lobos,ARIZ,UNM,61,39,true,false,Casino Del Sol Stadium,44748,STATUS_FINAL
+401628450,2024,1,2,2024-08-31T16:00Z,false,false,2294,2287,Iowa Hawkeyes,Illinois State Redbirds,IOWA,ILST,40,0,true,false,Kinnick Stadium,69250,STATUS_FINAL
+401628333,2024,1,2,2024-08-31T16:00Z,false,false,238,259,Vanderbilt Commodores,Virginia Tech Hokies,VAN,VT,34,27,true,false,FirstBank Stadium,0,STATUS_FINAL
+401628451,2024,1,2,2024-08-31T16:00Z,false,false,120,41,Maryland Terrapins,UConn Huskies,MD,CONN,50,7,true,false,SECU Stadium,35421,STATUS_FINAL
+401632062,2024,1,2,2024-08-31T16:00Z,false,false,97,2046,Louisville Cardinals,Austin Peay Governors,LOU,APSU,62,0,true,false,L&N Federal Credit Union Stadium,47067,STATUS_FINAL
+401634169,2024,1,2,2024-08-31T16:00Z,false,false,2509,282,Purdue Boilermakers,Indiana State Sycamores,PUR,INST,49,0,true,false,Ross-Ade Stadium,59488,STATUS_FINAL
+401634305,2024,1,2,2024-08-31T16:00Z,false,false,221,2309,Pittsburgh Panthers,Kent State Golden Flashes,PITT,KENT,55,24,true,false,Acrisure Stadium,44616,STATUS_FINAL
+401645322,2024,1,2,2024-08-31T16:00Z,false,false,2426,2083,Navy Midshipmen,Bucknell Bison,NAVY,BUCK,49,21,true,false,Navy-Marine Corps Memorial Stadium,28763,STATUS_FINAL
+401628591,2024,1,2,2024-08-31T18:30Z,false,false,2132,119,Cincinnati Bearcats,Towson Tigers,CIN,TOW,38,20,true,false,Nippert Stadium,37654,STATUS_FINAL
+401637159,2024,1,2,2024-08-31T19:00Z,false,false,265,2502,Washington State Cougars,Portland State Vikings,WSU,PRST,70,30,true,false,Martin Stadium,20089,STATUS_FINAL
+401628449,2024,1,2,2024-08-31T19:30Z,false,false,84,2229,Indiana Hoosiers,Florida International Panthers,IU,FIU,31,7,true,false,"Memorial Stadium (Bloomington, IN)",44150,STATUS_FINAL
+401628454,2024,1,2,2024-08-31T19:30Z,false,false,158,2638,Nebraska Cornhuskers,UTEP Miners,NEB,UTEP,40,7,true,false,"Memorial Stadium (Lincoln, NE)",86072,STATUS_FINAL
+401629039,2024,1,2,2024-08-31T19:30Z,false,false,113,2199,Massachusetts Minutemen,Eastern Michigan Eagles,MASS,EMU,14,28,false,true,Warren McGuirk Alumni Stadium,12810,STATUS_FINAL
+401634133,2024,1,2,2024-08-31T19:30Z,false,false,2026,2193,App State Mountaineers,East Tennessee State Buccaneers,APP,ETSU,38,10,true,false,Kidd Brewer Stadium,36232,STATUS_FINAL
+401634197,2024,1,2,2024-08-31T19:30Z,false,false,66,155,Iowa State Cyclones,North Dakota Fighting Hawks,ISU,UND,21,3,true,false,Jack Trice Stadium,56148,STATUS_FINAL
+401634304,2024,1,2,2024-08-31T19:30Z,false,false,183,195,Syracuse Orange,Ohio Bobcats,SYR,OHIO,38,22,true,false,JMA Wireless Dome,37225,STATUS_FINAL
+401641015,2024,1,2,2024-08-31T19:30Z,false,false,2636,338,UTSA Roadrunners,Kennesaw State Owls,UTSA,KENN,28,16,true,false,Alamodome,25911,STATUS_FINAL
+401643699,2024,1,2,2024-08-31T19:30Z,false,false,2005,2771,Air Force Falcons,Merrimack Warriors,AFA,MRMK,21,6,true,false,Falcon Stadium,31658,STATUS_FINAL
+401644683,2024,1,2,2024-08-31T19:30Z,false,false,77,193,Northwestern Wildcats,Miami (OH) RedHawks,NU,M-OH,13,6,true,false,Northwestern Medicine Field at Martin Stadium,12023,STATUS_FINAL
+401644731,2024,1,2,2024-08-31T19:30Z,false,false,2459,2710,Northern Illinois Huskies,Western Illinois Leathernecks,NIU,WIU,54,15,true,false,Huskie Stadium,10828,STATUS_FINAL
+401643700,2024,1,2,2024-08-31T20:00Z,false,false,290,68,Georgia Southern Eagles,Boise State Broncos,GASO,BOIS,45,56,false,true,Allen E. Paulson Stadium,24134,STATUS_FINAL
+401628329,2024,1,2,2024-08-31T20:15Z,false,false,2579,295,South Carolina Gamecocks,Old Dominion Monarchs,SC,ODU,23,19,true,false,Williams-Brice Stadium,78496,STATUS_FINAL
+401628590,2024,1,2,2024-08-31T21:00Z,false,false,276,2619,Marshall Thundering Herd,Stony Brook Seawolves,MRSH,STBK,45,3,true,false,Joan C. Edwards Stadium,25032,STATUS_FINAL
+401634301,2024,1,2,2024-08-31T21:00Z,false,false,25,302,California Golden Bears,UC Davis Aggies,CAL,UCD,31,13,true,false,California Memorial Stadium,32275,STATUS_FINAL
+401643775,2024,1,2,2024-08-31T21:00Z,false,false,6,249,South Alabama Jaguars,North Texas Mean Green,USA,UNT,38,52,false,true,Hancock Whitney Stadium,15559,STATUS_FINAL
+401628326,2024,1,2,2024-08-31T22:00Z,false,false,344,2198,Mississippi State Bulldogs,Eastern Kentucky Colonels,MSST,EKU,56,7,true,false,Davis Wade Stadium,48724,STATUS_FINAL
+401628586,2024,1,2,2024-08-31T22:00Z,false,false,2335,2097,Liberty Flames,Campbell Fighting Camels,LIB,CAM,41,24,true,false,Williams Stadium (VA),21573,STATUS_FINAL
+401628589,2024,1,2,2024-08-31T22:00Z,false,false,258,257,Virginia Cavaliers,Richmond Spiders,UVA,RICH,34,13,true,false,Scott Stadium,40811,STATUS_FINAL
+401645320,2024,1,2,2024-08-31T22:00Z,false,false,151,2450,East Carolina Pirates,Norfolk State Spartans,ECU,NORF,42,3,true,false,Dowdy-Ficklen Stadium,36467,STATUS_FINAL
+401643704,2024,1,2,2024-08-31T22:30Z,false,false,204,304,Oregon State Beavers,Idaho State Bengals,ORST,IDST,38,15,true,false,Reser Stadium,31013,STATUS_FINAL
+401632064,2024,1,2,2024-08-31T23:00Z,false,false,2032,2110,Arkansas State Red Wolves,Central Arkansas Bears,ARST,CARK,34,31,true,false,Centennial Bank Stadium,21708,STATUS_FINAL
+401636363,2024,1,2,2024-08-31T23:00Z,false,false,58,2065,South Florida Bulls,Bethune-Cookman Wildcats,USF,BCU,48,3,true,false,Raymond James Stadium,0,STATUS_FINAL
+401636610,2024,1,2,2024-08-31T23:00Z,false,false,239,2627,Baylor Bears,Tarleton State Texans,BAY,TAR,45,3,true,false,McLane Stadium,42272,STATUS_FINAL
+401636611,2024,1,2,2024-08-31T23:00Z,false,false,248,2439,Houston Cougars,UNLV Rebels,HOU,UNLV,7,27,false,true,TDECU Stadium,25750,STATUS_FINAL
+401641023,2024,1,2,2024-08-31T23:00Z,false,false,2393,2635,Middle Tennessee Blue Raiders,Tennessee Tech Golden Eagles,MTSU,TNTC,32,25,true,false,"Johnny ""Red"" Floyd Stadium",16000,STATUS_FINAL
+401641039,2024,1,2,2024-08-31T23:00Z,false,false,242,2534,Rice Owls,Sam Houston Bearkats,RICE,SHSU,14,34,false,true,Rice Stadium,17298,STATUS_FINAL
+401643701,2024,1,2,2024-08-31T23:00Z,false,false,2653,2440,Troy Trojans,Nevada Wolf Pack,TROY,NEV,26,28,false,true,Veterans Memorial Stadium (AL),27412,STATUS_FINAL
+401645321,2024,1,2,2024-08-31T23:00Z,false,false,235,2453,Memphis Tigers,North Alabama Lions,MEM,UNA,40,0,true,false,Simmons Bank Liberty Stadium,25849,STATUS_FINAL
+401628321,2024,1,2,2024-08-31T23:30Z,false,false,2,2010,Auburn Tigers,Alabama A&M Bulldogs,AUB,AAMU,73,3,true,false,Jordan-Hare Stadium,88043,STATUS_FINAL
+401628459,2024,1,2,2024-08-31T23:30Z,false,false,62,26,Hawai'i Rainbow Warriors,UCLA Bruins,HAW,UCLA,13,16,false,true,Clarence T.C. Ching Athletics Complex,15194,STATUS_FINAL
+401636613,2024,1,2,2024-08-31T23:30Z,false,false,2641,2000,Texas Tech Red Raiders,Abilene Christian Wildcats,TTU,ACU,52,51,true,false,Galaxy Stadium,0,STATUS_FINAL
+401628324,2024,1,2,2024-08-31T23:45Z,false,false,96,2572,Kentucky Wildcats,Southern Miss Golden Eagles,UK,USM,31,0,true,false,Kroger Field,61627,STATUS_FINAL
+401634240,2024,1,2,2024-09-01T00:00Z,false,false,252,79,BYU Cougars,Southern Illinois Salukis,BYU,SIU,41,13,true,false,LaVell Edwards Stadium,63712,STATUS_FINAL
+401634302,2024,1,2,2024-09-01T00:00Z,false,false,59,2247,Georgia Tech Yellow Jackets,Georgia State Panthers,GT,GAST,35,12,true,false,Bobby Dodd Stadium,40113,STATUS_FINAL
+401634303,2024,1,2,2024-09-01T00:00Z,false,false,2567,2277,SMU Mustangs,Houston Christian Huskies,SMU,HCU,59,7,true,false,Gerald J. Ford Stadium,27080,STATUS_FINAL
+401636380,2024,1,2,2024-09-01T00:00Z,false,false,309,2755,Louisiana Ragin' Cajuns,Grambling Tigers,UL,GRAM,40,10,true,false,Our Lady of Lourdes Stadium,23107,STATUS_FINAL
+401641007,2024,1,2,2024-09-01T00:00Z,false,false,2348,2447,Louisiana Tech Bulldogs,Nicholls Colonels,LT,NICH,25,17,true,false,Joe Aillet Stadium,16570,STATUS_FINAL
+401643702,2024,1,2,2024-09-01T00:00Z,false,false,21,2837,San Diego State Aztecs,East Texas A&M Lions,SDSU,ETAM,45,14,true,false,Snapdragon Stadium,25180,STATUS_FINAL
+401643703,2024,1,2,2024-09-01T00:00Z,false,false,328,2523,Utah State Aggies,Robert Morris Colonials,USU,RMU,36,14,true,false,Maverik Stadium,17037,STATUS_FINAL
+401643774,2024,1,2,2024-09-01T00:00Z,false,false,2429,256,Charlotte 49ers,James Madison Dukes,CLT,JMU,7,30,false,true,Jerry Richardson Stadium,15614,STATUS_FINAL
+401643776,2024,1,2,2024-09-01T00:00Z,false,false,326,2320,Texas State Bobcats,Lamar Cardinals,TXST,LAM,34,27,true,false,UFCU Stadium,19637,STATUS_FINAL
+401641032,2024,1,2,2024-09-01T01:00Z,false,false,166,2546,New Mexico State Aggies,Southeast Missouri State Redhawks,NMSU,SEMO,23,16,true,false,Aggie Memorial Stadium,10738,STATUS_FINAL
+401636609,2024,1,2,2024-09-01T02:30Z,false,false,9,2751,Arizona State Sun Devils,Wyoming Cowboys,ASU,WYO,48,7,true,false,Mountain America Stadium,48108,STATUS_FINAL
+401628460,2024,1,2,2024-09-01T03:00Z,false,false,264,2692,Washington Huskies,Weber State Wildcats,WASH,WEB,35,3,true,false,Husky Stadium,66984,STATUS_FINAL
+401628334,2024,1,2,2024-09-01T23:30Z,true,false,99,30,LSU Tigers,USC Trojans,LSU,USC,20,27,false,true,Allegiant Stadium,63969,STATUS_FINAL
+401634306,2024,1,2,2024-09-02T23:30Z,false,true,52,103,Florida State Seminoles,Boston College Eagles,FSU,BC,13,28,false,true,Doak Campbell Stadium,51719,STATUS_FINAL
+401628463,2024,2,2,2024-09-06T23:00Z,false,false,84,2710,Indiana Hoosiers,Western Illinois Leathernecks,IU,WIU,77,3,true,false,"Memorial Stadium (Bloomington, IN)",39082,STATUS_FINAL
+401634765,2024,2,2,2024-09-06T23:00Z,false,false,2567,252,SMU Mustangs,BYU Cougars,SMU,BYU,15,18,false,true,Gerald J. Ford Stadium,31172,STATUS_FINAL
+401635533,2024,2,2,2024-09-07T01:00Z,false,false,77,150,Northwestern Wildcats,Duke Blue Devils,NU,DUKE,20,26,false,true,Northwestern Medicine Field at Martin Stadium,11062,STATUS_FINAL
+401628339,2024,2,2,2024-09-07T18:00Z,false,false,61,2635,Georgia Bulldogs,Tennessee Tech Golden Eagles,UGA,TNTC,48,3,true,false,Sanford Stadium,93033,STATUS_FINAL
+401628468,2024,2,2,2024-09-07T23:30Z,false,false,194,2711,Ohio State Buckeyes,Western Michigan Broncos,OSU,WMU,56,0,true,false,Ohio Stadium,102665,STATUS_FINAL
+401628347,2024,2,2,2024-09-07T16:00Z,false,false,130,251,Michigan Wolverines,Texas Longhorns,MICH,TEX,12,31,false,true,Michigan Stadium,111170,STATUS_FINAL
+401628335,2024,2,2,2024-09-07T23:00Z,false,false,333,58,Alabama Crimson Tide,South Florida Bulls,ALA,USF,42,16,true,false,Bryant-Denny Stadium,100077,STATUS_FINAL
+401628977,2024,2,2,2024-09-07T19:30Z,false,false,87,2459,Notre Dame Fighting Irish,Northern Illinois Huskies,ND,NIU,14,16,false,true,Notre Dame Stadium,77622,STATUS_FINAL
+401628342,2024,2,2,2024-09-07T20:15Z,false,false,145,2393,Ole Miss Rebels,Middle Tennessee Blue Raiders,MISS,MTSU,52,3,true,false,Vaught-Hemingway Stadium,66427,STATUS_FINAL
+401628469,2024,2,2,2024-09-08T02:00Z,false,false,2483,68,Oregon Ducks,Boise State Broncos,ORE,BOIS,37,34,true,false,Autzen Stadium,58134,STATUS_FINAL
+401628470,2024,2,2,2024-09-07T16:00Z,false,false,213,189,Penn State Nittany Lions,Bowling Green Falcons,PSU,BGSU,34,27,true,false,Beaver Stadium,103861,STATUS_FINAL
+401628344,2024,2,2,2024-09-07T23:00Z,false,false,142,2084,Missouri Tigers,Buffalo Bulls,MIZ,BUFF,38,0,true,false,Memorial Stadium,62621,STATUS_FINAL
+401636618,2024,2,2,2024-09-07T19:30Z,false,false,254,239,Utah Utes,Baylor Bears,UTAH,BAY,23,12,true,false,Rice-Eccles Stadium,52827,STATUS_FINAL
+401635536,2024,2,2,2024-09-07T22:00Z,false,false,2390,50,Miami Hurricanes,Florida A&M Rattlers,MIA,FAMU,56,9,true,false,Hard Rock Stadium,57886,STATUS_FINAL
+401628472,2024,2,2,2024-09-08T03:00Z,false,false,30,328,USC Trojans,Utah State Aggies,USC,USU,48,0,true,false,Los Angeles Memorial Coliseum,68110,STATUS_FINAL
+401628346,2024,2,2,2024-09-07T23:30Z,true,false,152,2633,NC State Wolfpack,Tennessee Volunteers,NCSU,TENN,10,51,false,true,Bank of America Stadium,72730,STATUS_FINAL
+401628345,2024,2,2,2024-09-07T23:45Z,false,false,201,248,Oklahoma Sooners,Houston Cougars,OU,HOU,16,12,true,false,"Memorial Stadium (Norman, OK)",83653,STATUS_FINAL
+401628336,2024,2,2,2024-09-07T16:00Z,false,false,197,8,Oklahoma State Cowboys,Arkansas Razorbacks,OKST,ARK,39,31,true,false,Boone Pickens Stadium,52202,STATUS_FINAL
+401636616,2024,2,2,2024-09-07T16:00Z,false,false,2655,2306,Tulane Green Wave,Kansas State Wildcats,TULN,KSU,27,34,false,true,Yulman Stadium,25034,STATUS_FINAL
+401628341,2024,2,2,2024-09-07T23:30Z,false,false,99,2447,LSU Tigers,Nicholls Colonels,LSU,NICH,44,21,true,false,Tiger Stadium (LA),100242,STATUS_FINAL
+401628462,2024,2,2,2024-09-07T23:00Z,false,false,356,2305,Illinois Fighting Illini,Kansas Jayhawks,ILL,KU,23,17,true,false,Gies Memorial Stadium,60670,STATUS_FINAL
+401636614,2024,2,2,2024-09-08T02:00Z,false,false,12,2464,Arizona Wildcats,Northern Arizona Lumberjacks,ARIZ,NAU,22,10,true,false,Casino Del Sol Stadium,47746,STATUS_FINAL
+401628464,2024,2,2,2024-09-07T19:30Z,false,false,2294,66,Iowa Hawkeyes,Iowa State Cyclones,IOWA,ISU,19,20,false,true,Kinnick Stadium,69250,STATUS_FINAL
+401635535,2024,2,2,2024-09-07T19:30Z,false,false,97,55,Louisville Cardinals,Jacksonville State Gamecocks,LOU,JVST,49,14,true,false,L&N Federal Credit Union Stadium,48575,STATUS_FINAL
+401635534,2024,2,2,2024-09-07T16:00Z,false,true,183,59,Syracuse Orange,Georgia Tech Yellow Jackets,SYR,GT,31,28,true,false,JMA Wireless Dome,39550,STATUS_FINAL
+401635532,2024,2,2,2024-09-08T00:00Z,false,false,228,2026,Clemson Tigers,App State Mountaineers,CLEM,APP,66,20,true,false,"Memorial Stadium (Clemson, SC)",81500,STATUS_FINAL
+401628466,2024,2,2,2024-09-07T16:00Z,false,false,135,227,Minnesota Golden Gophers,Rhode Island Rams,MINN,URI,48,0,true,false,Huntington Bank Stadium,41006,STATUS_FINAL
+401628471,2024,2,2,2024-09-07T16:00Z,false,false,164,2006,Rutgers Scarlet Knights,Akron Zips,RUTG,AKR,49,17,true,false,SHI Stadium,41021,STATUS_FINAL
+401635538,2024,2,2,2024-09-07T16:00Z,false,false,2132,221,Cincinnati Bearcats,Pittsburgh Panthers,CIN,PITT,27,28,false,true,Nippert Stadium,37992,STATUS_FINAL
+401636999,2024,2,2,2024-09-07T16:00Z,false,false,41,2771,UConn Huskies,Merrimack Warriors,CONN,MRMK,63,17,true,false,Pratt & Whitney Stadium,32351,STATUS_FINAL
+401643784,2024,2,2,2024-09-07T16:00Z,false,false,235,2653,Memphis Tigers,Troy Trojans,MEM,TROY,38,17,true,false,Simmons Bank Liberty Stadium,23246,STATUS_FINAL
+401645323,2024,2,2,2024-09-07T16:00Z,false,true,2226,349,Florida Atlantic Owls,Army Black Knights,FAU,ARMY,7,24,false,true,Flagler Credit Union Stadium,21810,STATUS_FINAL
+401628348,2024,2,2,2024-09-07T16:45Z,false,false,245,2377,Texas A&M Aggies,McNeese Cowboys,TA&M,MCN,52,10,true,false,Kyle Field,92345,STATUS_FINAL
+401634181,2024,2,2,2024-09-07T18:00Z,false,false,2050,2623,Ball State Cardinals,Missouri State Bears,BALL,MOST,42,34,true,false,Scheumann Stadium,10018,STATUS_FINAL
+401644732,2024,2,2,2024-09-07T18:30Z,false,false,2309,2598,Kent State Golden Flashes,St. Francis (PA) Red Flash,KENT,SFPA,17,23,false,true,Zoeller Field at Dix Stadium,11585,STATUS_FINAL
+401632071,2024,2,2,2024-09-07T19:00Z,false,false,2439,3101,UNLV Rebels,Utah Tech Trailblazers,UNLV,UTU,72,14,true,false,Allegiant Stadium,24512,STATUS_FINAL
+401628337,2024,2,2,2024-09-07T19:30Z,false,false,2,25,Auburn Tigers,California Golden Bears,AUB,CAL,14,21,false,true,Jordan-Hare Stadium,88043,STATUS_FINAL
+401628340,2024,2,2,2024-09-07T19:30Z,false,true,96,2579,Kentucky Wildcats,South Carolina Gamecocks,UK,SC,6,31,false,true,Kroger Field,61349,STATUS_FINAL
+401628465,2024,2,2,2024-09-07T19:30Z,false,true,120,127,Maryland Terrapins,Michigan State Spartans,MD,MSU,24,27,false,true,SECU Stadium,34819,STATUS_FINAL
+401628473,2024,2,2,2024-09-07T19:30Z,false,false,264,2199,Washington Huskies,Eastern Michigan Eagles,WASH,EMU,30,9,true,false,Husky Stadium,64222,STATUS_FINAL
+401628474,2024,2,2,2024-09-07T19:30Z,false,false,275,233,Wisconsin Badgers,South Dakota Coyotes,WIS,SDAK,27,13,true,false,Camp Randall Stadium,76069,STATUS_FINAL
+401629040,2024,2,2,2024-09-07T19:30Z,false,false,2649,113,Toledo Rockets,Massachusetts Minutemen,TOL,MASS,38,23,true,false,Glass Bowl,21668,STATUS_FINAL
+401635531,2024,2,2,2024-09-07T19:30Z,false,false,103,2184,Boston College Eagles,Duquesne Dukes,BC,DUQ,56,0,true,false,"Alumni Stadium (Chestnut Hill, MA)",38441,STATUS_FINAL
+401635537,2024,2,2,2024-09-07T19:30Z,false,false,153,2429,North Carolina Tar Heels,Charlotte 49ers,UNC,CLT,38,20,true,false,Kenan Stadium,48431,STATUS_FINAL
+401643710,2024,2,2,2024-09-07T19:30Z,false,false,2751,70,Wyoming Cowboys,Idaho Vandals,WYO,IDHO,13,17,false,true,War Memorial Stadium,25070,STATUS_FINAL
+401645324,2024,2,2,2024-09-07T19:30Z,false,true,2426,218,Navy Midshipmen,Temple Owls,NAVY,TEM,38,11,true,false,Navy-Marine Corps Memorial Stadium,28889,STATUS_FINAL
+401643783,2024,2,2,2024-09-07T20:00Z,false,false,326,2636,Texas State Bobcats,UTSA Roadrunners,TXST,UTSA,49,10,true,false,UFCU Stadium,28000,STATUS_FINAL
+401635540,2024,2,2,2024-09-07T20:30Z,false,false,259,276,Virginia Tech Hokies,Marshall Thundering Herd,VT,MRSH,31,14,true,false,Lane Stadium,65632,STATUS_FINAL
+401628593,2024,2,2,2024-09-07T22:00Z,false,false,277,399,West Virginia Mountaineers,UAlbany Great Danes,WVU,ALB,49,14,true,false,Milan Puskar Stadium,50073,STATUS_FINAL
+401640979,2024,2,2,2024-09-07T22:00Z,false,false,2229,2117,Florida International Panthers,Central Michigan Chippewas,FIU,CMU,52,16,true,false,Pitbull Stadium,17852,STATUS_FINAL
+401643777,2024,2,2,2024-09-07T22:00Z,false,false,256,2241,James Madison Dukes,Gardner-Webb Runnin' Bulldogs,JMU,GWEB,13,6,true,false,Bridgeforth Stadium,24570,STATUS_FINAL
+401643778,2024,2,2,2024-09-07T22:00Z,false,false,295,151,Old Dominion Monarchs,East Carolina Pirates,ODU,ECU,14,20,false,true,S.B. Ballard Stadium,21944,STATUS_FINAL
+401643781,2024,2,2,2024-09-07T22:00Z,false,false,195,6,Ohio Bobcats,South Alabama Jaguars,OHIO,USA,27,20,true,false,Peden Stadium,22158,STATUS_FINAL
+401628338,2024,2,2,2024-09-07T23:00Z,false,false,57,2535,Florida Gators,Samford Bulldogs,FLA,SAM,45,7,true,false,Ben Hill Griffin Stadium,89295,STATUS_FINAL
+401628603,2024,2,2,2024-09-07T23:00Z,false,false,324,2729,Coastal Carolina Chanticleers,William & Mary Tribe,CCU,W&M,40,21,true,false,Brooks Stadium (SC),19294,STATUS_FINAL
+401632068,2024,2,2,2024-09-07T23:00Z,false,false,98,2198,Western Kentucky Hilltoppers,Eastern Kentucky Colonels,WKU,EKU,31,0,true,false,Houchens Industries-L.T. Smith Stadium,16712,STATUS_FINAL
+401632459,2024,2,2,2024-09-07T23:00Z,false,false,2247,236,Georgia State Panthers,Chattanooga Mocs,GAST,UTC,24,21,true,false,Center Parc Stadium,0,STATUS_FINAL
+401635539,2024,2,2,2024-09-07T23:00Z,false,false,24,13,Stanford Cardinal,Cal Poly Mustangs,STAN,CP,41,7,true,false,Stanford Stadium,22634,STATUS_FINAL
+401635639,2024,2,2,2024-09-07T23:00Z,false,true,154,258,Wake Forest Demon Deacons,Virginia Cavaliers,WAKE,UVA,30,31,false,true,Allegacy Federal Credit Union Stadium,30012,STATUS_FINAL
+401641016,2024,2,2,2024-09-07T23:00Z,false,false,338,309,Kennesaw State Owls,Louisiana Ragin' Cajuns,KENN,UL,10,34,false,true,Walens Family Field at Fifth Third Stadium,11040,STATUS_FINAL
+401643705,2024,2,2,2024-09-07T23:00Z,false,true,2005,23,Air Force Falcons,San José State Spartans,AFA,SJSU,7,17,false,true,Falcon Stadium,22478,STATUS_FINAL
+401643706,2024,2,2,2024-09-07T23:00Z,false,false,36,2458,Colorado State Rams,Northern Colorado Bears,CSU,UNCO,38,17,true,false,Canvas Stadium,36573,STATUS_FINAL
+401643708,2024,2,2,2024-09-07T23:00Z,false,false,2440,290,Nevada Wolf Pack,Georgia Southern Eagles,NEV,GASO,17,20,false,true,Mackay Stadium,16245,STATUS_FINAL
+401643779,2024,2,2,2024-09-07T23:00Z,false,false,2032,202,Arkansas State Red Wolves,Tulsa Golden Hurricane,ARST,TLSA,28,24,true,false,Centennial Bank Stadium,19316,STATUS_FINAL
+401643780,2024,2,2,2024-09-07T23:00Z,false,false,2433,5,UL Monroe Warhawks,UAB Blazers,ULM,UAB,32,6,true,false,Malone Stadium,12327,STATUS_FINAL
+401643782,2024,2,2,2024-09-07T23:00Z,false,false,2572,2545,Southern Miss Golden Eagles,SE Louisiana Lions,USM,SELA,35,10,true,false,M. M. Roberts Stadium,22044,STATUS_FINAL
+401645326,2024,2,2,2024-09-07T23:00Z,false,false,242,2640,Rice Owls,Texas Southern Tigers,RICE,TXSO,69,7,true,false,Rice Stadium,17760,STATUS_FINAL
+401636617,2024,2,2,2024-09-07T23:02Z,false,false,2116,2534,UCF Knights,Sam Houston Bearkats,UCF,SHSU,45,14,true,false,Acrisure Bounce House,43807,STATUS_FINAL
+401628349,2024,2,2,2024-09-07T23:30Z,false,false,238,2016,Vanderbilt Commodores,Alcorn State Braves,VAN,ALCN,55,0,true,false,FirstBank Stadium,24080,STATUS_FINAL
+401628467,2024,2,2,2024-09-07T23:30Z,false,false,158,38,Nebraska Cornhuskers,Colorado Buffaloes,NEB,COLO,28,10,true,false,"Memorial Stadium (Lincoln, NE)",86906,STATUS_FINAL
+401645325,2024,2,2,2024-09-07T23:30Z,false,false,249,2617,North Texas Mean Green,Stephen F. Austin Lumberjacks,UNT,SFA,35,20,true,false,DATCU Stadium,23510,STATUS_FINAL
+401636615,2024,2,2,2024-09-08T00:00Z,false,false,2628,2341,TCU Horned Frogs,Long Island University Sharks,TCU,LIU,45,0,true,false,Amon G. Carter Stadium,44063,STATUS_FINAL
+401632072,2024,2,2,2024-09-08T01:00Z,false,false,2638,253,UTEP Miners,Southern Utah Thunderbirds,UTEP,SUU,24,27,false,true,Sun Bowl,41609,STATUS_FINAL
+401636859,2024,2,2,2024-09-08T02:00Z,false,false,265,2641,Washington State Cougars,Texas Tech Red Raiders,WSU,TTU,37,16,true,false,Martin Stadium,27372,STATUS_FINAL
+401643707,2024,2,2,2024-09-08T02:00Z,false,false,278,16,Fresno State Bulldogs,Sacramento State Hornets,FRES,SAC,46,30,true,false,Valley Children's Stadium,41031,STATUS_FINAL
+401640989,2024,2,2,2024-09-08T02:15Z,false,true,166,2335,New Mexico State Aggies,Liberty Flames,NMSU,LIB,24,30,false,true,Aggie Memorial Stadium,16562,STATUS_FINAL
+401628343,2024,2,2,2024-09-08T02:30Z,false,false,9,344,Arizona State Sun Devils,Mississippi State Bulldogs,ASU,MSST,30,23,true,false,Mountain America Stadium,45504,STATUS_FINAL
+401643709,2024,2,2,2024-09-08T02:30Z,false,false,21,204,San Diego State Aztecs,Oregon State Beavers,SDSU,ORST,0,21,false,true,Snapdragon Stadium,25318,STATUS_FINAL
+401636867,2024,3,2,2024-09-12T23:30Z,false,false,326,9,Texas State Bobcats,Arizona State Sun Devils,TXST,ASU,28,31,false,true,UFCU Stadium,25187,STATUS_FINAL
+401643788,2024,3,2,2024-09-12T23:30Z,false,false,6,2466,South Alabama Jaguars,Northwestern State Demons,USA,NWST,87,10,true,false,Hancock Whitney Stadium,0,STATUS_FINAL
+401636864,2024,3,2,2024-09-14T00:00Z,false,false,2306,12,Kansas State Wildcats,Arizona Wildcats,KSU,ARIZ,31,7,true,false,Bill Snyder Family Stadium,51290,STATUS_FINAL
+401636863,2024,3,2,2024-09-13T23:00Z,false,false,2305,2439,Kansas Jayhawks,UNLV Rebels,KU,UNLV,20,23,false,true,Children's Mercy Park,21493,STATUS_FINAL
+401628354,2024,3,2,2024-09-14T23:30Z,false,true,96,61,Kentucky Wildcats,Georgia Bulldogs,UK,UGA,12,13,false,true,Kroger Field,61663,STATUS_FINAL
+401628361,2024,3,2,2024-09-14T23:00Z,false,false,251,2636,Texas Longhorns,UTSA Roadrunners,TEX,UTSA,56,7,true,false,DKR-Texas Memorial Stadium,101892,STATUS_FINAL
+401628350,2024,3,2,2024-09-14T16:00Z,false,false,275,333,Wisconsin Badgers,Alabama Crimson Tide,WIS,ALA,10,42,false,true,Camp Randall Stadium,76323,STATUS_FINAL
+401628355,2024,3,2,2024-09-14T22:30Z,false,false,154,145,Wake Forest Demon Deacons,Ole Miss Rebels,WAKE,MISS,6,40,false,true,Allegacy Federal Credit Union Stadium,32849,STATUS_FINAL
+401628357,2024,3,2,2024-09-14T16:45Z,false,false,142,103,Missouri Tigers,Boston College Eagles,MIZ,BC,27,21,true,false,Memorial Stadium,62621,STATUS_FINAL
+401628360,2024,3,2,2024-09-14T23:45Z,false,false,2633,2309,Tennessee Volunteers,Kent State Golden Flashes,TENN,KENT,71,0,true,false,Neyland Stadium,101915,STATUS_FINAL
+401628483,2024,3,2,2024-09-14T19:30Z,false,false,204,2483,Oregon State Beavers,Oregon Ducks,ORST,ORE,14,49,false,true,Reser Stadium,38419,STATUS_FINAL
+401635544,2024,3,2,2024-09-14T21:55Z,false,false,2390,2050,Miami Hurricanes,Ball State Cardinals,MIA,BALL,62,0,true,false,Hard Rock Stadium,51564,STATUS_FINAL
+401636870,2024,3,2,2024-09-14T20:30Z,false,false,328,254,Utah State Aggies,Utah Utes,USU,UTAH,21,38,false,true,Maverik Stadium,0,STATUS_FINAL
+401636869,2024,3,2,2024-09-14T16:00Z,false,false,202,197,Tulsa Golden Hurricane,Oklahoma State Cowboys,TLSA,OKST,10,45,false,true,H. A. Chapman Stadium,30915,STATUS_FINAL
+401628358,2024,3,2,2024-09-14T19:30Z,false,false,201,2655,Oklahoma Sooners,Tulane Green Wave,OU,TULN,34,19,true,false,"Memorial Stadium (Norman, OK)",83325,STATUS_FINAL
+401628359,2024,3,2,2024-09-14T16:00Z,false,true,2579,99,South Carolina Gamecocks,LSU Tigers,SC,LSU,33,36,false,true,Williams-Brice Stadium,79531,STATUS_FINAL
+401628479,2024,3,2,2024-09-14T16:00Z,false,false,130,2032,Michigan Wolverines,Arkansas State Red Wolves,MICH,ARST,28,18,true,false,Michigan Stadium,110250,STATUS_FINAL
+401628978,2024,3,2,2024-09-14T19:30Z,false,false,2509,87,Purdue Boilermakers,Notre Dame Fighting Irish,PUR,ND,7,66,false,true,Ross-Ade Stadium,61441,STATUS_FINAL
+401628482,2024,3,2,2024-09-14T23:30Z,false,false,158,2460,Nebraska Cornhuskers,Northern Iowa Panthers,NEB,UNI,34,3,true,false,"Memorial Stadium (Lincoln, NE)",86546,STATUS_FINAL
+401628475,2024,3,2,2024-09-14T16:00Z,false,false,356,2117,Illinois Fighting Illini,Central Michigan Chippewas,ILL,CMU,30,9,true,false,Gies Memorial Stadium,0,STATUS_FINAL
+401635542,2024,3,2,2024-09-14T16:00Z,false,false,52,235,Florida State Seminoles,Memphis Tigers,FSU,MEM,12,20,false,true,Doak Campbell Stadium,55107,STATUS_FINAL
+401635546,2024,3,2,2024-09-14T16:00Z,false,false,152,2348,NC State Wolfpack,Louisiana Tech Bulldogs,NCSU,LT,30,20,true,false,Carter-Finley Stadium,56919,STATUS_FINAL
+401636865,2024,3,2,2024-09-14T16:00Z,false,false,193,2132,Miami (OH) RedHawks,Cincinnati Bearcats,M-OH,CIN,16,27,false,true,Yager Stadium,24717,STATUS_FINAL
+401636868,2024,3,2,2024-09-14T16:00Z,false,false,2641,249,Texas Tech Red Raiders,North Texas Mean Green,TTU,UNT,66,21,true,false,Galaxy Stadium,57865,STATUS_FINAL
+401629041,2024,3,2,2024-09-14T17:00Z,false,false,2084,113,Buffalo Bulls,Massachusetts Minutemen,BUFF,MASS,34,3,true,false,Broadview Stadium,15204,STATUS_FINAL
+401643786,2024,3,2,2024-09-14T18:00Z,false,false,218,324,Temple Owls,Coastal Carolina Chanticleers,TEM,CCU,20,28,false,true,Lincoln Financial Field,13945,STATUS_FINAL
+401628353,2024,3,2,2024-09-14T19:30Z,false,true,57,245,Florida Gators,Texas A&M Aggies,FLA,TA&M,20,33,false,true,Ben Hill Griffin Stadium,89993,STATUS_FINAL
+401628480,2024,3,2,2024-09-14T19:30Z,false,false,127,2504,Michigan State Spartans,Prairie View A&M Panthers,MSU,PV,40,0,true,false,Spartan Stadium,70066,STATUS_FINAL
+401628481,2024,3,2,2024-09-14T19:30Z,false,false,135,2440,Minnesota Golden Gophers,Nevada Wolf Pack,MINN,NEV,27,0,true,false,Huntington Bank Stadium,44534,STATUS_FINAL
+401628484,2024,3,2,2024-09-14T19:30Z,true,false,264,265,Washington Huskies,Washington State Cougars,WASH,WSU,19,24,false,true,Lumen Field,57567,STATUS_FINAL
+401635543,2024,3,2,2024-09-14T19:30Z,false,false,59,2678,Georgia Tech Yellow Jackets,VMI Keydets,GT,VMI,59,7,true,false,Bobby Dodd Stadium,31729,STATUS_FINAL
+401635547,2024,3,2,2024-09-14T19:30Z,false,false,221,277,Pittsburgh Panthers,West Virginia Mountaineers,PITT,WVU,38,34,true,false,Acrisure Stadium,66087,STATUS_FINAL
+401644734,2024,3,2,2024-09-14T19:30Z,false,false,195,2415,Ohio Bobcats,Morgan State Bears,OHIO,MORG,21,6,true,false,Peden Stadium,20438,STATUS_FINAL
+401628477,2024,3,2,2024-09-14T20:00Z,false,false,2294,2653,Iowa Hawkeyes,Troy Trojans,IOWA,TROY,38,21,true,false,Kinnick Stadium,69250,STATUS_FINAL
+401643785,2024,3,2,2024-09-14T20:00Z,false,false,151,2026,East Carolina Pirates,App State Mountaineers,ECU,APP,19,21,false,true,Dowdy-Ficklen Stadium,46117,STATUS_FINAL
+401628351,2024,3,2,2024-09-14T20:15Z,false,false,8,5,Arkansas Razorbacks,UAB Blazers,ARK,UAB,37,27,true,false,Donald W. Reynolds Razorback Stadium,75021,STATUS_FINAL
+401629030,2024,3,2,2024-09-14T22:00Z,false,false,150,41,Duke Blue Devils,UConn Huskies,DUKE,CONN,26,21,true,false,Wallace Wade Stadium,20174,STATUS_FINAL
+401635545,2024,3,2,2024-09-14T22:00Z,false,false,153,2428,North Carolina Tar Heels,North Carolina Central Eagles,UNC,NCCU,45,10,true,false,Kenan Stadium,45491,STATUS_FINAL
+401635548,2024,3,2,2024-09-14T22:00Z,false,false,295,259,Old Dominion Monarchs,Virginia Tech Hokies,ODU,VT,17,37,false,true,S.B. Ballard Stadium,22208,STATUS_FINAL
+401640990,2024,3,2,2024-09-14T22:00Z,false,true,2335,2638,Liberty Flames,UTEP Miners,LIB,UTEP,28,10,true,false,Williams Stadium (VA),21805,STATUS_FINAL
+401643787,2024,3,2,2024-09-14T22:00Z,false,false,290,2569,Georgia Southern Eagles,South Carolina State Bulldogs,GASO,SCST,42,14,true,false,Allen E. Paulson Stadium,21617,STATUS_FINAL
+401644733,2024,3,2,2024-09-14T22:00Z,false,false,2006,2142,Akron Zips,Colgate Raiders,AKR,COLG,31,20,true,false,InfoCision Stadium,8932,STATUS_FINAL
+401645327,2024,3,2,2024-09-14T22:00Z,false,false,2429,2241,Charlotte 49ers,Gardner-Webb Runnin' Bulldogs,CLT,GWEB,27,26,true,false,Jerry Richardson Stadium,0,STATUS_FINAL
+401636364,2024,3,2,2024-09-14T22:30Z,false,false,2711,2065,Western Michigan Broncos,Bethune-Cookman Wildcats,WMU,BCU,59,31,true,false,Waldo Stadium,23476,STATUS_FINAL
+401628362,2024,3,2,2024-09-14T23:00Z,false,false,2247,238,Georgia State Panthers,Vanderbilt Commodores,GAST,VAN,36,32,true,false,Center Parc Stadium,14413,STATUS_FINAL
+401640999,2024,3,2,2024-09-14T23:00Z,false,false,2199,55,Eastern Michigan Eagles,Jacksonville State Gamecocks,EMU,JVST,37,34,true,false,Rynearson Stadium,17501,STATUS_FINAL
+401641017,2024,3,2,2024-09-14T23:00Z,false,false,23,338,San José State Spartans,Kennesaw State Owls,SJSU,KENN,31,10,true,false,CEFCU Stadium,11090,STATUS_FINAL
+401641024,2024,3,2,2024-09-14T23:00Z,false,true,2393,98,Middle Tennessee Blue Raiders,Western Kentucky Hilltoppers,MTSU,WKU,21,49,false,true,"Johnny ""Red"" Floyd Stadium",12227,STATUS_FINAL
+401641040,2024,3,2,2024-09-14T23:00Z,false,false,2534,62,Sam Houston Bearkats,Hawai'i Rainbow Warriors,SHSU,HAW,31,13,true,false,Elliott T. Bowers Stadium,15134,STATUS_FINAL
+401643789,2024,3,2,2024-09-14T23:00Z,false,false,2572,58,Southern Miss Golden Eagles,South Florida Bulls,USM,USF,24,49,false,true,M. M. Roberts Stadium,23537,STATUS_FINAL
+401628352,2024,3,2,2024-09-14T23:30Z,false,false,2,167,Auburn Tigers,New Mexico Lobos,AUB,UNM,45,19,true,false,Jordan-Hare Stadium,88043,STATUS_FINAL
+401628356,2024,3,2,2024-09-14T23:30Z,false,false,344,2649,Mississippi State Bulldogs,Toledo Rockets,MSST,TOL,17,41,false,true,Davis Wade Stadium,47412,STATUS_FINAL
+401628476,2024,3,2,2024-09-14T23:30Z,false,true,26,84,UCLA Bruins,Indiana Hoosiers,UCLA,IU,13,42,false,true,Rose Bowl,47811,STATUS_FINAL
+401636860,2024,3,2,2024-09-14T23:30Z,false,false,239,2005,Baylor Bears,Air Force Falcons,BAY,AFA,31,3,true,false,McLane Stadium,46212,STATUS_FINAL
+401636861,2024,3,2,2024-09-14T23:30Z,false,false,36,38,Colorado State Rams,Colorado Buffaloes,CSU,COLO,9,28,false,true,Canvas Stadium,40099,STATUS_FINAL
+401636866,2024,3,2,2024-09-14T23:30Z,false,true,2628,2116,TCU Horned Frogs,UCF Knights,TCU,UCF,34,35,false,true,Amon G. Carter Stadium,48889,STATUS_FINAL
+401655632,2024,3,2,2024-09-14T23:30Z,false,false,77,2197,Northwestern Wildcats,Eastern Illinois Panthers,NU,EIU,31,7,true,false,Northwestern Medicine Field at Martin Stadium,10631,STATUS_FINAL
+401640980,2024,3,2,2024-09-14T23:42Z,false,false,2226,2229,Florida Atlantic Owls,Florida International Panthers,FAU,FIU,38,20,true,false,Flagler Credit Union Stadium,24283,STATUS_FINAL
+401628478,2024,3,2,2024-09-15T00:00Z,false,false,258,120,Virginia Cavaliers,Maryland Terrapins,UVA,MD,13,27,false,true,Scott Stadium,0,STATUS_FINAL
+401636862,2024,3,2,2024-09-15T00:00Z,false,false,248,242,Houston Cougars,Rice Owls,HOU,RICE,33,7,true,false,TDECU Stadium,28146,STATUS_FINAL
+401636871,2024,3,2,2024-09-15T01:00Z,false,false,2751,252,Wyoming Cowboys,BYU Cougars,WYO,BYU,14,34,false,true,War Memorial Stadium,24513,STATUS_FINAL
+401635541,2024,3,2,2024-09-15T02:30Z,false,false,25,21,California Golden Bears,San Diego State Aztecs,CAL,SDSU,31,10,true,false,California Memorial Stadium,35197,STATUS_FINAL
+401641033,2024,3,2,2024-09-15T02:30Z,false,false,278,166,Fresno State Bulldogs,New Mexico State Aggies,FRES,NMSU,48,0,true,false,Valley Children's Stadium,39079,STATUS_FINAL
+401643790,2024,4,2,2024-09-19T23:30Z,false,true,2026,6,App State Mountaineers,South Alabama Jaguars,APP,USA,14,48,false,true,Kidd Brewer Stadium,34133,STATUS_FINAL
+401628485,2024,4,2,2024-09-21T00:00Z,false,true,158,356,Nebraska Cornhuskers,Illinois Fighting Illini,NEB,ILL,24,31,false,true,"Memorial Stadium (Lincoln, NE)",86936,STATUS_FINAL
+401634766,2024,4,2,2024-09-20T23:30Z,false,true,183,24,Syracuse Orange,Stanford Cardinal,SYR,STAN,24,26,false,true,JMA Wireless Dome,39290,STATUS_FINAL
+401643714,2024,4,2,2024-09-21T02:00Z,false,false,265,23,Washington State Cougars,San José State Spartans,WSU,SJSU,54,52,true,false,Martin Stadium,24808,STATUS_FINAL
+401628371,2024,4,2,2024-09-22T00:00Z,false,false,251,2433,Texas Longhorns,UL Monroe Warhawks,TEX,ULM,51,3,true,false,DKR-Texas Memorial Stadium,102850,STATUS_FINAL
+401628492,2024,4,2,2024-09-21T16:00Z,false,false,194,276,Ohio State Buckeyes,Marshall Thundering Herd,OSU,MRSH,49,14,true,false,Ohio Stadium,103871,STATUS_FINAL
+401628366,2024,4,2,2024-09-21T23:45Z,false,false,145,290,Ole Miss Rebels,Georgia Southern Eagles,MISS,GASO,52,13,true,false,Vaught-Hemingway Stadium,67505,STATUS_FINAL
+401628369,2024,4,2,2024-09-21T23:30Z,false,true,201,2633,Oklahoma Sooners,Tennessee Volunteers,OU,TENN,15,25,false,true,"Memorial Stadium (Norman, OK)",84701,STATUS_FINAL
+401628368,2024,4,2,2024-09-21T20:15Z,false,true,142,238,Missouri Tigers,Vanderbilt Commodores,MIZ,VAN,30,27,true,false,Memorial Stadium,62621,STATUS_FINAL
+401635555,2024,4,2,2024-09-21T23:00Z,false,false,58,2390,South Florida Bulls,Miami Hurricanes,USF,MIA,15,50,false,true,Raymond James Stadium,58616,STATUS_FINAL
+401628493,2024,4,2,2024-09-21T19:30Z,false,false,213,2309,Penn State Nittany Lions,Kent State Golden Flashes,PSU,KENT,56,0,true,false,Beaver Stadium,109526,STATUS_FINAL
+401628489,2024,4,2,2024-09-21T19:30Z,false,true,130,30,Michigan Wolverines,USC Trojans,MICH,USC,27,24,true,false,Michigan Stadium,110702,STATUS_FINAL
+401636876,2024,4,2,2024-09-21T20:00Z,false,true,197,254,Oklahoma State Cowboys,Utah Utes,OKST,UTAH,19,22,false,true,Boone Pickens Stadium,52202,STATUS_FINAL
+401636872,2024,4,2,2024-09-22T02:30Z,false,true,252,2306,BYU Cougars,Kansas State Wildcats,BYU,KSU,38,9,true,false,LaVell Edwards Stadium,64201,STATUS_FINAL
+401628365,2024,4,2,2024-09-21T19:30Z,false,false,99,26,LSU Tigers,UCLA Bruins,LSU,UCLA,34,17,true,false,Tiger Stadium (LA),100315,STATUS_FINAL
+401628979,2024,4,2,2024-09-21T19:30Z,false,false,87,193,Notre Dame Fighting Irish,Miami (OH) RedHawks,ND,M-OH,28,3,true,false,Notre Dame Stadium,77622,STATUS_FINAL
+401635554,2024,4,2,2024-09-21T19:30Z,false,true,97,59,Louisville Cardinals,Georgia Tech Yellow Jackets,LOU,GT,31,19,true,false,L&N Federal Credit Union Stadium,50727,STATUS_FINAL
+401636875,2024,4,2,2024-09-21T18:00Z,false,false,66,2032,Iowa State Cyclones,Arkansas State Red Wolves,ISU,ARST,52,7,true,false,Jack Trice Stadium,55428,STATUS_FINAL
+401635552,2024,4,2,2024-09-21T16:00Z,false,true,228,152,Clemson Tigers,NC State Wolfpack,CLEM,NCSU,59,35,true,false,"Memorial Stadium (Clemson, SC)",81500,STATUS_FINAL
+401644736,2024,4,2,2024-09-21T19:30Z,false,true,2459,2084,Northern Illinois Huskies,Buffalo Bulls,NIU,BUFF,20,23,false,true,Huskie Stadium,18688,STATUS_FINAL
+401628372,2024,4,2,2024-09-21T23:30Z,false,false,245,189,Texas A&M Aggies,Bowling Green Falcons,TA&M,BGSU,26,20,true,false,Kyle Field,99523,STATUS_FINAL
+401628367,2024,4,2,2024-09-21T16:00Z,false,true,344,57,Mississippi State Bulldogs,Florida Gators,MSST,FLA,28,45,false,true,Davis Wade Stadium,49655,STATUS_FINAL
+401628486,2024,4,2,2024-09-21T16:00Z,false,false,84,2429,Indiana Hoosiers,Charlotte 49ers,IU,CLT,52,14,true,false,"Memorial Stadium (Bloomington, IN)",43109,STATUS_FINAL
+401628488,2024,4,2,2024-09-21T16:00Z,false,false,120,222,Maryland Terrapins,Villanova Wildcats,MD,VILL,38,20,true,false,SECU Stadium,38006,STATUS_FINAL
+401635556,2024,4,2,2024-09-21T16:00Z,false,false,153,256,North Carolina Tar Heels,James Madison Dukes,UNC,JMU,50,70,false,true,Kenan Stadium,50500,STATUS_FINAL
+401636873,2024,4,2,2024-09-21T16:00Z,false,true,2132,248,Cincinnati Bearcats,Houston Cougars,CIN,HOU,34,0,true,false,Nippert Stadium,38007,STATUS_FINAL
+401636879,2024,4,2,2024-09-21T16:00Z,false,true,277,2305,West Virginia Mountaineers,Kansas Jayhawks,WVU,KU,32,28,true,false,Milan Puskar Stadium,52428,STATUS_FINAL
+401643791,2024,4,2,2024-09-21T16:00Z,false,false,309,2655,Louisiana Ragin' Cajuns,Tulane Green Wave,UL,TULN,33,41,false,true,Our Lady of Lourdes Stadium,22534,STATUS_FINAL
+401645328,2024,4,2,2024-09-21T16:00Z,false,true,349,242,Army Black Knights,Rice Owls,ARMY,RICE,37,14,true,false,Michie Stadium,26654,STATUS_FINAL
+401628364,2024,4,2,2024-09-21T16:45Z,false,false,96,195,Kentucky Wildcats,Ohio Bobcats,UK,OHIO,41,6,true,false,Kroger Field,61783,STATUS_FINAL
+401644735,2024,4,2,2024-09-21T17:00Z,false,true,2117,2050,Central Michigan Chippewas,Ball State Cardinals,CMU,BALL,37,34,true,false,Kelly/Shorts Stadium,18011,STATUS_FINAL
+401635558,2024,4,2,2024-09-21T18:00Z,false,false,324,258,Coastal Carolina Chanticleers,Virginia Cavaliers,CCU,UVA,24,43,false,true,Brooks Stadium (SC),22104,STATUS_FINAL
+401643715,2024,4,2,2024-09-21T18:00Z,false,false,218,328,Temple Owls,Utah State Aggies,TEM,USU,45,29,true,false,Lincoln Financial Field,11384,STATUS_FINAL
+401644737,2024,4,2,2024-09-21T18:00Z,false,false,2199,2598,Eastern Michigan Eagles,St. Francis (PA) Red Flash,EMU,SFPA,36,0,true,false,Rynearson Stadium,15509,STATUS_FINAL
+401641000,2024,4,2,2024-09-21T19:00Z,false,false,55,2572,Jacksonville State Gamecocks,Southern Miss Golden Eagles,JVST,USM,44,7,true,false,AmFirst Stadium,21788,STATUS_FINAL
+401643713,2024,4,2,2024-09-21T19:00Z,false,false,2440,331,Nevada Wolf Pack,Eastern Washington Eagles,NEV,EWU,49,16,true,false,Mackay Stadium,16399,STATUS_FINAL
+401628363,2024,4,2,2024-09-21T19:30Z,false,true,2,8,Auburn Tigers,Arkansas Razorbacks,AUB,ARK,14,24,false,true,Jordan-Hare Stadium,88043,STATUS_FINAL
+401628494,2024,4,2,2024-09-21T19:30Z,false,false,259,164,Virginia Tech Hokies,Rutgers Scarlet Knights,VT,RUTG,23,26,false,true,Lane Stadium,65632,STATUS_FINAL
+401629042,2024,4,2,2024-09-21T19:30Z,false,false,113,2115,Massachusetts Minutemen,Central Connecticut Blue Devils,MASS,CCSU,35,31,true,false,Warren McGuirk Alumni Stadium,10847,STATUS_FINAL
+401634247,2024,4,2,2024-09-21T19:30Z,false,false,221,2754,Pittsburgh Panthers,Youngstown State Penguins,PITT,YSU,73,17,true,false,Acrisure Stadium,48437,STATUS_FINAL
+401636877,2024,4,2,2024-09-21T19:30Z,false,true,2641,9,Texas Tech Red Raiders,Arizona State Sun Devils,TTU,ASU,30,22,true,false,Galaxy Stadium,58795,STATUS_FINAL
+401645329,2024,4,2,2024-09-21T19:30Z,false,true,2426,235,Navy Midshipmen,Memphis Tigers,NAVY,MEM,56,44,true,false,Navy-Marine Corps Memorial Stadium,31268,STATUS_FINAL
+401645330,2024,4,2,2024-09-21T19:30Z,false,false,2636,2277,UTSA Roadrunners,Houston Christian Huskies,UTSA,HCU,45,7,true,false,Alamodome,20973,STATUS_FINAL
+401635553,2024,4,2,2024-09-21T20:00Z,false,false,2393,150,Middle Tennessee Blue Raiders,Duke Blue Devils,MTSU,DUKE,17,45,false,true,"Johnny ""Red"" Floyd Stadium",15209,STATUS_FINAL
+401635557,2024,4,2,2024-09-21T21:00Z,false,false,2567,2628,SMU Mustangs,TCU Horned Frogs,SMU,TCU,66,42,true,false,Gerald J. Ford Stadium,33168,STATUS_FINAL
+401641028,2024,4,2,2024-09-21T21:00Z,false,false,36,2638,Colorado State Rams,UTEP Miners,CSU,UTEP,27,17,true,false,Canvas Stadium,29151,STATUS_FINAL
+401628625,2024,4,2,2024-09-21T22:00Z,false,false,2229,2405,Florida International Panthers,Monmouth Hawks,FIU,MONM,42,45,false,true,Pitbull Stadium,17922,STATUS_FINAL
+401640991,2024,4,2,2024-09-21T22:00Z,false,false,2335,151,Liberty Flames,East Carolina Pirates,LIB,ECU,35,24,true,false,Williams Stadium (VA),24076,STATUS_FINAL
+401628491,2024,4,2,2024-09-21T23:00Z,false,true,264,77,Washington Huskies,Northwestern Wildcats,WASH,NU,24,5,true,false,Husky Stadium,69788,STATUS_FINAL
+401629031,2024,4,2,2024-09-21T23:00Z,false,false,41,2226,UConn Huskies,Florida Atlantic Owls,CONN,FAU,48,14,true,false,Pratt & Whitney Stadium,20144,STATUS_FINAL
+401635551,2024,4,2,2024-09-21T23:00Z,false,true,52,25,Florida State Seminoles,California Golden Bears,FSU,CAL,14,9,true,false,Doak Campbell Stadium,55107,STATUS_FINAL
+401636374,2024,4,2,2024-09-21T23:00Z,false,false,2653,50,Troy Trojans,Florida A&M Rattlers,TROY,FAMU,34,12,true,false,Veterans Memorial Stadium (AL),29024,STATUS_FINAL
+401641008,2024,4,2,2024-09-21T23:00Z,false,false,2348,202,Louisiana Tech Bulldogs,Tulsa Golden Hurricane,LT,TLSA,20,23,false,true,Joe Aillet Stadium,18152,STATUS_FINAL
+401641034,2024,4,2,2024-09-21T23:00Z,false,true,2534,166,Sam Houston Bearkats,New Mexico State Aggies,SHSU,NMSU,31,11,true,false,Elliott T. Bowers Stadium,0,STATUS_FINAL
+401641037,2024,4,2,2024-09-21T23:00Z,false,false,98,2649,Western Kentucky Hilltoppers,Toledo Rockets,WKU,TOL,26,21,true,false,Houchens Industries-L.T. Smith Stadium,19127,STATUS_FINAL
+401643716,2024,4,2,2024-09-21T23:00Z,false,false,249,2751,North Texas Mean Green,Wyoming Cowboys,UNT,WYO,44,17,true,false,DATCU Stadium,27049,STATUS_FINAL
+401628370,2024,4,2,2024-09-21T23:30Z,false,false,2579,2006,South Carolina Gamecocks,Akron Zips,SC,AKR,50,7,true,false,Williams-Brice Stadium,78704,STATUS_FINAL
+401628487,2024,4,2,2024-09-21T23:30Z,false,true,135,2294,Minnesota Golden Gophers,Iowa Hawkeyes,MINN,IOWA,14,31,false,true,Huntington Bank Stadium,52048,STATUS_FINAL
+401628490,2024,4,2,2024-09-22T00:00Z,false,false,103,127,Boston College Eagles,Michigan State Spartans,BC,MSU,23,19,true,false,"Alumni Stadium (Chestnut Hill, MA)",44500,STATUS_FINAL
+401636874,2024,4,2,2024-09-22T00:00Z,false,true,38,239,Colorado Buffaloes,Baylor Bears,COLO,BAY,38,31,true,false,Folsom Field,52794,STATUS_FINAL
+401643711,2024,4,2,2024-09-22T00:30Z,false,true,167,278,New Mexico Lobos,Fresno State Bulldogs,UNM,FRES,21,38,false,true,University Stadium (NM),18019,STATUS_FINAL
+401643717,2024,4,2,2024-09-22T00:30Z,false,false,204,2509,Oregon State Beavers,Purdue Boilermakers,ORST,PUR,38,21,true,false,Reser Stadium,34340,STATUS_FINAL
+401637162,2024,4,2,2024-09-22T01:45Z,false,false,68,2502,Boise State Broncos,Portland State Vikings,BOIS,PRST,56,14,true,false,Albertsons Stadium,36972,STATUS_FINAL
+401643712,2024,4,2,2024-09-22T03:59Z,false,false,62,2460,Hawai'i Rainbow Warriors,Northern Iowa Panthers,HAW,UNI,36,7,true,false,Clarence T.C. Ching Athletics Complex,11402,STATUS_FINAL
+401645331,2024,5,2,2024-09-26T23:30Z,false,true,218,349,Temple Owls,Army Black Knights,TEM,ARMY,14,42,false,true,Lincoln Financial Field,13255,STATUS_FINAL
+401634767,2024,5,2,2024-09-27T23:30Z,false,true,2390,259,Miami Hurricanes,Virginia Tech Hokies,MIA,VT,38,34,true,false,Hard Rock Stadium,59539,STATUS_FINAL
+401628501,2024,5,2,2024-09-28T00:00Z,false,true,164,264,Rutgers Scarlet Knights,Washington Huskies,RUTG,WASH,21,18,true,false,SHI Stadium,54079,STATUS_FINAL
+401628378,2024,5,2,2024-09-28T20:15Z,false,true,251,344,Texas Longhorns,Mississippi State Bulldogs,TEX,MSST,35,13,true,false,DKR-Texas Memorial Stadium,101388,STATUS_FINAL
+401628374,2024,5,2,2024-09-28T23:30Z,false,true,333,61,Alabama Crimson Tide,Georgia Bulldogs,ALA,UGA,41,34,true,false,Bryant-Denny Stadium,100077,STATUS_FINAL
+401628498,2024,5,2,2024-09-28T23:30Z,false,true,127,194,Michigan State Spartans,Ohio State Buckeyes,MSU,OSU,7,38,false,true,Spartan Stadium,71114,STATUS_FINAL
+401628377,2024,5,2,2024-09-28T16:00Z,false,true,145,96,Ole Miss Rebels,Kentucky Wildcats,MISS,UK,17,20,false,true,Vaught-Hemingway Stadium,0,STATUS_FINAL
+401628500,2024,5,2,2024-09-29T03:00Z,false,true,26,2483,UCLA Bruins,Oregon Ducks,UCLA,ORE,13,34,false,true,Rose Bowl,43051,STATUS_FINAL
+401628495,2024,5,2,2024-09-28T23:30Z,false,true,213,356,Penn State Nittany Lions,Illinois Fighting Illini,PSU,ILL,21,7,true,false,Beaver Stadium,109911,STATUS_FINAL
+401636886,2024,5,2,2024-09-29T02:15Z,false,true,254,12,Utah Utes,Arizona Wildcats,UTAH,ARIZ,10,23,false,true,Rice-Eccles Stadium,52898,STATUS_FINAL
+401628497,2024,5,2,2024-09-28T16:00Z,false,true,130,135,Michigan Wolverines,Minnesota Golden Gophers,MICH,MINN,27,24,true,false,Michigan Stadium,110340,STATUS_FINAL
+401628502,2024,5,2,2024-09-28T19:30Z,false,true,30,275,USC Trojans,Wisconsin Badgers,USC,WIS,38,21,true,false,Los Angeles Memorial Coliseum,74118,STATUS_FINAL
+401628376,2024,5,2,2024-09-28T23:45Z,false,false,99,6,LSU Tigers,South Alabama Jaguars,LSU,USA,42,10,true,false,Tiger Stadium (LA),102143,STATUS_FINAL
+401628980,2024,5,2,2024-09-28T19:30Z,false,false,87,97,Notre Dame Fighting Irish,Louisville Cardinals,ND,LOU,31,24,true,false,Notre Dame Stadium,77622,STATUS_FINAL
+401635561,2024,5,2,2024-09-28T23:00Z,false,true,228,24,Clemson Tigers,Stanford Cardinal,CLEM,STAN,40,14,true,false,"Memorial Stadium (Clemson, SC)",80295,STATUS_FINAL
+401636881,2024,5,2,2024-09-28T23:00Z,false,true,248,66,Houston Cougars,Iowa State Cyclones,HOU,ISU,0,20,false,true,TDECU Stadium,25138,STATUS_FINAL
+401636883,2024,5,2,2024-09-28T16:00Z,false,true,2306,197,Kansas State Wildcats,Oklahoma State Cowboys,KSU,OKST,42,20,true,false,Bill Snyder Family Stadium,0,STATUS_FINAL
+401628375,2024,5,2,2024-09-28T19:30Z,false,true,2,201,Auburn Tigers,Oklahoma Sooners,AUB,OU,21,27,false,true,Jordan-Hare Stadium,88043,STATUS_FINAL
+401636880,2024,5,2,2024-09-28T16:00Z,false,true,239,252,Baylor Bears,BYU Cougars,BAY,BYU,28,34,false,true,McLane Stadium,39583,STATUS_FINAL
+401628373,2024,5,2,2024-09-28T19:30Z,true,true,245,8,Texas A&M Aggies,Arkansas Razorbacks,TA&M,ARK,21,17,true,false,AT&T Stadium,60928,STATUS_FINAL
+401643719,2024,5,2,2024-09-29T02:00Z,false,false,68,265,Boise State Broncos,Washington State Cougars,BOIS,WSU,45,24,true,false,Albertsons Stadium,37711,STATUS_FINAL
+401628496,2024,5,2,2024-09-28T16:00Z,false,true,84,120,Indiana Hoosiers,Maryland Terrapins,IU,MD,42,28,true,false,"Memorial Stadium (Bloomington, IN)",48323,STATUS_FINAL
+401628499,2024,5,2,2024-09-28T16:00Z,false,true,2509,158,Purdue Boilermakers,Nebraska Cornhuskers,PUR,NEB,10,28,false,true,Ross-Ade Stadium,61441,STATUS_FINAL
+401629032,2024,5,2,2024-09-28T16:00Z,false,false,41,2084,UConn Huskies,Buffalo Bulls,CONN,BUFF,47,3,true,false,Pratt & Whitney Stadium,20347,STATUS_FINAL
+401635560,2024,5,2,2024-09-28T16:00Z,false,false,103,98,Boston College Eagles,Western Kentucky Hilltoppers,BC,WKU,21,20,true,false,"Alumni Stadium (Chestnut Hill, MA)",41403,STATUS_FINAL
+401635564,2024,5,2,2024-09-28T16:00Z,false,false,152,2459,NC State Wolfpack,Northern Illinois Huskies,NCSU,NIU,24,17,true,false,Carter-Finley Stadium,56919,STATUS_FINAL
+401635565,2024,5,2,2024-09-28T16:00Z,false,false,183,107,Syracuse Orange,Holy Cross Crusaders,SYR,HC,42,14,true,false,JMA Wireless Dome,43455,STATUS_FINAL
+401645332,2024,5,2,2024-09-28T16:00Z,false,true,5,2426,UAB Blazers,Navy Midshipmen,UAB,NAVY,18,41,false,true,Protective Stadium,21536,STATUS_FINAL
+401645337,2024,5,2,2024-09-28T16:00Z,false,true,2655,58,Tulane Green Wave,South Florida Bulls,TULN,USF,45,10,true,false,Yulman Stadium,20783,STATUS_FINAL
+401643793,2024,5,2,2024-09-28T17:30Z,false,false,256,2050,James Madison Dukes,Ball State Cardinals,JMU,BALL,63,7,true,false,Bridgeforth Stadium,25786,STATUS_FINAL
+401641041,2024,5,2,2024-09-28T19:00Z,true,false,2534,326,Sam Houston Bearkats,Texas State Bobcats,SHSU,TXST,40,39,true,false,NRG Stadium,27225,STATUS_FINAL
+401629043,2024,5,2,2024-09-28T19:30Z,false,false,193,113,Miami (OH) RedHawks,Massachusetts Minutemen,M-OH,MASS,23,20,true,false,Yager Stadium,9542,STATUS_FINAL
+401635659,2024,5,2,2024-09-28T19:30Z,false,false,154,309,Wake Forest Demon Deacons,Louisiana Ragin' Cajuns,WAKE,UL,38,41,false,true,Allegacy Federal Credit Union Stadium,31061,STATUS_FINAL
+401636882,2024,5,2,2024-09-28T19:30Z,false,true,2305,2628,Kansas Jayhawks,TCU Horned Frogs,KU,TCU,27,38,false,true,GEHA Field at Arrowhead Stadium,47928,STATUS_FINAL
+401643720,2024,5,2,2024-09-28T19:30Z,false,true,2439,278,UNLV Rebels,Fresno State Bulldogs,UNLV,FRES,59,14,true,false,Allegiant Stadium,24638,STATUS_FINAL
+401643721,2024,5,2,2024-09-28T19:30Z,false,false,2117,21,Central Michigan Chippewas,San Diego State Aztecs,CMU,SDSU,22,21,true,false,Kelly/Shorts Stadium,27072,STATUS_FINAL
+401643792,2024,5,2,2024-09-28T19:30Z,false,true,2247,290,Georgia State Panthers,Georgia Southern Eagles,GAST,GASO,21,38,false,true,Center Parc Stadium,18808,STATUS_FINAL
+401643794,2024,5,2,2024-09-28T19:30Z,false,false,276,2711,Marshall Thundering Herd,Western Michigan Broncos,MRSH,WMU,27,20,true,false,Joan C. Edwards Stadium,18723,STATUS_FINAL
+401644738,2024,5,2,2024-09-28T19:30Z,false,true,195,2006,Ohio Bobcats,Akron Zips,OHIO,AKR,30,10,true,false,Peden Stadium,21265,STATUS_FINAL
+401644739,2024,5,2,2024-09-28T19:30Z,false,true,2309,2199,Kent State Golden Flashes,Eastern Michigan Eagles,KENT,EMU,33,52,false,true,Zoeller Field at Dix Stadium,10899,STATUS_FINAL
+401635562,2024,5,2,2024-09-28T20:00Z,false,true,150,153,Duke Blue Devils,North Carolina Tar Heels,DUKE,UNC,21,20,true,false,Wallace Wade Stadium,35018,STATUS_FINAL
+401645334,2024,5,2,2024-09-28T20:00Z,false,true,151,2636,East Carolina Pirates,UTSA Roadrunners,ECU,UTSA,30,20,true,false,Dowdy-Ficklen Stadium,41851,STATUS_FINAL
+401636885,2024,5,2,2024-09-28T20:20Z,false,true,2116,38,UCF Knights,Colorado Buffaloes,UCF,COLO,21,48,false,true,Acrisure Bounce House,45702,STATUS_FINAL
+401643795,2024,5,2,2024-09-28T21:00Z,false,false,189,295,Bowling Green Falcons,Old Dominion Monarchs,BGSU,ODU,27,30,false,true,Doyt L. Perry Stadium,19140,STATUS_FINAL
+401640981,2024,5,2,2024-09-28T22:00Z,false,true,2229,2348,Florida International Panthers,Louisiana Tech Bulldogs,FIU,LT,17,10,true,false,Pitbull Stadium,12425,STATUS_FINAL
+401641018,2024,5,2,2024-09-28T22:00Z,false,false,338,2630,Kennesaw State Owls,UT Martin Skyhawks,KENN,UTM,13,24,false,true,Walens Family Field at Fifth Third Stadium,0,STATUS_FINAL
+401645335,2024,5,2,2024-09-28T22:00Z,false,false,2226,2681,Florida Atlantic Owls,Wagner Seahawks,FAU,WAG,41,10,true,false,Flagler Credit Union Stadium,21151,STATUS_FINAL
+401643796,2024,5,2,2024-09-28T23:00Z,false,true,2653,2433,Troy Trojans,UL Monroe Warhawks,TROY,ULM,9,13,false,true,Veterans Memorial Stadium (AL),21253,STATUS_FINAL
+401645333,2024,5,2,2024-09-28T23:00Z,false,true,242,2429,Rice Owls,Charlotte 49ers,RICE,CLT,20,21,false,true,Rice Stadium,17455,STATUS_FINAL
+401645336,2024,5,2,2024-09-28T23:00Z,false,true,249,202,North Texas Mean Green,Tulsa Golden Hurricane,UNT,TLSA,52,20,true,false,DATCU Stadium,18529,STATUS_FINAL
+401641025,2024,5,2,2024-09-28T23:30Z,false,false,235,2393,Memphis Tigers,Middle Tennessee Blue Raiders,MEM,MTSU,24,7,true,false,Simmons Bank Liberty Stadium,25266,STATUS_FINAL
+401635563,2024,5,2,2024-09-29T00:00Z,false,true,2567,52,SMU Mustangs,Florida State Seminoles,SMU,FSU,42,16,true,false,Gerald J. Ford Stadium,34879,STATUS_FINAL
+401636884,2024,5,2,2024-09-29T00:00Z,false,true,2641,2132,Texas Tech Red Raiders,Cincinnati Bearcats,TTU,CIN,44,41,true,false,Galaxy Stadium,60229,STATUS_FINAL
+401641035,2024,5,2,2024-09-29T00:00Z,false,false,166,167,New Mexico State Aggies,New Mexico Lobos,NMSU,UNM,40,50,false,true,Aggie Memorial Stadium,21062,STATUS_FINAL
+401643718,2024,5,2,2024-09-29T00:00Z,false,true,2751,2005,Wyoming Cowboys,Air Force Falcons,WYO,AFA,31,19,true,false,War Memorial Stadium,23068,STATUS_FINAL
+401640992,2024,5,2,2024-09-28T19:30Z,false,false,2026,2335,App State Mountaineers,Liberty Flames,APP,LIB,0,0,false,false,Kidd Brewer Stadium,0,STATUS_CANCELED
+401643797,2024,6,2,2024-10-03T23:00Z,false,true,2653,326,Troy Trojans,Texas State Bobcats,TROY,TXST,17,38,false,true,Veterans Memorial Stadium (AL),20349,STATUS_FINAL
+401641029,2024,6,2,2024-10-04T01:00Z,false,true,2638,2534,UTEP Miners,Sam Houston Bearkats,UTEP,SHSU,21,41,false,true,Sun Bowl,14454,STATUS_FINAL
+401628506,2024,6,2,2024-10-05T01:00Z,false,true,2483,127,Oregon Ducks,Michigan State Spartans,ORE,MSU,31,10,true,false,Autzen Stadium,59802,STATUS_FINAL
+401634779,2024,6,2,2024-10-05T01:00Z,false,false,2439,183,UNLV Rebels,Syracuse Orange,UNLV,SYR,41,44,false,true,Allegiant Stadium,31329,STATUS_FINAL
+401641001,2024,6,2,2024-10-04T23:00Z,false,true,338,55,Kennesaw State Owls,Jacksonville State Gamecocks,KENN,JVST,24,63,false,true,Walens Family Field at Fifth Third Stadium,10029,STATUS_FINAL
+401636891,2024,6,2,2024-10-04T23:30Z,false,true,2628,248,TCU Horned Frogs,Houston Cougars,TCU,HOU,19,30,false,true,Amon G. Carter Stadium,44211,STATUS_FINAL
+401628384,2024,6,2,2024-10-05T20:15Z,false,true,238,333,Vanderbilt Commodores,Alabama Crimson Tide,VAN,ALA,40,35,true,false,FirstBank Stadium,28934,STATUS_FINAL
+401628504,2024,6,2,2024-10-05T19:30Z,false,true,194,2294,Ohio State Buckeyes,Iowa Hawkeyes,OSU,IOWA,35,7,true,false,Ohio Stadium,105135,STATUS_FINAL
+401628379,2024,6,2,2024-10-05T23:30Z,false,true,8,2633,Arkansas Razorbacks,Tennessee Volunteers,ARK,TENN,19,14,true,false,Donald W. Reynolds Razorback Stadium,75573,STATUS_FINAL
+401628381,2024,6,2,2024-10-05T19:30Z,false,true,61,2,Georgia Bulldogs,Auburn Tigers,UGA,AUB,31,13,true,false,Sanford Stadium,93033,STATUS_FINAL
+401628510,2024,6,2,2024-10-05T16:00Z,false,true,213,26,Penn State Nittany Lions,UCLA Bruins,PSU,UCLA,27,11,true,false,Beaver Stadium,110047,STATUS_FINAL
+401635568,2024,6,2,2024-10-06T02:30Z,false,true,25,2390,California Golden Bears,Miami Hurricanes,CAL,MIA,38,39,false,true,California Memorial Stadium,52428,STATUS_FINAL
+401628383,2024,6,2,2024-10-05T16:00Z,false,true,245,142,Texas A&M Aggies,Missouri Tigers,TA&M,MIZ,41,10,true,false,Kyle Field,97049,STATUS_FINAL
+401628505,2024,6,2,2024-10-05T23:30Z,false,true,264,130,Washington Huskies,Michigan Wolverines,WASH,MICH,27,17,true,false,Husky Stadium,72132,STATUS_FINAL
+401628507,2024,6,2,2024-10-05T23:30Z,false,true,135,30,Minnesota Golden Gophers,USC Trojans,MINN,USC,24,17,true,false,Huntington Bank Stadium,50913,STATUS_FINAL
+401628382,2024,6,2,2024-10-05T19:30Z,false,true,2579,145,South Carolina Gamecocks,Ole Miss Rebels,SC,MISS,3,27,false,true,Williams-Brice Stadium,79837,STATUS_FINAL
+401635569,2024,6,2,2024-10-05T23:00Z,false,true,52,228,Florida State Seminoles,Clemson Tigers,FSU,CLEM,13,29,false,true,Doak Campbell Stadium,55107,STATUS_FINAL
+401636889,2024,6,2,2024-10-05T23:30Z,false,true,66,239,Iowa State Cyclones,Baylor Bears,ISU,BAY,43,21,true,false,Jack Trice Stadium,61500,STATUS_FINAL
+401643723,2024,6,2,2024-10-05T23:00Z,false,true,68,328,Boise State Broncos,Utah State Aggies,BOIS,USU,62,30,true,false,Albertsons Stadium,37210,STATUS_FINAL
+401635571,2024,6,2,2024-10-05T16:00Z,false,true,97,2567,Louisville Cardinals,SMU Mustangs,LOU,SMU,27,34,false,true,L&N Federal Credit Union Stadium,50254,STATUS_FINAL
+401628503,2024,6,2,2024-10-05T19:30Z,false,true,77,84,Northwestern Wildcats,Indiana Hoosiers,NU,IU,24,41,false,true,Northwestern Medicine Field at Martin Stadium,12023,STATUS_FINAL
+401628509,2024,6,2,2024-10-05T16:00Z,false,true,275,2509,Wisconsin Badgers,Purdue Boilermakers,WIS,PUR,52,6,true,false,Camp Randall Stadium,76091,STATUS_FINAL
+401629044,2024,6,2,2024-10-05T16:00Z,false,false,2459,113,Northern Illinois Huskies,Massachusetts Minutemen,NIU,MASS,34,20,true,false,Huskie Stadium,12466,STATUS_FINAL
+401635567,2024,6,2,2024-10-05T16:00Z,false,true,258,103,Virginia Cavaliers,Boston College Eagles,UVA,BC,24,14,true,false,Scott Stadium,38285,STATUS_FINAL
+401635572,2024,6,2,2024-10-05T16:00Z,false,true,153,221,North Carolina Tar Heels,Pittsburgh Panthers,UNC,PITT,24,34,false,true,Kenan Stadium,46033,STATUS_FINAL
+401635638,2024,6,2,2024-10-05T16:00Z,false,true,152,154,NC State Wolfpack,Wake Forest Demon Deacons,NCSU,WAKE,30,34,false,true,Carter-Finley Stadium,56919,STATUS_FINAL
+401643722,2024,6,2,2024-10-05T16:00Z,false,false,2005,2426,Air Force Falcons,Navy Midshipmen,AFA,NAVY,7,34,false,true,Falcon Stadium,39441,STATUS_FINAL
+401645339,2024,6,2,2024-10-05T16:00Z,false,true,202,349,Tulsa Golden Hurricane,Army Black Knights,TLSA,ARMY,7,49,false,true,H. A. Chapman Stadium,0,STATUS_FINAL
+401645338,2024,6,2,2024-10-05T17:00Z,false,true,5,2655,UAB Blazers,Tulane Green Wave,UAB,TULN,20,71,false,true,Protective Stadium,19724,STATUS_FINAL
+401644741,2024,6,2,2024-10-05T18:00Z,false,true,2050,2711,Ball State Cardinals,Western Michigan Broncos,BALL,WMU,42,45,false,true,Scheumann Stadium,10342,STATUS_FINAL
+401629033,2024,6,2,2024-10-05T19:30Z,false,false,41,218,UConn Huskies,Temple Owls,CONN,TEM,29,20,true,false,Pratt & Whitney Stadium,28921,STATUS_FINAL
+401635573,2024,6,2,2024-10-05T19:30Z,false,true,24,259,Stanford Cardinal,Virginia Tech Hokies,STAN,VT,7,31,false,true,Stanford Stadium,36277,STATUS_FINAL
+401643799,2024,6,2,2024-10-05T19:30Z,false,true,276,2026,Marshall Thundering Herd,App State Mountaineers,MRSH,APP,52,37,true,false,Joan C. Edwards Stadium,28023,STATUS_FINAL
+401644684,2024,6,2,2024-10-05T19:30Z,false,true,2649,193,Toledo Rockets,Miami (OH) RedHawks,TOL,M-OH,30,20,true,false,Glass Bowl,25027,STATUS_FINAL
+401644740,2024,6,2,2024-10-05T19:30Z,false,true,2006,189,Akron Zips,Bowling Green Falcons,AKR,BGSU,20,27,false,true,InfoCision Stadium,9337,STATUS_FINAL
+401645340,2024,6,2,2024-10-05T19:30Z,false,true,2429,151,Charlotte 49ers,East Carolina Pirates,CLT,ECU,55,24,true,false,Jerry Richardson Stadium,17102,STATUS_FINAL
+401628508,2024,6,2,2024-10-05T20:00Z,false,true,158,164,Nebraska Cornhuskers,Rutgers Scarlet Knights,NEB,RUTG,14,7,true,false,"Memorial Stadium (Lincoln, NE)",87464,STATUS_FINAL
+401636890,2024,6,2,2024-10-05T20:00Z,false,true,197,277,Oklahoma State Cowboys,West Virginia Mountaineers,OKST,WVU,14,38,false,true,Boone Pickens Stadium,52202,STATUS_FINAL
+401643724,2024,6,2,2024-10-05T22:30Z,false,false,204,36,Oregon State Beavers,Colorado State Rams,ORST,CSU,39,31,true,false,Reser Stadium,46433,STATUS_FINAL
+401643798,2024,6,2,2024-10-05T23:00Z,false,true,324,295,Coastal Carolina Chanticleers,Old Dominion Monarchs,CCU,ODU,45,37,true,false,Brooks Stadium (SC),18552,STATUS_FINAL
+401643800,2024,6,2,2024-10-05T23:00Z,false,true,2032,6,Arkansas State Red Wolves,South Alabama Jaguars,ARST,USA,18,16,true,false,Centennial Bank Stadium,21427,STATUS_FINAL
+401643801,2024,6,2,2024-10-05T23:00Z,false,true,2433,256,UL Monroe Warhawks,James Madison Dukes,ULM,JMU,21,19,true,false,Malone Stadium,19976,STATUS_FINAL
+401643802,2024,6,2,2024-10-05T23:00Z,false,true,2572,309,Southern Miss Golden Eagles,Louisiana Ragin' Cajuns,USM,UL,13,23,false,true,M. M. Roberts Stadium,24041,STATUS_FINAL
+401643726,2024,6,2,2024-10-05T23:30Z,false,true,23,2440,San José State Spartans,Nevada Wolf Pack,SJSU,NEV,35,31,true,false,CEFCU Stadium,17099,STATUS_FINAL
+401628380,2024,6,2,2024-10-05T23:45Z,false,false,57,2116,Florida Gators,UCF Knights,FLA,UCF,24,13,true,false,Ben Hill Griffin Stadium,90369,STATUS_FINAL
+401635570,2024,6,2,2024-10-06T00:00Z,false,true,59,150,Georgia Tech Yellow Jackets,Duke Blue Devils,GT,DUKE,24,14,true,false,Bobby Dodd Stadium,37287,STATUS_FINAL
+401636888,2024,6,2,2024-10-06T00:00Z,false,true,9,2305,Arizona State Sun Devils,Kansas Jayhawks,ASU,KU,35,31,true,false,Mountain America Stadium,54639,STATUS_FINAL
+401643725,2024,6,2,2024-10-06T00:00Z,false,true,21,62,San Diego State Aztecs,Hawai'i Rainbow Warriors,SDSU,HAW,27,24,true,false,Snapdragon Stadium,31307,STATUS_FINAL
+401636887,2024,6,2,2024-10-06T03:00Z,false,true,12,2641,Arizona Wildcats,Texas Tech Red Raiders,ARIZ,TTU,22,28,false,true,Casino Del Sol Stadium,45773,STATUS_FINAL
+401640982,2024,7,2,2024-10-08T23:00Z,false,true,2335,2229,Liberty Flames,Florida International Panthers,LIB,FIU,31,24,true,false,Williams Stadium (VA),16343,STATUS_FINAL
+401641002,2024,7,2,2024-10-09T23:30Z,false,true,55,166,Jacksonville State Gamecocks,New Mexico State Aggies,JVST,NMSU,54,13,true,false,AmFirst Stadium,16555,STATUS_FINAL
+401643803,2024,7,2,2024-10-10T23:30Z,false,true,256,324,James Madison Dukes,Coastal Carolina Chanticleers,JMU,CCU,39,7,true,false,Bridgeforth Stadium,25622,STATUS_FINAL
+401641009,2024,7,2,2024-10-11T00:00Z,false,true,2348,2393,Louisiana Tech Bulldogs,Middle Tennessee Blue Raiders,LT,MTSU,48,21,true,false,Joe Aillet Stadium,15072,STATUS_FINAL
+401641030,2024,7,2,2024-10-11T00:00Z,false,true,98,2638,Western Kentucky Hilltoppers,UTEP Miners,WKU,UTEP,44,17,true,false,Houchens Industries-L.T. Smith Stadium,12723,STATUS_FINAL
+401636892,2024,7,2,2024-10-12T02:30Z,false,true,9,254,Arizona State Sun Devils,Utah Utes,ASU,UTAH,27,19,true,false,Mountain America Stadium,45310,STATUS_FINAL
+401628513,2024,7,2,2024-10-12T00:00Z,false,true,120,77,Maryland Terrapins,Northwestern Wildcats,MD,NU,10,37,false,true,SECU Stadium,39371,STATUS_FINAL
+401643733,2024,7,2,2024-10-12T01:00Z,false,true,328,2439,Utah State Aggies,UNLV Rebels,USU,UNLV,34,50,false,true,Maverik Stadium,20295,STATUS_FINAL
+401628390,2024,7,2,2024-10-12T19:30Z,true,true,201,251,Oklahoma Sooners,Texas Longhorns,OU,TEX,3,34,false,true,Cotton Bowl,92100,STATUS_FINAL
+401628515,2024,7,2,2024-10-12T23:30Z,false,true,2483,194,Oregon Ducks,Ohio State Buckeyes,ORE,OSU,32,31,true,false,Autzen Stadium,60129,STATUS_FINAL
+401628516,2024,7,2,2024-10-12T19:30Z,false,true,30,213,USC Trojans,Penn State Nittany Lions,USC,PSU,30,33,false,true,Los Angeles Memorial Coliseum,75250,STATUS_FINAL
+401628386,2024,7,2,2024-10-12T20:15Z,false,true,61,344,Georgia Bulldogs,Mississippi State Bulldogs,UGA,MSST,41,31,true,false,Sanford Stadium,93033,STATUS_FINAL
+401628385,2024,7,2,2024-10-12T16:00Z,false,true,333,2579,Alabama Crimson Tide,South Carolina Gamecocks,ALA,SC,27,25,true,false,Bryant-Denny Stadium,100077,STATUS_FINAL
+401628391,2024,7,2,2024-10-12T23:00Z,false,true,2633,57,Tennessee Volunteers,Florida Gators,TENN,FLA,23,17,true,false,Neyland Stadium,101915,STATUS_FINAL
+401628388,2024,7,2,2024-10-12T23:30Z,false,true,99,145,LSU Tigers,Ole Miss Rebels,LSU,MISS,29,26,true,false,Tiger Stadium (LA),102212,STATUS_FINAL
+401635576,2024,7,2,2024-10-12T16:00Z,false,true,154,228,Wake Forest Demon Deacons,Clemson Tigers,WAKE,CLEM,14,49,false,true,Allegacy Federal Credit Union Stadium,31553,STATUS_FINAL
+401628981,2024,7,2,2024-10-12T19:30Z,false,false,87,24,Notre Dame Fighting Irish,Stanford Cardinal,ND,STAN,49,7,true,false,Notre Dame Stadium,77622,STATUS_FINAL
+401636896,2024,7,2,2024-10-13T00:00Z,false,true,277,66,West Virginia Mountaineers,Iowa State Cyclones,WVU,ISU,16,28,false,true,Milan Puskar Stadium,55202,STATUS_FINAL
+401636893,2024,7,2,2024-10-12T20:00Z,false,true,252,12,BYU Cougars,Arizona Wildcats,BYU,ARIZ,41,19,true,false,LaVell Edwards Stadium,64420,STATUS_FINAL
+401643728,2024,7,2,2024-10-13T03:00Z,false,true,62,68,Hawai'i Rainbow Warriors,Boise State Broncos,HAW,BOIS,7,28,false,true,Clarence T.C. Ching Athletics Complex,15194,STATUS_FINAL
+401636894,2024,7,2,2024-10-13T02:25Z,false,true,38,2306,Colorado Buffaloes,Kansas State Wildcats,COLO,KSU,28,31,false,true,Folsom Field,53972,STATUS_FINAL
+401628389,2024,7,2,2024-10-12T16:00Z,false,false,113,142,Massachusetts Minutemen,Missouri Tigers,MASS,MIZ,3,45,false,true,Warren McGuirk Alumni Stadium,16102,STATUS_FINAL
+401635575,2024,7,2,2024-10-12T19:30Z,false,true,221,25,Pittsburgh Panthers,California Golden Bears,PITT,CAL,17,15,true,false,Acrisure Stadium,49773,STATUS_FINAL
+401628511,2024,7,2,2024-10-12T19:30Z,false,true,356,2509,Illinois Fighting Illini,Purdue Boilermakers,ILL,PUR,50,49,true,false,Gies Memorial Stadium,55815,STATUS_FINAL
+401628512,2024,7,2,2024-10-12T16:00Z,false,true,2294,264,Iowa Hawkeyes,Washington Huskies,IOWA,WASH,40,16,true,false,Kinnick Stadium,69250,STATUS_FINAL
+401628517,2024,7,2,2024-10-12T16:00Z,false,true,164,275,Rutgers Scarlet Knights,Wisconsin Badgers,RUTG,WIS,7,42,false,true,SHI Stadium,50111,STATUS_FINAL
+401635577,2024,7,2,2024-10-12T16:00Z,false,true,153,59,North Carolina Tar Heels,Georgia Tech Yellow Jackets,UNC,GT,34,41,false,true,Kenan Stadium,44482,STATUS_FINAL
+401644743,2024,7,2,2024-10-12T16:00Z,false,true,2309,2050,Kent State Golden Flashes,Ball State Cardinals,KENT,BALL,35,37,false,true,Zoeller Field at Dix Stadium,7322,STATUS_FINAL
+401644745,2024,7,2,2024-10-12T16:00Z,false,true,2084,2649,Buffalo Bulls,Toledo Rockets,BUFF,TOL,30,15,true,false,Broadview Stadium,13996,STATUS_FINAL
+401645342,2024,7,2,2024-10-12T16:00Z,false,true,349,5,Army Black Knights,UAB Blazers,ARMY,UAB,44,10,true,false,Michie Stadium,29002,STATUS_FINAL
+401644685,2024,7,2,2024-10-12T18:00Z,false,true,2199,193,Eastern Michigan Eagles,Miami (OH) RedHawks,EMU,M-OH,14,38,false,true,Rynearson Stadium,16903,STATUS_FINAL
+401635578,2024,7,2,2024-10-12T19:30Z,false,true,258,97,Virginia Cavaliers,Louisville Cardinals,UVA,LOU,20,24,false,true,Scott Stadium,32688,STATUS_FINAL
+401636895,2024,7,2,2024-10-12T19:30Z,false,true,2116,2132,UCF Knights,Cincinnati Bearcats,UCF,CIN,13,19,false,true,Acrisure Bounce House,42611,STATUS_FINAL
+401643729,2024,7,2,2024-10-12T19:30Z,false,true,36,23,Colorado State Rams,San José State Spartans,CSU,SJSU,31,24,true,false,Canvas Stadium,27280,STATUS_FINAL
+401643732,2024,7,2,2024-10-12T19:30Z,false,true,2751,21,Wyoming Cowboys,San Diego State Aztecs,WYO,SDSU,24,27,false,true,War Memorial Stadium,23155,STATUS_FINAL
+401643805,2024,7,2,2024-10-12T19:30Z,false,true,2247,295,Georgia State Panthers,Old Dominion Monarchs,GAST,ODU,14,21,false,true,Center Parc Stadium,12280,STATUS_FINAL
+401644742,2024,7,2,2024-10-12T19:30Z,false,true,2711,2006,Western Michigan Broncos,Akron Zips,WMU,AKR,34,24,true,false,Waldo Stadium,19507,STATUS_FINAL
+401644744,2024,7,2,2024-10-12T19:30Z,false,true,189,2459,Bowling Green Falcons,Northern Illinois Huskies,BGSU,NIU,7,17,false,true,Doyt L. Perry Stadium,9559,STATUS_FINAL
+401645341,2024,7,2,2024-10-12T19:30Z,false,true,58,235,South Florida Bulls,Memphis Tigers,USF,MEM,3,21,false,true,Camping World Stadium,3365,STATUS_FINAL
+401644746,2024,7,2,2024-10-12T20:00Z,false,true,2117,195,Central Michigan Chippewas,Ohio Bobcats,CMU,OHIO,25,27,false,true,Kelly/Shorts Stadium,22437,STATUS_FINAL
+401643807,2024,7,2,2024-10-12T21:00Z,false,true,2433,2572,UL Monroe Warhawks,Southern Miss Golden Eagles,ULM,USM,38,21,true,false,Malone Stadium,22645,STATUS_FINAL
+401643727,2024,7,2,2024-10-12T23:00Z,false,true,167,2005,New Mexico Lobos,Air Force Falcons,UNM,AFA,52,37,true,false,University Stadium (NM),15561,STATUS_FINAL
+401643730,2024,7,2,2024-10-12T23:00Z,false,false,278,265,Fresno State Bulldogs,Washington State Cougars,FRES,WSU,17,25,false,true,Valley Children's Stadium,41031,STATUS_FINAL
+401643808,2024,7,2,2024-10-12T23:00Z,false,true,326,2032,Texas State Bobcats,Arkansas State Red Wolves,TXST,ARST,41,9,true,false,UFCU Stadium,28000,STATUS_FINAL
+401645343,2024,7,2,2024-10-12T23:00Z,false,true,2226,249,Florida Atlantic Owls,North Texas Mean Green,FAU,UNT,37,41,false,true,Flagler Credit Union Stadium,14576,STATUS_FINAL
+401645344,2024,7,2,2024-10-12T23:00Z,false,true,242,2636,Rice Owls,UTSA Roadrunners,RICE,UTSA,29,27,true,false,Rice Stadium,18660,STATUS_FINAL
+401643731,2024,7,2,2024-10-12T23:30Z,false,false,2440,204,Nevada Wolf Pack,Oregon State Beavers,NEV,ORST,42,37,true,false,Mackay Stadium,21541,STATUS_FINAL
+401643806,2024,7,2,2024-10-12T23:30Z,false,true,309,2026,Louisiana Ragin' Cajuns,App State Mountaineers,UL,APP,34,24,true,false,Our Lady of Lourdes Stadium,14058,STATUS_FINAL
+401628387,2024,7,2,2024-10-12T23:55Z,false,true,96,238,Kentucky Wildcats,Vanderbilt Commodores,UK,VAN,13,20,false,true,Kroger Field,62120,STATUS_FINAL
+401635574,2024,7,2,2024-10-13T00:00Z,false,true,152,183,NC State Wolfpack,Syracuse Orange,NCSU,SYR,17,24,false,true,Carter-Finley Stadium,56919,STATUS_FINAL
+401643804,2024,7,2,2024-10-13T00:00Z,false,true,290,276,Georgia Southern Eagles,Marshall Thundering Herd,GASO,MRSH,24,23,true,false,Allen E. Paulson Stadium,24048,STATUS_FINAL
+401628514,2024,7,2,2024-10-13T01:00Z,false,true,26,135,UCLA Bruins,Minnesota Golden Gophers,UCLA,MINN,17,21,false,true,Rose Bowl,42012,STATUS_FINAL
+401643809,2024,8,2,2024-10-15T23:30Z,false,true,6,2653,South Alabama Jaguars,Troy Trojans,USA,TROY,25,9,true,false,Hancock Whitney Stadium,25450,STATUS_FINAL
+401641019,2024,8,2,2024-10-16T00:00Z,false,true,2393,338,Middle Tennessee Blue Raiders,Kennesaw State Owls,MTSU,KENN,14,5,true,false,"Johnny ""Red"" Floyd Stadium",10200,STATUS_FINAL
+401641010,2024,8,2,2024-10-16T01:00Z,false,true,166,2348,New Mexico State Aggies,Louisiana Tech Bulldogs,NMSU,LT,33,30,true,false,Aggie Memorial Stadium,9671,STATUS_FINAL
+401641038,2024,8,2,2024-10-16T23:00Z,false,true,2534,98,Sam Houston Bearkats,Western Kentucky Hilltoppers,SHSU,WKU,14,31,false,true,Elliott T. Bowers Stadium,8914,STATUS_FINAL
+401640983,2024,8,2,2024-10-17T01:00Z,false,true,2638,2229,UTEP Miners,Florida International Panthers,UTEP,FIU,30,21,true,false,Sun Bowl,11373,STATUS_FINAL
+401643810,2024,8,2,2024-10-17T23:00Z,false,true,276,2247,Marshall Thundering Herd,Georgia State Panthers,MRSH,GAST,35,20,true,false,Joan C. Edwards Stadium,20703,STATUS_FINAL
+401634768,2024,8,2,2024-10-17T23:30Z,false,true,259,103,Virginia Tech Hokies,Boston College Eagles,VT,BC,42,21,true,false,Lane Stadium,65632,STATUS_FINAL
+401628523,2024,8,2,2024-10-19T00:00Z,false,true,2509,2483,Purdue Boilermakers,Oregon Ducks,PUR,ORE,0,35,false,true,Ross-Ade Stadium,57463,STATUS_FINAL
+401636898,2024,8,2,2024-10-19T02:15Z,false,true,252,197,BYU Cougars,Oklahoma State Cowboys,BYU,OKST,38,35,true,false,LaVell Edwards Stadium,62841,STATUS_FINAL
+401634769,2024,8,2,2024-10-18T23:00Z,false,true,150,52,Duke Blue Devils,Florida State Seminoles,DUKE,FSU,23,16,true,false,Wallace Wade Stadium,30735,STATUS_FINAL
+401643735,2024,8,2,2024-10-19T02:30Z,false,true,2440,278,Nevada Wolf Pack,Fresno State Bulldogs,NEV,FRES,21,24,false,true,Mackay Stadium,18319,STATUS_FINAL
+401628398,2024,8,2,2024-10-19T23:49Z,false,true,251,61,Texas Longhorns,Georgia Bulldogs,TEX,UGA,15,30,false,true,DKR-Texas Memorial Stadium,105215,STATUS_FINAL
+401635589,2024,8,2,2024-10-19T16:00Z,false,true,97,2390,Louisville Cardinals,Miami Hurricanes,LOU,MIA,45,52,false,true,L&N Federal Credit Union Stadium,59115,STATUS_FINAL
+401628397,2024,8,2,2024-10-19T19:30Z,false,true,2633,333,Tennessee Volunteers,Alabama Crimson Tide,TENN,ALA,24,17,true,false,Neyland Stadium,101915,STATUS_FINAL
+401628392,2024,8,2,2024-10-19T23:00Z,false,true,8,99,Arkansas Razorbacks,LSU Tigers,ARK,LSU,10,34,false,true,Donald W. Reynolds Razorback Stadium,75893,STATUS_FINAL
+401636900,2024,8,2,2024-10-19T23:30Z,false,true,66,2116,Iowa State Cyclones,UCF Knights,ISU,UCF,38,35,true,false,Jack Trice Stadium,61500,STATUS_FINAL
+401635588,2024,8,2,2024-10-19T16:00Z,false,true,228,258,Clemson Tigers,Virginia Cavaliers,CLEM,UVA,48,31,true,false,"Memorial Stadium (Clemson, SC)",80100,STATUS_FINAL
+401628982,2024,8,2,2024-10-19T19:30Z,true,false,59,87,Georgia Tech Yellow Jackets,Notre Dame Fighting Irish,GT,ND,13,31,false,true,Mercedes-Benz Stadium,59021,STATUS_FINAL
+401628394,2024,8,2,2024-10-19T20:15Z,false,true,344,245,Mississippi State Bulldogs,Texas A&M Aggies,MSST,TA&M,24,34,false,true,Davis Wade Stadium,50127,STATUS_FINAL
+401628519,2024,8,2,2024-10-19T16:00Z,false,true,84,158,Indiana Hoosiers,Nebraska Cornhuskers,IU,NEB,56,7,true,false,"Memorial Stadium (Bloomington, IN)",53082,STATUS_FINAL
+401636904,2024,8,2,2024-10-19T23:30Z,false,true,277,2306,West Virginia Mountaineers,Kansas State Wildcats,WVU,KSU,18,45,false,true,Milan Puskar Stadium,54327,STATUS_FINAL
+401628395,2024,8,2,2024-10-19T16:00Z,false,true,142,2,Missouri Tigers,Auburn Tigers,MIZ,AUB,21,17,true,false,Memorial Stadium,62621,STATUS_FINAL
+401635590,2024,8,2,2024-10-20T00:00Z,false,true,24,2567,Stanford Cardinal,SMU Mustangs,STAN,SMU,10,40,false,true,Stanford Stadium,19117,STATUS_FINAL
+401628518,2024,8,2,2024-10-19T19:30Z,false,true,356,130,Illinois Fighting Illini,Michigan Wolverines,ILL,MICH,21,7,true,false,Gies Memorial Stadium,60670,STATUS_FINAL
+401645346,2024,8,2,2024-10-19T16:00Z,false,true,349,151,Army Black Knights,East Carolina Pirates,ARMY,ECU,45,28,true,false,Michie Stadium,23044,STATUS_FINAL
+401645347,2024,8,2,2024-10-19T19:30Z,false,true,2426,2429,Navy Midshipmen,Charlotte 49ers,NAVY,CLT,51,17,true,false,Navy-Marine Corps Memorial Stadium,35094,STATUS_FINAL
+401628522,2024,8,2,2024-10-19T16:00Z,false,true,77,275,Northwestern Wildcats,Wisconsin Badgers,NU,WIS,3,23,false,true,Northwestern Medicine Field at Martin Stadium,12023,STATUS_FINAL
+401628524,2024,8,2,2024-10-19T16:00Z,false,true,164,26,Rutgers Scarlet Knights,UCLA Bruins,RUTG,UCLA,32,35,false,true,SHI Stadium,53726,STATUS_FINAL
+401629034,2024,8,2,2024-10-19T16:00Z,false,false,41,154,UConn Huskies,Wake Forest Demon Deacons,CONN,WAKE,20,23,false,true,Pratt & Whitney Stadium,30122,STATUS_FINAL
+401636899,2024,8,2,2024-10-19T16:00Z,false,true,2132,9,Cincinnati Bearcats,Arizona State Sun Devils,CIN,ASU,24,14,true,false,Nippert Stadium,38007,STATUS_FINAL
+401643811,2024,8,2,2024-10-19T16:00Z,false,true,324,309,Coastal Carolina Chanticleers,Louisiana Ragin' Cajuns,CCU,UL,24,34,false,true,Brooks Stadium (SC),17812,STATUS_FINAL
+401628396,2024,8,2,2024-10-19T16:45Z,false,true,201,2579,Oklahoma Sooners,South Carolina Gamecocks,OU,SC,9,35,false,true,"Memorial Stadium (Norman, OK)",83331,STATUS_FINAL
+401644750,2024,8,2,2024-10-19T18:00Z,false,true,2199,2117,Eastern Michigan Eagles,Central Michigan Chippewas,EMU,CMU,38,34,true,false,Rynearson Stadium,17974,STATUS_FINAL
+401645351,2024,8,2,2024-10-19T18:00Z,false,true,218,202,Temple Owls,Tulsa Golden Hurricane,TEM,TLSA,20,10,true,false,Lincoln Financial Field,18721,STATUS_FINAL
+401635587,2024,8,2,2024-10-19T19:30Z,false,true,25,152,California Golden Bears,NC State Wolfpack,CAL,NCSU,23,24,false,true,California Memorial Stadium,35303,STATUS_FINAL
+401636901,2024,8,2,2024-10-19T19:30Z,false,true,2305,248,Kansas Jayhawks,Houston Cougars,KU,HOU,42,14,true,false,GEHA Field at Arrowhead Stadium,38619,STATUS_FINAL
+401643736,2024,8,2,2024-10-19T19:30Z,false,false,265,62,Washington State Cougars,Hawai'i Rainbow Warriors,WSU,HAW,42,10,true,false,Martin Stadium,25112,STATUS_FINAL
+401643813,2024,8,2,2024-10-19T19:30Z,false,true,295,326,Old Dominion Monarchs,Texas State Bobcats,ODU,TXST,24,14,true,false,S.B. Ballard Stadium,19129,STATUS_FINAL
+401644686,2024,8,2,2024-10-19T19:30Z,false,true,193,195,Miami (OH) RedHawks,Ohio Bobcats,M-OH,OHIO,30,20,true,false,Yager Stadium,17021,STATUS_FINAL
+401644748,2024,8,2,2024-10-19T19:30Z,false,true,189,2309,Bowling Green Falcons,Kent State Golden Flashes,BGSU,KENT,27,6,true,false,Doyt L. Perry Stadium,20858,STATUS_FINAL
+401644749,2024,8,2,2024-10-19T19:30Z,false,true,2084,2711,Buffalo Bulls,Western Michigan Broncos,BUFF,WMU,41,48,false,true,Broadview Stadium,18487,STATUS_FINAL
+401644751,2024,8,2,2024-10-19T19:30Z,false,true,2459,2649,Northern Illinois Huskies,Toledo Rockets,NIU,TOL,6,13,false,true,Huskie Stadium,18350,STATUS_FINAL
+401645345,2024,8,2,2024-10-19T19:30Z,false,true,58,5,South Florida Bulls,UAB Blazers,USF,UAB,35,25,true,false,Raymond James Stadium,28154,STATUS_FINAL
+401645348,2024,8,2,2024-10-19T19:30Z,false,true,2636,2226,UTSA Roadrunners,Florida Atlantic Owls,UTSA,FAU,38,24,true,false,Alamodome,20802,STATUS_FINAL
+401645350,2024,8,2,2024-10-19T19:30Z,false,true,2655,242,Tulane Green Wave,Rice Owls,TULN,RICE,24,10,true,false,Yulman Stadium,22897,STATUS_FINAL
+401628521,2024,8,2,2024-10-19T20:00Z,false,true,120,30,Maryland Terrapins,USC Trojans,MD,USC,29,28,true,false,SECU Stadium,43013,STATUS_FINAL
+401636897,2024,8,2,2024-10-19T20:00Z,false,true,12,38,Arizona Wildcats,Colorado Buffaloes,ARIZ,COLO,7,34,false,true,Casino Del Sol Stadium,50724,STATUS_FINAL
+401636902,2024,8,2,2024-10-19T20:00Z,false,true,2641,239,Texas Tech Red Raiders,Baylor Bears,TTU,BAY,35,59,false,true,Galaxy Stadium,60229,STATUS_FINAL
+401643737,2024,8,2,2024-10-19T20:00Z,false,true,328,167,Utah State Aggies,New Mexico Lobos,USU,UNM,45,50,false,true,Maverik Stadium,14584,STATUS_FINAL
+401643738,2024,8,2,2024-10-19T20:00Z,false,true,23,2751,San José State Spartans,Wyoming Cowboys,SJSU,WYO,24,14,true,false,CEFCU Stadium,17101,STATUS_FINAL
+401643812,2024,8,2,2024-10-19T20:00Z,false,true,290,256,Georgia Southern Eagles,James Madison Dukes,GASO,JMU,28,14,true,false,Allen E. Paulson Stadium,20153,STATUS_FINAL
+401628399,2024,8,2,2024-10-19T23:00Z,false,false,238,2050,Vanderbilt Commodores,Ball State Cardinals,VAN,BALL,24,14,true,false,FirstBank Stadium,27884,STATUS_FINAL
+401643814,2024,8,2,2024-10-19T23:00Z,false,true,2572,2032,Southern Miss Golden Eagles,Arkansas State Red Wolves,USM,ARST,28,44,false,true,M. M. Roberts Stadium,24542,STATUS_FINAL
+401628520,2024,8,2,2024-10-19T23:30Z,false,true,127,2294,Michigan State Spartans,Iowa Hawkeyes,MSU,IOWA,32,20,true,false,Spartan Stadium,69682,STATUS_FINAL
+401645349,2024,8,2,2024-10-19T23:30Z,false,true,235,249,Memphis Tigers,North Texas Mean Green,MEM,UNT,52,44,true,false,Simmons Bank Liberty Stadium,24110,STATUS_FINAL
+401628393,2024,8,2,2024-10-19T23:45Z,false,true,57,96,Florida Gators,Kentucky Wildcats,FLA,UK,48,20,true,false,Ben Hill Griffin Stadium,0,STATUS_FINAL
+401643734,2024,8,2,2024-10-20T00:00Z,false,true,2005,36,Air Force Falcons,Colorado State Rams,AFA,CSU,13,21,false,true,Falcon Stadium,27598,STATUS_FINAL
+401643739,2024,8,2,2024-10-20T02:00Z,false,false,204,2439,Oregon State Beavers,UNLV Rebels,ORST,UNLV,25,33,false,true,Reser Stadium,35195,STATUS_FINAL
+401636903,2024,8,2,2024-10-20T02:30Z,false,true,254,2628,Utah Utes,TCU Horned Frogs,UTAH,TCU,7,13,false,true,Rice-Eccles Stadium,53299,STATUS_FINAL
+401640984,2024,9,2,2024-10-22T23:30Z,false,true,2229,2534,Florida International Panthers,Sam Houston Bearkats,FIU,SHSU,7,10,false,true,Pitbull Stadium,10625,STATUS_FINAL
+401641011,2024,9,2,2024-10-23T00:00Z,false,true,2348,2638,Louisiana Tech Bulldogs,UTEP Miners,LT,UTEP,14,10,true,false,Joe Aillet Stadium,15168,STATUS_FINAL
+401640993,2024,9,2,2024-10-23T23:00Z,false,true,338,2335,Kennesaw State Owls,Liberty Flames,KENN,LIB,27,24,true,false,Walens Family Field at Fifth Third Stadium,8209,STATUS_FINAL
+401641003,2024,9,2,2024-10-23T23:30Z,false,true,55,2393,Jacksonville State Gamecocks,Middle Tennessee Blue Raiders,JVST,MTSU,42,20,true,false,AmFirst Stadium,17988,STATUS_FINAL
+401634770,2024,9,2,2024-10-24T23:30Z,false,true,221,183,Pittsburgh Panthers,Syracuse Orange,PITT,SYR,41,13,true,false,Acrisure Stadium,47266,STATUS_FINAL
+401643815,2024,9,2,2024-10-24T23:00Z,false,true,295,290,Old Dominion Monarchs,Georgia Southern Eagles,ODU,GASO,47,19,true,false,S.B. Ballard Stadium,18281,STATUS_FINAL
+401643740,2024,9,2,2024-10-26T02:30Z,false,true,2439,68,UNLV Rebels,Boise State Broncos,UNLV,BOIS,24,29,false,true,Allegiant Stadium,42228,STATUS_FINAL
+401634771,2024,9,2,2024-10-25T23:30Z,false,true,103,97,Boston College Eagles,Louisville Cardinals,BC,LOU,27,31,false,true,"Alumni Stadium (Chestnut Hill, MA)",42887,STATUS_FINAL
+401628532,2024,9,2,2024-10-26T03:00Z,false,true,30,164,USC Trojans,Rutgers Scarlet Knights,USC,RUTG,42,20,true,false,Los Angeles Memorial Coliseum,63404,STATUS_FINAL
+401628525,2024,9,2,2024-10-26T19:30Z,false,true,2483,356,Oregon Ducks,Illinois Fighting Illini,ORE,ILL,38,9,true,false,Autzen Stadium,59830,STATUS_FINAL
+401628531,2024,9,2,2024-10-26T23:30Z,false,true,275,213,Wisconsin Badgers,Penn State Nittany Lions,WIS,PSU,13,28,false,true,Camp Randall Stadium,76403,STATUS_FINAL
+401628530,2024,9,2,2024-10-26T16:00Z,false,true,194,158,Ohio State Buckeyes,Nebraska Cornhuskers,OSU,NEB,21,17,true,false,Ohio Stadium,104830,STATUS_FINAL
+401628405,2024,9,2,2024-10-26T20:15Z,false,true,238,251,Vanderbilt Commodores,Texas Longhorns,VAN,TEX,24,27,false,true,FirstBank Stadium,28934,STATUS_FINAL
+401635596,2024,9,2,2024-10-26T23:00Z,false,true,2390,52,Miami Hurricanes,Florida State Seminoles,MIA,FSU,36,14,true,false,Hard Rock Stadium,66200,STATUS_FINAL
+401628404,2024,9,2,2024-10-26T23:30Z,false,true,245,99,Texas A&M Aggies,LSU Tigers,TA&M,LSU,38,23,true,false,Kyle Field,108852,STATUS_FINAL
+401636911,2024,9,2,2024-10-26T19:30Z,false,true,2116,252,UCF Knights,BYU Cougars,UCF,BYU,24,37,false,true,Acrisure Bounce House,42144,STATUS_FINAL
+401628983,2024,9,2,2024-10-26T16:00Z,true,false,2426,87,Navy Midshipmen,Notre Dame Fighting Irish,NAVY,ND,14,51,false,true,MetLife Stadium,76112,STATUS_FINAL
+401628526,2024,9,2,2024-10-26T16:00Z,false,true,84,264,Indiana Hoosiers,Washington Huskies,IU,WASH,31,17,true,false,"Memorial Stadium (Bloomington, IN)",53082,STATUS_FINAL
+401628400,2024,9,2,2024-10-26T19:30Z,false,true,333,142,Alabama Crimson Tide,Missouri Tigers,ALA,MIZ,34,0,true,false,Bryant-Denny Stadium,100077,STATUS_FINAL
+401636909,2024,9,2,2024-10-27T00:00Z,false,true,2306,2305,Kansas State Wildcats,Kansas Jayhawks,KSU,KU,29,27,true,false,Bill Snyder Family Stadium,52074,STATUS_FINAL
+401628402,2024,9,2,2024-10-26T16:00Z,false,true,145,201,Ole Miss Rebels,Oklahoma Sooners,MISS,OU,26,14,true,false,Vaught-Hemingway Stadium,67926,STATUS_FINAL
+401635595,2024,9,2,2024-10-27T00:00Z,false,true,150,2567,Duke Blue Devils,SMU Mustangs,DUKE,SMU,27,28,false,true,Wallace Wade Stadium,30241,STATUS_FINAL
+401635597,2024,9,2,2024-10-26T16:00Z,false,true,259,59,Virginia Tech Hokies,Georgia Tech Yellow Jackets,VT,GT,21,6,true,false,Lane Stadium,65633,STATUS_FINAL
+401635598,2024,9,2,2024-10-26T16:00Z,false,true,258,153,Virginia Cavaliers,North Carolina Tar Heels,UVA,UNC,14,41,false,true,Scott Stadium,44550,STATUS_FINAL
+401644755,2024,9,2,2024-10-26T16:00Z,false,true,195,2084,Ohio Bobcats,Buffalo Bulls,OHIO,BUFF,47,16,true,false,Peden Stadium,16048,STATUS_FINAL
+401645353,2024,9,2,2024-10-26T16:00Z,false,true,235,2429,Memphis Tigers,Charlotte 49ers,MEM,CLT,33,28,true,false,Simmons Bank Liberty Stadium,25478,STATUS_FINAL
+401645354,2024,9,2,2024-10-26T16:00Z,false,true,249,2655,North Texas Mean Green,Tulane Green Wave,UNT,TULN,37,45,false,true,DATCU Stadium,23138,STATUS_FINAL
+401628403,2024,9,2,2024-10-26T16:45Z,false,true,344,8,Mississippi State Bulldogs,Arkansas Razorbacks,MSST,ARK,25,58,false,true,Davis Wade Stadium,49303,STATUS_FINAL
+401643816,2024,9,2,2024-10-26T17:00Z,false,true,2026,2247,App State Mountaineers,Georgia State Panthers,APP,GAST,33,26,true,false,Kidd Brewer Stadium,33783,STATUS_FINAL
+401644687,2024,9,2,2024-10-26T18:00Z,false,true,193,2117,Miami (OH) RedHawks,Central Michigan Chippewas,M-OH,CMU,46,7,true,false,Yager Stadium,10661,STATUS_FINAL
+401645352,2024,9,2,2024-10-26T18:00Z,false,true,151,218,East Carolina Pirates,Temple Owls,ECU,TEM,56,34,true,false,Dowdy-Ficklen Stadium,33744,STATUS_FINAL
+401628527,2024,9,2,2024-10-26T19:30Z,false,true,2294,77,Iowa Hawkeyes,Northwestern Wildcats,IOWA,NU,40,14,true,false,Kinnick Stadium,69250,STATUS_FINAL
+401628528,2024,9,2,2024-10-26T19:30Z,false,true,135,120,Minnesota Golden Gophers,Maryland Terrapins,MINN,MD,48,23,true,false,Huntington Bank Stadium,48696,STATUS_FINAL
+401629035,2024,9,2,2024-10-26T19:30Z,false,false,41,242,UConn Huskies,Rice Owls,CONN,RICE,17,10,true,false,Pratt & Whitney Stadium,23711,STATUS_FINAL
+401635599,2024,9,2,2024-10-26T19:30Z,false,true,24,154,Stanford Cardinal,Wake Forest Demon Deacons,STAN,WAKE,24,27,false,true,Stanford Stadium,23471,STATUS_FINAL
+401636906,2024,9,2,2024-10-26T19:30Z,false,true,239,197,Baylor Bears,Oklahoma State Cowboys,BAY,OKST,38,28,true,false,McLane Stadium,44987,STATUS_FINAL
+401636910,2024,9,2,2024-10-26T19:30Z,false,true,2628,2641,TCU Horned Frogs,Texas Tech Red Raiders,TCU,TTU,35,34,true,false,Amon G. Carter Stadium,42144,STATUS_FINAL
+401643817,2024,9,2,2024-10-26T19:30Z,false,true,256,2572,James Madison Dukes,Southern Miss Golden Eagles,JMU,USM,32,15,true,false,Bridgeforth Stadium,25399,STATUS_FINAL
+401644752,2024,9,2,2024-10-26T19:30Z,false,true,2006,2199,Akron Zips,Eastern Michigan Eagles,AKR,EMU,25,21,true,false,InfoCision Stadium,4277,STATUS_FINAL
+401644753,2024,9,2,2024-10-26T19:30Z,false,true,2050,2459,Ball State Cardinals,Northern Illinois Huskies,BALL,NIU,25,23,true,false,Scheumann Stadium,15318,STATUS_FINAL
+401644754,2024,9,2,2024-10-26T19:30Z,false,true,2649,189,Toledo Rockets,Bowling Green Falcons,TOL,BGSU,26,41,false,true,Glass Bowl,29697,STATUS_FINAL
+401644756,2024,9,2,2024-10-26T19:30Z,false,true,2711,2309,Western Michigan Broncos,Kent State Golden Flashes,WMU,KENT,52,21,true,false,Waldo Stadium,23537,STATUS_FINAL
+401645308,2024,9,2,2024-10-26T19:30Z,false,false,113,2681,Massachusetts Minutemen,Wagner Seahawks,MASS,WAG,35,7,true,false,Warren McGuirk Alumni Stadium,14374,STATUS_FINAL
+401645355,2024,9,2,2024-10-26T19:30Z,false,true,202,2636,Tulsa Golden Hurricane,UTSA Roadrunners,TLSA,UTSA,46,45,true,false,H. A. Chapman Stadium,17439,STATUS_FINAL
+401635594,2024,9,2,2024-10-26T20:00Z,false,false,25,204,California Golden Bears,Oregon State Beavers,CAL,ORST,44,7,true,false,California Memorial Stadium,33090,STATUS_FINAL
+401643741,2024,9,2,2024-10-26T21:00Z,false,true,36,167,Colorado State Rams,New Mexico Lobos,CSU,UNM,17,6,true,false,Canvas Stadium,36980,STATUS_FINAL
+401643819,2024,9,2,2024-10-26T21:00Z,false,true,6,2433,South Alabama Jaguars,UL Monroe Warhawks,USA,ULM,46,17,true,false,Hancock Whitney Stadium,16746,STATUS_FINAL
+401636905,2024,9,2,2024-10-26T23:00Z,false,true,12,277,Arizona Wildcats,West Virginia Mountaineers,ARIZ,WVU,26,31,false,true,Casino Del Sol Stadium,49888,STATUS_FINAL
+401636908,2024,9,2,2024-10-26T23:00Z,false,true,248,254,Houston Cougars,Utah Utes,HOU,UTAH,17,14,true,false,TDECU Stadium,28251,STATUS_FINAL
+401643745,2024,9,2,2024-10-26T23:00Z,false,true,2751,328,Wyoming Cowboys,Utah State Aggies,WYO,USU,25,27,false,true,War Memorial Stadium,17724,STATUS_FINAL
+401643818,2024,9,2,2024-10-26T23:00Z,false,true,2032,2653,Arkansas State Red Wolves,Troy Trojans,ARST,TROY,34,31,true,false,Centennial Bank Stadium,17162,STATUS_FINAL
+401628529,2024,9,2,2024-10-26T23:30Z,false,true,130,127,Michigan Wolverines,Michigan State Spartans,MICH,MSU,24,17,true,false,Michigan Stadium,110849,STATUS_FINAL
+401628401,2024,9,2,2024-10-26T23:45Z,false,true,96,2,Kentucky Wildcats,Auburn Tigers,UK,AUB,10,24,false,true,Kroger Field,60605,STATUS_FINAL
+401643742,2024,9,2,2024-10-27T00:00Z,false,true,278,23,Fresno State Bulldogs,San José State Spartans,FRES,SJSU,33,10,true,false,Valley Children's Stadium,41343,STATUS_FINAL
+401636907,2024,9,2,2024-10-27T02:15Z,false,true,38,2132,Colorado Buffaloes,Cincinnati Bearcats,COLO,CIN,34,23,true,false,Folsom Field,53202,STATUS_FINAL
+401643744,2024,9,2,2024-10-27T02:30Z,false,false,21,265,San Diego State Aztecs,Washington State Cougars,SDSU,WSU,26,29,false,true,Snapdragon Stadium,26937,STATUS_FINAL
+401643743,2024,9,2,2024-10-27T03:59Z,false,true,62,2440,Hawai'i Rainbow Warriors,Nevada Wolf Pack,HAW,NEV,34,13,true,false,Clarence T.C. Ching Athletics Complex,12006,STATUS_FINAL
+401640985,2024,10,2,2024-10-29T23:00Z,false,true,2229,166,Florida International Panthers,New Mexico State Aggies,FIU,NMSU,34,13,true,false,Pitbull Stadium,9103,STATUS_FINAL
+401643820,2024,10,2,2024-10-29T23:30Z,false,true,326,309,Texas State Bobcats,Louisiana Ragin' Cajuns,TXST,UL,17,23,false,true,UFCU Stadium,16831,STATUS_FINAL
+401641012,2024,10,2,2024-10-30T00:00Z,false,true,2534,2348,Sam Houston Bearkats,Louisiana Tech Bulldogs,SHSU,LT,9,3,true,false,Elliott T. Bowers Stadium,9128,STATUS_FINAL
+401640994,2024,10,2,2024-10-30T23:00Z,false,true,2335,55,Liberty Flames,Jacksonville State Gamecocks,LIB,JVST,21,31,false,true,Williams Stadium (VA),18069,STATUS_FINAL
+401641020,2024,10,2,2024-10-30T23:30Z,false,true,98,338,Western Kentucky Hilltoppers,Kennesaw State Owls,WKU,KENN,31,14,true,false,Houchens Industries-L.T. Smith Stadium,14547,STATUS_FINAL
+401645356,2024,10,2,2024-10-31T23:30Z,false,true,2429,2655,Charlotte 49ers,Tulane Green Wave,CLT,TULN,3,34,false,true,Jerry Richardson Stadium,12268,STATUS_FINAL
+401643747,2024,10,2,2024-11-02T00:00Z,false,true,68,21,Boise State Broncos,San Diego State Aztecs,BOIS,SDSU,56,24,true,false,Albertsons Stadium,36838,STATUS_FINAL
+401629036,2024,10,2,2024-11-01T23:00Z,false,false,41,2247,UConn Huskies,Georgia State Panthers,CONN,GAST,34,27,true,false,Pratt & Whitney Stadium,22028,STATUS_FINAL
+401645357,2024,10,2,2024-11-01T23:30Z,false,true,2226,58,Florida Atlantic Owls,South Florida Bulls,FAU,USF,21,44,false,true,Flagler Credit Union Stadium,20111,STATUS_FINAL
+401628536,2024,10,2,2024-11-02T19:30Z,false,true,130,2483,Michigan Wolverines,Oregon Ducks,MICH,ORE,17,38,false,true,Michigan Stadium,110576,STATUS_FINAL
+401628408,2024,10,2,2024-11-02T19:30Z,true,true,61,57,Georgia Bulldogs,Florida Gators,UGA,FLA,34,20,true,false,EverBank Stadium,76307,STATUS_FINAL
+401628539,2024,10,2,2024-11-02T16:00Z,false,true,213,194,Penn State Nittany Lions,Ohio State Buckeyes,PSU,OSU,13,20,false,true,Beaver Stadium,111030,STATUS_FINAL
+401635601,2024,10,2,2024-11-02T16:00Z,false,true,2390,150,Miami Hurricanes,Duke Blue Devils,MIA,DUKE,53,31,true,false,Hard Rock Stadium,60189,STATUS_FINAL
+401628412,2024,10,2,2024-11-02T23:45Z,false,true,2633,96,Tennessee Volunteers,Kentucky Wildcats,TENN,UK,28,18,true,false,Neyland Stadium,101915,STATUS_FINAL
+401628411,2024,10,2,2024-11-02T23:30Z,false,true,2579,245,South Carolina Gamecocks,Texas A&M Aggies,SC,TA&M,44,20,true,false,Williams-Brice Stadium,80298,STATUS_FINAL
+401636914,2024,10,2,2024-11-02T19:30Z,false,true,66,2641,Iowa State Cyclones,Texas Tech Red Raiders,ISU,TTU,22,23,false,true,Jack Trice Stadium,61500,STATUS_FINAL
+401635600,2024,10,2,2024-11-02T23:30Z,false,true,228,97,Clemson Tigers,Louisville Cardinals,CLEM,LOU,21,33,false,true,"Memorial Stadium (Clemson, SC)",80446,STATUS_FINAL
+401628534,2024,10,2,2024-11-02T19:30Z,false,true,127,84,Michigan State Spartans,Indiana Hoosiers,MSU,IU,10,47,false,true,Spartan Stadium,68423,STATUS_FINAL
+401636913,2024,10,2,2024-11-02T19:30Z,false,true,248,2306,Houston Cougars,Kansas State Wildcats,HOU,KSU,24,19,true,false,TDECU Stadium,23085,STATUS_FINAL
+401635627,2024,10,2,2024-11-03T00:00Z,false,true,2567,221,SMU Mustangs,Pittsburgh Panthers,SMU,PITT,48,25,true,false,Gerald J. Ford Stadium,34648,STATUS_FINAL
+401628406,2024,10,2,2024-11-02T16:00Z,false,true,8,145,Arkansas Razorbacks,Ole Miss Rebels,ARK,MISS,31,63,false,true,Donald W. Reynolds Razorback Stadium,72894,STATUS_FINAL
+401643746,2024,10,2,2024-11-02T16:00Z,false,false,349,2005,Army Black Knights,Air Force Falcons,ARMY,AFA,20,3,true,false,Michie Stadium,30046,STATUS_FINAL
+401628533,2024,10,2,2024-11-02T16:00Z,false,true,356,135,Illinois Fighting Illini,Minnesota Golden Gophers,ILL,MINN,17,25,false,true,Gies Memorial Stadium,58088,STATUS_FINAL
+401628410,2024,10,2,2024-11-02T16:00Z,false,false,201,311,Oklahoma Sooners,Maine Black Bears,OU,ME,59,14,true,false,"Memorial Stadium (Norman, OK)",82831,STATUS_FINAL
+401628538,2024,10,2,2024-11-02T16:00Z,false,true,2509,77,Purdue Boilermakers,Northwestern Wildcats,PUR,NU,20,26,false,true,Ross-Ade Stadium,61141,STATUS_FINAL
+401635516,2024,10,2,2024-11-02T16:00Z,false,true,152,24,NC State Wolfpack,Stanford Cardinal,NCSU,STAN,59,28,true,false,Carter-Finley Stadium,56919,STATUS_FINAL
+401635604,2024,10,2,2024-11-02T16:00Z,false,true,183,259,Syracuse Orange,Virginia Tech Hokies,SYR,VT,38,31,true,false,JMA Wireless Dome,38454,STATUS_FINAL
+401644757,2024,10,2,2024-11-02T16:00Z,false,true,2006,2084,Akron Zips,Buffalo Bulls,AKR,BUFF,30,41,false,true,InfoCision Stadium,4610,STATUS_FINAL
+401644758,2024,10,2,2024-11-02T16:00Z,false,true,2199,2649,Eastern Michigan Eagles,Toledo Rockets,EMU,TOL,28,29,false,true,Rynearson Stadium,13044,STATUS_FINAL
+401645359,2024,10,2,2024-11-02T16:00Z,false,true,2636,235,UTSA Roadrunners,Memphis Tigers,UTSA,MEM,44,36,true,false,Alamodome,17198,STATUS_FINAL
+401628407,2024,10,2,2024-11-02T16:45Z,false,true,2,238,Auburn Tigers,Vanderbilt Commodores,AUB,VAN,7,17,false,true,Jordan-Hare Stadium,88043,STATUS_FINAL
+401643821,2024,10,2,2024-11-02T18:30Z,false,true,2026,295,App State Mountaineers,Old Dominion Monarchs,APP,ODU,28,20,true,false,Kidd Brewer Stadium,34954,STATUS_FINAL
+401645358,2024,10,2,2024-11-02T18:30Z,false,true,5,202,UAB Blazers,Tulsa Golden Hurricane,UAB,TLSA,59,21,true,false,Protective Stadium,17944,STATUS_FINAL
+401628537,2024,10,2,2024-11-02T19:30Z,false,true,158,26,Nebraska Cornhuskers,UCLA Bruins,NEB,UCLA,20,27,false,true,"Memorial Stadium (Lincoln, NE)",87453,STATUS_FINAL
+401635602,2024,10,2,2024-11-02T19:30Z,false,true,52,153,Florida State Seminoles,North Carolina Tar Heels,FSU,UNC,11,35,false,true,Doak Campbell Stadium,55107,STATUS_FINAL
+401636915,2024,10,2,2024-11-02T19:30Z,false,true,197,9,Oklahoma State Cowboys,Arizona State Sun Devils,OKST,ASU,21,42,false,true,Boone Pickens Stadium,52202,STATUS_FINAL
+401636916,2024,10,2,2024-11-02T19:30Z,false,true,2116,12,UCF Knights,Arizona Wildcats,UCF,ARIZ,56,12,true,false,Acrisure Bounce House,42110,STATUS_FINAL
+401641026,2024,10,2,2024-11-02T19:30Z,false,true,2638,2393,UTEP Miners,Middle Tennessee Blue Raiders,UTEP,MTSU,13,20,false,true,Sun Bowl,14775,STATUS_FINAL
+401643822,2024,10,2,2024-11-02T19:30Z,false,true,276,2433,Marshall Thundering Herd,UL Monroe Warhawks,MRSH,ULM,28,23,true,false,Joan C. Edwards Stadium,21478,STATUS_FINAL
+401643750,2024,10,2,2024-11-02T20:00Z,false,true,167,2751,New Mexico Lobos,Wyoming Cowboys,UNM,WYO,45,49,false,true,University Stadium (NM),15046,STATUS_FINAL
+401643824,2024,10,2,2024-11-02T20:00Z,false,true,2653,324,Troy Trojans,Coastal Carolina Chanticleers,TROY,CCU,38,24,true,false,Veterans Memorial Stadium (AL),24223,STATUS_FINAL
+401645360,2024,10,2,2024-11-02T20:00Z,false,true,242,2426,Rice Owls,Navy Midshipmen,RICE,NAVY,24,10,true,false,Rice Stadium,21253,STATUS_FINAL
+401628409,2024,10,2,2024-11-02T20:15Z,false,false,344,113,Mississippi State Bulldogs,Massachusetts Minutemen,MSST,MASS,45,20,true,false,Davis Wade Stadium,48617,STATUS_FINAL
+401643749,2024,10,2,2024-11-02T23:00Z,false,true,278,62,Fresno State Bulldogs,Hawai'i Rainbow Warriors,FRES,HAW,20,21,false,true,Valley Children's Stadium,41575,STATUS_FINAL
+401628535,2024,10,2,2024-11-02T23:30Z,false,true,2294,275,Iowa Hawkeyes,Wisconsin Badgers,IOWA,WIS,42,10,true,false,Kinnick Stadium,69250,STATUS_FINAL
+401628540,2024,10,2,2024-11-02T23:30Z,false,true,264,30,Washington Huskies,USC Trojans,WASH,USC,26,21,true,false,Husky Stadium,71251,STATUS_FINAL
+401643823,2024,10,2,2024-11-02T23:30Z,false,true,6,290,South Alabama Jaguars,Georgia Southern Eagles,USA,GASO,30,34,false,true,Hancock Whitney Stadium,19667,STATUS_FINAL
+401636912,2024,10,2,2024-11-03T00:00Z,false,true,239,2628,Baylor Bears,TCU Horned Frogs,BAY,TCU,37,34,true,false,McLane Stadium,44171,STATUS_FINAL
+401643748,2024,10,2,2024-11-03T00:00Z,false,true,2440,36,Nevada Wolf Pack,Colorado State Rams,NEV,CSU,21,38,false,true,Mackay Stadium,16019,STATUS_FINAL
+401644760,2024,11,2,2024-11-06T00:30Z,false,true,2117,189,Central Michigan Chippewas,Bowling Green Falcons,CMU,BGSU,13,23,false,true,Kelly/Shorts Stadium,7832,STATUS_FINAL
+401644688,2024,11,2,2024-11-06T01:00Z,false,true,2050,193,Ball State Cardinals,Miami (OH) RedHawks,BALL,M-OH,21,27,false,true,Scheumann Stadium,6412,STATUS_FINAL
+401644761,2024,11,2,2024-11-07T00:00Z,false,true,2309,195,Kent State Golden Flashes,Ohio Bobcats,KENT,OHIO,0,41,false,true,Zoeller Field at Dix Stadium,5662,STATUS_FINAL
+401644762,2024,11,2,2024-11-07T00:00Z,false,true,2711,2459,Western Michigan Broncos,Northern Illinois Huskies,WMU,NIU,28,42,false,true,Waldo Stadium,10346,STATUS_FINAL
+401643825,2024,11,2,2024-11-08T01:00Z,false,true,324,2026,Coastal Carolina Chanticleers,App State Mountaineers,CCU,APP,38,24,true,false,Brooks Stadium (SC),19415,STATUS_FINAL
+401645361,2024,11,2,2024-11-08T01:00Z,false,true,151,2226,East Carolina Pirates,Florida Atlantic Owls,ECU,FAU,49,14,true,false,Dowdy-Ficklen Stadium,30573,STATUS_FINAL
+401634773,2024,11,2,2024-11-09T01:00Z,false,true,154,25,Wake Forest Demon Deacons,California Golden Bears,WAKE,CAL,36,46,false,true,Allegacy Federal Credit Union Stadium,28455,STATUS_FINAL
+401628542,2024,11,2,2024-11-09T02:00Z,false,true,26,2294,UCLA Bruins,Iowa Hawkeyes,UCLA,IOWA,20,17,true,false,Rose Bowl,53467,STATUS_FINAL
+401645362,2024,11,2,2024-11-09T02:00Z,false,true,235,242,Memphis Tigers,Rice Owls,MEM,RICE,27,20,true,false,Simmons Bank Liberty Stadium,23692,STATUS_FINAL
+401643754,2024,11,2,2024-11-09T03:30Z,false,true,21,167,San Diego State Aztecs,New Mexico Lobos,SDSU,UNM,16,21,false,true,Snapdragon Stadium,21832,STATUS_FINAL
+401628543,2024,11,2,2024-11-10T00:00Z,false,true,2483,120,Oregon Ducks,Maryland Terrapins,ORE,MD,39,18,true,false,Autzen Stadium,59245,STATUS_FINAL
+401628545,2024,11,2,2024-11-09T17:00Z,false,true,194,2509,Ohio State Buckeyes,Purdue Boilermakers,OSU,PUR,45,0,true,false,Ohio Stadium,103463,STATUS_FINAL
+401628414,2024,11,2,2024-11-09T20:30Z,false,true,145,61,Ole Miss Rebels,Georgia Bulldogs,MISS,UGA,28,10,true,false,Vaught-Hemingway Stadium,68126,STATUS_FINAL
+401635609,2024,11,2,2024-11-09T17:00Z,false,true,59,2390,Georgia Tech Yellow Jackets,Miami Hurricanes,GT,MIA,28,23,true,false,Bobby Dodd Stadium,47358,STATUS_FINAL
+401628417,2024,11,2,2024-11-09T17:00Z,false,true,251,57,Texas Longhorns,Florida Gators,TEX,FLA,49,17,true,false,DKR-Texas Memorial Stadium,103375,STATUS_FINAL
+401628546,2024,11,2,2024-11-10T01:00Z,false,true,213,264,Penn State Nittany Lions,Washington Huskies,PSU,WASH,35,6,true,false,Beaver Stadium,110233,STATUS_FINAL
+401628416,2024,11,2,2024-11-10T00:00Z,false,true,2633,344,Tennessee Volunteers,Mississippi State Bulldogs,TENN,MSST,33,14,true,false,Neyland Stadium,101915,STATUS_FINAL
+401628541,2024,11,2,2024-11-09T20:30Z,false,true,84,130,Indiana Hoosiers,Michigan Wolverines,IU,MICH,20,15,true,false,"Memorial Stadium (Bloomington, IN)",53082,STATUS_FINAL
+401636922,2024,11,2,2024-11-10T03:15Z,false,true,254,252,Utah Utes,BYU Cougars,UTAH,BYU,21,22,false,true,Rice-Eccles Stadium,54383,STATUS_FINAL
+401628984,2024,11,2,2024-11-10T00:30Z,false,false,87,52,Notre Dame Fighting Irish,Florida State Seminoles,ND,FSU,52,3,true,false,Notre Dame Stadium,77622,STATUS_FINAL
+401628413,2024,11,2,2024-11-10T00:30Z,false,true,99,333,LSU Tigers,Alabama Crimson Tide,LSU,ALA,13,42,false,true,Tiger Stadium (LA),102283,STATUS_FINAL
+401643752,2024,11,2,2024-11-10T01:00Z,false,true,68,2440,Boise State Broncos,Nevada Wolf Pack,BOIS,NEV,28,21,true,false,Albertsons Stadium,37143,STATUS_FINAL
+401636919,2024,11,2,2024-11-09T20:30Z,false,true,2305,66,Kansas Jayhawks,Iowa State Cyclones,KU,ISU,45,36,true,false,GEHA Field at Arrowhead Stadium,51109,STATUS_FINAL
+401635610,2024,11,2,2024-11-10T01:00Z,false,true,221,258,Pittsburgh Panthers,Virginia Cavaliers,PITT,UVA,19,24,false,true,Acrisure Stadium,56693,STATUS_FINAL
+401636921,2024,11,2,2024-11-09T21:00Z,false,true,2641,38,Texas Tech Red Raiders,Colorado Buffaloes,TTU,COLO,27,41,false,true,Galaxy Stadium,60229,STATUS_FINAL
+401643756,2024,11,2,2024-11-10T03:30Z,false,false,265,328,Washington State Cougars,Utah State Aggies,WSU,USU,49,28,true,false,Martin Stadium,20011,STATUS_FINAL
+401635607,2024,11,2,2024-11-09T20:35Z,false,true,259,228,Virginia Tech Hokies,Clemson Tigers,VT,CLEM,14,24,false,true,Lane Stadium,65632,STATUS_FINAL
+401628415,2024,11,2,2024-11-10T00:45Z,false,true,142,201,Missouri Tigers,Oklahoma Sooners,MIZ,OU,30,23,true,false,Memorial Stadium,62621,STATUS_FINAL
+401629045,2024,11,2,2024-11-09T20:30Z,false,true,249,349,North Texas Mean Green,Army Black Knights,UNT,ARMY,3,14,false,true,DATCU Stadium,28519,STATUS_FINAL
+401628544,2024,11,2,2024-11-09T17:00Z,false,true,164,135,Rutgers Scarlet Knights,Minnesota Golden Gophers,RUTG,MINN,26,19,true,false,SHI Stadium,44120,STATUS_FINAL
+401635606,2024,11,2,2024-11-09T17:00Z,false,true,103,183,Boston College Eagles,Syracuse Orange,BC,SYR,37,31,true,false,"Alumni Stadium (Chestnut Hill, MA)",44500,STATUS_FINAL
+401636918,2024,11,2,2024-11-09T17:00Z,false,true,2132,277,Cincinnati Bearcats,West Virginia Mountaineers,CIN,WVU,24,31,false,true,Nippert Stadium,38007,STATUS_FINAL
+401643828,2024,11,2,2024-11-09T17:00Z,false,true,2433,326,UL Monroe Warhawks,Texas State Bobcats,ULM,TXST,17,38,false,true,Malone Stadium,13720,STATUS_FINAL
+401645363,2024,11,2,2024-11-09T17:00Z,false,true,58,2426,South Florida Bulls,Navy Midshipmen,USF,NAVY,7,28,false,true,Raymond James Stadium,34091,STATUS_FINAL
+401640995,2024,11,2,2024-11-09T18:00Z,false,true,2393,2335,Middle Tennessee Blue Raiders,Liberty Flames,MTSU,LIB,17,37,false,true,"Johnny ""Red"" Floyd Stadium",13500,STATUS_FINAL
+401629037,2024,11,2,2024-11-09T19:30Z,false,false,5,41,UAB Blazers,UConn Huskies,UAB,CONN,23,31,false,true,Protective Stadium,18351,STATUS_FINAL
+401643829,2024,11,2,2024-11-09T20:00Z,false,true,2572,276,Southern Miss Golden Eagles,Marshall Thundering Herd,USM,MRSH,3,37,false,true,M. M. Roberts Stadium,20502,STATUS_FINAL
+401635608,2024,11,2,2024-11-09T20:30Z,false,true,152,150,NC State Wolfpack,Duke Blue Devils,NCSU,DUKE,19,29,false,true,Carter-Finley Stadium,56919,STATUS_FINAL
+401643755,2024,11,2,2024-11-09T20:30Z,false,false,204,23,Oregon State Beavers,San José State Spartans,ORST,SJSU,13,24,false,true,Reser Stadium,37187,STATUS_FINAL
+401643826,2024,11,2,2024-11-09T20:30Z,false,true,256,2247,James Madison Dukes,Georgia State Panthers,JMU,GAST,38,7,true,false,Bridgeforth Stadium,25709,STATUS_FINAL
+401641021,2024,11,2,2024-11-09T21:00Z,false,true,2638,338,UTEP Miners,Kennesaw State Owls,UTEP,KENN,43,35,true,false,Sun Bowl,14728,STATUS_FINAL
+401645364,2024,11,2,2024-11-09T21:00Z,false,true,2655,218,Tulane Green Wave,Temple Owls,TULN,TEM,52,6,true,false,Yulman Stadium,30000,STATUS_FINAL
+401628418,2024,11,2,2024-11-09T21:15Z,false,true,238,2579,Vanderbilt Commodores,South Carolina Gamecocks,VAN,SC,7,28,false,true,FirstBank Stadium,28934,STATUS_FINAL
+401641004,2024,11,2,2024-11-09T21:30Z,false,true,2348,55,Louisiana Tech Bulldogs,Jacksonville State Gamecocks,LT,JVST,37,44,false,true,Joe Aillet Stadium,16345,STATUS_FINAL
+401643827,2024,11,2,2024-11-09T22:00Z,false,true,309,2032,Louisiana Ragin' Cajuns,Arkansas State Red Wolves,UL,ARST,55,19,true,false,Our Lady of Lourdes Stadium,16451,STATUS_FINAL
+401641036,2024,11,2,2024-11-09T23:00Z,false,true,166,98,New Mexico State Aggies,Western Kentucky Hilltoppers,NMSU,WKU,28,41,false,true,Aggie Memorial Stadium,12710,STATUS_FINAL
+401636917,2024,11,2,2024-11-10T00:00Z,false,true,9,2116,Arizona State Sun Devils,UCF Knights,ASU,UCF,35,31,true,false,Mountain America Stadium,44940,STATUS_FINAL
+401636920,2024,11,2,2024-11-10T00:00Z,false,true,2628,197,TCU Horned Frogs,Oklahoma State Cowboys,TCU,OKST,38,13,true,false,Amon G. Carter Stadium,45348,STATUS_FINAL
+401643753,2024,11,2,2024-11-10T02:00Z,false,true,62,2439,Hawai'i Rainbow Warriors,UNLV Rebels,HAW,UNLV,27,29,false,true,Clarence T.C. Ching Athletics Complex,12691,STATUS_FINAL
+401643751,2024,11,2,2024-11-10T02:45Z,false,true,2005,278,Air Force Falcons,Fresno State Bulldogs,AFA,FRES,36,28,true,false,Falcon Stadium,14794,STATUS_FINAL
+401644763,2024,12,2,2024-11-13T00:00Z,false,true,2084,2050,Buffalo Bulls,Ball State Cardinals,BUFF,BALL,51,48,true,false,Broadview Stadium,12708,STATUS_FINAL
+401644764,2024,12,2,2024-11-13T00:00Z,false,true,189,2711,Bowling Green Falcons,Western Michigan Broncos,BGSU,WMU,31,13,true,false,Doyt L. Perry Stadium,1156,STATUS_FINAL
+401644765,2024,12,2,2024-11-13T00:00Z,false,true,2649,2117,Toledo Rockets,Central Michigan Chippewas,TOL,CMU,37,10,true,false,Glass Bowl,14661,STATUS_FINAL
+401644689,2024,12,2,2024-11-14T00:00Z,false,true,193,2309,Miami (OH) RedHawks,Kent State Golden Flashes,M-OH,KENT,34,7,true,false,Yager Stadium,5328,STATUS_FINAL
+401644766,2024,12,2,2024-11-14T00:00Z,false,true,2459,2006,Northern Illinois Huskies,Akron Zips,NIU,AKR,29,16,true,false,Huskie Stadium,6795,STATUS_FINAL
+401644767,2024,12,2,2024-11-14T00:00Z,false,true,195,2199,Ohio Bobcats,Eastern Michigan Eagles,OHIO,EMU,35,10,true,false,Peden Stadium,14133,STATUS_FINAL
+401645365,2024,12,2,2024-11-15T00:30Z,false,true,202,151,Tulsa Golden Hurricane,East Carolina Pirates,TLSA,ECU,31,38,false,true,H. A. Chapman Stadium,17979,STATUS_FINAL
+401643759,2024,12,2,2024-11-16T01:00Z,false,true,36,2751,Colorado State Rams,Wyoming Cowboys,CSU,WYO,24,10,true,false,Canvas Stadium,36720,STATUS_FINAL
+401645366,2024,12,2,2024-11-16T01:00Z,false,true,2636,249,UTSA Roadrunners,North Texas Mean Green,UTSA,UNT,48,27,true,false,Alamodome,21350,STATUS_FINAL
+401628553,2024,12,2,2024-11-16T02:00Z,false,true,264,26,Washington Huskies,UCLA Bruins,WASH,UCLA,31,19,true,false,Husky Stadium,68811,STATUS_FINAL
+401636923,2024,12,2,2024-11-16T03:15Z,false,true,12,248,Arizona Wildcats,Houston Cougars,ARIZ,HOU,27,3,true,false,Casino Del Sol Stadium,38538,STATUS_FINAL
+401628551,2024,12,2,2024-11-17T00:30Z,false,true,275,2483,Wisconsin Badgers,Oregon Ducks,WIS,ORE,13,16,false,true,Camp Randall Stadium,76298,STATUS_FINAL
+401628550,2024,12,2,2024-11-16T17:00Z,false,true,77,194,Northwestern Wildcats,Ohio State Buckeyes,NU,OSU,7,31,false,true,Wrigley Field,38147,STATUS_FINAL
+401628419,2024,12,2,2024-11-16T17:00Z,false,true,8,251,Arkansas Razorbacks,Texas Longhorns,ARK,TEX,10,20,false,true,Donald W. Reynolds Razorback Stadium,74929,STATUS_FINAL
+401628552,2024,12,2,2024-11-16T20:30Z,false,true,2509,213,Purdue Boilermakers,Penn State Nittany Lions,PUR,PSU,10,49,false,true,Ross-Ade Stadium,58346,STATUS_FINAL
+401636924,2024,12,2,2024-11-17T03:15Z,false,true,252,2305,BYU Cougars,Kansas Jayhawks,BYU,KU,13,17,false,true,LaVell Edwards Stadium,62704,STATUS_FINAL
+401628421,2024,12,2,2024-11-17T00:30Z,false,true,61,2633,Georgia Bulldogs,Tennessee Volunteers,UGA,TENN,31,17,true,false,Sanford Stadium,93033,STATUS_FINAL
+401628985,2024,12,2,2024-11-16T20:30Z,false,false,87,258,Notre Dame Fighting Irish,Virginia Cavaliers,ND,UVA,35,14,true,false,Notre Dame Stadium,77622,STATUS_FINAL
+401628425,2024,12,2,2024-11-16T19:00Z,false,false,333,2382,Alabama Crimson Tide,Mercer Bears,ALA,MER,52,7,true,false,Bryant-Denny Stadium,100077,STATUS_FINAL
+401643758,2024,12,2,2024-11-17T00:00Z,false,true,23,68,San José State Spartans,Boise State Broncos,SJSU,BOIS,21,42,false,true,CEFCU Stadium,20517,STATUS_FINAL
+401635580,2024,12,2,2024-11-16T20:30Z,false,true,2567,103,SMU Mustangs,Boston College Eagles,SMU,BC,38,28,true,false,Gerald J. Ford Stadium,34438,STATUS_FINAL
+401628424,2024,12,2,2024-11-17T00:45Z,false,false,245,166,Texas A&M Aggies,New Mexico State Aggies,TA&M,NMSU,38,3,true,false,Kyle Field,105815,STATUS_FINAL
+401636927,2024,12,2,2024-11-17T00:00Z,false,true,2306,9,Kansas State Wildcats,Arizona State Sun Devils,KSU,ASU,14,24,false,true,Bill Snyder Family Stadium,51880,STATUS_FINAL
+401636925,2024,12,2,2024-11-16T17:00Z,false,true,38,254,Colorado Buffaloes,Utah Utes,COLO,UTAH,49,24,true,false,Folsom Field,54646,STATUS_FINAL
+401643761,2024,12,2,2024-11-17T02:30Z,false,false,167,265,New Mexico Lobos,Washington State Cougars,UNM,WSU,38,35,true,false,University Stadium (NM),14067,STATUS_FINAL
+401635517,2024,12,2,2024-11-16T20:30Z,false,true,24,97,Stanford Cardinal,Louisville Cardinals,STAN,LOU,38,35,true,false,Stanford Stadium,18685,STATUS_FINAL
+401635582,2024,12,2,2024-11-16T17:00Z,false,true,221,228,Pittsburgh Panthers,Clemson Tigers,PITT,CLEM,20,24,false,true,Acrisure Stadium,58667,STATUS_FINAL
+401628423,2024,12,2,2024-11-16T21:15Z,false,true,2579,142,South Carolina Gamecocks,Missouri Tigers,SC,MIZ,34,30,true,false,Williams-Brice Stadium,79361,STATUS_FINAL
+401628420,2024,12,2,2024-11-16T20:30Z,false,true,57,99,Florida Gators,LSU Tigers,FLA,LSU,27,16,true,false,Ben Hill Griffin Stadium,90067,STATUS_FINAL
+401645370,2024,12,2,2024-11-16T17:00Z,false,true,2426,2655,Navy Midshipmen,Tulane Green Wave,NAVY,TULN,0,35,false,true,Navy-Marine Corps Memorial Stadium,38914,STATUS_FINAL
+401629046,2024,12,2,2024-11-16T17:00Z,false,false,113,2335,Massachusetts Minutemen,Liberty Flames,MASS,LIB,34,35,false,true,Warren McGuirk Alumni Stadium,9115,STATUS_FINAL
+401641013,2024,12,2,2024-11-16T17:00Z,false,true,98,2348,Western Kentucky Hilltoppers,Louisiana Tech Bulldogs,WKU,LT,7,12,false,true,Houchens Industries-L.T. Smith Stadium,13312,STATUS_FINAL
+401628426,2024,12,2,2024-11-16T17:45Z,false,false,2,2433,Auburn Tigers,UL Monroe Warhawks,AUB,ULM,48,14,true,false,Jordan-Hare Stadium,88043,STATUS_FINAL
+401643832,2024,12,2,2024-11-16T18:00Z,false,true,276,324,Marshall Thundering Herd,Coastal Carolina Chanticleers,MRSH,CCU,31,19,true,false,Joan C. Edwards Stadium,24175,STATUS_FINAL
+401628422,2024,12,2,2024-11-16T18:30Z,false,false,96,93,Kentucky Wildcats,Murray State Racers,UK,MUR,48,6,true,false,Kroger Field,48370,STATUS_FINAL
+401640986,2024,12,2,2024-11-16T19:00Z,false,true,55,2229,Jacksonville State Gamecocks,Florida International Panthers,JVST,FIU,34,31,true,false,AmFirst Stadium,17688,STATUS_FINAL
+401645369,2024,12,2,2024-11-16T19:00Z,false,true,218,2226,Temple Owls,Florida Atlantic Owls,TEM,FAU,18,15,true,false,Lincoln Financial Field,12291,STATUS_FINAL
+401628547,2024,12,2,2024-11-16T19:30Z,false,true,356,127,Illinois Fighting Illini,Michigan State Spartans,ILL,MSU,38,16,true,false,Gies Memorial Stadium,52660,STATUS_FINAL
+401635581,2024,12,2,2024-11-16T20:00Z,false,true,25,183,California Golden Bears,Syracuse Orange,CAL,SYR,25,33,false,true,California Memorial Stadium,33493,STATUS_FINAL
+401641022,2024,12,2,2024-11-16T20:00Z,false,true,338,2534,Kennesaw State Owls,Sam Houston Bearkats,KENN,SHSU,17,23,false,true,Walens Family Field at Fifth Third Stadium,7736,STATUS_FINAL
+401643760,2024,12,2,2024-11-16T20:00Z,false,true,328,62,Utah State Aggies,Hawai'i Rainbow Warriors,USU,HAW,55,10,true,false,Maverik Stadium,0,STATUS_FINAL
+401643757,2024,12,2,2024-11-16T20:30Z,false,false,2005,204,Air Force Falcons,Oregon State Beavers,AFA,ORST,28,0,true,false,Falcon Stadium,21385,STATUS_FINAL
+401645368,2024,12,2,2024-11-16T20:30Z,false,true,2429,58,Charlotte 49ers,South Florida Bulls,CLT,USF,24,59,false,true,Jerry Richardson Stadium,15030,STATUS_FINAL
+401628549,2024,12,2,2024-11-16T21:00Z,false,true,30,158,USC Trojans,Nebraska Cornhuskers,USC,NEB,28,20,true,false,Los Angeles Memorial Coliseum,75304,STATUS_FINAL
+401636929,2024,12,2,2024-11-16T21:00Z,false,true,277,239,West Virginia Mountaineers,Baylor Bears,WVU,BAY,35,49,false,true,Milan Puskar Stadium,52376,STATUS_FINAL
+401643830,2024,12,2,2024-11-16T21:00Z,false,true,290,2653,Georgia Southern Eagles,Troy Trojans,GASO,TROY,20,28,false,true,Allen E. Paulson Stadium,21762,STATUS_FINAL
+401643833,2024,12,2,2024-11-16T21:00Z,false,true,295,256,Old Dominion Monarchs,James Madison Dukes,ODU,JMU,32,35,false,true,S.B. Ballard Stadium,21984,STATUS_FINAL
+401643831,2024,12,2,2024-11-16T22:00Z,false,true,2247,2032,Georgia State Panthers,Arkansas State Red Wolves,GAST,ARST,20,27,false,true,Center Parc Stadium,14047,STATUS_FINAL
+401628548,2024,12,2,2024-11-16T23:00Z,false,true,120,164,Maryland Terrapins,Rutgers Scarlet Knights,MD,RUTG,17,31,false,true,SECU Stadium,31433,STATUS_FINAL
+401643834,2024,12,2,2024-11-17T00:00Z,false,true,309,6,Louisiana Ragin' Cajuns,South Alabama Jaguars,UL,USA,22,24,false,true,Our Lady of Lourdes Stadium,16063,STATUS_FINAL
+401643835,2024,12,2,2024-11-17T00:00Z,false,true,326,2572,Texas State Bobcats,Southern Miss Golden Eagles,TXST,USM,58,3,true,false,UFCU Stadium,22618,STATUS_FINAL
+401635583,2024,12,2,2024-11-17T01:00Z,false,true,153,154,North Carolina Tar Heels,Wake Forest Demon Deacons,UNC,WAKE,31,24,true,false,Kenan Stadium,48364,STATUS_FINAL
+401636926,2024,12,2,2024-11-17T01:00Z,false,true,66,2132,Iowa State Cyclones,Cincinnati Bearcats,ISU,CIN,34,17,true,false,Jack Trice Stadium,52881,STATUS_FINAL
+401645367,2024,12,2,2024-11-17T01:00Z,false,true,235,5,Memphis Tigers,UAB Blazers,MEM,UAB,53,18,true,false,Simmons Bank Liberty Stadium,24225,STATUS_FINAL
+401643762,2024,12,2,2024-11-17T03:30Z,false,true,2439,21,UNLV Rebels,San Diego State Aztecs,UNLV,SDSU,41,20,true,false,Allegiant Stadium,30386,STATUS_FINAL
+401644769,2024,13,2,2024-11-20T00:00Z,false,true,2309,2006,Kent State Golden Flashes,Akron Zips,KENT,AKR,17,38,false,true,Zoeller Field at Dix Stadium,6768,STATUS_FINAL
+401644770,2024,13,2,2024-11-20T00:30Z,false,true,2117,2711,Central Michigan Chippewas,Western Michigan Broncos,CMU,WMU,16,14,true,false,Kelly/Shorts Stadium,13102,STATUS_FINAL
+401644690,2024,13,2,2024-11-20T01:00Z,false,true,193,2459,Miami (OH) RedHawks,Northern Illinois Huskies,M-OH,NIU,20,9,true,false,Yager Stadium,5891,STATUS_FINAL
+401644772,2024,13,2,2024-11-21T00:00Z,false,true,2199,2084,Eastern Michigan Eagles,Buffalo Bulls,EMU,BUFF,20,37,false,true,Rynearson Stadium,12004,STATUS_FINAL
+401644773,2024,13,2,2024-11-21T00:00Z,false,true,2649,195,Toledo Rockets,Ohio Bobcats,TOL,OHIO,7,24,false,true,Glass Bowl,14543,STATUS_FINAL
+401634772,2024,13,2,2024-11-22T00:30Z,false,true,59,152,Georgia Tech Yellow Jackets,NC State Wolfpack,GT,NCSU,30,29,true,false,Bobby Dodd Stadium,34591,STATUS_FINAL
+401643767,2024,13,2,2024-11-23T03:00Z,false,true,23,2439,San José State Spartans,UNLV Rebels,SJSU,UNLV,16,27,false,true,CEFCU Stadium,13671,STATUS_FINAL
+401645374,2024,13,2,2024-11-23T00:00Z,false,true,2636,218,UTSA Roadrunners,Temple Owls,UTSA,TEM,51,27,true,false,Alamodome,20121,STATUS_FINAL
+401628558,2024,13,2,2024-11-23T01:00Z,false,true,127,2509,Michigan State Spartans,Purdue Boilermakers,MSU,PUR,24,17,true,false,Spartan Stadium,57558,STATUS_FINAL
+401628555,2024,13,2,2024-11-23T17:00Z,false,true,194,84,Ohio State Buckeyes,Indiana Hoosiers,OSU,IU,38,15,true,false,Ohio Stadium,105751,STATUS_FINAL
+401628436,2024,13,2,2024-11-23T20:30Z,false,true,251,96,Texas Longhorns,Kentucky Wildcats,TEX,UK,31,14,true,false,DKR-Texas Memorial Stadium,102811,STATUS_FINAL
+401628559,2024,13,2,2024-11-23T20:30Z,false,true,135,213,Minnesota Golden Gophers,Penn State Nittany Lions,MINN,PSU,25,26,false,true,Huntington Bank Stadium,44266,STATUS_FINAL
+401640959,2024,13,2,2024-11-24T00:00Z,true,false,87,349,Notre Dame Fighting Irish,Army Black Knights,ND,ARMY,49,14,true,false,Yankee Stadium,47342,STATUS_FINAL
+401628433,2024,13,2,2024-11-24T00:30Z,false,true,201,333,Oklahoma Sooners,Alabama Crimson Tide,OU,ALA,24,3,true,false,"Memorial Stadium (Norman, OK)",84053,STATUS_FINAL
+401635618,2024,13,2,2024-11-23T17:00Z,false,true,2390,154,Miami Hurricanes,Wake Forest Demon Deacons,MIA,WAKE,42,14,true,false,Hard Rock Stadium,64210,STATUS_FINAL
+401628429,2024,13,2,2024-11-23T17:00Z,false,true,57,145,Florida Gators,Ole Miss Rebels,FLA,MISS,24,17,true,false,Ben Hill Griffin Stadium,89942,STATUS_FINAL
+401628430,2024,13,2,2024-11-23T17:45Z,false,false,61,113,Georgia Bulldogs,Massachusetts Minutemen,UGA,MASS,59,21,true,false,Sanford Stadium,93033,STATUS_FINAL
+401628435,2024,13,2,2024-11-23T18:00Z,false,false,2633,2638,Tennessee Volunteers,UTEP Miners,TENN,UTEP,56,0,true,false,Neyland Stadium,101915,STATUS_FINAL
+401643764,2024,13,2,2024-11-24T00:00Z,false,true,2751,68,Wyoming Cowboys,Boise State Broncos,WYO,BOIS,13,17,false,true,War Memorial Stadium,18094,STATUS_FINAL
+401635619,2024,13,2,2024-11-23T17:00Z,false,true,258,2567,Virginia Cavaliers,SMU Mustangs,UVA,SMU,7,33,false,true,Scott Stadium,36305,STATUS_FINAL
+401636930,2024,13,2,2024-11-23T20:30Z,false,true,9,252,Arizona State Sun Devils,BYU Cougars,ASU,BYU,28,23,true,false,Mountain America Stadium,55400,STATUS_FINAL
+401628428,2024,13,2,2024-11-24T00:30Z,false,true,2,245,Auburn Tigers,Texas A&M Aggies,AUB,TA&M,43,41,true,false,Jordan-Hare Stadium,88043,STATUS_FINAL
+401636932,2024,13,2,2024-11-23T20:30Z,false,true,2305,38,Kansas Jayhawks,Colorado Buffaloes,KU,COLO,37,21,true,false,GEHA Field at Arrowhead Stadium,56470,STATUS_FINAL
+401635614,2024,13,2,2024-11-23T20:30Z,false,false,228,2643,Clemson Tigers,The Citadel Bulldogs,CLEM,CIT,51,14,true,false,"Memorial Stadium (Clemson, SC)",80300,STATUS_FINAL
+401628434,2024,13,2,2024-11-23T21:00Z,false,false,2579,2747,South Carolina Gamecocks,Wofford Terriers,SC,WOF,56,12,true,false,Williams-Brice Stadium,79078,STATUS_FINAL
+401636936,2024,13,2,2024-11-24T00:30Z,false,true,254,66,Utah Utes,Iowa State Cyclones,UTAH,ISU,28,31,false,true,Rice-Eccles Stadium,52152,STATUS_FINAL
+401628432,2024,13,2,2024-11-23T21:15Z,false,true,344,142,Mississippi State Bulldogs,Missouri Tigers,MSST,MIZ,20,39,false,true,Davis Wade Stadium,47824,STATUS_FINAL
+401628554,2024,13,2,2024-11-23T17:00Z,false,true,164,356,Rutgers Scarlet Knights,Illinois Fighting Illini,RUTG,ILL,31,38,false,true,SHI Stadium,47524,STATUS_FINAL
+401628556,2024,13,2,2024-11-23T17:00Z,false,true,120,2294,Maryland Terrapins,Iowa Hawkeyes,MD,IOWA,13,29,false,true,SECU Stadium,30214,STATUS_FINAL
+401635518,2024,13,2,2024-11-23T17:00Z,false,false,183,41,Syracuse Orange,UConn Huskies,SYR,CONN,31,24,true,false,JMA Wireless Dome,35453,STATUS_FINAL
+401635612,2024,13,2,2024-11-23T17:00Z,false,true,103,153,Boston College Eagles,North Carolina Tar Heels,BC,UNC,41,21,true,false,"Alumni Stadium (Chestnut Hill, MA)",37801,STATUS_FINAL
+401641005,2024,13,2,2024-11-23T17:00Z,false,true,55,2534,Jacksonville State Gamecocks,Sam Houston Bearkats,JVST,SHSU,21,11,true,false,AmFirst Stadium,16312,STATUS_FINAL
+401640996,2024,13,2,2024-11-23T18:00Z,false,true,2335,98,Liberty Flames,Western Kentucky Hilltoppers,LIB,WKU,38,21,true,false,Williams Stadium (VA),17930,STATUS_FINAL
+401635616,2024,13,2,2024-11-23T18:30Z,false,false,52,2127,Florida State Seminoles,Charleston Southern Buccaneers,FSU,CHSO,41,7,true,false,Doak Campbell Stadium,43711,STATUS_FINAL
+401644774,2024,13,2,2024-11-23T19:00Z,false,true,2050,189,Ball State Cardinals,Bowling Green Falcons,BALL,BGSU,13,38,false,true,Scheumann Stadium,7116,STATUS_FINAL
+401645373,2024,13,2,2024-11-23T19:00Z,false,true,5,242,UAB Blazers,Rice Owls,UAB,RICE,40,14,true,false,Protective Stadium,16181,STATUS_FINAL
+401641027,2024,13,2,2024-11-23T19:30Z,false,true,2393,166,Middle Tennessee Blue Raiders,New Mexico State Aggies,MTSU,NMSU,21,36,false,true,"Johnny ""Red"" Floyd Stadium",10123,STATUS_FINAL
+401643836,2024,13,2,2024-11-23T19:30Z,false,true,2026,256,App State Mountaineers,James Madison Dukes,APP,JMU,34,20,true,false,Kidd Brewer Stadium,34012,STATUS_FINAL
+401636935,2024,13,2,2024-11-23T20:00Z,false,true,2628,12,TCU Horned Frogs,Arizona Wildcats,TCU,ARIZ,49,28,true,false,Amon G. Carter Stadium,42977,STATUS_FINAL
+401640987,2024,13,2,2024-11-23T20:00Z,false,true,338,2229,Kennesaw State Owls,Florida International Panthers,KENN,FIU,27,26,true,false,Walens Family Field at Fifth Third Stadium,6210,STATUS_FINAL
+401643839,2024,13,2,2024-11-23T20:00Z,false,true,2032,2433,Arkansas State Red Wolves,UL Monroe Warhawks,ARST,ULM,28,21,true,false,Centennial Bank Stadium,14029,STATUS_FINAL
+401643841,2024,13,2,2024-11-23T20:00Z,false,true,2572,6,Southern Miss Golden Eagles,South Alabama Jaguars,USM,USA,14,35,false,true,M. M. Roberts Stadium,20074,STATUS_FINAL
+401645371,2024,13,2,2024-11-23T20:00Z,false,true,2226,2429,Florida Atlantic Owls,Charlotte 49ers,FAU,CLT,27,39,false,true,Flagler Credit Union Stadium,15066,STATUS_FINAL
+401628557,2024,13,2,2024-11-23T20:30Z,false,true,130,77,Michigan Wolverines,Northwestern Wildcats,MICH,NU,50,6,true,false,Michigan Stadium,109830,STATUS_FINAL
+401628560,2024,13,2,2024-11-23T20:30Z,false,true,158,275,Nebraska Cornhuskers,Wisconsin Badgers,NEB,WIS,44,25,true,false,"Memorial Stadium (Lincoln, NE)",86923,STATUS_FINAL
+401635613,2024,13,2,2024-11-23T20:30Z,false,true,25,24,California Golden Bears,Stanford Cardinal,CAL,STAN,24,21,true,false,California Memorial Stadium,52428,STATUS_FINAL
+401636934,2024,13,2,2024-11-23T20:30Z,false,true,197,2641,Oklahoma State Cowboys,Texas Tech Red Raiders,OKST,TTU,48,56,false,true,Boone Pickens Stadium,52202,STATUS_FINAL
+401636937,2024,13,2,2024-11-23T20:30Z,false,true,277,2116,West Virginia Mountaineers,UCF Knights,WVU,UCF,31,21,true,false,Milan Puskar Stadium,40722,STATUS_FINAL
+401643766,2024,13,2,2024-11-23T20:30Z,false,true,328,21,Utah State Aggies,San Diego State Aztecs,USU,SDSU,41,20,true,false,Maverik Stadium,12583,STATUS_FINAL
+401643837,2024,13,2,2024-11-23T20:30Z,false,true,324,290,Coastal Carolina Chanticleers,Georgia Southern Eagles,CCU,GASO,6,26,false,true,Brooks Stadium (SC),14556,STATUS_FINAL
+401645372,2024,13,2,2024-11-23T20:30Z,false,true,249,151,North Texas Mean Green,East Carolina Pirates,UNT,ECU,28,40,false,true,DATCU Stadium,17387,STATUS_FINAL
+401645375,2024,13,2,2024-11-23T20:30Z,false,true,58,202,South Florida Bulls,Tulsa Golden Hurricane,USF,TLSA,63,30,true,false,Raymond James Stadium,27623,STATUS_FINAL
+401628427,2024,13,2,2024-11-23T21:00Z,false,false,8,2348,Arkansas Razorbacks,Louisiana Tech Bulldogs,ARK,LT,35,14,true,false,Donald W. Reynolds Razorback Stadium,66041,STATUS_FINAL
+401635617,2024,13,2,2024-11-23T21:00Z,false,true,97,221,Louisville Cardinals,Pittsburgh Panthers,LOU,PITT,37,9,true,false,L&N Federal Credit Union Stadium,49441,STATUS_FINAL
+401643840,2024,13,2,2024-11-23T22:00Z,false,true,309,2653,Louisiana Ragin' Cajuns,Troy Trojans,UL,TROY,51,30,true,false,Our Lady of Lourdes Stadium,15501,STATUS_FINAL
+401628572,2024,13,2,2024-11-24T00:00Z,false,true,204,265,Oregon State Beavers,Washington State Cougars,ORST,WSU,41,38,true,false,Reser Stadium,38008,STATUS_FINAL
+401636931,2024,13,2,2024-11-24T00:00Z,false,true,248,239,Houston Cougars,Baylor Bears,HOU,BAY,10,20,false,true,TDECU Stadium,34166,STATUS_FINAL
+401643842,2024,13,2,2024-11-24T00:00Z,false,true,326,2247,Texas State Bobcats,Georgia State Panthers,TXST,GAST,44,52,false,true,UFCU Stadium,18271,STATUS_FINAL
+401643838,2024,13,2,2024-11-24T00:30Z,false,true,295,276,Old Dominion Monarchs,Marshall Thundering Herd,ODU,MRSH,35,42,false,true,S.B. Ballard Stadium,18083,STATUS_FINAL
+401628431,2024,13,2,2024-11-24T00:45Z,false,true,99,238,LSU Tigers,Vanderbilt Commodores,LSU,VAN,24,17,true,false,Tiger Stadium (LA),102086,STATUS_FINAL
+401635615,2024,13,2,2024-11-24T01:00Z,false,true,150,259,Duke Blue Devils,Virginia Tech Hokies,DUKE,VT,31,28,true,false,Wallace Wade Stadium,22462,STATUS_FINAL
+401636933,2024,13,2,2024-11-24T01:00Z,false,true,2306,2132,Kansas State Wildcats,Cincinnati Bearcats,KSU,CIN,41,15,true,false,Bill Snyder Family Stadium,50988,STATUS_FINAL
+401628561,2024,13,2,2024-11-24T03:30Z,false,true,26,30,UCLA Bruins,USC Trojans,UCLA,USC,13,19,false,true,Rose Bowl,59473,STATUS_FINAL
+401643763,2024,13,2,2024-11-24T03:30Z,false,true,2440,2005,Nevada Wolf Pack,Air Force Falcons,NEV,AFA,19,22,false,true,Mackay Stadium,12228,STATUS_FINAL
+401643765,2024,13,2,2024-11-24T03:30Z,false,true,278,36,Fresno State Bulldogs,Colorado State Rams,FRES,CSU,28,22,true,false,Valley Children's Stadium,39543,STATUS_FINAL
+401644775,2024,14,2,2024-11-27T00:00Z,false,true,2006,2649,Akron Zips,Toledo Rockets,AKR,TOL,21,14,true,false,InfoCision Stadium,4716,STATUS_FINAL
+401644776,2024,14,2,2024-11-27T00:00Z,false,true,2084,2309,Buffalo Bulls,Kent State Golden Flashes,BUFF,KENT,43,7,true,false,Broadview Stadium,11916,STATUS_FINAL
+401645376,2024,14,2,2024-11-29T00:30Z,false,true,2655,235,Tulane Green Wave,Memphis Tigers,TULN,MEM,24,34,false,true,Yulman Stadium,25021,STATUS_FINAL
+401628439,2024,14,2,2024-11-30T00:30Z,false,false,61,59,Georgia Bulldogs,Georgia Tech Yellow Jackets,UGA,GT,44,42,true,false,Sanford Stadium,93033,STATUS_FINAL
+401643769,2024,14,2,2024-11-29T17:00Z,false,false,68,204,Boise State Broncos,Oregon State Beavers,BOIS,ORST,34,18,true,false,Albertsons Stadium,37264,STATUS_FINAL
+401628442,2024,14,2,2024-11-29T20:30Z,false,true,145,344,Ole Miss Rebels,Mississippi State Bulldogs,MISS,MSST,26,14,true,false,Vaught-Hemingway Stadium,67896,STATUS_FINAL
+401636938,2024,14,2,2024-11-29T17:00Z,false,true,38,197,Colorado Buffaloes,Oklahoma State Cowboys,COLO,OKST,52,0,true,false,Folsom Field,51030,STATUS_FINAL
+401628568,2024,14,2,2024-11-29T17:00Z,false,true,275,135,Wisconsin Badgers,Minnesota Golden Gophers,WIS,MINN,7,24,false,true,Camp Randall Stadium,76059,STATUS_FINAL
+401644691,2024,14,2,2024-11-29T17:00Z,false,true,189,193,Bowling Green Falcons,Miami (OH) RedHawks,BGSU,M-OH,12,28,false,true,Doyt L. Perry Stadium,9345,STATUS_FINAL
+401644777,2024,14,2,2024-11-29T17:00Z,false,true,195,2050,Ohio Bobcats,Ball State Cardinals,OHIO,BALL,42,21,true,false,Peden Stadium,11804,STATUS_FINAL
+401645379,2024,14,2,2024-11-29T17:00Z,false,true,151,2426,East Carolina Pirates,Navy Midshipmen,ECU,NAVY,20,34,false,true,Dowdy-Ficklen Stadium,35663,STATUS_FINAL
+401640997,2024,14,2,2024-11-29T20:30Z,false,true,2534,2335,Sam Houston Bearkats,Liberty Flames,SHSU,LIB,20,18,true,false,Elliott T. Bowers Stadium,8651,STATUS_FINAL
+401643770,2024,14,2,2024-11-29T20:30Z,false,true,36,328,Colorado State Rams,Utah State Aggies,CSU,USU,42,37,true,false,Canvas Stadium,24772,STATUS_FINAL
+401643843,2024,14,2,2024-11-29T20:30Z,false,true,6,326,South Alabama Jaguars,Texas State Bobcats,USA,TXST,38,45,false,true,Hancock Whitney Stadium,15569,STATUS_FINAL
+401635625,2024,14,2,2024-11-29T21:00Z,false,false,23,24,San José State Spartans,Stanford Cardinal,SJSU,STAN,34,31,true,false,CEFCU Stadium,19117,STATUS_FINAL
+401628562,2024,14,2,2024-11-30T00:30Z,false,true,2294,158,Iowa Hawkeyes,Nebraska Cornhuskers,IOWA,NEB,13,10,true,false,Kinnick Stadium,69250,STATUS_FINAL
+401636939,2024,14,2,2024-11-30T01:00Z,false,true,2116,254,UCF Knights,Utah Utes,UCF,UTAH,14,28,false,true,Acrisure Bounce House,40747,STATUS_FINAL
+401628569,2024,14,2,2024-12-01T00:30Z,false,true,2483,264,Oregon Ducks,Washington Huskies,ORE,WASH,49,21,true,false,Autzen Stadium,59603,STATUS_FINAL
+401628566,2024,14,2,2024-11-30T17:00Z,false,true,194,130,Ohio State Buckeyes,Michigan Wolverines,OSU,MICH,10,13,false,true,Ohio Stadium,106005,STATUS_FINAL
+401628445,2024,14,2,2024-12-01T00:30Z,false,true,245,251,Texas A&M Aggies,Texas Longhorns,TA&M,TEX,7,17,false,true,Kyle Field,109028,STATUS_FINAL
+401628565,2024,14,2,2024-11-30T20:30Z,false,true,213,120,Penn State Nittany Lions,Maryland Terrapins,PSU,MD,44,7,true,false,Beaver Stadium,104044,STATUS_FINAL
+401628571,2024,14,2,2024-11-30T20:30Z,false,false,30,87,USC Trojans,Notre Dame Fighting Irish,USC,ND,35,49,false,true,Los Angeles Memorial Coliseum,73241,STATUS_FINAL
+401635623,2024,14,2,2024-11-30T20:30Z,false,true,183,2390,Syracuse Orange,Miami Hurricanes,SYR,MIA,42,38,true,false,JMA Wireless Dome,40486,STATUS_FINAL
+401628446,2024,14,2,2024-11-30T17:00Z,false,true,238,2633,Vanderbilt Commodores,Tennessee Volunteers,VAN,TENN,23,36,false,true,FirstBank Stadium,28934,STATUS_FINAL
+401635621,2024,14,2,2024-11-30T20:30Z,false,true,2567,25,SMU Mustangs,California Golden Bears,SMU,CAL,38,6,true,false,Gerald J. Ford Stadium,33178,STATUS_FINAL
+401628564,2024,14,2,2024-12-01T00:00Z,false,true,84,2509,Indiana Hoosiers,Purdue Boilermakers,IU,PUR,66,0,true,false,"Memorial Stadium (Bloomington, IN)",53082,STATUS_FINAL
+401628444,2024,14,2,2024-11-30T17:00Z,false,false,228,2579,Clemson Tigers,South Carolina Gamecocks,CLEM,SC,14,17,false,true,"Memorial Stadium (Clemson, SC)",81500,STATUS_FINAL
+401628437,2024,14,2,2024-11-30T20:30Z,false,true,333,2,Alabama Crimson Tide,Auburn Tigers,ALA,AUB,28,14,true,false,Bryant-Denny Stadium,100077,STATUS_FINAL
+401636940,2024,14,2,2024-11-30T20:30Z,false,true,12,9,Arizona Wildcats,Arizona State Sun Devils,ARIZ,ASU,7,49,false,true,Casino Del Sol Stadium,49813,STATUS_FINAL
+401636944,2024,14,2,2024-12-01T00:30Z,false,true,66,2306,Iowa State Cyclones,Kansas State Wildcats,ISU,KSU,29,21,true,false,Jack Trice Stadium,56228,STATUS_FINAL
+401636942,2024,14,2,2024-12-01T03:15Z,false,true,252,248,BYU Cougars,Houston Cougars,BYU,HOU,30,18,true,false,LaVell Edwards Stadium,59213,STATUS_FINAL
+401628443,2024,14,2,2024-11-30T20:30Z,false,true,142,8,Missouri Tigers,Arkansas Razorbacks,MIZ,ARK,28,21,true,false,Memorial Stadium,62621,STATUS_FINAL
+401643772,2024,14,2,2024-12-01T01:00Z,false,true,2439,2440,UNLV Rebels,Nevada Wolf Pack,UNLV,NEV,38,14,true,false,Allegiant Stadium,40122,STATUS_FINAL
+401628563,2024,14,2,2024-11-30T17:00Z,true,true,77,356,Northwestern Wildcats,Illinois Fighting Illini,NU,ILL,28,38,false,true,Wrigley Field,26378,STATUS_FINAL
+401628440,2024,14,2,2024-11-30T17:00Z,false,false,96,97,Kentucky Wildcats,Louisville Cardinals,UK,LOU,14,41,false,true,Kroger Field,58612,STATUS_FINAL
+401629038,2024,14,2,2024-11-30T17:00Z,false,false,113,41,Massachusetts Minutemen,UConn Huskies,MASS,CONN,42,47,false,true,Warren McGuirk Alumni Stadium,10365,STATUS_FINAL
+401635622,2024,14,2,2024-11-30T17:00Z,false,true,154,150,Wake Forest Demon Deacons,Duke Blue Devils,WAKE,DUKE,17,23,false,true,Allegacy Federal Credit Union Stadium,24776,STATUS_FINAL
+401636941,2024,14,2,2024-11-30T17:00Z,false,true,239,2305,Baylor Bears,Kansas Jayhawks,BAY,KU,45,17,true,false,McLane Stadium,36585,STATUS_FINAL
+401636945,2024,14,2,2024-11-30T17:00Z,false,true,2641,277,Texas Tech Red Raiders,West Virginia Mountaineers,TTU,WVU,52,15,true,false,Galaxy Stadium,52785,STATUS_FINAL
+401643848,2024,14,2,2024-11-30T17:00Z,false,true,2433,309,UL Monroe Warhawks,Louisiana Ragin' Cajuns,ULM,UL,23,37,false,true,Malone Stadium,15006,STATUS_FINAL
+401645378,2024,14,2,2024-11-30T17:00Z,false,true,349,2636,Army Black Knights,UTSA Roadrunners,ARMY,UTSA,29,24,true,false,Michie Stadium,22120,STATUS_FINAL
+401645381,2024,14,2,2024-11-30T17:00Z,false,true,218,249,Temple Owls,North Texas Mean Green,TEM,UNT,17,24,false,true,Lincoln Financial Field,0,STATUS_FINAL
+401644780,2024,14,2,2024-11-30T18:30Z,false,true,2711,2199,Western Michigan Broncos,Eastern Michigan Eagles,WMU,EMU,26,18,true,false,Waldo Stadium,0,STATUS_FINAL
+401640988,2024,14,2,2024-11-30T19:00Z,false,true,2229,2393,Florida International Panthers,Middle Tennessee Blue Raiders,FIU,MTSU,35,24,true,false,Pitbull Stadium,8962,STATUS_FINAL
+401643845,2024,14,2,2024-11-30T19:00Z,false,true,2247,324,Georgia State Panthers,Coastal Carolina Chanticleers,GAST,CCU,27,48,false,true,Center Parc Stadium,12606,STATUS_FINAL
+401643849,2024,14,2,2024-11-30T19:00Z,false,true,2653,2572,Troy Trojans,Southern Miss Golden Eagles,TROY,USM,52,20,true,false,Veterans Memorial Stadium (AL),19521,STATUS_FINAL
+401645382,2024,14,2,2024-11-30T19:00Z,false,true,242,58,Rice Owls,South Florida Bulls,RICE,USF,35,28,true,false,Rice Stadium,16430,STATUS_FINAL
+401635620,2024,14,2,2024-11-30T20:00Z,false,true,103,221,Boston College Eagles,Pittsburgh Panthers,BC,PITT,34,23,true,false,"Alumni Stadium (Chestnut Hill, MA)",29704,STATUS_FINAL
+401643847,2024,14,2,2024-11-30T20:00Z,false,true,2032,295,Arkansas State Red Wolves,Old Dominion Monarchs,ARST,ODU,32,40,false,true,Centennial Bank Stadium,13584,STATUS_FINAL
+401628567,2024,14,2,2024-11-30T20:30Z,false,true,127,164,Michigan State Spartans,Rutgers Scarlet Knights,MSU,RUTG,14,41,false,true,Spartan Stadium,50038,STATUS_FINAL
+401628570,2024,14,2,2024-11-30T20:30Z,false,false,26,278,UCLA Bruins,Fresno State Bulldogs,UCLA,FRES,20,13,true,false,Rose Bowl,35018,STATUS_FINAL
+401635624,2024,14,2,2024-11-30T20:30Z,false,true,153,152,North Carolina Tar Heels,NC State Wolfpack,UNC,NCSU,30,35,false,true,Kenan Stadium,50500,STATUS_FINAL
+401644779,2024,14,2,2024-11-30T20:30Z,false,true,2459,2117,Northern Illinois Huskies,Central Michigan Chippewas,NIU,CMU,24,16,true,false,Huskie Stadium,5843,STATUS_FINAL
+401645377,2024,14,2,2024-11-30T20:30Z,false,true,2429,5,Charlotte 49ers,UAB Blazers,CLT,UAB,29,27,true,false,Jerry Richardson Stadium,8091,STATUS_FINAL
+401645380,2024,14,2,2024-11-30T20:30Z,false,true,202,2226,Tulsa Golden Hurricane,Florida Atlantic Owls,TLSA,FAU,16,63,false,true,H. A. Chapman Stadium,15243,STATUS_FINAL
+401641006,2024,14,2,2024-11-30T21:00Z,false,true,98,55,Western Kentucky Hilltoppers,Jacksonville State Gamecocks,WKU,JVST,19,17,true,false,Houchens Industries-L.T. Smith Stadium,6547,STATUS_FINAL
+401641014,2024,14,2,2024-11-30T21:00Z,false,true,2348,338,Louisiana Tech Bulldogs,Kennesaw State Owls,LT,KENN,33,0,true,false,Joe Aillet Stadium,14686,STATUS_FINAL
+401641031,2024,14,2,2024-11-30T21:00Z,false,true,166,2638,New Mexico State Aggies,UTEP Miners,NMSU,UTEP,35,42,false,true,Aggie Memorial Stadium,15358,STATUS_FINAL
+401636943,2024,14,2,2024-11-30T23:00Z,false,true,2132,2628,Cincinnati Bearcats,TCU Horned Frogs,CIN,TCU,13,20,false,true,Nippert Stadium,30021,STATUS_FINAL
+401643844,2024,14,2,2024-11-30T23:00Z,false,true,290,2026,Georgia Southern Eagles,App State Mountaineers,GASO,APP,29,20,true,false,Allen E. Paulson Stadium,23383,STATUS_FINAL
+401643773,2024,14,2,2024-11-30T23:30Z,false,false,265,2751,Washington State Cougars,Wyoming Cowboys,WSU,WYO,14,15,false,true,Martin Stadium,17088,STATUS_FINAL
+401628438,2024,14,2,2024-12-01T00:00Z,false,false,52,57,Florida State Seminoles,Florida Gators,FSU,FLA,11,31,false,true,Doak Campbell Stadium,55107,STATUS_FINAL
+401628441,2024,14,2,2024-12-01T00:00Z,false,true,99,201,LSU Tigers,Oklahoma Sooners,LSU,OU,37,17,true,false,Tiger Stadium (LA),99364,STATUS_FINAL
+401635640,2024,14,2,2024-12-01T01:00Z,false,true,259,258,Virginia Tech Hokies,Virginia Cavaliers,VT,UVA,37,17,true,false,Lane Stadium,65632,STATUS_FINAL
+401643846,2024,14,2,2024-12-01T01:00Z,false,true,256,276,James Madison Dukes,Marshall Thundering Herd,JMU,MRSH,33,35,false,true,Bridgeforth Stadium,23341,STATUS_FINAL
+401643768,2024,14,2,2024-12-01T03:30Z,false,true,21,2005,San Diego State Aztecs,Air Force Falcons,SDSU,AFA,20,31,false,true,Snapdragon Stadium,18045,STATUS_FINAL
+401643771,2024,14,2,2024-12-01T04:00Z,false,true,62,167,Hawai'i Rainbow Warriors,New Mexico Lobos,HAW,UNM,38,30,true,false,Clarence T.C. Ching Athletics Complex,12046,STATUS_FINAL
+401673468,2024,15,2,2024-12-07T01:00Z,false,false,68,2439,Boise State Broncos,UNLV Rebels,BOIS,UNLV,21,7,true,false,Albertsons Stadium,36663,STATUS_FINAL
+401673462,2024,15,2,2024-12-07T01:00Z,false,false,349,2655,Army Black Knights,Tulane Green Wave,ARMY,TULN,35,14,true,false,Michie Stadium,14016,STATUS_FINAL
+401673466,2024,15,2,2024-12-07T00:00Z,false,false,55,98,Jacksonville State Gamecocks,Western Kentucky Hilltoppers,JVST,WKU,52,12,true,false,AmFirst Stadium,15628,STATUS_FINAL
+401673464,2024,15,2,2024-12-08T01:00Z,true,false,2483,213,Oregon Ducks,Penn State Nittany Lions,ORE,PSU,45,37,true,false,Lucas Oil Stadium,67469,STATUS_FINAL
+401673469,2024,15,2,2024-12-07T21:00Z,true,false,251,61,Texas Longhorns,Georgia Bulldogs,TEX,UGA,19,22,false,true,Mercedes-Benz Stadium,74916,STATUS_FINAL
+401673463,2024,15,2,2024-12-08T01:00Z,true,false,2567,228,SMU Mustangs,Clemson Tigers,SMU,CLEM,31,34,false,true,Bank of America Stadium,53808,STATUS_FINAL
+401673465,2024,15,2,2024-12-07T17:00Z,true,false,9,66,Arizona State Sun Devils,Iowa State Cyclones,ASU,ISU,45,19,true,false,AT&T Stadium,55889,STATUS_FINAL
+401673467,2024,15,2,2024-12-07T17:00Z,true,false,193,195,Miami (OH) RedHawks,Ohio Bobcats,M-OH,OHIO,3,38,false,true,Ford Field,15478,STATUS_FINAL
+401673470,2024,15,2,2024-12-08T00:30Z,false,false,309,276,Louisiana Ragin' Cajuns,Marshall Thundering Herd,UL,MRSH,3,31,false,true,Our Lady of Lourdes Stadium,20067,STATUS_FINAL
+401645383,2024,16,2,2024-12-14T20:00Z,true,false,349,2426,Army Black Knights,Navy Midshipmen,ARMY,NAVY,13,31,false,true,Northwest Stadium,60726,STATUS_FINAL
+401677077,2024,1,3,2024-12-15T02:00Z,true,false,2711,6,Western Michigan Broncos,South Alabama Jaguars,WMU,USA,23,30,false,true,Cramton Bowl,12021,STATUS_FINAL
+401677080,2024,1,3,2024-12-18T02:00Z,true,false,277,235,West Virginia Mountaineers,Memphis Tigers,WVU,MEM,37,42,false,true,Toyota Stadium,12022,STATUS_FINAL
+401677081,2024,1,3,2024-12-19T02:00Z,true,false,2439,25,UNLV Rebels,California Golden Bears,UNLV,CAL,24,13,true,false,SoFi Stadium,24420,STATUS_FINAL
+401677079,2024,1,3,2024-12-18T22:30Z,true,false,256,98,James Madison Dukes,Western Kentucky Hilltoppers,JMU,WKU,27,17,true,false,Flagler Credit Union Stadium,15808,STATUS_FINAL
+401677082,2024,1,3,2024-12-20T00:00Z,true,false,2534,290,Sam Houston Bearkats,Georgia Southern Eagles,SHSU,GASO,31,26,true,false,Caesars Superdome,13151,STATUS_FINAL
+401677083,2024,1,3,2024-12-20T17:00Z,true,false,55,195,Jacksonville State Gamecocks,Ohio Bobcats,JVST,OHIO,27,30,false,true,Camping World Stadium,10518,STATUS_FINAL
+401677084,2024,1,3,2024-12-20T20:30Z,true,false,57,2655,Florida Gators,Tulane Green Wave,FLA,TULN,33,8,true,false,Raymond James Stadium,41472,STATUS_FINAL
+401677085,2024,1,3,2024-12-23T16:00Z,false,false,324,2636,Coastal Carolina Chanticleers,UTSA Roadrunners,CCU,UTSA,15,44,false,true,Brooks Stadium (SC),8164,STATUS_FINAL
+401677086,2024,1,3,2024-12-23T19:30Z,true,false,278,2459,Fresno State Bulldogs,Northern Illinois Huskies,FRES,NIU,20,28,false,true,Albertsons Stadium,10359,STATUS_FINAL
+401677087,2024,1,3,2024-12-25T01:00Z,true,false,23,58,San José State Spartans,South Florida Bulls,SJSU,USF,39,41,false,true,Clarence T.C. Ching Athletics Complex,6720,STATUS_FINAL
+401677180,2024,1,3,2024-12-26T19:00Z,true,false,2649,221,Toledo Rockets,Pittsburgh Panthers,TOL,PITT,48,46,true,false,Ford Field,26219,STATUS_FINAL
+401677088,2024,1,3,2024-12-26T22:40Z,true,false,2306,164,Kansas State Wildcats,Rutgers Scarlet Knights,KSU,RUTG,44,41,true,false,Chase Field,21659,STATUS_FINAL
+401677089,2024,1,3,2024-12-27T02:10Z,true,false,189,2032,Bowling Green Falcons,Arkansas State Red Wolves,BGSU,ARST,31,38,false,true,Hancock Whitney Stadium,19582,STATUS_FINAL
+401729867,2024,1,3,2024-12-28T01:00Z,true,false,265,183,Washington State Cougars,Syracuse Orange,WSU,SYR,35,52,false,true,Snapdragon Stadium,23920,STATUS_FINAL
+401677090,2024,1,3,2024-12-27T17:00Z,true,false,2426,201,Navy Midshipmen,Oklahoma Sooners,NAVY,OU,21,20,true,false,Amon G. Carter Stadium,50754,STATUS_FINAL
+401677091,2024,1,3,2024-12-27T20:30Z,true,false,238,59,Vanderbilt Commodores,Georgia Tech Yellow Jackets,VAN,GT,35,27,true,false,Protective Stadium,33840,STATUS_FINAL
+401677092,2024,1,3,2024-12-28T00:00Z,true,false,8,2641,Arkansas Razorbacks,Texas Tech Red Raiders,ARK,TTU,39,26,true,false,Simmons Bank Liberty Stadium,37764,STATUS_FINAL
+401677093,2024,1,3,2024-12-28T03:30Z,true,false,245,30,Texas A&M Aggies,USC Trojans,TA&M,USC,31,35,false,true,Allegiant Stadium,26671,STATUS_FINAL
+401677097,2024,1,3,2024-12-28T20:30Z,true,false,2390,66,Miami Hurricanes,Iowa State Cyclones,MIA,ISU,41,42,false,true,Camping World Stadium,38650,STATUS_FINAL
+401677099,2024,1,3,2024-12-29T00:30Z,true,false,38,252,Colorado Buffaloes,BYU Cougars,COLO,BYU,14,36,false,true,Alamodome,64261,STATUS_FINAL
+401677100,2024,1,3,2024-12-29T02:15Z,true,false,349,2348,Army Black Knights,Louisiana Tech Bulldogs,ARMY,LT,27,6,true,false,Independence Stadium,34283,STATUS_FINAL
+401677094,2024,1,3,2024-12-28T16:00Z,true,false,153,41,North Carolina Tar Heels,UConn Huskies,UNC,CONN,14,27,false,true,Fenway Park,27900,STATUS_FINAL
+401677095,2024,1,3,2024-12-28T17:00Z,true,false,158,103,Nebraska Cornhuskers,Boston College Eagles,NEB,BC,20,15,true,false,Yankee Stadium,30062,STATUS_FINAL
+401677096,2024,1,3,2024-12-28T19:15Z,true,false,2628,309,TCU Horned Frogs,Louisiana Ragin' Cajuns,TCU,UL,34,3,true,false,University Stadium (NM),22827,STATUS_FINAL
+401677188,2024,1,3,2024-12-28T21:30Z,true,false,36,193,Colorado State Rams,Miami (OH) RedHawks,CSU,M-OH,17,43,false,true,Casino Del Sol Stadium,40076,STATUS_FINAL
+401677098,2024,1,3,2024-12-28T22:45Z,true,false,152,151,NC State Wolfpack,East Carolina Pirates,NCSU,ECU,21,26,false,true,Navy-Marine Corps Memorial Stadium,23981,STATUS_FINAL
+401677101,2024,1,3,2024-12-30T19:30Z,true,false,142,2294,Missouri Tigers,Iowa Hawkeyes,MIZ,IOWA,27,24,true,false,Nissan Stadium,43375,STATUS_FINAL
+401677102,2024,1,3,2024-12-31T17:00Z,true,false,130,333,Michigan Wolverines,Alabama Crimson Tide,MICH,ALA,19,13,true,false,Raymond James Stadium,51439,STATUS_FINAL
+401677103,2024,1,3,2024-12-31T20:00Z,true,false,356,2579,Illinois Fighting Illini,South Carolina Gamecocks,ILL,SC,21,17,true,false,Camping World Stadium,47129,STATUS_FINAL
+401677190,2024,1,3,2024-12-31T19:00Z,true,false,264,97,Washington Huskies,Louisville Cardinals,WASH,LOU,34,35,false,true,Sun Bowl,40826,STATUS_FINAL
+401677104,2024,1,3,2024-12-31T20:30Z,true,false,99,239,LSU Tigers,Baylor Bears,LSU,BAY,44,31,true,false,NRG Stadium,59940,STATUS_FINAL
+401677105,2024,1,3,2025-01-03T01:00Z,true,false,145,150,Ole Miss Rebels,Duke Blue Devils,MISS,DUKE,52,20,true,false,EverBank Stadium,31290,STATUS_FINAL
+401677106,2024,1,3,2025-01-03T21:00Z,true,false,326,249,Texas State Bobcats,North Texas Mean Green,TXST,UNT,30,28,true,false,Gerald J. Ford Stadium,28725,STATUS_FINAL
+401677107,2024,1,3,2025-01-04T00:30Z,true,false,259,135,Virginia Tech Hokies,Minnesota Golden Gophers,VT,MINN,10,24,false,true,Bank of America Stadium,31027,STATUS_FINAL
+401677108,2024,1,3,2025-01-04T16:00Z,true,false,2335,2084,Liberty Flames,Buffalo Bulls,LIB,BUFF,7,26,false,true,Thomas A. Robinson National Stadium,4610,STATUS_FINAL
+401677179,2024,1,3,2024-12-21T01:00Z,false,false,87,84,Notre Dame Fighting Irish,Indiana Hoosiers,ND,IU,27,17,true,false,Notre Dame Stadium,77622,STATUS_FINAL
+401677176,2024,1,3,2024-12-21T21:00Z,false,false,251,228,Texas Longhorns,Clemson Tigers,TEX,CLEM,38,24,true,false,DKR-Texas Memorial Stadium,101150,STATUS_FINAL
+401677178,2024,1,3,2024-12-21T17:00Z,false,false,213,2567,Penn State Nittany Lions,SMU Mustangs,PSU,SMU,38,10,true,false,Beaver Stadium,106013,STATUS_FINAL
+401677177,2024,1,3,2024-12-22T01:00Z,false,false,194,2633,Ohio State Buckeyes,Tennessee Volunteers,OSU,TENN,42,17,true,false,Ohio Stadium,102819,STATUS_FINAL
+401677181,2024,1,3,2025-01-01T00:30Z,true,false,68,213,Boise State Broncos,Penn State Nittany Lions,BOIS,PSU,14,31,false,true,State Farm Stadium,63854,STATUS_FINAL
+401677183,2024,1,3,2025-01-01T22:00Z,true,false,2483,194,Oregon Ducks,Ohio State Buckeyes,ORE,OSU,21,41,false,true,Rose Bowl,90732,STATUS_FINAL
+401677182,2024,1,3,2025-01-01T18:00Z,true,false,9,251,Arizona State Sun Devils,Texas Longhorns,ASU,TEX,31,39,false,true,Mercedes-Benz Stadium,71105,STATUS_FINAL
+401677184,2024,1,3,2025-01-02T21:00Z,true,false,61,87,Georgia Bulldogs,Notre Dame Fighting Irish,UGA,ND,10,23,false,true,Caesars Superdome,57267,STATUS_FINAL
+401677189,2024,1,3,2025-01-10T00:30Z,true,false,213,87,Penn State Nittany Lions,Notre Dame Fighting Irish,PSU,ND,24,27,false,true,Hard Rock Stadium,66881,STATUS_FINAL
+401677191,2024,1,3,2025-01-11T00:30Z,true,false,251,194,Texas Longhorns,Ohio State Buckeyes,TEX,OSU,14,28,false,true,AT&T Stadium,74527,STATUS_FINAL
+401677192,2024,1,3,2025-01-21T00:30Z,true,false,87,194,Notre Dame Fighting Irish,Ohio State Buckeyes,ND,OSU,23,34,false,true,Mercedes-Benz Stadium,77660,STATUS_FINAL
