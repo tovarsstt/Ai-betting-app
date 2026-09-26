@@ -7,7 +7,11 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "server": "tsx server.ts",
+    "test": "node --import tsx --test lib/*.test.ts",
+    "typecheck:server": "tsc -p tsconfig.server.json",
+    "slate": "tsx scripts/slate-sim.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.92.0",
@@ -43,8 +47,7 @@
     "tailwind-merge": "^3.5.0",
     "tw-animate-css": "^1.4.0",
     "wouter": "^3.9.0",
-    "zod": "^4.3.6",
-    "zod-express-middleware": "^1.4.0"
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

@@ -13,12 +13,14 @@ import { useMutation } from "@tanstack/react-query";
 
 const SPORTS = ["NBA", "WNBA", "MLB", "NFL", "NHL", "SOCCER", "TENNIS", "UFC"];
 
-interface MarketPick { pick: string; odds: string; win_prob: number; rationale: string; niche_stat: string; is_alt?: boolean; }
-interface PropPick { player: string; market: string; pick: string; odds: string; win_prob: number; rationale: string; niche_stat: string; }
+// Server-side check of the model's numbers (lib/betting-math.ts → auditPick)
+interface PickMath { breakeven_prob: number | null; edge_pct: number | null; ev_pct: number | null; half_kelly_pct: number | null; flags: string[]; }
+interface MarketPick { pick: string; odds: string; win_prob: number; rationale: string; niche_stat: string; is_alt?: boolean; math?: PickMath; }
+interface PropPick { player: string; market: string; pick: string; odds: string; win_prob: number; rationale: string; niche_stat: string; math?: PickMath; }
 interface SGPLeg { pick: string; odds: string; why: string; }
-interface SGPBlock { legs: SGPLeg[]; combined_odds: string; why: string; ev: string; }
+interface SGPBlock { legs: SGPLeg[]; combined_odds: string; why: string; ev: string; combined_odds_llm?: string; combined_odds_note?: string; }
 interface ParlayLeg { pick: string; odds: string; why: string; game?: string; }
-interface ParlayBlock { legs: ParlayLeg[]; combined_odds: string; why: string; ev: string; }
+interface ParlayBlock { legs: ParlayLeg[]; combined_odds: string; why: string; ev: string; combined_odds_llm?: string; combined_odds_note?: string; }
 interface PickOfDay { selection: string; odds: string; why: string; ev: string; units: string; game: string; sport: string; }
 interface FullBreakdownResult {
   game: string; game_summary: string;
@@ -37,6 +39,29 @@ function winProbBar(p: number) {
   if (p >= 0.72) return "from-emerald-500 to-emerald-400";
   if (p >= 0.64) return "from-blue-500 to-blue-400";
   return "from-amber-500 to-amber-400";
+}
+
+function MathLine({ math }: { math?: PickMath }) {
+  if (!math) return null;
+  const overconfident = math.flags.includes("OVERCONFIDENT_EDGE");
+  return (
+    <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] font-mono text-muted-foreground">
+      {math.breakeven_prob !== null && <span>Break-even {(math.breakeven_prob * 100).toFixed(1)}%</span>}
+      {math.ev_pct !== null && <span>EV {math.ev_pct > 0 ? "+" : ""}{math.ev_pct}%</span>}
+      {math.half_kelly_pct !== null && !overconfident && <span>½-Kelly {math.half_kelly_pct}%</span>}
+      {overconfident && <span className="px-1.5 rounded bg-red-500/15 border border-red-500/30 text-red-400 font-bold">Overconfident: edge {math.edge_pct}pts over the price</span>}
+      {math.flags.includes("ODDS_UNPARSEABLE") && <span className="text-amber-400">No real odds, unverified</span>}
+    </div>
+  );
+}
+
+function ParlayMathNote({ block }: { block: { combined_odds_llm?: string; combined_odds_note?: string } }) {
+  if (!block.combined_odds_note) return null;
+  return (
+    <p className="text-[10px] font-mono text-muted-foreground/70 mt-1">
+      {block.combined_odds_note}{block.combined_odds_llm ? ` · model had said ${block.combined_odds_llm}` : ""}
+    </p>
+  );
 }
 
 type Accent = "purple" | "emerald" | "blue";
@@ -91,6 +116,7 @@ function MarketCard({ label, icon: Icon, data, accent, rank }: { label: string; 
           </div>
         )}
         <WinBar prob={data.win_prob} />
+        <MathLine math={data.math} />
       </CardHeader>
       <CardContent className="pt-3 space-y-2.5">
         <p className="text-xs text-muted-foreground leading-relaxed">{data.rationale}</p>
@@ -126,6 +152,7 @@ function PropRow({ prop, rank }: { prop: PropPick; rank: number }) {
         </p>
         <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{prop.rationale}</p>
         {prop.niche_stat && <p className="text-[10px] font-mono text-muted-foreground/50 mt-1 italic">{prop.niche_stat}</p>}
+        <MathLine math={prop.math} />
       </div>
     </div>
   );
@@ -142,6 +169,7 @@ function SGPCard({ sgp }: { sgp: SGPBlock }) {
           <span className="font-black text-2xl text-foreground">{sgp.combined_odds}</span>
           <Badge className="text-xs font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">{sgp.ev} EV</Badge>
         </div>
+        <ParlayMathNote block={sgp} />
       </CardHeader>
       <CardContent className="pt-4 space-y-2">
         {sgp.legs.map((leg, i) => (
@@ -174,6 +202,7 @@ function ParlayOfDayCard({ parlay }: { parlay: ParlayBlock }) {
           <span className="font-black text-2xl text-foreground">{parlay.combined_odds}</span>
           <Badge className="text-xs font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">{parlay.ev} EV</Badge>
         </div>
+        <ParlayMathNote block={parlay} />
       </CardHeader>
       <CardContent className="pt-4 space-y-2">
         {parlay.legs.map((leg, i) => (

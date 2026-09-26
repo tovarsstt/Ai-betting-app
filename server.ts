@@ -16,66 +16,21 @@ const port = Number(process.env.PORT) || 3001;
 app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 
-// ── Pure betting math utilities ──────────────────────────────────────────────
-
-// American odds → raw implied probability (vig included)
-function impliedProb(americanOdds: number): number {
-  if (americanOdds < 0) return (-americanOdds) / (-americanOdds + 100);
-  return 100 / (americanOdds + 100);
-}
-
-// Remove bookmaker vig from a 2-way market → fair (true) probabilities
-function devig(p1Raw: number, p2Raw: number): { p1: number; p2: number; vig: number } {
-  const sum = p1Raw + p2Raw;
-  return { p1: p1Raw / sum, p2: p2Raw / sum, vig: (sum - 1) * 100 };
-}
-
-// American odds → decimal odds
-function toDecimal(americanOdds: number): number {
-  return americanOdds >= 0 ? americanOdds / 100 + 1 : 100 / (-americanOdds) + 1;
-}
-
-// Half-Kelly fraction — how much of bankroll to bet (capped 0–25% for ruin prevention)
-// p = true win probability, americanOdds = line being bet
-function halfKelly(p: number, americanOdds: number): number {
-  const b = toDecimal(americanOdds) - 1;
-  if (b <= 0 || p <= 0) return 0;
-  const fullKelly = (b * p - (1 - p)) / b;
-  return Math.max(0, Math.min(fullKelly / 2, 0.25));
-}
-
-// Expected Value as decimal (positive = +EV)
-function ev(p: number, americanOdds: number): number {
-  const b = toDecimal(americanOdds) - 1;
-  return p * b - (1 - p);
-}
-
-// Standard normal CDF — Hart approximation, accurate to 5 decimal places
-function normalCDF(z: number): number {
-  if (z < -8) return 0;
-  if (z >  8) return 1;
-  const p = 0.2316419;
-  const b = [0.319381530, -0.356563782, 1.781477937, -1.821255978, 1.330274429];
-  const t   = 1 / (1 + p * Math.abs(z));
-  const y   = ((((b[4]*t + b[3])*t + b[2])*t + b[1])*t + b[0]) * t;
-  const pdf = Math.exp(-0.5 * z * z) / Math.sqrt(2 * Math.PI);
-  return z >= 0 ? 1 - pdf * y : pdf * y;
-}
-
-// Point margin → win probability via normal distribution
-// sigma: std-dev of final margin (NBA ~11.5, NFL ~13.5, MLB ~3.0 runs)
-function marginToWinProb(margin: number, sigma = 11.5): number {
-  return normalCDF(margin / sigma);
-}
+// ── Pure betting math — lives in lib/betting-math.ts (unit-tested) ─────────
+import {
+  impliedProb, devig, devigMulti, marginToWinProb, auditPick, parseAmerican, parlayPrice, formatAmerican,
+} from './lib/betting-math.ts';
 
 // ── Simple in-memory rate limit ───────────────────────────────────────────────
 const rateCounts = new Map<string, { count: number; reset: number }>();
 function rateLimit(req: express.Request, max: number, windowMs: number): boolean {
   const ip = req.ip || req.socket?.remoteAddress || req.headers['x-forwarded-for'] as string || 'fallback';
+  // Per IP *and* route — one shared bucket let 5 calls to any endpoint lock out every endpoint
+  const key = `${ip}:${req.path}`;
   const now = Date.now();
-  const entry = rateCounts.get(ip);
+  const entry = rateCounts.get(key);
   if (!entry || now > entry.reset) {
-    rateCounts.set(ip, { count: 1, reset: now + windowMs });
+    rateCounts.set(key, { count: 1, reset: now + windowMs });
     return false;
   }
   entry.count++;
@@ -485,7 +440,9 @@ async function fetchLiveOdds(sport: string, gameQuery?: string): Promise<string>
 
   for (const key of sportKeys) {
     try {
-      const url = `${ODDS_API_BASE}/sports/${key}/odds?apiKey=${ODDS_API_KEY}&regions=us&markets=h2h,spreads,totals,alternate_spreads,alternate_totals&bookmakers=pinnacle,draftkings,fanduel&dateFormat=iso&oddsFormat=american`;
+      // The bulk /odds endpoint only accepts featured markets (h2h, spreads, totals).
+      // Asking for alternate_* here returns 422 INVALID_MARKET and the whole sport was silently dropped.
+      const url = `${ODDS_API_BASE}/sports/${key}/odds?apiKey=${ODDS_API_KEY}&markets=h2h,spreads,totals&bookmakers=pinnacle,draftkings,fanduel&dateFormat=iso&oddsFormat=american`;
       const res = await fetch(url, { signal: AbortSignal.timeout(6000) });
       if (!res.ok) continue;
 
@@ -507,25 +464,35 @@ async function fetchLiveOdds(sport: string, gameQuery?: string): Promise<string>
           )
         : events.slice(0, 8); // max 8 games to keep prompt lean
 
+      // Alternate lines need the per-event endpoint (1 extra request per event) — only for a single-game query
+      if (gameQuery && filtered.length > 0 && filtered.length <= 2) {
+        for (const ev of filtered) {
+          const alts = await fetchAltMarkets(key, ev.id);
+          for (const b of alts) {
+            const target = ev.bookmakers.find(x => x.key === b.key);
+            if (target) target.markets.push(...b.markets);
+          }
+        }
+      }
+
       for (const ev of filtered) {
         const gameTime = new Date(ev.commence_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'America/New_York' });
         const pinnacle = ev.bookmakers.find(b => b.key === 'pinnacle') || ev.bookmakers[0];
         if (!pinnacle) continue;
 
-        const lines: string[] = [`${ev.away_team} @ ${ev.home_team} — ${gameTime} ET`];
+        const lines: string[] = [`${ev.away_team} @ ${ev.home_team} — ${gameTime} ET (book: ${pinnacle.key})`];
 
         const altSpreads: string[] = [];
         const altTotals: string[] = [];
         for (const market of pinnacle.markets) {
           if (market.key === 'h2h') {
-            const [o1, o2] = market.outcomes;
             const ml = market.outcomes.map(o => `${o.name} ML ${o.price > 0 ? '+' : ''}${o.price}`).join(' | ');
             lines.push(`  Moneyline: ${ml}`);
-            // Implied probability + devig math embedded inline
-            if (o1 && o2) {
-              const p1r = impliedProb(o1.price), p2r = impliedProb(o2.price);
-              const dv  = devig(p1r, p2r);
-              lines.push(`  → Implied(devigged): ${o1.name} ${(dv.p1*100).toFixed(1)}% | ${o2.name} ${(dv.p2*100).toFixed(1)}% | Book vig: ${dv.vig.toFixed(1)}%`);
+            // Devig across ALL outcomes — soccer h2h is 3-way (Draw); a 2-way devig there is wrong
+            if (market.outcomes.length >= 2) {
+              const dv = devigMulti(market.outcomes.map(o => impliedProb(o.price)));
+              const fair = market.outcomes.map((o, i) => `${o.name} ${(dv.fair[i]*100).toFixed(1)}%`).join(' | ');
+              lines.push(`  → Implied(devigged): ${fair} | Book vig: ${dv.vig.toFixed(1)}%`);
             }
           } else if (market.key === 'spreads') {
             const sp = market.outcomes.map(o => `${o.name} ${o.point && o.point > 0 ? '+' : ''}${o.point} (${o.price > 0 ? '+' : ''}${o.price})`).join(' | ');
@@ -556,7 +523,17 @@ async function fetchLiveOdds(sport: string, gameQuery?: string): Promise<string>
   }
 
   if (results.length === 0) return `No live odds available for ${sport} right now.`;
-  return `LIVE ODDS (Pinnacle/DraftKings) — ${sport}:\n${results.join('\n\n')}`;
+  return `LIVE ODDS (Pinnacle if listed, else first available of DraftKings/FanDuel) — ${sport}:\n${results.join('\n\n')}`;
+}
+
+async function fetchAltMarkets(sportKey: string, eventId: string): Promise<OddsEvent['bookmakers']> {
+  try {
+    const url = `${ODDS_API_BASE}/sports/${sportKey}/events/${eventId}/odds?apiKey=${ODDS_API_KEY}&markets=alternate_spreads,alternate_totals&bookmakers=pinnacle,draftkings,fanduel&oddsFormat=american`;
+    const res = await fetch(url, { signal: AbortSignal.timeout(6000) });
+    if (!res.ok) return [];
+    const data = await res.json() as { bookmakers?: OddsEvent['bookmakers'] };
+    return data.bookmakers ?? [];
+  } catch { return []; }
 }
 
 // ── BallDontLie — real NBA player stats + schedule ───────────────────────────
@@ -1111,21 +1088,7 @@ async function fetchMLBPitcherStats(matchup: string): Promise<string> {
   } catch { return ""; }
 }
 
-// ── Weather via wttr.in (completely free, no auth) ────────────────────────────
-// Only called for outdoor sports: MLB, NFL. Indoor (NBA/NHL) = skip.
-const STADIUM_CITIES: Record<string, string> = {
-  // MLB
-  'yankees': 'New York', 'mets': 'New York', 'red sox': 'Boston',
-  'cubs': 'Chicago', 'white sox': 'Chicago', 'dodgers': 'Los Angeles',
-  'angels': 'Anaheim', 'giants': 'San Francisco', 'athletics': 'Oakland',
-  'padres': 'San Diego', 'rockies': 'Denver', 'diamondbacks': 'Phoenix',
-  'cardinals': 'St. Louis', 'brewers': 'Milwaukee', 'reds': 'Cincinnati',
-  'pirates': 'Pittsburgh', 'phillies': 'Philadelphia', 'braves': 'Atlanta',
-  'marlins': 'Miami', 'nationals': 'Washington', 'orioles': 'Baltimore',
-  'blue jays': 'Toronto', 'rays': 'St. Petersburg', 'tigers': 'Detroit',
-  'guardians': 'Cleveland', 'royals': 'Kansas City', 'twins': 'Minneapolis',
-  'astros': 'Houston', 'rangers': 'Arlington', 'mariners': 'Seattle',
-  // NFL
+const NFL_STADIUM_CITIES: Record<string, string> = {
   'patriots': 'Foxborough', 'bills': 'Orchard Park', 'dolphins': 'Miami Gardens',
   'jets': 'East Rutherford', 'ravens': 'Baltimore', 'bengals': 'Cincinnati',
   'browns': 'Cleveland', 'steelers': 'Pittsburgh', 'texans': 'Houston',
@@ -1139,6 +1102,31 @@ const STADIUM_CITIES: Record<string, string> = {
   '49ers': 'Santa Clara', 'cardinals': 'Glendale',
 };
 
+// Fixed domes and retractable roofs (usually closed in bad weather) — weather flags don't apply.
+// Keys match *_STADIUM_CITIES keys.
+const ROOFED: Record<string, Set<string>> = {
+  NFL: new Set(['lions', 'vikings', 'raiders', 'saints', 'falcons', 'colts', 'texans', 'cowboys', 'cardinals', 'rams', 'chargers']),
+  MLB: new Set(['rays', 'blue jays', 'astros', 'rangers', 'mariners', 'brewers', 'diamondbacks', 'marlins']),
+};
+
+// ── Weather via wttr.in (completely free, no auth) ────────────────────────────
+// Only called for outdoor sports: MLB, NFL. Indoor (NBA/NHL) = skip.
+// MLB and NFL share team names (Giants, Cardinals) — one merged map silently sent
+// MLB Giants weather to New Jersey and MLB Cardinals weather to Arizona.
+const MLB_STADIUM_CITIES: Record<string, string> = {
+  // MLB
+  'yankees': 'New York', 'mets': 'New York', 'red sox': 'Boston',
+  'cubs': 'Chicago', 'white sox': 'Chicago', 'dodgers': 'Los Angeles',
+  'angels': 'Anaheim', 'giants': 'San Francisco', 'athletics': 'Oakland',
+  'padres': 'San Diego', 'rockies': 'Denver', 'diamondbacks': 'Phoenix',
+  'cardinals': 'St. Louis', 'brewers': 'Milwaukee', 'reds': 'Cincinnati',
+  'pirates': 'Pittsburgh', 'phillies': 'Philadelphia', 'braves': 'Atlanta',
+  'marlins': 'Miami', 'nationals': 'Washington', 'orioles': 'Baltimore',
+  'blue jays': 'Toronto', 'rays': 'St. Petersburg', 'tigers': 'Detroit',
+  'guardians': 'Cleveland', 'royals': 'Kansas City', 'twins': 'Minneapolis',
+  'astros': 'Houston', 'rangers': 'Arlington', 'mariners': 'Seattle',
+};
+
 async function fetchWeather(matchup: string, sport: string): Promise<string> {
   const s = sport.toUpperCase();
   if (!['MLB', 'NFL'].includes(s)) return ""; // NBA/NHL/Tennis are indoor
@@ -1147,11 +1135,15 @@ async function fetchWeather(matchup: string, sport: string): Promise<string> {
   const parts = matchup.toLowerCase().split(/\s+vs?\.?\s+/i);
   const homeStr = (parts[parts.length - 1] ?? parts[0]).trim();
 
-  let city = '';
-  for (const [kw, c] of Object.entries(STADIUM_CITIES)) {
-    if (homeStr.includes(kw)) { city = c; break; }
+  const cities = s === 'NFL' ? NFL_STADIUM_CITIES : MLB_STADIUM_CITIES;
+  let city = '', teamKey = '';
+  for (const [kw, c] of Object.entries(cities)) {
+    if (homeStr.includes(kw)) { city = c; teamKey = kw; break; }
   }
   if (!city) return "";
+  if (ROOFED[s]?.has(teamKey)) {
+    return `WEATHER — ${city}: indoor/retractable-roof stadium — do NOT apply wind or temperature adjustments.`;
+  }
 
   try {
     const res = await fetch(
@@ -1378,41 +1370,46 @@ function getF1CircuitContext(matchup: string): string {
   return "";
 }
 
-// ── Synthetic Sharp Signal (Pinnacle vs soft-book line gap) ───────────────────
-// Pinnacle is the sharpest book. When Pinnacle line diverges from DraftKings/FanDuel,
-// that gap reveals where the sharp money is pointing.
+// ── Sharp Signal: soft-book price vs Pinnacle no-vig fair price ───────────────
+// Pinnacle is the sharpest book, so its devigged price is the best free estimate of the
+// true probability. When DraftKings/FanDuel pay MORE than that fair price on a side,
+// that bet is +EV at the soft book. Compared in probability space — raw American-odds
+// differences are meaningless across the +/- boundary (-105 vs +105 is a 210 "gap").
+const SHARP_MIN_EV = 0.01; // ≥1% EV vs Pinnacle fair
 async function fetchSharpSignals(sport: string): Promise<string> {
   if (!ODDS_API_KEY) return "";
   const sportKeys = SPORT_KEYS[sport.toUpperCase()] || [];
   if (sportKeys.length === 0) return "";
   const signals: string[] = [];
   try {
-    const url = `${ODDS_API_BASE}/sports/${sportKeys[0]}/odds?apiKey=${ODDS_API_KEY}&regions=us&markets=h2h,spreads&bookmakers=pinnacle,draftkings,fanduel&dateFormat=iso&oddsFormat=american`;
+    const url = `${ODDS_API_BASE}/sports/${sportKeys[0]}/odds?apiKey=${ODDS_API_KEY}&markets=h2h,spreads,totals&bookmakers=pinnacle,draftkings,fanduel&dateFormat=iso&oddsFormat=american`;
     const res = await fetch(url, { signal: AbortSignal.timeout(6000) });
     if (!res.ok) return "";
     const events = await res.json() as OddsEvent[];
-    for (const ev of events.slice(0, 6)) {
+    for (const ev of events.slice(0, 12)) {
       const pinnacle = ev.bookmakers.find(b => b.key === "pinnacle");
-      const dk = ev.bookmakers.find(b => b.key === "draftkings");
-      if (!pinnacle || !dk) continue;
-      for (const market of pinnacle.markets) {
-        const dkMarket = dk.markets.find(m => m.key === market.key);
-        if (!dkMarket) continue;
-        for (const pinOut of market.outcomes) {
-          const dkOut = dkMarket.outcomes.find(o => o.name === pinOut.name);
-          if (!dkOut) continue;
-          const diff = pinOut.price - dkOut.price;
-          // If Pinnacle is >8 pts BETTER than DK on one side = sharp action on that side
-          if (Math.abs(diff) >= 8) {
-            const direction = diff > 0 ? "SHARP BACKING" : "SHARP FADING";
-            signals.push(`${ev.away_team} @ ${ev.home_team} | ${market.key.toUpperCase()} ${pinOut.name}: Pinnacle ${pinOut.price > 0 ? "+" : ""}${pinOut.price} vs DK ${dkOut.price > 0 ? "+" : ""}${dkOut.price} → ${direction} ${pinOut.name} (${diff > 0 ? "+" : ""}${diff} pts gap)`);
-          }
+      if (!pinnacle) continue;
+      for (const pm of pinnacle.markets) {
+        const fair = devigMulti(pm.outcomes.map(o => impliedProb(o.price))).fair;
+        for (const soft of ev.bookmakers.filter(b => b.key !== "pinnacle")) {
+          const sm = soft.markets.find(m => m.key === pm.key);
+          if (!sm) continue;
+          pm.outcomes.forEach((po, i) => {
+            // Same side AND same line only (a spread at a different point is a different bet)
+            const so = sm.outcomes.find(o => o.name === po.name && o.point === po.point);
+            if (!so) return;
+            const edge = fair[i] * (so.price >= 0 ? so.price / 100 + 1 : 100 / -so.price + 1) - 1;
+            if (edge >= SHARP_MIN_EV) {
+              const line = po.point !== undefined ? ` ${po.point > 0 ? '+' : ''}${po.point}` : '';
+              signals.push(`${ev.away_team} @ ${ev.home_team} | ${pm.key.toUpperCase()} ${po.name}${line}: ${soft.key} ${formatAmerican(so.price)} vs Pinnacle fair ${(fair[i]*100).toFixed(1)}% → +${(edge*100).toFixed(1)}% EV at ${soft.key}`);
+            }
+          });
         }
       }
     }
   } catch { return ""; }
   if (signals.length === 0) return "";
-  return `SYNTHETIC SHARP SIGNALS (Pinnacle vs DraftKings gap ≥8pts):\n${signals.join("\n")}`;
+  return `SHARP PRICE SIGNALS (soft book beats Pinnacle no-vig fair by ≥${SHARP_MIN_EV*100}% EV — these are the only computed edges):\n${signals.join("\n")}`;
 }
 
 // ── MYTHOS-STYLE IDENTITY BLOCK (Capybara tier adapted for sports betting) ────
@@ -1427,7 +1424,7 @@ Constraint: NEVER invent odds, lines, or player stats. If not in LIVE ODDS block
 ## CORE DIRECTIVES
 1. STRICT ODDS DISCIPLINE: Only use lines from the LIVE ODDS block. Never hallucinate prices.
 2. INJURY FIRST: If a key player is OUT/DOUBTFUL in the INJURY REPORT, reprice the line mentally before picking.
-3. SHARP SIGNALS: Pinnacle vs DK gap ≥8pts = real sharp money. Follow it.
+3. SHARP SIGNALS: a soft-book price that beats Pinnacle's no-vig fair price is a computed +EV edge. Prefer those.
 4. EV BEFORE NARRATIVE: If a bet feels right but EV is negative → FADE IT.
 5. CAVEMAN OUTPUT: "why" fields max 12 words. Cite numbers. No fluff.
 6. RAW JSON ONLY: Never wrap in markdown. No commentary outside the JSON.`;
@@ -1436,7 +1433,9 @@ Constraint: NEVER invent odds, lines, or player stats. If not in LIVE ODDS block
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const DEEPSEEK_KEY = process.env.DEEPSEEK_API_KEY || "";
 
-async function ask(prompt: string, model = "claude-sonnet-4-6"): Promise<string> {
+const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL || "claude-sonnet-4-6";
+
+async function ask(prompt: string, model = ANTHROPIC_MODEL): Promise<string> {
   try {
     const msg = await anthropic.messages.create({
       model,
@@ -1472,6 +1471,47 @@ function todayStr() {
   });
 }
 
+// Which sports are in season (by month). Used to avoid defaulting to NBA in September.
+function inSeason(s: string, month = new Date().getMonth() + 1): boolean {
+  if (s === 'NBA')    return month >= 10 || month <= 6;
+  if (s === 'WNBA')   return month >= 5 && month <= 10;
+  if (s === 'MLB')    return month >= 3 && month <= 10;
+  if (s === 'NFL')    return month >= 9 || month <= 2;
+  if (s === 'NHL')    return month >= 10 || month <= 6;
+  if (s === 'SOCCER') return true; // always some league running
+  if (s === 'TENNIS') return true;
+  return false;
+}
+
+// Default sport when the caller didn't pick one: the first in-season major league
+function defaultSport(): string {
+  return ['NFL', 'NBA', 'MLB', 'NHL', 'WNBA'].find(s => inSeason(s)) ?? 'SOCCER';
+}
+
+// ── Post-processing: never ship LLM arithmetic unchecked ─────────────────────
+// Combined parlay odds are pure arithmetic — compute them instead of trusting the model.
+type ParlayLike = { legs?: Array<{ odds?: unknown }>; combined_odds?: unknown; combined_odds_llm?: unknown; combined_odds_note?: string; ev?: unknown };
+function fixParlayMath(block: unknown): void {
+  if (!block || typeof block !== 'object') return;
+  const b = block as ParlayLike;
+  if (!Array.isArray(b.legs) || b.legs.length === 0) return;
+  const odds = b.legs.map(l => parseAmerican(l?.odds));
+  if (odds.some(o => o === null)) { b.combined_odds_note = "unverified: a leg has no numeric odds"; return; }
+  const price = parlayPrice(odds as number[]);
+  const computed = formatAmerican(price.american);
+  if (b.combined_odds !== undefined && parseAmerican(b.combined_odds) !== price.american) b.combined_odds_llm = b.combined_odds;
+  b.combined_odds = computed;
+  b.combined_odds_note = "computed from leg odds assuming independent legs (books reprice same-game parlays)";
+  if (typeof b.ev === 'string' && !/est/i.test(b.ev)) b.ev = `${b.ev} est.`;
+}
+
+// Attach break-even / EV / half-Kelly / overconfidence flags to any pick with odds + win_prob
+function auditPickInPlace(pick: unknown): void {
+  if (!pick || typeof pick !== 'object') return;
+  const p = pick as { odds?: unknown; win_prob?: unknown; math?: unknown };
+  p.math = auditPick(p.odds, p.win_prob);
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // PROPHET — single best pick of the day
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1481,10 +1521,17 @@ app.get('/api/prophet', async (req: express.Request, res: express.Response) => {
   try {
     const today = todayStr();
     const sport = ((req.query.sport as string) || '').toUpperCase();
-    const sportFilter = sport ? `Focus ONLY on ${sport} games.` : 'Scan all sports (NBA, MLB, tennis, soccer, UFC — whatever is on tonight).';
     const prophetSport = sport || 'ALL';
-    const heuristics = getBettingHeuristics(prophetSport === 'ALL' ? 'NBA' : prophetSport);
-    const activeSport = prophetSport === 'ALL' ? 'NBA' : prophetSport;
+    // Was hard-wired to NBA when no sport was given — useless in the NBA offseason
+    const activeSport = prophetSport === 'ALL' ? defaultSport() : prophetSport;
+    const sportFilter = sport ? `Focus ONLY on ${sport} games.` : `Focus on ${activeSport} (the in-season slate we have data for).`;
+    const heuristics = getBettingHeuristics(activeSport);
+
+    // Check cache BEFORE spending Odds API quota on 7 fetches
+    const prophetCacheKey = `prophet:${prophetSport}`;
+    const prophetCached = getCached(prophetCacheKey);
+    if (prophetCached) { res.json(prophetCached); return; }
+
     const [liveOdds, scheduleCtx, injuryData, newsData, pitcherData, advancedData, sharpSignals] = await Promise.all([
       fetchLiveOdds(activeSport),
       activeSport === 'NBA' ? fetchNBAScheduleToday() : fetchESPNScoreboard(activeSport),
@@ -1510,9 +1557,9 @@ ${pitcherData ? `\nREAL PITCHER STATS (MLB API — cite exact numbers):\n${pitch
 ${newsData ? `\nLATEST NEWS (ESPN):\n${newsData}` : ''}
 ${sharpSignals ? `\n${sharpSignals}` : ''}
 
-IMPORTANT: Lines above are REAL from Pinnacle/DraftKings — use exact lines, do not invent.
+IMPORTANT: Lines above are REAL from the named book — use exact lines, do not invent.
 Injuries are LIVE from ESPN — apply Next Man Up logic immediately.
-Sharp signals = Pinnacle vs DK gap ≥8pts — follow the sharp side.
+Sharp price signals = soft book paying more than Pinnacle's no-vig fair price — these are computed edges; prefer them.
 News = live ESPN headlines — questionable/out tags reprice the market.
 ⚠️ win_prob cap: never output >0.82. EV: label "est." — no true prob model exists here.
 
@@ -1543,10 +1590,6 @@ Output ONLY a raw JSON object — no markdown, no commentary:
 Be specific. Use real player names, real team names, real stats. No filler phrases.
 `.trim();
 
-    const prophetCacheKey = `prophet:${prophetSport}`;
-    const prophetCached = getCached(prophetCacheKey);
-    if (prophetCached) { res.json(prophetCached); return; }
-
     const raw = await ask(prompt);
     const parsed = parseJSON(raw) as Record<string, unknown>;
     if (!parsed || typeof parsed !== 'object') {
@@ -1574,8 +1617,12 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
     if (!matchup) return res.status(400).json({ error: "MATCHUP_REQUIRED" });
 
     const today = todayStr();
-    const league = (sport || 'NBA').toUpperCase();
+    const league = (sport || defaultSport()).toUpperCase();
     const swarmHeuristics = getBettingHeuristics(league);
+
+    const cacheKey = `swarm:${league}:${matchup.toLowerCase().replace(/\s+/g, '_')}`;
+    const cached = getCached(cacheKey);
+    if (cached) { res.json(cached); return; }
 
     const [swarmLiveOdds, swarmNbaCtx, swarmInjuries, swarmSharp] = await Promise.all([
       fetchLiveOdds(league, matchup),
@@ -1625,7 +1672,7 @@ Output ONLY this raw JSON (no markdown, no commentary):
   },
   "primary_single": "FINAL best bet after synthesizing both views (specific line + odds)",
   "value_gap": "Final EV estimate",
-  "confidence_score": 0.80,
+  "confidence_score": 0.60,
   "sgp_blueprint": [
     { "label": "SGP Leg 1", "value": "Pick + odds", "rationale": "Why this leg", "espn_id": "" },
     { "label": "SGP Leg 2", "value": "Pick + odds", "rationale": "Why this leg", "espn_id": "" },
@@ -1635,10 +1682,6 @@ Output ONLY this raw JSON (no markdown, no commentary):
 }
 `.trim();
 
-    const cacheKey = `swarm:${league}:${matchup.toLowerCase().replace(/\s+/g, '_')}`;
-    const cached = getCached(cacheKey);
-    if (cached) { res.json(cached); return; }
-
     const unifiedRaw = await ask(unifiedPrompt);
     const unified = parseJSON(unifiedRaw) as Record<string, unknown>;
 
@@ -1646,7 +1689,7 @@ Output ONLY this raw JSON (no markdown, no commentary):
       return res.status(500).json({ error: "PARSE_FAILED", message: "AI returned invalid data. Try again." });
     }
 
-    const exec = unified as SwarmAgentData;
+    const exec = unified as unknown as SwarmAgentData;
     const payload: SwarmFinalPayload = {
       ...exec,
       swarm_report: {
@@ -1674,12 +1717,25 @@ Output ONLY this raw JSON (no markdown, no commentary):
 export async function generateAlphaSheet(sport: string): Promise<AlphaSheetContainer> {
   const today = todayStr();
   const s = sport.toUpperCase();
+  // Previously this prompt had NO data at all — every player, game and line was invented.
+  const [odds, injuries, schedule] = await Promise.all([
+    fetchLiveOdds(s),
+    fetchInjuries(s),
+    s === 'NBA' ? fetchNBAScheduleToday() : fetchESPNScoreboard(s),
+  ]);
 
   const prompt = `
 You are a sharp sports betting analyst building a prop betting cheat sheet.
 Today is ${today}.
 
+REAL DATA (only use players/games that appear here):
+${schedule || "No schedule data available."}
+${odds}
+${injuries ? `\nINJURY REPORT:\n${injuries}` : ''}
+
 Generate a cheat sheet of the 10 highest-value player prop bets for ${s} games scheduled TODAY.
+If the data above shows no games today, return an empty JSON array [].
+Prop lines are NOT in the data above — write every metric_value line as an estimate ending in "(est.)" and keep ai_score ≤ 7.
 
 For each player:
 - Pick a real player with a game tonight
@@ -1728,7 +1784,7 @@ app.post('/api/alpha-sheets', async (req: express.Request, res: express.Response
 
   try {
     const { sport } = req.body;
-    const data = await generateAlphaSheet(sport || 'NBA');
+    const data = await generateAlphaSheet(sport || defaultSport());
     res.json(data);
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : String(e);
@@ -1777,32 +1833,24 @@ app.get('/api/parlays', async (req: express.Request, res: express.Response) => {
   if (rateLimit(req, 5, 60_000)) return res.status(429).json({ error: "RATE_LIMIT" });
 
   try {
-    const sport = ((req.query.sport as string) || 'NBA').toUpperCase();
+    const sport = ((req.query.sport as string) || defaultSport()).toUpperCase();
     const game = (req.query.game as string || '').trim();
     const today = todayStr();
     const isAllSports = sport === 'ALL';
 
-    // For cross-sport: fetch NBA + MLB + NFL + SOCCER + WNBA odds in parallel
-    // Only fetch sports currently in-season — saves Odds API credits (Fix #4)
-    const month = new Date().getMonth() + 1; // 1-12
-    const inSeason = (s: string) => {
-      if (s === 'NBA')    return month >= 10 || month <= 6;
-      if (s === 'WNBA')   return month >= 5 && month <= 9;
-      if (s === 'MLB')    return month >= 4 && month <= 10;
-      if (s === 'NFL')    return month >= 9 || month <= 2;
-      if (s === 'NHL')    return month >= 10 || month <= 6;
-      if (s === 'SOCCER') return true; // always some league running
-      if (s === 'TENNIS') return true;
-      return false;
-    };
-    const crossSportKeys = ['NBA', 'WNBA', 'MLB', 'NFL', 'SOCCER'].filter(inSeason);
-    const sgpSport = isAllSports ? 'NBA' : sport;
+    const parlayCacheKey = `parlays:${sport}:${game || 'slate'}`;
+    const parlayCached = getCached(parlayCacheKey);
+    if (parlayCached) { res.json(parlayCached); return; }
+
+    // Only fetch sports currently in-season — saves Odds API credits
+    const crossSportKeys = ['NBA', 'WNBA', 'MLB', 'NFL', 'SOCCER'].filter(s => inSeason(s));
+    const sgpSport = isAllSports ? defaultSport() : sport;
     const [parlayOdds, crossOdds, parlayNba, parlayInjuries, parlaySharp] = await Promise.all([
       fetchLiveOdds(sgpSport, game || undefined),
       isAllSports
         ? Promise.all(crossSportKeys.map(s => fetchLiveOdds(s))).then(r => r.filter(Boolean).join('\n\n'))
         : Promise.all(crossSportKeys.filter(s => s !== sport).map(s => fetchLiveOdds(s))).then(r => r.filter(Boolean).join('\n\n')),
-      (isAllSports || sport === 'NBA' || sport === 'WNBA') ? fetchNBAScheduleToday() : fetchESPNScoreboard(sport),
+      sgpSport === 'NBA' ? fetchNBAScheduleToday() : fetchESPNScoreboard(sgpSport),
       fetchInjuries(sgpSport, game || undefined),
       fetchSharpSignals(sgpSport),
     ]);
@@ -1834,7 +1882,7 @@ ${sgpHeuristics}
 ${parlayOddsBlock}
 ${gameContext}
 
-Apply all heuristics above to every leg. Use the INJURY REPORT — if a key player is OUT or DOUBTFUL, apply Next Man Up logic (backup's props are often highest EV). Use the SHARP SIGNALS — follow the Pinnacle-vs-DK gap where sharp money is detected. Run the SHARP CHECK. Flag [HIGH-RISK] legs. Apply the JUICE FILTER (reject if cumulative vig >15%). For SGP: run CORRELATION STRESS TEST on every leg pair.
+Apply all heuristics above to every leg. Use the INJURY REPORT — if a key player is OUT or DOUBTFUL, apply Next Man Up logic (backup's props are often highest EV). Use the SHARP PRICE SIGNALS — those are computed +EV prices. Run the SHARP CHECK. Flag [HIGH-RISK] legs. Apply the JUICE FILTER (reject if cumulative vig >15%). For SGP: run CORRELATION STRESS TEST on every leg pair.
 
 CRITICAL RULES FOR EACH PARLAY TYPE:
 - best_pick: Best single bet from ANY sport available tonight
@@ -1901,19 +1949,17 @@ Rules:
 - multi_parlay and ev_parlay: CROSS-SPORT is allowed and encouraged — pick the sharpest legs from NBA, MLB, NFL, SOCCER
 - Real players, real teams/athletes, real lines from the live odds above
 - "why" fields: caveman short — max 12 words, cite specific numbers/stats
-- combined_odds: realistic parlay math
+- combined_odds: will be recomputed server-side from leg odds, so every leg MUST have numeric American odds
+- If there are no games in the odds block for a section, return that section with an empty legs array
 - No filler. No markdown. Raw JSON only.
 `.trim();
-
-    const parlayCacheKey = `parlays:${sport}:${game || 'slate'}`;
-    const parlayCached = getCached(parlayCacheKey);
-    if (parlayCached) { res.json(parlayCached); return; }
 
     const raw = await ask(prompt);
     const parsed = parseJSON(raw) as Omit<ParlaysPayload, 'sport' | 'hash' | 'timestamp'>;
     if (!parsed || typeof parsed !== 'object') {
       return res.status(500).json({ error: "PARSE_FAILED", message: "AI returned invalid data. Try again." });
     }
+    for (const block of [parsed.sgp, parsed.multi_parlay, parsed.ev_parlay, parsed.correlation_parlay]) fixParlayMath(block);
 
     const payload: ParlaysPayload = {
       ...parsed,
@@ -1947,8 +1993,14 @@ app.post('/api/quantum-mission', async (req: express.Request, res: express.Respo
     if (quantumCached) { res.json(quantumCached); return; }
 
     const today = todayStr();
-    const quantSport = (qSport || 'NBA').toUpperCase();
+    const quantSport = (qSport || defaultSport()).toUpperCase();
     const quantumHeuristics = getShortHeuristics(quantSport);
+    // Previously the model was told to "simulate tool calls" with no data — every log line was invented.
+    const [qOdds, qInjuries, qSharp] = await Promise.all([
+      fetchLiveOdds(quantSport),
+      fetchInjuries(quantSport),
+      fetchSharpSignals(quantSport),
+    ]);
     const prompt = `
 ${SHARP_IDENTITY}
 
@@ -1957,9 +2009,13 @@ Mission goal: "${goal}"
 
 ${quantumHeuristics}
 
-Apply the above heuristics during your research. Look for CLV, derivative markets, injury impact, and contrarian signals. Run the SHARP CHECK before your final verdict.
+REAL DATA (the only facts you may use):
+${qOdds}
+${qInjuries ? `\nINJURY REPORT:\n${qInjuries}` : ''}
+${qSharp ? `\n${qSharp}` : '\nNo computed sharp price edges right now.'}
 
-Execute this mission step by step. Simulate 3-4 tool calls as part of your research, then give a final verdict.
+Work through the mission using ONLY the data above. Each log entry summarizes one analysis step over that data.
+If a step needs data that is not above (e.g. line history, public betting %), say "not available" in that step — do not invent it.
 
 Output ONLY this raw JSON:
 {
@@ -2022,17 +2078,13 @@ app.post('/api/full-breakdown', async (req: express.Request, res: express.Respon
     const { matchup, sport } = req.body;
     if (!matchup) return res.status(400).json({ error: "MATCHUP_REQUIRED" });
     const today = todayStr();
-    const league = (sport || 'NBA').toUpperCase();
-    const month = new Date().getMonth() + 1;
-    const inSeason = (s: string) => {
-      if (s === 'NBA')    return month >= 10 || month <= 6;
-      if (s === 'WNBA')   return month >= 5 && month <= 9;
-      if (s === 'MLB')    return month >= 4 && month <= 10;
-      if (s === 'NFL')    return month >= 9 || month <= 2;
-      if (s === 'SOCCER') return true;
-      return false;
-    };
-    const crossSports = ['NBA', 'MLB', 'NFL', 'SOCCER', 'WNBA'].filter(inSeason);
+    const league = (sport || defaultSport()).toUpperCase();
+    const crossSports = ['NBA', 'MLB', 'NFL', 'SOCCER', 'WNBA'].filter(s => inSeason(s));
+
+    // Cache check BEFORE the 11 parallel data fetches (was after — every cache hit still burned API quota)
+    const cacheKey = `fullbreakdown:${league}:${matchup.toLowerCase().replace(/\s+/g, '_')}`;
+    const cached = getCached(cacheKey);
+    if (cached) return res.json(cached);
 
     // Fetch all data in parallel — real stats, news, odds, injuries, sharp signals
     const [oddsCtx, injuryCtx, playerStatsCtx, advancedCtx, teamStatsCtx, nicheCtx, newsCtx, pitcherCtx, weatherCtx, sharpCtx, crossOdds] = await Promise.all([
@@ -2041,10 +2093,11 @@ app.post('/api/full-breakdown', async (req: express.Request, res: express.Respon
       league === 'NBA' || league === 'WNBA'
         ? fetchNBAPlayerStats(matchup)
         : Promise.resolve(''),
-      league === 'NBA' || league === 'WNBA'
+      // stats.nba.com / ESPN NBA team stats only cover NBA teams — WNBA teams never match
+      league === 'NBA'
         ? fetchNBAAdvancedStats(matchup)
         : Promise.resolve(''),
-      league === 'NBA' || league === 'WNBA'
+      league === 'NBA'
         ? fetchNBATeamStats(matchup)
         : Promise.resolve(''),
       // Sport-specific niche stats
@@ -2091,11 +2144,12 @@ ${newsCtx ? `LATEST NEWS — ESPN live:\n${newsCtx}\n` : ''}
 - Edge = your win_prob − devigged market probability. Positive edge = bet has value.
 - Cite: "Model: 54.3% | Market(devigged): 51.8% | Edge: +2.5% | EV: +3.1% | Half-Kelly: 0.6u"
 ⚠️ If model stats block is present, your win_prob MUST align with the model within ±15%. Do not wildly deviate without explaining why.
-SHARP SIGNALS (Pinnacle vs DK line gap — directional signal only):
-${sharpCtx || "No significant line gap detected."}
+SHARP PRICE SIGNALS (soft book beats Pinnacle no-vig fair price — computed edges):
+${sharpCtx || "No computed price edges right now."}
 
 ⚠️ HONESTY RULES — NON-NEGOTIABLE:
-- win_prob: your calibrated estimate based on available data. Do NOT output >0.82 — real sharp bettors rarely see edge that clean.
+- win_prob: your calibrated estimate based on available data. Anchor on the devigged market probability and move off it only for a reason cited from the data. A win_prob more than ~0.05 above the devigged market is rare; more than 0.10 above is flagged OVERCONFIDENT_EDGE server-side. Never output >0.82.
+- For spreads and totals at standard juice the market is ~0.50 — a -110 pick with win_prob 0.70 claims +34% EV, which is not credible.
 - EV: label as "est." — we have no true probability model. Only output EV if you can ground it in the real stats/odds above.
 - If a stat block is missing (no player stats, no pitcher data), say so in game_summary. Do NOT invent replacement numbers.
 - rationale must cite at least one real number from the data blocks above or from the live odds. No narrative-only rationale accepted.
@@ -2124,7 +2178,7 @@ For EACH market (spread, total): scan ALL listed lines (standard + alternate) an
 - If the standard line is already the best value, leave "is_alt" as false and omit "alt_note".
 - Only use alt lines that appear in the LIVE ODDS block — never fabricate alternate lines.
 
-Analyze this specific game. win_prob = true win probability (0.50–0.95). Apply heuristics above to every pick.
+Analyze this specific game. win_prob = true win probability (0.05–0.82). Apply heuristics above to every pick.
 
 For the SGP: pick 3 correlated legs from THIS game only. Legs must positively correlate.
 
@@ -2132,15 +2186,15 @@ Output ONLY raw JSON — no markdown:
 {
   "game": "${matchup}",
   "game_summary": "2-3 sentences: key injuries (only from report above), pace, sharp signals, biggest edge",
-  "spread_pick": { "pick": "Team -X.X or alt line", "odds": "-110", "win_prob": 0.68, "rationale": "2 sharp sentences citing real roster/matchup data", "niche_stat": "Specific ATS trend", "is_alt": false },
-  "ml_pick": { "pick": "Team ML", "odds": "-180", "win_prob": 0.72, "rationale": "2 sharp sentences", "niche_stat": "Specific ML trend", "is_alt": false },
-  "total_pick": { "pick": "Over/Under X.X or alt line", "odds": "-108", "win_prob": 0.64, "rationale": "2 sharp sentences", "niche_stat": "Specific pace/total trend", "is_alt": false },
+  "spread_pick": { "pick": "Team -X.X or alt line", "odds": "-110", "win_prob": 0.54, "rationale": "2 sharp sentences citing real roster/matchup data", "niche_stat": "Specific ATS trend", "is_alt": false },
+  "ml_pick": { "pick": "Team ML", "odds": "-180", "win_prob": 0.67, "rationale": "2 sharp sentences", "niche_stat": "Specific ML trend", "is_alt": false },
+  "total_pick": { "pick": "Over/Under X.X or alt line", "odds": "-108", "win_prob": 0.53, "rationale": "2 sharp sentences", "niche_stat": "Specific pace/total trend", "is_alt": false },
   "top_props": [
-    { "player": "MUST be a real player on one of these two teams", "market": "Points", "pick": "Over 26.5", "odds": "-115", "win_prob": 0.74, "rationale": "1-2 sentences based on real stats", "niche_stat": "Season average or matchup stat" },
-    { "player": "Real player on these teams only", "market": "Rebounds", "pick": "Over 8.5", "odds": "-110", "win_prob": 0.71, "rationale": "1-2 sentences", "niche_stat": "Real stat" },
-    { "player": "Real player on these teams only", "market": "Assists", "pick": "Over 6.5", "odds": "-115", "win_prob": 0.68, "rationale": "1-2 sentences", "niche_stat": "Real stat" },
-    { "player": "Real player on these teams only", "market": "Points", "pick": "Over 21.5", "odds": "-110", "win_prob": 0.65, "rationale": "1-2 sentences", "niche_stat": "Real stat" },
-    { "player": "Real player on these teams only", "market": "Threes", "pick": "Over 2.5", "odds": "-115", "win_prob": 0.62, "rationale": "1-2 sentences", "niche_stat": "Real stat" }
+    { "player": "MUST be a real player on one of these two teams", "market": "Points", "pick": "Over 26.5", "odds": "-115", "win_prob": 0.56, "rationale": "1-2 sentences based on real stats", "niche_stat": "Season average or matchup stat" },
+    { "player": "Real player on these teams only", "market": "Rebounds", "pick": "Over 8.5", "odds": "-110", "win_prob": 0.55, "rationale": "1-2 sentences", "niche_stat": "Real stat" },
+    { "player": "Real player on these teams only", "market": "Assists", "pick": "Over 6.5", "odds": "-115", "win_prob": 0.55, "rationale": "1-2 sentences", "niche_stat": "Real stat" },
+    { "player": "Real player on these teams only", "market": "Points", "pick": "Over 21.5", "odds": "-110", "win_prob": 0.54, "rationale": "1-2 sentences", "niche_stat": "Real stat" },
+    { "player": "Real player on these teams only", "market": "Threes", "pick": "Over 2.5", "odds": "-115", "win_prob": 0.54, "rationale": "1-2 sentences", "niche_stat": "Real stat" }
   ],
   "sgp": {
     "legs": [
@@ -2189,10 +2243,6 @@ Output ONLY raw JSON — no markdown:
   }
 }`.trim();
 
-    const cacheKey = `fullbreakdown:${league}:${matchup.toLowerCase().replace(/\s+/g, '_')}`;
-    const cached = getCached(cacheKey);
-    if (cached) return res.json(cached);
-
     const [gameRaw, dailyRaw] = await Promise.all([
       ask(gamePrompt),
       ask(dailyPrompt),
@@ -2212,6 +2262,12 @@ Output ONLY raw JSON — no markdown:
       const d = parseJSON(dailyRaw);
       if (d && typeof d === 'object' && !Array.isArray(d)) daily = d as Record<string, unknown>;
     } catch { /* daily picks are optional — continue without them */ }
+
+    // Deterministic checks on the model's numbers
+    for (const k of ['spread_pick', 'ml_pick', 'total_pick']) auditPickInPlace(game[k]);
+    if (Array.isArray(game.top_props)) game.top_props.forEach(auditPickInPlace);
+    fixParlayMath(game.sgp);
+    fixParlayMath(daily.parlay_of_day);
 
     const payload = {
       ...game,
@@ -2235,7 +2291,7 @@ app.get('/api/sharp-money', async (req: express.Request, res: express.Response) 
   if (rateLimit(req, 5, 60_000)) return res.status(429).json({ error: "RATE_LIMIT" });
 
   try {
-    const sport = ((req.query.sport as string) || 'NBA').toUpperCase();
+    const sport = ((req.query.sport as string) || defaultSport()).toUpperCase();
     const game = (req.query.game as string || '').trim();
     const today = todayStr();
     const gameCtx = game ? `Focus on: "${game}". ` : `Cover tonight's top ${sport} games. `;
@@ -2254,7 +2310,7 @@ app.get('/api/sharp-money', async (req: express.Request, res: express.Response) 
       fetchSharpSignals(sport),
     ]);
     const sharpOddsBlock = [
-      `\nLIVE ODDS (Pinnacle/DraftKings — use for CLV and line movement):\n${sharpOdds}`,
+      `\nLIVE ODDS (current snapshot — no line history is available):\n${sharpOdds}`,
       sharpNba || '',
       sharpInjuries ? `\n${sharpInjuries}` : '',
       sharpSignals ? `\n${sharpSignals}` : '',
@@ -2268,12 +2324,11 @@ ${gameCtx}${betCtx}
 ${sharpOddsBlock}
 ${sharpHeuristics}
 
-Using the above heuristics, identify real sharp action. Specifically look for:
-- CLV opportunities (lines better than opening)
-- RLM (line moves against public — CONTRARIAN_SIGNAL)
-- Steam moves (sharp syndicate action causing fast line movement)
-- Derivative market value (softer lines in 1H/1Q/team totals/F5)
-- Injury context that moves EV but market hasn't fully adjusted
+DATA LIMITS — READ FIRST: we have a CURRENT odds snapshot only. We have NO opening lines, NO line history
+and NO public betting percentages. Therefore:
+- steam_moves and rlm MUST be empty arrays [] unless the data above literally contains opening/current lines or public %.
+- best_ev_plays must come from the SHARP PRICE SIGNALS block (computed edges) first; if it's empty, pick the
+  soundest plays from the odds + injury data and label every "ev" value with "est.".
 
 Output ONLY this raw JSON:
 {
@@ -2331,9 +2386,8 @@ Output ONLY this raw JSON:
 
 Rules:
 - ${sport} ONLY. Real games tonight.
-- steam_moves: 2-3 entries. Lines that moved sharply.
-- rlm: 1-2 entries. Public on one side, line moves opposite.
-- best_ev_plays: exactly 3. Best +EV bets on the slate.
+- steam_moves / rlm: [] unless backed by line-history data above (there is none today).
+- best_ev_plays: up to 3. Fewer is fine if the slate has no real edges.
 - No filler. Raw JSON only.
 `.trim();
 
@@ -2379,7 +2433,7 @@ app.get('/api/proxy-image', async (req: express.Request, res: express.Response) 
     res.set('Content-Type', response.headers.get('content-type') || 'image/png');
     res.set('Cache-Control', 'public, max-age=86400');
     res.send(buf);
-  } catch (e) {
+  } catch {
     res.status(500).send('proxy error');
   }
 });

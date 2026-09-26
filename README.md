@@ -45,6 +45,27 @@ npm run dev
 
 The terminal will be available at: **[http://localhost:5173](http://localhost:5173)**
 
+## 🧮 Slate Simulator & Math Checks
+
+`lib/betting-math.ts` holds the pure betting math (devig, EV, Kelly, parlay pricing, an NFL key-number margin model). `lib/slate-sim.ts` runs it over a whole slate. Both are unit-tested (`npm test`).
+
+```bash
+# Simulate a saved slate (lines snapshot in JSON)
+npm run slate -- data/slates/nfl-2026-week3-sunday.json --out reports/nfl-2026-week3-sunday
+
+# Pull current lines from The Odds API instead (needs ODDS_API_KEY)
+npm run slate -- --live americanfootball_nfl --sims 200000
+```
+
+The simulator builds each game's margin distribution from the market's own prices. It does not forecast anything on its own. It reports:
+- no-vig fair lines
+- where a book's moneyline and spread disagree
+- EV and ½-Kelly at every quoted price
+- slate-wide Monte Carlo scenarios (upsets, favorites covering)
+- the best-EV parlays, with Monte Carlo-checked hit rates
+
+The API also checks the LLM's numbers server-side. It recomputes parlay odds from the leg odds, and it attaches break-even, EV, ½-Kelly and an `OVERCONFIDENT_EDGE` flag to every pick. `ANTHROPIC_MODEL` overrides the default model.
+
 ## 📊 Sigma-Proof Audit (V15.0)
 
 Every analysis generates a **Σ_Hash** and is verifiable via the **POST-TRADE_ANALYSIS** portal. Use the **AUDIT** (The Machine) theme in the visualizer for professional social proof.
