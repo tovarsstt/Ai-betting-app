@@ -13,6 +13,22 @@ from typing import Optional
 NORMAL_MIN = 0.58   # win-prob at/above -> Normal tier
 MILD_MIN = 0.40     # win-prob at/above (or Chaos-LITE) -> Mild tier
 
+# Same per-bet ceiling bank_builder uses: never more than 3% of bank on one bet,
+# and quarter-Kelly when the price is known. The tier pools are CEILINGS for the
+# whole tier, not amounts to spend — splitting the full 70% pool across one pick
+# put $140 of a $200 bank on a single 62% bet (~3x full Kelly).
+MAX_PICK_PCT = 0.03
+KELLY_FRACTION = 0.25
+
+
+def _pick_cap_usd(c: "Candidate", bankroll: float) -> float:
+    cap = bankroll * MAX_PICK_PCT
+    if c.decimal_odds and c.decimal_odds > 1.0:
+        b = c.decimal_odds - 1.0
+        full_kelly = (b * c.win_prob - (1.0 - c.win_prob)) / b
+        cap = min(cap, max(0.0, full_kelly) * KELLY_FRACTION * bankroll)
+    return cap
+
 
 def route_tier(win_prob: float, chaos_grade: str) -> str:
     """Assign a tier from win probability + chaos grade."""
@@ -77,7 +93,7 @@ def size_card(candidates: list[Candidate], config: TierConfig = TierConfig()) ->
             continue
         wsum = sum(c.win_prob for c in cands) or 1.0
         for c in cands:
-            usd = pools[tier] * (c.win_prob / wsum)
+            usd = min(pools[tier] * (c.win_prob / wsum), _pick_cap_usd(c, config.bankroll))
             units = usd / unit if unit > 0 else 0.0
             if tier == "WILD":
                 units = min(units, config.wild_cap_units)

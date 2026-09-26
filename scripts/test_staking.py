@@ -36,10 +36,19 @@ def test_size_card_respects_tier_pools_and_bankroll():
     cfg = st.TierConfig(bankroll=200.0)
     picks = st.size_card(cands, cfg)
     by_tier = {p.tier: p for p in picks}
-    # Normal pool = 70% of 200 = 140 (single pick gets it all)
-    assert abs(by_tier["NORMAL"].stake_usd - 140.0) < 0.01
+    # A single Normal pick no longer swallows the whole 70% pool ($140 of $200):
+    # 62% @ 2.0 -> full Kelly 24% -> quarter-Kelly 6% -> capped at 3% = $6
+    assert abs(by_tier["NORMAL"].stake_usd - 6.0) < 0.01
+    # Every pick respects the 3%-of-bank ceiling
+    assert all(p.stake_usd <= 200.0 * st.MAX_PICK_PCT + 1e-9 for p in picks)
     # Wild pick capped at 0.25u (1u = 1% of 200 = $2) -> <= $0.50
     assert by_tier["WILD"].stake_usd <= 0.50 + 1e-9
+
+
+def test_size_card_negative_ev_pick_gets_zero_stake():
+    # 45% at 2.0 is -EV: Kelly <= 0 -> no money, even in a funded tier
+    picks = st.size_card([_cand("Double Chance", "1X", 0.45, odds=2.0)], st.TierConfig(bankroll=200.0))
+    assert picks[0].stake_usd == 0.0
 
 
 def test_size_card_caps_number_of_wild_picks():

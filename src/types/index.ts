@@ -141,4 +141,6 @@ export interface ParlaysPayload {
   multi_parlay: ParlayBlock;
   ev_parlay: ParlayBlock;
   correlation_parlay: ParlayBlock;
+  hash?: string;
+  timestamp?: string;
 }

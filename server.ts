@@ -9,6 +9,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { readFileSync, writeFileSync } from 'fs';
 import { impliedProb, devig, toDecimal, marginToWinProb, normalCDF } from './src/utils/mathUtils.js';
+import { auditPick, parseAmerican, parlayPrice, formatAmerican } from './lib/betting-math.js';
 import { parseJSON, parseOddsForTeams, parseMatchupsFromOdds, parseSelectionIdentity } from './src/utils/parsers.js';
 import { getCached, setCache } from './src/utils/cache.js';
 import { loadLedger, addPick, settlePick, stampClosingOdds, computeStats, hasPendingDuplicate } from './src/utils/ledger.js';
@@ -83,14 +84,35 @@ app.use((req: express.Request, res: express.Response, next: express.NextFunction
 const rateCounts = new Map<string, { count: number; reset: number }>();
 function rateLimit(req: express.Request, max: number, windowMs: number): boolean {
   const ip = req.ip || req.socket?.remoteAddress || req.headers['x-forwarded-for'] as string || 'fallback';
+  // Per IP *and* route — one shared bucket let 5 calls to any endpoint lock out every endpoint
+  const key = `${ip}:${req.path}`;
   const now = Date.now();
-  const entry = rateCounts.get(ip);
+  const entry = rateCounts.get(key);
   if (!entry || now > entry.reset) {
-    rateCounts.set(ip, { count: 1, reset: now + windowMs });
+    rateCounts.set(key, { count: 1, reset: now + windowMs });
     return false;
   }
   entry.count++;
   return entry.count > max;
+}
+
+// ── Season awareness ──────────────────────────────────────────────────────────
+// Which leagues are in season this month. WNBA playoffs/Finals run into October.
+function inSeason(s: string, month = new Date().getMonth() + 1): boolean {
+  if (s === 'NBA')    return month >= 10 || month <= 6;
+  if (s === 'WNBA')   return month >= 5 && month <= 10;
+  if (s === 'NFL')    return month >= 9 || month <= 2;
+  if (s === 'MLB')    return month >= 3 && month <= 10;
+  if (s === 'NHL')    return month >= 10 || month <= 6;
+  if (s === 'SOCCER') return true;
+  if (s === 'TENNIS') return true;
+  return false;
+}
+
+// Default when the caller names no sport: first in-season major league.
+// (Was hard-wired to 'NBA' — empty slates all summer and fall.)
+function defaultSport(): string {
+  return ['NFL', 'NBA', 'MLB', 'NHL', 'WNBA'].find(s => inSeason(s)) ?? 'SOCCER';
 }
 
 // ── ESPN Historical Data — 100% free, no API key, no signup ──────────────────
@@ -336,6 +358,7 @@ interface OddsEvent {
   away_team: string;
   bookmakers: Array<{
     key: string;
+    title: string; // The Odds API always sends it; arbitrageService's OddsEvent requires it
     markets: Array<{
       key: string;
       outcomes: Array<{ name: string; price: number; point?: number }>;
@@ -1141,20 +1164,30 @@ const STADIUM_CITIES_NFL: Record<string, string> = {
   '49ers': 'Santa Clara', 'cardinals': 'Glendale',
 };
 
+// Fixed domes + retractable roofs (keys match the STADIUM_CITIES_* keys)
+const ROOFED_VENUES: Record<string, Set<string>> = {
+  NFL: new Set(['lions', 'vikings', 'raiders', 'saints', 'falcons', 'colts', 'texans', 'cowboys', 'cardinals', 'rams', 'chargers']),
+  MLB: new Set(['rays', 'blue jays', 'astros', 'rangers', 'mariners', 'brewers', 'diamondbacks', 'marlins']),
+};
+
 async function fetchWeather(matchup: string, sport: string): Promise<string> {
   const s = sport.toUpperCase();
   if (!['MLB', 'NFL'].includes(s)) return ""; // NBA/NHL/Tennis are indoor
 
-  // Extract home team (right side of "vs")
-  const parts = matchup.toLowerCase().split(/\s+vs?\.?\s+/i);
+  // Extract home team (right side of "vs" / "@" / "at")
+  const parts = matchup.toLowerCase().split(/\s+(?:vs?\.?|@|at)\s+/i);
   const homeStr = (parts[parts.length - 1] ?? parts[0]).trim();
 
-  let city = '';
+  let city = '', teamKey = '';
   const stadiumCities = s === 'MLB' ? STADIUM_CITIES_MLB : STADIUM_CITIES_NFL;
   for (const [kw, c] of Object.entries(stadiumCities)) {
-    if (homeStr.includes(kw)) { city = c; break; }
+    if (homeStr.includes(kw)) { city = c; teamKey = kw; break; }
   }
   if (!city) return "";
+  // Domes / retractable roofs: wind + cold flags ("lean Under") don't apply indoors
+  if (ROOFED_VENUES[s]?.has(teamKey)) {
+    return `WEATHER — ${city}: indoor/retractable-roof stadium — do NOT apply wind or temperature adjustments.`;
+  }
 
   try {
     const res = await fetch(
@@ -1960,6 +1993,7 @@ async function ask(prompt: string, model = "claude-fable-5"): Promise<string> {
       // Server-side fallback: a safety-classifier decline re-runs the same
       // request on Opus 4.8 inside the same call instead of killing the pick.
       betas: ["server-side-fallback-2026-06-01"],
+      // @ts-expect-error — documented Messages API param; @anthropic-ai/sdk 0.92 predates its typings
       fallbacks: [{ model: "claude-opus-4-8" }],
       messages: [{ role: "user", content: prompt }],
     });
@@ -2028,9 +2062,18 @@ app.get('/api/prophet', async (req: express.Request, res: express.Response) => {
     const sportFilter = sport ? `Focus ONLY on ${sport} games.` : 'Scan all sports (NBA, WNBA, MLB, NHL, SOCCER/World Cup, TENNIS, NFL — whatever is on tonight).';
     const prophetSport = sport || 'ALL';
     const isAll = prophetSport === 'ALL';
-    // June 2026: World Cup is primary for ALL mode. SOCCER heuristics + context loaded first.
-    const activeSport = isAll ? 'SOCCER' : prophetSport;
-    const heuristics = getBettingHeuristics(isAll ? 'SOCCER' : prophetSport);
+    // ALL mode anchors on the first in-season major league (was hard-wired to the
+    // June World Cup + "NBA Finals" — empty odds for the rest of the year).
+    const activeSport = isAll ? defaultSport() : prophetSport;
+    const heuristics = getBettingHeuristics(activeSport);
+    const supplementalSports = ['NFL', 'MLB', 'WNBA', 'NBA', 'NHL', 'TENNIS']
+      .filter(s => s !== activeSport && inSeason(s)).slice(0, 2);
+
+    // Cache check BEFORE the 9 parallel fetches — a hit used to still burn Odds API quota
+    const prophetCacheKey = `prophet:${prophetSport}`;
+    const prophetCached = getCached(prophetCacheKey);
+    if (prophetCached) { res.json(prophetCached); return; }
+
     const [liveOdds, scheduleCtx, injuryData, newsData, advancedData, sharpSignals, sportCtx, supplementalCtx, historicalCtx] = await Promise.all([
       fetchLiveOdds(activeSport),
       activeSport === 'NBA' || activeSport === 'WNBA' ? fetchNBAScheduleToday() : fetchESPNScoreboard(activeSport),
@@ -2041,9 +2084,9 @@ app.get('/api/prophet', async (req: express.Request, res: express.Response) => {
       activeSport === 'SOCCER'  ? fetchSoccerContext('')
         : activeSport === 'TENNIS' ? fetchTennisContext('')
         : Promise.resolve(''),
-      // ALL mode: also pull NBA Finals odds + Tennis context as supplemental cross-sport data
+      // ALL mode: also pull up to 2 other in-season sports as supplemental cross-sport data
       isAll
-        ? Promise.all([fetchLiveOdds('NBA'), fetchLiveOdds('TENNIS'), fetchTennisContext('')])
+        ? Promise.all(supplementalSports.map(s => fetchLiveOdds(s)))
             .then(r => r.filter(Boolean).join('\n\n'))
         : Promise.resolve(''),
       // Google Search: real historical stats, ATS trends, H2H records from credible sources
@@ -2060,7 +2103,7 @@ ${heuristics}
 ${liveOdds}
 ${scheduleCtx ? `\n${scheduleCtx}` : ''}
 ${sportCtx ? `\n${sportCtx}` : ''}
-${supplementalCtx ? `\nCROSS-SPORT SUPPLEMENTAL (NBA Finals + Tennis):\n${supplementalCtx}` : ''}
+${supplementalCtx ? `\nCROSS-SPORT SUPPLEMENTAL (${supplementalSports.join(' + ')}):\n${supplementalCtx}` : ''}
 ${advancedData ? `\n${advancedData}` : ''}
 ${injuryData ? `\nINJURY REPORT (ESPN — LIVE):\n${injuryData}` : ''}
 ${newsData ? `\nLATEST NEWS (ESPN):\n${newsData}` : ''}
@@ -2101,10 +2144,6 @@ Output ONLY a raw JSON object — no markdown:
 
 Real player names, real team names. Every logic bullet must have a [SOURCE] tag.
 `.trim();
-
-    const prophetCacheKey = `prophet:${prophetSport}`;
-    const prophetCached = getCached(prophetCacheKey);
-    if (prophetCached) { res.json(prophetCached); return; }
 
     const raw = await ask(prompt);
     const parsed = parseJSON(raw) as Record<string, unknown>;
@@ -2216,11 +2255,11 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
     if (!matchup) return res.status(400).json({ error: "MATCHUP_REQUIRED" });
 
     const today = todayStr();
-    const league = (sport || 'NBA').toUpperCase();
+    const league = (sport || defaultSport()).toUpperCase();
     const swarmHeuristics = getBettingHeuristics(league);
 
     const getMatchupCtx = () => {
-      if (league === 'NBA' || league === 'WNBA') return fetchNBAPlayerStats(matchup);
+      if (league === 'NBA') return fetchNBAPlayerStats(matchup); // BallDontLie/stats.nba.com are NBA-only — WNBA city names (Phoenix, Indiana…) would pull NBA teams
       if (league === 'NHL') return fetchNHLTeamStats(matchup);
       if (league === 'MLB') return fetchMLBPitcherStats(matchup);
       if (league === 'SOCCER') return fetchSoccerContext(matchup);
@@ -2228,7 +2267,7 @@ app.post('/api/analyze-unified', async (req: express.Request, res: express.Respo
       return fetchESPNScoreboard(league);
     };
     const getNBAMetrics = () =>
-      (league === 'NBA' || league === 'WNBA') ? fetchNBAAdvancedStats(matchup) : Promise.resolve('');
+      league === 'NBA' ? fetchNBAAdvancedStats(matchup) : Promise.resolve('');
 
     const [swarmLiveOdds, swarmNbaCtx, swarmInjuries, swarmSharp, swarmAdvanced] = await Promise.all([
       fetchLiveOdds(league, matchup),
@@ -2708,7 +2747,7 @@ Output ONLY this raw JSON (no markdown):
     const topOddsNum = parseInt(topOddsStr.replace(/[^-\d]/g, ''), 10);
     const topImp = impliedPct(topOddsNum);
 
-    const exec = unified as SwarmAgentData;
+    const exec = unified as unknown as SwarmAgentData;
     const payload: SwarmFinalPayload = {
       ...exec,
       bet_structure: getBetStructure(topOddsNum),
@@ -2887,26 +2926,20 @@ app.get('/api/parlays', async (req: express.Request, res: express.Response) => {
   if (rateLimit(req, 5, 60_000)) return res.status(429).json({ error: "RATE_LIMIT" });
 
   try {
-    const sport = ((req.query.sport as string) || 'NBA').toUpperCase();
+    const sport = ((req.query.sport as string) || defaultSport()).toUpperCase();
     const game = (req.query.game as string || '').trim();
     const today = todayStr();
     const isAllSports = sport === 'ALL';
 
+    // Cache check BEFORE the odds fetches (a hit used to still burn Odds API quota)
+    const parlayCacheKey = `parlays:${sport}:${game || 'slate'}`;
+    const parlayCached = getCached(parlayCacheKey);
+    if (parlayCached) { res.json(parlayCached); return; }
+
     // For cross-sport: fetch NBA + MLB + NHL + NFL + SOCCER + WNBA odds in parallel
     // Only fetch sports currently in-season — saves Odds API credits
-    const month = new Date().getMonth() + 1;
-    const inSeason = (s: string) => {
-      if (s === 'NBA')    return month >= 10 || month <= 6;
-      if (s === 'WNBA')   return month >= 5 && month <= 9;
-      if (s === 'NFL')    return month >= 9 || month <= 2;
-      if (s === 'MLB')    return month >= 4 && month <= 10;
-      if (s === 'NHL')    return month >= 10 || month <= 6;
-      if (s === 'SOCCER') return true;
-      if (s === 'TENNIS') return true;
-      return false;
-    };
-    const crossSportKeys = ['NBA', 'WNBA', 'NFL', 'MLB', 'NHL', 'SOCCER', 'TENNIS'].filter(inSeason);
-    const sgpSport = isAllSports ? 'NBA' : sport;
+    const crossSportKeys = ['NBA', 'WNBA', 'NFL', 'MLB', 'NHL', 'SOCCER', 'TENNIS'].filter(s => inSeason(s));
+    const sgpSport = isAllSports ? defaultSport() : sport;
     const [parlayOdds, crossOdds, parlayNba, parlayInjuries, parlaySharp] = await Promise.all([
       fetchLiveOdds(sgpSport, game || undefined),
       isAllSports
@@ -3017,10 +3050,6 @@ Rules:
 - No filler. No markdown. Raw JSON only.
 `.trim();
 
-    const parlayCacheKey = `parlays:${sport}:${game || 'slate'}`;
-    const parlayCached = getCached(parlayCacheKey);
-    if (parlayCached) { res.json(parlayCached); return; }
-
     const raw = await ask(prompt);
     const parsed = parseJSON(raw) as Omit<ParlaysPayload, 'sport' | 'hash' | 'timestamp'>;
     if (!parsed || typeof parsed !== 'object') {
@@ -3117,8 +3146,14 @@ app.post('/api/quantum-mission', async (req: express.Request, res: express.Respo
     if (quantumCached) { res.json(quantumCached); return; }
 
     const today = todayStr();
-    const quantSport = (qSport || 'NBA').toUpperCase();
+    const quantSport = (qSport || defaultSport()).toUpperCase();
     const quantumHeuristics = getShortHeuristics(quantSport);
+    // Previously the model was told to "simulate tool calls" with NO data — every log line was invented.
+    const [qOdds, qInjuries, qSharp] = await Promise.all([
+      fetchLiveOdds(quantSport),
+      fetchInjuries(quantSport),
+      fetchSharpSignals(quantSport),
+    ]);
     const prompt = `
 ${SHARP_IDENTITY()}
 
@@ -3127,9 +3162,13 @@ Mission goal: "${goal}"
 
 ${quantumHeuristics}
 
-Apply the above heuristics during your research. Look for CLV, derivative markets, injury impact, and contrarian signals. Run the SHARP CHECK before your final verdict.
+REAL DATA (the only facts you may use):
+${qOdds}
+${qInjuries ? `\nINJURY REPORT:\n${qInjuries}` : ''}
+${qSharp ? `\n${qSharp}` : '\nNo sharp price signals right now.'}
 
-Execute this mission step by step. Simulate 3-4 tool calls as part of your research, then give a final verdict.
+Apply the above heuristics to the REAL DATA only. Each log entry summarizes one analysis step over that data.
+If a step needs data that is not above (line history, public betting %), write "not available" in that step — do not invent it.
 
 Output ONLY this raw JSON:
 {
@@ -3192,31 +3231,26 @@ app.post('/api/full-breakdown', async (req: express.Request, res: express.Respon
     const { matchup, sport } = req.body;
     if (!matchup) return res.status(400).json({ error: "MATCHUP_REQUIRED" });
     const today = todayStr();
-    const league = (sport || 'NBA').toUpperCase();
-    const month = new Date().getMonth() + 1;
-    const inSeason = (s: string) => {
-      if (s === 'NBA')    return month >= 10 || month <= 6;
-      if (s === 'WNBA')   return month >= 5 && month <= 9;
-      if (s === 'NFL')    return month >= 9 || month <= 2;
-      if (s === 'MLB')    return month >= 4 && month <= 10;
-      if (s === 'NHL')    return month >= 10 || month <= 6;
-      if (s === 'SOCCER') return true;
-      if (s === 'TENNIS') return true;
-      return false;
-    };
-    const crossSports = ['NBA', 'WNBA', 'NFL', 'MLB', 'NHL', 'SOCCER', 'TENNIS'].filter(inSeason);
+    const league = (sport || defaultSport()).toUpperCase();
+    const crossSports = ['NBA', 'WNBA', 'NFL', 'MLB', 'NHL', 'SOCCER', 'TENNIS'].filter(s => inSeason(s));
+
+    // Cache check BEFORE the 12 parallel data fetches (was after — every hit burned API quota)
+    const cacheKey = `fullbreakdown:${league}:${matchup.toLowerCase().replace(/\s+/g, '_')}`;
+    const cached = getCached(cacheKey);
+    if (cached) return res.json(cached);
 
     // Fetch all data in parallel — real stats, news, odds, injuries, sharp signals, historical
     const [oddsCtx, injuryCtx, playerStatsCtx, advancedCtx, teamStatsCtx, nicheCtx, newsCtx, pitcherCtx, weatherCtx, sharpCtx, crossOdds, historicalCtx] = await Promise.all([
       fetchLiveOdds(league, matchup),
       fetchInjuries(league, matchup),
-      league === 'NBA' || league === 'WNBA'
+      // NBA-only sources — WNBA cities (Phoenix, Indiana, Golden State…) would match NBA teams
+      league === 'NBA'
         ? fetchNBAPlayerStats(matchup)
         : Promise.resolve(''),
-      league === 'NBA' || league === 'WNBA'
+      league === 'NBA'
         ? fetchNBAAdvancedStats(matchup)
         : Promise.resolve(''),
-      league === 'NBA' || league === 'WNBA'
+      league === 'NBA'
         ? fetchNBATeamStats(matchup)
         : Promise.resolve(''),
       // Sport-specific niche stats
@@ -3409,10 +3443,6 @@ Output ONLY raw JSON — no markdown:
   }
 }`.trim();
 
-    const cacheKey = `fullbreakdown:${league}:${matchup.toLowerCase().replace(/\s+/g, '_')}`;
-    const cached = getCached(cacheKey);
-    if (cached) return res.json(cached);
-
     const [gameRaw, dailyRaw] = await Promise.all([
       ask(gamePrompt),
       ask(dailyPrompt),
@@ -3433,7 +3463,9 @@ Output ONLY raw JSON — no markdown:
       if (d && typeof d === 'object' && !Array.isArray(d)) daily = d as Record<string, unknown>;
     } catch { /* daily picks are optional — continue without them */ }
 
-    // Server-side math — compute implied_prob + bet_structure for every pick
+    // Server-side math — compute implied_prob + bet_structure for every pick,
+    // plus a deterministic audit of the model's win_prob against the price
+    // (break-even, EV, ½-Kelly, OVERCONFIDENT_EDGE when it claims >10 pts over the price).
     const enrichPick = (pick: Record<string, unknown> | null | undefined) => {
       if (!pick || typeof pick !== 'object') return pick;
       const oddsStr = String(pick.odds ?? '');
@@ -3443,6 +3475,22 @@ Output ONLY raw JSON — no markdown:
         ...pick,
         implied_prob: Math.round(impliedProb(oddsNum) * 1000) / 10,
         bet_structure: getBetStructure(oddsNum),
+        ...(typeof pick.win_prob === 'number' ? { math: auditPick(oddsNum, pick.win_prob) } : {}),
+      };
+    };
+    // Combined parlay odds are pure arithmetic — never ship the model's number unchecked
+    const fixParlay = (block: unknown): unknown => {
+      if (!block || typeof block !== 'object') return block;
+      const b = block as { legs?: Array<{ odds?: unknown }>; combined_odds?: unknown };
+      if (!Array.isArray(b.legs) || b.legs.length === 0) return block;
+      const odds = b.legs.map(l => parseAmerican(l?.odds));
+      if (odds.some(o => o === null)) return { ...b, combined_odds_note: 'unverified: a leg has no numeric odds' };
+      const computed = parlayPrice(odds as number[]).american;
+      return {
+        ...b,
+        combined_odds: formatAmerican(computed),
+        ...(parseAmerican(b.combined_odds) !== computed && b.combined_odds !== undefined ? { combined_odds_llm: b.combined_odds } : {}),
+        combined_odds_note: 'computed from leg odds assuming independent legs (books reprice same-game parlays)',
       };
     };
 
@@ -3453,11 +3501,12 @@ Output ONLY raw JSON — no markdown:
     if (Array.isArray(enrichedGame.top_props)) {
       enrichedGame.top_props = (enrichedGame.top_props as Array<Record<string, unknown>>).map(enrichPick);
     }
+    if (enrichedGame.sgp) enrichedGame.sgp = fixParlay(enrichedGame.sgp);
 
     const payload = {
       ...enrichedGame,
       pick_of_day: enrichPick(daily.pick_of_day as Record<string, unknown>),
-      parlay_of_day: daily.parlay_of_day,
+      parlay_of_day: fixParlay(daily.parlay_of_day),
       hash: "FB_" + Math.random().toString(36).substring(7).toUpperCase(),
     };
     setCache(cacheKey, payload, 20 * 60 * 1000);
@@ -3476,7 +3525,7 @@ app.get('/api/sharp-money', async (req: express.Request, res: express.Response) 
   if (rateLimit(req, 5, 60_000)) return res.status(429).json({ error: "RATE_LIMIT" });
 
   try {
-    const sport = ((req.query.sport as string) || 'NBA').toUpperCase();
+    const sport = ((req.query.sport as string) || defaultSport()).toUpperCase();
     const game = (req.query.game as string || '').trim();
     const today = todayStr();
     const gameCtx = game ? `Focus on: "${game}". ` : `Cover tonight's top ${sport} games. `;
@@ -3495,7 +3544,7 @@ app.get('/api/sharp-money', async (req: express.Request, res: express.Response) 
       fetchSharpSignals(sport),
     ]);
     const sharpOddsBlock = [
-      `\nLIVE ODDS (Pinnacle/DraftKings — use for CLV and line movement):\n${sharpOdds}`,
+      `\nLIVE ODDS (current snapshot only — NO opening lines or line history available):\n${sharpOdds}`,
       sharpNba || '',
       sharpInjuries ? `\n${sharpInjuries}` : '',
       sharpSignals ? `\n${sharpSignals}` : '',
@@ -3517,6 +3566,9 @@ Using the above heuristics, identify real sharp action. Specifically look for:
 - Injury context that moves EV but market hasn't fully adjusted
 
 ⛔ DO NOT output ev percentages — math engine computes those. Do NOT invent line moves; only cite lines in LIVE ODDS.
+⛔ DATA LIMITS: we have a CURRENT odds snapshot only — NO opening lines, NO line history, NO public betting %.
+   steam_moves and rlm MUST be empty arrays [] unless the data above literally shows an opening AND current line.
+   best_ev_plays come from SHARP SIGNALS first; otherwise the soundest plays in LIVE ODDS + INJURY data.
 Output ONLY this raw JSON:
 {
   "sport": "${sport}",
@@ -3568,9 +3620,8 @@ Output ONLY this raw JSON:
 
 Rules:
 - ${sport} ONLY. Real games tonight.
-- steam_moves: 2-3 entries. Lines that moved sharply.
-- rlm: 1-2 entries. Public on one side, line moves opposite.
-- best_ev_plays: exactly 3. Best +EV bets on the slate.
+- steam_moves / rlm: [] unless backed by opening+current lines in the data above (there are none in a snapshot).
+- best_ev_plays: up to 3. Fewer is fine when the slate has no real value.
 - No filler. Raw JSON only.
 `.trim();
 
@@ -3597,7 +3648,7 @@ app.get('/api/sharp-scanner', async (req: express.Request, res: express.Response
   if (rateLimit(req, 5, 60_000)) return res.status(429).json({ error: "RATE_LIMIT" });
 
   try {
-    const sport = ((req.query.sport as string) || 'NBA').toUpperCase();
+    const sport = ((req.query.sport as string) || defaultSport()).toUpperCase();
     const cacheKey = `sharp:${sport}:slate`;
     const cached = getCached(cacheKey);
     if (cached) { res.json(cached); return; }
@@ -3681,7 +3732,7 @@ app.get('/api/line-gaps', async (req: express.Request, res: express.Response) =>
   if (!ODDS_API_KEY) return res.status(503).json({ error: "ODDS_API_NOT_CONFIGURED" });
 
   try {
-    const sport = ((req.query.sport as string) || 'NBA').toUpperCase();
+    const sport = ((req.query.sport as string) || defaultSport()).toUpperCase();
     const cacheKey = `linegaps:${sport}`;
     const cached = getCached(cacheKey);
     if (cached) { res.json(cached); return; }
@@ -3788,7 +3839,7 @@ app.get('/api/arbitrage', async (req: express.Request, res: express.Response) =>
   if (!ODDS_API_KEY) return res.status(503).json({ error: "ODDS_API_NOT_CONFIGURED" });
 
   try {
-    const sport = ((req.query.sport as string) || 'NBA').toUpperCase();
+    const sport = ((req.query.sport as string) || defaultSport()).toUpperCase();
     const cacheKey = `arb:${sport}`;
     const cached = getCached(cacheKey);
     if (cached) { res.json(cached); return; }
