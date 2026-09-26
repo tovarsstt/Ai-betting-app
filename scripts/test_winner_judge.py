@@ -68,6 +68,23 @@ def test_cited_injury_moves_ratings_lens_uncited_ignored():
     assert uncited["expected_home_margin"]["ratings"] == base
 
 
+def test_position_sizing_qb_beats_severity_and_sourced_pts_win():
+    qb = wj.condition_adjust({"sport": "NFL", "home": "H", "away": "A", "conditions": {
+        "home": [{"position": "QB", "note": "QB out", "source": "x"}]}})[0]
+    cb = wj.condition_adjust({"sport": "NFL", "home": "H", "away": "A", "conditions": {
+        "away": [{"position": "CB", "note": "CB out", "source": "x"}]}})[0]
+    exact = wj.condition_adjust({"sport": "NFL", "home": "H", "away": "A", "conditions": {
+        "home": [{"position": "QB", "pts": 4.98, "note": "Daniels", "source": "survey"}]}})[0]
+    assert qb == -wj.NFL_POSITION_PTS["QB"] and cb == wj.NFL_POSITION_PTS["CB"]
+    assert exact == -4.98
+
+
+def test_prior_season_ratings_are_capped_and_flagged():
+    r = wj.judge_game(_game(ratings_margin=-6.8, ratings_season=2025, season=2026), n_sims=SIMS)
+    assert r["weights"]["ratings"] <= wj.W_RATINGS * wj.PRIOR_SEASON_FACTOR + 1e-9
+    assert any(f.startswith("RATINGS_PRIOR_SEASON") for f in r["flags"])
+
+
 def test_split_lenses_cannot_be_best_pick():
     # ratings strongly on HOME, market on AWAY, ratings still weighty (small gap?)
     g = _game(moneyline={"home": -120, "away": 100}, spread={"home_line": -1.0}, ratings_margin=-2.0)
@@ -128,3 +145,26 @@ def test_edge_api_judge_endpoint():
     assert r.status_code == 200
     out = r.json()
     assert out["board"][0]["label"] == "Away ML"
+
+
+def test_model_gate_compares_to_natural_sigma_and_benchmark_blocks_bad_nfl_model():
+    import edge_api as ea
+    if not ea.BUNDLES:
+        ea.load_all()
+    b = ea.BUNDLES["NFL"]
+    # old bug: sigma := MAE -> always False. Natural sigma: MAE passes...
+    assert ea._model_is_usable(b, b.get("sigma", 13.5))
+    assert not ea._model_is_usable(b, b["avg_mae"])
+    # ...but the market benchmark keeps the broken NFL model OFF
+    assert ea._model_passes_benchmark("NFL", b) is False
+    r = ea.predict(ea.PredictReq(sport="NFL", home_team="Detroit Lions", away_team="New York Jets",
+                                 spread=-6.5, home_odds=-319, away_odds=260))
+    assert r["model_loaded"] is False and r["predicted_margin"] > 0   # Lions, not Jets by 7
+
+
+def test_totals_get_ratings_lens_and_blend():
+    r = wj.judge_game(_game(total={"points": 44.5}, ratings_total=50.0), n_sims=SIMS)
+    tp = r["total_projection"]
+    assert tp["market"] < tp["blended"] < tp["ratings"]
+    over = next(m for m in r["markets"] if m["label"] == "Over 44.5")
+    assert "ratings" in over["lenses"] and over["lenses"]["ratings"] > 0.6

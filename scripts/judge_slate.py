@@ -22,8 +22,29 @@ sys.path.insert(0, str(Path(__file__).parent))
 import winner_judge as wj  # noqa: E402
 
 
+DATA = Path(__file__).resolve().parent.parent / "data"
+
+
+def season_context(sport: str) -> dict:
+    """Ratings season (team_off_def.json) + current-season records if loaded."""
+    ctx: dict = {}
+    try:
+        tod = json.loads((DATA / "team_off_def.json").read_text()).get(sport.lower(), {})
+        ctx["ratings_season"] = tod.get("season")
+    except (OSError, ValueError):
+        pass
+    rec_file = DATA / f"{sport.lower()}_2026_records.json"
+    if rec_file.exists():
+        rec = json.loads(rec_file.read_text())
+        ctx["season"] = rec.get("season")
+        ctx["records"] = rec.get("records", {})
+    return ctx
+
+
 def to_judge_games(slate: dict) -> list[dict]:
     default = slate.get("default_price", -110)
+    ctx = season_context(slate.get("sport", "NFL"))
+    recs = ctx.get("records", {})
     games = []
     for g in slate["games"]:
         books = [b for b in g.get("moneylines", []) if b.get("home") is not None and b.get("away") is not None]
@@ -47,6 +68,9 @@ def to_judge_games(slate: dict) -> list[dict]:
             "conditions": g.get("conditions"),
             "offers": g.get("offers"),
             "agents": g.get("agents"),
+            "ratings_season": ctx.get("ratings_season"),
+            "season": ctx.get("season"),
+            "records": ({"home": recs.get(g["home"]), "away": recs.get(g["away"])} if recs else None),
         })
     return games
 
@@ -84,10 +108,23 @@ def to_markdown(slate: dict, res: dict, elapsed: float, sims: int) -> str:
     for g in res["games"]:
         L.append("")
         em = g["expected_home_margin"]
-        L.append(f"### {g['game']}")
+        rec = g.get("records") or {}
+        rec_txt = f" — 2026: away {rec.get('away')}, home {rec.get('home')}" if rec.get("home") else ""
+        L.append(f"### {g['game']}{rec_txt}")
         L.append(f"Expected home margin — blended {em['blended']:+.1f} | market {em.get('market', float('nan')):+.1f}"
                  + (f" | ratings {em['ratings']:+.1f}" if "ratings" in em else " | ratings n/a")
                  + f" · weights {g['weights']}")
+        tp = g.get("total_projection") or {}
+        if tp.get("ratings") is not None:
+            L.append(f"- 🔢 Total: market {tp['market']} · offense×defense ratings {tp['ratings']} "
+                     f"(home {tp.get('home_pts')}, away {tp.get('away_pts')}, {tp.get('season')} data) "
+                     f"→ blended {tp['blended']}")
+        prof = tp.get("matchup_profile") or {}
+        for side in ("away", "home"):
+            d = prof.get(f"{side}_defense")
+            if d:
+                L.append(f"- 🛡️ {side} defense allows {d['pass_allowed_pg']} pass yds / "
+                         f"{d['rush_allowed_pg']} rush yds per game")
         for c in (g.get("ratings_detail") or {}).get("conditions_applied", []):
             L.append(f"- 🏥 {c}")
         for f in g["flags"]:

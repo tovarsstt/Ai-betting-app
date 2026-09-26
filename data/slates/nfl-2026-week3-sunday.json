@@ -206,7 +206,7 @@
       "conditions": {
         "home": [
           {
-            "severity": "minor",
+            "position": "CB",
             "note": "CB Joey Porter Jr. OUT",
             "source": "https://www.si.com/betting/bengals-vs-steelers-prediction-odds-spread-injuries-trends-for-nfl-week-3-01m32wwcjkpw"
           }
@@ -244,12 +244,13 @@
       "conditions": {
         "home": [
           {
-            "severity": "major",
-            "note": "QB Jayden Daniels OUT (dislocated left elbow) — Marcus Mariota starts",
-            "source": "https://www.nfl.com/news/marcus-mariota-commanders-week-3-qb-jayden-daniels-elbow"
+            "position": "QB",
+            "pts": 4.98,
+            "note": "QB Jayden Daniels OUT (dislocated left elbow) — Marcus Mariota starts; 12-oddsmaker avg Daniels over Mariota = 4.98 pts",
+            "source": "https://uk.sports.yahoo.com/news/oddsmakers-rank-all-32-nfl-starting-qbs-by-point-spread-value-how-valuable-is-jayden-daniels-to-the-spread-150837317.html"
           },
           {
-            "severity": "minor",
+            "position": "S",
             "note": "S Nick Cross ruled OUT",
             "source": "https://www.si.com/betting/seahawks-vs-commanders-prediction-odds-spread-injuries-trends-for-nfl-week-3-2026"
           }

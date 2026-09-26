@@ -338,11 +338,46 @@ def _formula_margin(sport: str, h_r: dict, a_r: dict) -> float:
     return 0.0
 
 def _model_is_usable(bundle: dict, sigma: float) -> bool:
-    """Model is usable only when CV MAE is meaningfully below sigma (adds real signal)."""
+    """Model is usable only when CV MAE is meaningfully below sigma (adds real signal).
+    `sigma` must be the sport's NATURAL margin spread — predict() used to pass the
+    model's own MAE here, so the check compared MAE to itself and always failed."""
     if bundle is None: return False
     mae = bundle.get("avg_mae", sigma)
     # Must beat sigma by at least 5% to be considered useful
     return mae < sigma * 0.95
+
+
+_BENCHMARK_CACHE: dict = {}
+
+
+def _model_passes_benchmark(sport: str, bundle: dict) -> bool:
+    """Second gate: a trained model must TRACK THE MARKET on a saved set of real
+    games (data/benchmarks/<sport>_market_margins.json, corr >= min_corr).
+    CV MAE alone passed the NFL model while it called Jets by 7.3 at Detroit
+    (corr +0.09 vs market on the Week-3 slate). No benchmark file -> not usable."""
+    if sport in _BENCHMARK_CACHE:
+        return _BENCHMARK_CACHE[sport]
+    ok = False
+    f = BASE / "benchmarks" / f"{sport.lower()}_market_margins.json"
+    try:
+        spec = json.loads(f.read_text())
+        preds, mkts = [], []
+        n = len(bundle["feature_cols"])
+        for g in spec["games"]:
+            h, a = get_ratings(sport, g["home"]), get_ratings(sport, g["away"])
+            feats = (BUILDERS[sport](h, a) + [0.0] * n)[:n]
+            X = bundle["scaler"].transform(np.array(feats).reshape(1, -1))
+            preds.append(float(bundle["model"].predict(X)[0]))
+            mkts.append(float(g["market_home_margin"]))
+        if len(preds) >= 8:
+            corr = float(np.corrcoef(preds, mkts)[0, 1])
+            ok = corr >= float(spec.get("min_corr", 0.5))
+            print(f"[EdgeAPI] {sport} model benchmark corr vs market {corr:+.2f} -> "
+                  f"{'ON' if ok else 'OFF'}")
+    except (OSError, ValueError, KeyError) as e:
+        print(f"[EdgeAPI] {sport} model benchmark unavailable ({e}) -> OFF")
+    _BENCHMARK_CACHE[sport] = ok
+    return ok
 
 # ── Tennis comparative-profile nudges (H2H / form / psych / clutch) ───────────
 # Built by fetch_tennis_form.py from real results. Each signal is centered, so we
@@ -811,7 +846,9 @@ def predict(req: PredictReq):
         # ── Run model only when it adds real signal (MAE < 95% of sigma) ──────
         pred_margin = 0.0
         model_used  = False
-        if _model_is_usable(bundle, sigma) and sport in BUILDERS:
+        natural_sigma = (bundle or {}).get("sigma", SIGMA.get(sport, 11.5))
+        if (sport in BUILDERS and _model_is_usable(bundle, natural_sigma)
+                and _model_passes_benchmark(sport, bundle)):
             try:
                 feats = BUILDERS[sport](h_r, a_r)
                 n     = len(bundle["feature_cols"])
@@ -1408,6 +1445,34 @@ def judge_slate_endpoint(req: JudgeReq):
         return {"status": "NO_GAMES", "board": [], "games": []}
     n = max(10_000, min(req.n_sims, 5_000_000))
     return wj.judge_slate(games, n_sims=n, min_decimal=req.min_decimal)
+
+
+class JudgeMatchReq(BaseModel):
+    sport: str                       # SOCCER | TENNIS
+    home_team: str
+    away_team: str
+    prices: dict                     # see judge_engines.judge_soccer / judge_tennis
+    neutral: bool = False
+    surface: str = "Hard"
+    best_of: int = 3
+    n_sims: int = 2_000_000
+    min_decimal: float = 1.10
+    agents: Optional[dict] = None
+
+
+@app.post("/judge-match")
+def judge_match_endpoint(req: JudgeMatchReq):
+    import judge_engines as je
+    n = max(10_000, min(req.n_sims, 5_000_000))
+    s = req.sport.upper()
+    if s == "SOCCER":
+        return je.judge_soccer(req.home_team, req.away_team, req.prices, neutral=req.neutral,
+                               n_sims=n, min_decimal=req.min_decimal, agents=req.agents)
+    if s == "TENNIS":
+        return je.judge_tennis(req.home_team, req.away_team, req.prices, surface=req.surface,
+                               best_of=req.best_of, n_sims=n, min_decimal=req.min_decimal,
+                               agents=req.agents)
+    return {"status": "UNSUPPORTED", "note": "margin sports go through /judge-slate"}
 
 
 class FullBoardReq(BaseModel):

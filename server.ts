@@ -315,7 +315,8 @@ async function fetchHistoricalContext(sport: string, matchup: string): Promise<s
 
 // ── Live Odds API ─────────────────────────────────────────────────────────────
 const ODDS_API_KEY = process.env.ODDS_API_KEY || "";
-const ODDS_API_BASE = "https://api.the-odds-api.com/v4";
+// Overridable for local end-to-end tests against a mock feed; defaults to the real API
+const ODDS_API_BASE = process.env.ODDS_API_BASE || "https://api.the-odds-api.com/v4";
 
 // ── Odds API quota tracking + floor guard ────────────────────────────────────
 // The free tier is ~500 requests/month. We read the quota the API reports on
@@ -4495,6 +4496,28 @@ app.get('/api/winner-board', async (req: express.Request, res: express.Response)
     res.json(payload);
   } catch (e: unknown) {
     res.status(503).json({ error: 'WINNER_BOARD_FAILURE', message: e instanceof Error ? e.message : String(e) });
+  }
+});
+
+// Winner pick for ONE soccer/tennis match — Dixon-Coles / set-by-set sims + engines.
+// Body: { sport: 'SOCCER'|'TENNIS', home_team, away_team, prices: {...}, surface?, best_of?, neutral? }
+app.post('/api/winner-pick', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 20, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  const { sport, home_team, away_team, prices } = req.body ?? {};
+  if (!sport || !home_team || !away_team || !prices) {
+    return res.status(400).json({ error: 'NEED_SPORT_TEAMS_PRICES' });
+  }
+  try {
+    const r = await fetch('http://127.0.0.1:8001/judge-match', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(req.body),
+      signal: AbortSignal.timeout(60_000),
+    });
+    if (!r.ok) return res.status(502).json({ error: 'EDGE_API_ERROR', status: r.status });
+    res.json({ success: true, data: await r.json() });
+  } catch (e: unknown) {
+    res.status(503).json({ error: 'EDGE_API_UNAVAILABLE', message: e instanceof Error ? e.message : String(e) });
   }
 });
 

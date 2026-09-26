@@ -36,8 +36,12 @@ MIN_DECIMAL = 1.10            # payout floor (~ -1000): blocks "+30.5 @ 1.01" ju
 # Lens weights. Market heaviest: it is the only lens that sees injuries/news
 # (repo rule: "weigh market over model on big disagreements").
 W_MARKET, W_RATINGS, W_AGENTS = 0.65, 0.20, 0.15
+W_ENGINE = 0.20               # sport engine lens (MLB pitchers, etc.) at prob level
 W_RATINGS_STALE = 0.05
 VETO_MIN_WEIGHT = 0.10        # a lens needs this much weight to veto a pick
+# Ratings built from a PREVIOUS season carry half weight until current-season
+# data is loaded (game["ratings_season"] < game["season"]).
+PRIOR_SEASON_FACTOR = 0.5
 
 # Day-of conditions (injuries / lineups) — same sizes edge_api uses
 # (CONDITION_MARGIN_PTS). Applied to the RATINGS lens only: the market lens
@@ -46,6 +50,15 @@ CONDITION_PTS = {
     "NFL": {"minor": 1.5, "major": 3.5}, "NBA": {"minor": 1.5, "major": 3.5},
     "WNBA": {"minor": 1.5, "major": 3.5}, "MLB": {"minor": 0.25, "major": 0.6},
     "NHL": {"minor": 0.15, "major": 0.4},
+}
+# NFL player OUT, by position (points of spread). Midpoints of published
+# oddsmaker/market ranges: starting QB -> backup 3-7 (elite up to ~10);
+# elite pass rusher / shutdown CB 0.5-1.5; starting OL / top WR 0.5-1;
+# No.1 RB/WR ~1 (bettingnews.com injury guide, oddsindex.com, Yahoo Sports
+# 12-oddsmaker QB survey). A per-player sourced "pts" always wins.
+NFL_POSITION_PTS = {
+    "QB": 5.0, "EDGE": 1.0, "CB": 1.0, "WR": 0.75, "OL": 0.75, "LT": 0.75,
+    "RB": 0.75, "TE": 0.5, "S": 0.5, "LB": 0.5, "DL": 0.5, "K": 0.25,
 }
 
 # Margin std-dev per sport (edge_api.SIGMA) and the gap (pts/runs/goals)
@@ -212,20 +225,62 @@ def ratings_mu(game: dict) -> tuple[Optional[float], dict]:
 
 def condition_adjust(game: dict) -> tuple[float, list[str]]:
     """Home-margin adjustment from cited injuries/lineup facts.
-    game['conditions'] = {"home"|"away": [{"severity": "minor"|"major",
-    "note": "...", "source": "url or outlet", "pts": optional override}]}"""
+    game['conditions'] = {"home"|"away": [{"position": "QB"|..., "severity":
+    "minor"|"major", "note": "...", "source": "url", "pts": optional override}]}
+    Size priority: sourced per-player pts > NFL position table > severity."""
     scale = CONDITION_PTS.get(game["sport"], {})
     adj, used = 0.0, []
     for side, sign in (("home", -1.0), ("away", 1.0)):
         for c in (game.get("conditions") or {}).get(side, []):
             if not c.get("source"):
                 continue                                   # uncited = ignored
-            pts = float(c["pts"]) if c.get("pts") is not None else scale.get(c.get("severity", ""), 0.0)
+            pos = str(c.get("position", "")).upper()
+            if c.get("pts") is not None:
+                pts = float(c["pts"])
+            elif game["sport"] == "NFL" and pos in NFL_POSITION_PTS:
+                pts = NFL_POSITION_PTS[pos]
+            else:
+                pts = scale.get(c.get("severity", ""), 0.0)
             if pts:
                 adj += sign * pts
                 used.append(f"{game[side]}: {c.get('note', c.get('severity'))} "
                             f"({'-' if sign < 0 else '+'}{pts:g} home margin) [{c['source']}]")
     return adj, used
+
+
+def ratings_total(game: dict) -> tuple[Optional[float], dict]:
+    """Totals lens from team offense/defense strength (team_off_def.json):
+    home pts = league_avg x home_off x away_def (and mirrored). Plus the
+    pass/rush yards each defense allows (opp_defense_<sport>.json) as a
+    matchup profile. Caller may pass game['ratings_total'] directly."""
+    if game.get("ratings_total") is not None:
+        return float(game["ratings_total"]), {}
+    try:
+        import json
+        from pathlib import Path
+        base = Path(__file__).resolve().parent.parent / "data"
+        tod = json.loads((base / "team_off_def.json").read_text()).get(game["sport"].lower(), {})
+        teams, avg = tod.get("teams", {}), tod.get("league_avg")
+        h, a = teams.get(game["home"].lower()), teams.get(game["away"].lower())
+        if not h or not a or not avg:
+            return None, {}
+        hp = avg * h["off_rating"] * a["def_rating"]
+        ap = avg * a["off_rating"] * h["def_rating"]
+        detail = {"home_pts": round(hp, 1), "away_pts": round(ap, 1), "season": tod.get("season")}
+        opp = base / f"opp_defense_{game['sport'].lower()}.json"
+        if opp.exists():
+            od = json.loads(opp.read_text()).get("teams", {})
+            prof = {}
+            for side in ("home", "away"):
+                d = od.get(game[side].lower())
+                if d:
+                    prof[f"{side}_defense"] = {"pass_allowed_pg": round(d["pass_allowed"], 1),
+                                               "rush_allowed_pg": round(d["rush_allowed"], 1)}
+            if prof:
+                detail["matchup_profile"] = prof
+        return hp + ap, detail
+    except (OSError, ValueError, KeyError, TypeError):
+        return None, {}
 
 
 def total_mean(game: dict) -> Optional[float]:
@@ -317,15 +372,20 @@ def judge_game(game: dict, sigma: Optional[float] = None, n_sims: int = N_SIMS,
 
     # Ratings trust shrinks smoothly with its disagreement vs the market:
     # full 20% when they agree, down to 5% at/after STALE_GAP.
-    w_rt = W_RATINGS
+    w_max = W_RATINGS
+    if game.get("ratings_season") and game.get("season") and game["ratings_season"] < game["season"]:
+        w_max = W_RATINGS * PRIOR_SEASON_FACTOR
+        flags.append(f"RATINGS_PRIOR_SEASON: team ratings are from {game['ratings_season']}, "
+                     f"not {game['season']} — ratings weight capped at {w_max*100:.0f}%")
+    w_rt = w_max
     if mu_rt is not None and mu_mkt is not None:
         gap = abs(mu_rt - mu_mkt)
         frac = min(1.0, gap / STALE_GAP.get(sport, 7.0))
-        w_rt = round(W_RATINGS - (W_RATINGS - W_RATINGS_STALE) * frac, 4)
+        w_rt = round(max(W_RATINGS_STALE, w_max - (w_max - W_RATINGS_STALE) * frac), 4)
         if frac >= 0.5:
             flags.append(
                 f"RATINGS_DISAGREE: team ratings say home {mu_rt:+.1f}, market {mu_mkt:+.1f} — "
-                "season ratings miss today's news (injuries/QB/form); "
+                "season ratings miss today's news (injuries/lineups/starters/form); "
                 f"ratings weight cut to {w_rt*100:.0f}%")
     lens_mu = {k: v for k, v in (("market", mu_mkt), ("ratings", mu_rt)) if v is not None}
     wts = {"market": W_MARKET, "ratings": w_rt}
@@ -334,7 +394,18 @@ def judge_game(game: dict, sigma: Optional[float] = None, n_sims: int = N_SIMS,
 
     pmf_blend = margin_pmf(sport, mu, s)
     pmf_by_lens = {k: margin_pmf(sport, v, s) for k, v in lens_mu.items()}
-    tmean = total_mean(game)
+    # Totals: market total blended with the offense x defense ratings total,
+    # same trust rules as the margin lens (prior-season cap, shrink on disagreement)
+    tmean_mkt = total_mean(game)
+    rt_total, tot_detail = ratings_total(game)
+    tmean, w_rt_tot = tmean_mkt, 0.0
+    if tmean_mkt is not None and rt_total is not None:
+        frac = min(1.0, abs(rt_total - tmean_mkt) / STALE_GAP.get(sport, 7.0))
+        w_rt_tot = round(max(W_RATINGS_STALE, w_max - (w_max - W_RATINGS_STALE) * frac), 4)
+        tmean = (W_MARKET * tmean_mkt + w_rt_tot * rt_total) / (W_MARKET + w_rt_tot)
+        if frac >= 0.5:
+            flags.append(f"TOTAL_RATINGS_DISAGREE: offense/defense ratings project {rt_total:.1f} pts, "
+                         f"market {tmean_mkt:.1f} — ratings weight on totals {w_rt_tot*100:.0f}%")
 
     # LENS 3 — Monte Carlo: n_sims games from the blended distribution (numpy)
     rng = np.random.default_rng(seed)
@@ -346,6 +417,7 @@ def judge_game(game: dict, sigma: Optional[float] = None, n_sims: int = N_SIMS,
                  if tmean is not None else None)
 
     agents = game.get("agents") or {}
+    engine_probs = game.get("engine_probs") or {}
     rows = []
     for c in candidates(game):
         lens: dict[str, float] = {}
@@ -354,7 +426,9 @@ def judge_game(game: dict, sigma: Optional[float] = None, n_sims: int = N_SIMS,
             if tmean is None:
                 continue
             p, push = _prob_total(c, tmean, sport)
-            lens["market"] = p
+            lens["market"] = _prob_total(c, tmean_mkt, sport)[0]
+            if rt_total is not None:
+                lens["ratings"] = _prob_total(c, rt_total, sport)[0]
         else:
             for k, pmf in pmf_by_lens.items():
                 lens[k] = _prob_from_pmf(c, pmf)[0]
@@ -365,14 +439,20 @@ def judge_game(game: dict, sigma: Optional[float] = None, n_sims: int = N_SIMS,
         else:
             r = (sim_margin if c["side"] == "home" else -sim_margin) + c["line"]
         lens["sim"] = float(np.count_nonzero(r > 1e-9)) / n_sims
-        consensus = p
+        # Probability-level lenses on top of the margin blend: sport engine
+        # (e.g. MLB pitcher model) and LLM agents
+        extra_w = {}
+        if c["label"] in engine_probs:
+            lens["engine"] = float(engine_probs[c["label"]])
+            extra_w["engine"] = W_ENGINE
         if c["label"] in agents:
-            a = float(agents[c["label"]])
-            lens["agents"] = a
-            consensus = (1 - W_AGENTS) * p + W_AGENTS * a
+            lens["agents"] = float(agents[c["label"]])
+            extra_w["agents"] = W_AGENTS
+        consensus = (1 - sum(extra_w.values())) * p + sum(w * lens[k] for k, w in extra_w.items())
         # Veto power only for lenses carrying real weight (sim is the check, not a voter)
+        w_rt_here = w_rt_tot if c["kind"] == "total" else w_rt
         voters = {k: v for k, v in lens.items()
-                  if k == "market" or (k == "ratings" and w_rt >= VETO_MIN_WEIGHT) or k == "agents"}
+                  if k in ("market", "engine", "agents") or (k == "ratings" and w_rt_here >= VETO_MIN_WEIGHT)}
         side_agree = all(v > 0.5 for v in voters.values())
         fair = 1.0 / consensus if consensus > 0 else None
         ev = consensus * c["decimal"] - 1.0
@@ -404,10 +484,16 @@ def judge_game(game: dict, sigma: Optional[float] = None, n_sims: int = N_SIMS,
         "expected_home_margin": {"blended": round(mu, 2),
                                  **{k: round(v, 2) for k, v in lens_mu.items()}},
         "weights": {"market": W_MARKET, "ratings": w_rt if mu_rt is not None else 0.0,
+                    "engine": W_ENGINE if engine_probs else 0.0,
                     "agents": W_AGENTS if agents else 0.0},
         "sigma": s,
         "n_sims": n_sims,
         "ratings_detail": rt_detail,
+        "total_projection": ({"blended": round(tmean, 1), "market": round(tmean_mkt, 1),
+                              "ratings": round(rt_total, 1) if rt_total is not None else None,
+                              "ratings_weight": w_rt_tot, **tot_detail}
+                             if tmean is not None else None),
+        "records": game.get("records"),
         "best_winning_pick": best,
         "markets": rows,
         "flags": flags,
@@ -504,6 +590,11 @@ def judge_slate(games: list[dict], n_sims: int = N_SIMS, seed: int = 20260927,
     for i, g in enumerate(games):
         sport = g.get("sport", "NFL").upper()
         sig = nfl_sigma if sport == "NFL" and nfl_sigma else None
+        if sport == "MLB":
+            import judge_engines as je        # pitcher-model lens
+            results.append(je.judge_mlb(g, n_sims=n_sims, sigma=sig, seed=seed + i,
+                                        min_decimal=min_decimal))
+            continue
         results.append(judge_game(g, sigma=sig, n_sims=n_sims, seed=seed + i,
                                   min_decimal=min_decimal))
     board = [r["best_winning_pick"] | {"game": r["game"]}
