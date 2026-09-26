@@ -38,6 +38,11 @@ MIN_DECIMAL = 1.10            # payout floor (~ -1000): blocks "+30.5 @ 1.01" ju
 W_MARKET, W_RATINGS, W_AGENTS = 0.65, 0.20, 0.15
 W_ENGINE = 0.20               # sport engine lens (MLB pitchers, etc.) at prob level
 W_RATINGS_STALE = 0.05
+# Evidence-based ratings weight per sport. NFL walk-forward backtest 2019-2025
+# (scripts/backtest_nfl.py): market MAE 9.84 vs ratings 10.32, best blend weight
+# 0.00 for margins AND totals; ratings ATS 49.0% when disagreeing by 3+. So NFL
+# ratings are DISPLAY-ONLY context. Sports without a backtest keep W_RATINGS.
+RATINGS_WEIGHT_BY_SPORT = {"NFL": 0.0}
 VETO_MIN_WEIGHT = 0.10        # a lens needs this much weight to veto a pick
 # Ratings built from a PREVIOUS season carry half weight until current-season
 # data is loaded (game["ratings_season"] < game["season"]).
@@ -63,10 +68,13 @@ NFL_POSITION_PTS = {
 
 # Margin std-dev per sport (edge_api.SIGMA) and the gap (pts/runs/goals)
 # beyond which the ratings lens is treated as stale vs the market.
-SIGMA = {"NFL": 11.0, "NBA": 11.5, "WNBA": 9.5, "MLB": 3.0, "NHL": 2.2}
+# NFL 12.75 = maximum-likelihood fit of the key-number PMF to 1,759 real games
+# (2019-2025, mu = closing spread; data/benchmarks/nfl_sigma_mle.json). Others: edge_api sizes.
+SIGMA = {"NFL": 12.75, "NBA": 11.5, "WNBA": 9.5, "MLB": 3.0, "NHL": 2.2}
 STALE_GAP = {"NFL": 7.0, "NBA": 7.0, "WNBA": 6.0, "MLB": 1.5, "NHL": 1.0}
 # Game-total std-dev around the market total (rough, public-knowledge sizes)
-TOTAL_SIGMA = {"NFL": 10.0, "NBA": 12.0, "WNBA": 11.0, "MLB": 3.2, "NHL": 1.7}
+# NFL 13.1 = SD of (actual total - closing total), 1,759 games (nfl_backtest.json)
+TOTAL_SIGMA = {"NFL": 13.1, "NBA": 12.0, "WNBA": 11.0, "MLB": 3.2, "NHL": 1.7}
 
 # NFL final margins cluster on key numbers — same weights as lib/betting-math.ts
 NFL_KEY_WEIGHTS = {0: 0.05, 1: 0.7, 2: 0.6, 3: 2.6, 4: 0.9, 5: 0.65, 6: 1.1, 7: 1.8,
@@ -241,6 +249,7 @@ def condition_adjust(game: dict) -> tuple[float, list[str]]:
                 pts = NFL_POSITION_PTS[pos]
             else:
                 pts = scale.get(c.get("severity", ""), 0.0)
+            pts *= float(c.get("pts_scale", 1.0))      # e.g. Doubtful = 0.75
             if pts:
                 adj += sign * pts
                 used.append(f"{game[side]}: {c.get('note', c.get('severity'))} "
@@ -370,19 +379,23 @@ def judge_game(game: dict, sigma: Optional[float] = None, n_sims: int = N_SIMS,
         mu_rt += cond_adj
         rt_detail = {**rt_detail, "conditions_applied": cond_used}
 
-    # Ratings trust shrinks smoothly with its disagreement vs the market:
-    # full 20% when they agree, down to 5% at/after STALE_GAP.
-    w_max = W_RATINGS
-    if game.get("ratings_season") and game.get("season") and game["ratings_season"] < game["season"]:
-        w_max = W_RATINGS * PRIOR_SEASON_FACTOR
+    # Ratings trust: evidence-based cap per sport, halved for prior-season data,
+    # then shrinks smoothly with disagreement vs the market (down to 5%).
+    w_max = RATINGS_WEIGHT_BY_SPORT.get(sport, W_RATINGS)
+    if w_max == 0:
+        flags.append(f"RATINGS_DISPLAY_ONLY: {sport} backtest shows the market beats team ratings "
+                     "(best blend weight 0) — ratings shown for context, no vote")
+    elif game.get("ratings_season") and game.get("season") and game["ratings_season"] < game["season"]:
+        w_max *= PRIOR_SEASON_FACTOR
         flags.append(f"RATINGS_PRIOR_SEASON: team ratings are from {game['ratings_season']}, "
                      f"not {game['season']} — ratings weight capped at {w_max*100:.0f}%")
     w_rt = w_max
     if mu_rt is not None and mu_mkt is not None:
         gap = abs(mu_rt - mu_mkt)
         frac = min(1.0, gap / STALE_GAP.get(sport, 7.0))
-        w_rt = round(max(W_RATINGS_STALE, w_max - (w_max - W_RATINGS_STALE) * frac), 4)
-        if frac >= 0.5:
+        w_rt = (0.0 if w_max == 0 else
+                round(max(W_RATINGS_STALE, w_max - (w_max - W_RATINGS_STALE) * frac), 4))
+        if frac >= 0.5 and w_max > 0:
             flags.append(
                 f"RATINGS_DISAGREE: team ratings say home {mu_rt:+.1f}, market {mu_mkt:+.1f} — "
                 "season ratings miss today's news (injuries/lineups/starters/form); "
@@ -401,9 +414,10 @@ def judge_game(game: dict, sigma: Optional[float] = None, n_sims: int = N_SIMS,
     tmean, w_rt_tot = tmean_mkt, 0.0
     if tmean_mkt is not None and rt_total is not None:
         frac = min(1.0, abs(rt_total - tmean_mkt) / STALE_GAP.get(sport, 7.0))
-        w_rt_tot = round(max(W_RATINGS_STALE, w_max - (w_max - W_RATINGS_STALE) * frac), 4)
+        w_rt_tot = (0.0 if w_max == 0 else
+                    round(max(W_RATINGS_STALE, w_max - (w_max - W_RATINGS_STALE) * frac), 4))
         tmean = (W_MARKET * tmean_mkt + w_rt_tot * rt_total) / (W_MARKET + w_rt_tot)
-        if frac >= 0.5:
+        if frac >= 0.5 and w_max > 0:
             flags.append(f"TOTAL_RATINGS_DISAGREE: offense/defense ratings project {rt_total:.1f} pts, "
                          f"market {tmean_mkt:.1f} — ratings weight on totals {w_rt_tot*100:.0f}%")
 
@@ -494,6 +508,8 @@ def judge_game(game: dict, sigma: Optional[float] = None, n_sims: int = N_SIMS,
                               "ratings_weight": w_rt_tot, **tot_detail}
                              if tmean is not None else None),
         "records": game.get("records"),
+        "context": game.get("context"),
+        "kickoff": game.get("kickoff"),
         "best_winning_pick": best,
         "markets": rows,
         "flags": flags,
@@ -585,7 +601,8 @@ def games_from_odds_api(events: list[dict], sport: str,
 
 def judge_slate(games: list[dict], n_sims: int = N_SIMS, seed: int = 20260927,
                 min_decimal: float = MIN_DECIMAL) -> dict:
-    nfl_sigma = calibrate_nfl_sigma(games)
+    # NFL sigma is fitted to real outcomes (SIGMA["NFL"]), not to the slate's own lines
+    nfl_sigma = SIGMA["NFL"] if any(g.get("sport", "NFL").upper() == "NFL" for g in games) else None
     results = []
     for i, g in enumerate(games):
         sport = g.get("sport", "NFL").upper()

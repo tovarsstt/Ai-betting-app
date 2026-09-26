@@ -53,7 +53,7 @@ def test_min_decimal_floor_blocks_unlosable_junk():
 
 def test_disagreeing_ratings_are_muted_and_flagged():
     # ratings think HOME by 3 while market says away by ~7: 10-pt gap
-    r = wj.judge_game(_game(ratings_margin=3.0), n_sims=SIMS)
+    r = wj.judge_game(_game(sport="NBA", ratings_margin=3.0), n_sims=SIMS)
     assert r["weights"]["ratings"] == wj.W_RATINGS_STALE
     assert any(f.startswith("RATINGS_DISAGREE") for f in r["flags"])
 
@@ -80,7 +80,7 @@ def test_position_sizing_qb_beats_severity_and_sourced_pts_win():
 
 
 def test_prior_season_ratings_are_capped_and_flagged():
-    r = wj.judge_game(_game(ratings_margin=-6.8, ratings_season=2025, season=2026), n_sims=SIMS)
+    r = wj.judge_game(_game(sport="NBA", ratings_margin=-7.0, ratings_season=2025, season=2026), n_sims=SIMS)
     assert r["weights"]["ratings"] <= wj.W_RATINGS * wj.PRIOR_SEASON_FACTOR + 1e-9
     assert any(f.startswith("RATINGS_PRIOR_SEASON") for f in r["flags"])
 
@@ -163,8 +163,23 @@ def test_model_gate_compares_to_natural_sigma_and_benchmark_blocks_bad_nfl_model
 
 
 def test_totals_get_ratings_lens_and_blend():
-    r = wj.judge_game(_game(total={"points": 44.5}, ratings_total=50.0), n_sims=SIMS)
+    r = wj.judge_game(_game(sport="NBA", total={"points": 44.5}, ratings_total=50.0), n_sims=SIMS)
     tp = r["total_projection"]
     assert tp["market"] < tp["blended"] < tp["ratings"]
     over = next(m for m in r["markets"] if m["label"] == "Over 44.5")
     assert "ratings" in over["lenses"] and over["lenses"]["ratings"] > 0.6
+
+
+def test_nfl_ratings_are_display_only_by_backtest():
+    r = wj.judge_game(_game(ratings_margin=3.0, ratings_total=60.0), n_sims=SIMS)
+    assert r["weights"]["ratings"] == 0.0
+    assert any(f.startswith("RATINGS_DISPLAY_ONLY") for f in r["flags"])
+    # ratings still shown per market, but the blend is pure market
+    assert r["expected_home_margin"]["blended"] == r["expected_home_margin"]["market"]
+    assert r["total_projection"]["blended"] == r["total_projection"]["market"]
+    ml = next(m for m in r["markets"] if m["label"] == "Away ML")
+    assert "ratings" in ml["lenses"] and ml["lenses_agree"]          # no veto
+
+
+def test_nfl_sigma_is_backtested_value():
+    assert wj.SIGMA["NFL"] == 12.75 and wj.TOTAL_SIGMA["NFL"] == 13.1

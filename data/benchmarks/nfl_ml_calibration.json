@@ -1,0 +1,60 @@
+{
+  "source": "nflverse games.csv 2019-2025 REG, closing moneylines devigged",
+  "buckets": [
+    {
+      "range": "(0.5, 0.55]",
+      "n": 237,
+      "predicted": 0.5264,
+      "actual": 0.4979
+    },
+    {
+      "range": "(0.55, 0.6]",
+      "n": 352,
+      "predicted": 0.5757,
+      "actual": 0.6023
+    },
+    {
+      "range": "(0.6, 0.65]",
+      "n": 347,
+      "predicted": 0.6246,
+      "actual": 0.5937
+    },
+    {
+      "range": "(0.65, 0.7]",
+      "n": 262,
+      "predicted": 0.6766,
+      "actual": 0.6603
+    },
+    {
+      "range": "(0.7, 0.75]",
+      "n": 251,
+      "predicted": 0.7255,
+      "actual": 0.753
+    },
+    {
+      "range": "(0.75, 0.8]",
+      "n": 221,
+      "predicted": 0.7747,
+      "actual": 0.8054
+    },
+    {
+      "range": "(0.8, 0.85]",
+      "n": 94,
+      "predicted": 0.8239,
+      "actual": 0.7766
+    },
+    {
+      "range": "(0.85, 0.9]",
+      "n": 78,
+      "predicted": 0.8718,
+      "actual": 0.9231
+    },
+    {
+      "range": "(0.9, 1.0]",
+      "n": 16,
+      "predicted": 0.9134,
+      "actual": 0.9375
+    }
+  ],
+  "brier": 0.2105
+}

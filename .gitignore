@@ -71,3 +71,6 @@ integrations/
 
 # runtime odds cache (persistent, do not commit)
 data/.cache.json
+
+# nflverse feed cache — downloaded by scripts/nflverse_feed.py refresh() (tens of MB)
+data/nflverse/

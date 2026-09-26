@@ -1433,18 +1433,34 @@ class JudgeReq(BaseModel):
     odds_events: Optional[list] = None    # raw The Odds API /odds payload
     n_sims: int = 2_000_000
     min_decimal: float = 1.10
+    nflverse: bool = False                # NFL: current ratings, injuries, QBs, playstyle
+    season: Optional[int] = None
+    week: Optional[int] = None
+    refresh: bool = True                  # pull fresh nflverse files (max 6h old)
 
 
 @app.post("/judge-slate")
 def judge_slate_endpoint(req: JudgeReq):
     import winner_judge as wj
     games = req.games or []
-    if req.odds_events:
-        games += wj.games_from_odds_api(req.odds_events, req.sport.upper())
+    live = wj.games_from_odds_api(req.odds_events, req.sport.upper()) if req.odds_events else []
+    meta = {}
+    if req.nflverse and req.sport.upper() == "NFL":
+        import nflverse_feed as nf
+        from datetime import date
+        season = req.season or (date.today().year if date.today().month >= 8 else date.today().year - 1)
+        if req.refresh:
+            meta["refresh"] = nf.refresh(season)
+        week = req.week or nf.current_week(season)
+        sl = nf.week_slate(season, week, overrides=nf.load_overrides(season))
+        games += nf.merge_live_prices(sl["games"], live) if live else sl["games"]
+        meta.update({"season": season, "week": week, "freshness": sl["freshness"]})
+    else:
+        games += live
     if not games:
         return {"status": "NO_GAMES", "board": [], "games": []}
     n = max(10_000, min(req.n_sims, 5_000_000))
-    return wj.judge_slate(games, n_sims=n, min_decimal=req.min_decimal)
+    return {**wj.judge_slate(games, n_sims=n, min_decimal=req.min_decimal), "feed": meta}
 
 
 class JudgeMatchReq(BaseModel):

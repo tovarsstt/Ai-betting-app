@@ -4487,7 +4487,7 @@ app.get('/api/winner-board', async (req: express.Request, res: express.Response)
     const r = await fetch('http://127.0.0.1:8001/judge-slate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sport, odds_events: events, n_sims: nSims }),
+      body: JSON.stringify({ sport, odds_events: events, n_sims: nSims, nflverse: sport === 'NFL' }),
       signal: AbortSignal.timeout(120_000),
     });
     if (!r.ok) return res.status(502).json({ error: 'EDGE_API_ERROR', status: r.status });

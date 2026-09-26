@@ -1,0 +1,16 @@
+{
+  "note": "Confirmed news not yet in the nflverse injury report. Every entry needs a source. Remove once the official report carries it.",
+  "teams": {
+    "WAS": [
+      {"player": "Jayden Daniels", "position": "QB", "status": "Out", "pts": 4.98,
+       "note": "dislocated left elbow; Marcus Mariota starts. 4.98 = 12-oddsmaker avg Daniels-over-Mariota",
+       "source": "https://www.nfl.com/news/marcus-mariota-commanders-week-3-qb-jayden-daniels-elbow ; https://uk.sports.yahoo.com/news/oddsmakers-rank-all-32-nfl-starting-qbs-by-point-spread-value-how-valuable-is-jayden-daniels-to-the-spread-150837317.html"},
+      {"player": "Nick Cross", "position": "S", "status": "Out", "note": "ruled out",
+       "source": "https://www.si.com/betting/seahawks-vs-commanders-prediction-odds-spread-injuries-trends-for-nfl-week-3-2026"}
+    ],
+    "PIT": [
+      {"player": "Joey Porter Jr.", "position": "CB", "status": "Out", "note": "ruled out",
+       "source": "https://www.si.com/betting/bengals-vs-steelers-prediction-odds-spread-injuries-trends-for-nfl-week-3-01m32wwcjkpw"}
+    ]
+  }
+}

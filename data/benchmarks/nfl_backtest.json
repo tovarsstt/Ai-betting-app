@@ -1,0 +1,367 @@
+{
+  "seasons": "2019-2025",
+  "source": "nflverse games.csv (closing spread_line, final scores)",
+  "best": {
+    "prior_games": 4.0,
+    "qb_change_prior": 1.0,
+    "market": {
+      "mae": 9.835,
+      "rmse": 12.689
+    },
+    "ratings": {
+      "mae": 10.318,
+      "rmse": 13.216
+    },
+    "best_ratings_weight": 0.0,
+    "blend_mae": 9.835,
+    "resid_sd_blend": 12.69,
+    "ratings_straight_up_hit": 0.6405,
+    "market_straight_up_hit": 0.6655,
+    "ratings_ats_when_disagree_3plus": {
+      "n": 619,
+      "hit": 0.4895
+    },
+    "n_games": 1759
+  },
+  "grid": [
+    {
+      "prior_games": 2.0,
+      "qb_change_prior": 1.0,
+      "market": {
+        "mae": 9.835,
+        "rmse": 12.689
+      },
+      "ratings": {
+        "mae": 10.347,
+        "rmse": 13.227
+      },
+      "best_ratings_weight": 0.0,
+      "blend_mae": 9.835,
+      "resid_sd_blend": 12.69,
+      "ratings_straight_up_hit": 0.6319,
+      "market_straight_up_hit": 0.6655,
+      "ratings_ats_when_disagree_3plus": {
+        "n": 628,
+        "hit": 0.4904
+      },
+      "n_games": 1759
+    },
+    {
+      "prior_games": 2.0,
+      "qb_change_prior": 0.5,
+      "market": {
+        "mae": 9.835,
+        "rmse": 12.689
+      },
+      "ratings": {
+        "mae": 10.387,
+        "rmse": 13.241
+      },
+      "best_ratings_weight": 0.0,
+      "blend_mae": 9.835,
+      "resid_sd_blend": 12.69,
+      "ratings_straight_up_hit": 0.6342,
+      "market_straight_up_hit": 0.6655,
+      "ratings_ats_when_disagree_3plus": {
+        "n": 648,
+        "hit": 0.4815
+      },
+      "n_games": 1759
+    },
+    {
+      "prior_games": 2.0,
+      "qb_change_prior": 0.25,
+      "market": {
+        "mae": 9.835,
+        "rmse": 12.689
+      },
+      "ratings": {
+        "mae": 10.426,
+        "rmse": 13.264
+      },
+      "best_ratings_weight": 0.0,
+      "blend_mae": 9.835,
+      "resid_sd_blend": 12.69,
+      "ratings_straight_up_hit": 0.6302,
+      "market_straight_up_hit": 0.6655,
+      "ratings_ats_when_disagree_3plus": {
+        "n": 647,
+        "hit": 0.4791
+      },
+      "n_games": 1759
+    },
+    {
+      "prior_games": 4.0,
+      "qb_change_prior": 1.0,
+      "market": {
+        "mae": 9.835,
+        "rmse": 12.689
+      },
+      "ratings": {
+        "mae": 10.318,
+        "rmse": 13.216
+      },
+      "best_ratings_weight": 0.0,
+      "blend_mae": 9.835,
+      "resid_sd_blend": 12.69,
+      "ratings_straight_up_hit": 0.6405,
+      "market_straight_up_hit": 0.6655,
+      "ratings_ats_when_disagree_3plus": {
+        "n": 619,
+        "hit": 0.4895
+      },
+      "n_games": 1759
+    },
+    {
+      "prior_games": 4.0,
+      "qb_change_prior": 0.5,
+      "market": {
+        "mae": 9.835,
+        "rmse": 12.689
+      },
+      "ratings": {
+        "mae": 10.323,
+        "rmse": 13.199
+      },
+      "best_ratings_weight": 0.0,
+      "blend_mae": 9.835,
+      "resid_sd_blend": 12.69,
+      "ratings_straight_up_hit": 0.641,
+      "market_straight_up_hit": 0.6655,
+      "ratings_ats_when_disagree_3plus": {
+        "n": 614,
+        "hit": 0.4853
+      },
+      "n_games": 1759
+    },
+    {
+      "prior_games": 4.0,
+      "qb_change_prior": 0.25,
+      "market": {
+        "mae": 9.835,
+        "rmse": 12.689
+      },
+      "ratings": {
+        "mae": 10.361,
+        "rmse": 13.213
+      },
+      "best_ratings_weight": 0.0,
+      "blend_mae": 9.835,
+      "resid_sd_blend": 12.69,
+      "ratings_straight_up_hit": 0.6416,
+      "market_straight_up_hit": 0.6655,
+      "ratings_ats_when_disagree_3plus": {
+        "n": 616,
+        "hit": 0.4789
+      },
+      "n_games": 1759
+    },
+    {
+      "prior_games": 6.0,
+      "qb_change_prior": 1.0,
+      "market": {
+        "mae": 9.835,
+        "rmse": 12.689
+      },
+      "ratings": {
+        "mae": 10.349,
+        "rmse": 13.255
+      },
+      "best_ratings_weight": 0.0,
+      "blend_mae": 9.835,
+      "resid_sd_blend": 12.69,
+      "ratings_straight_up_hit": 0.6399,
+      "market_straight_up_hit": 0.6655,
+      "ratings_ats_when_disagree_3plus": {
+        "n": 649,
+        "hit": 0.5085
+      },
+      "n_games": 1759
+    },
+    {
+      "prior_games": 6.0,
+      "qb_change_prior": 0.5,
+      "market": {
+        "mae": 9.835,
+        "rmse": 12.689
+      },
+      "ratings": {
+        "mae": 10.322,
+        "rmse": 13.209
+      },
+      "best_ratings_weight": 0.0,
+      "blend_mae": 9.835,
+      "resid_sd_blend": 12.69,
+      "ratings_straight_up_hit": 0.6444,
+      "market_straight_up_hit": 0.6655,
+      "ratings_ats_when_disagree_3plus": {
+        "n": 618,
+        "hit": 0.4951
+      },
+      "n_games": 1759
+    },
+    {
+      "prior_games": 6.0,
+      "qb_change_prior": 0.25,
+      "market": {
+        "mae": 9.835,
+        "rmse": 12.689
+      },
+      "ratings": {
+        "mae": 10.343,
+        "rmse": 13.208
+      },
+      "best_ratings_weight": 0.0,
+      "blend_mae": 9.835,
+      "resid_sd_blend": 12.69,
+      "ratings_straight_up_hit": 0.6433,
+      "market_straight_up_hit": 0.6655,
+      "ratings_ats_when_disagree_3plus": {
+        "n": 616,
+        "hit": 0.4821
+      },
+      "n_games": 1759
+    },
+    {
+      "prior_games": 8.0,
+      "qb_change_prior": 1.0,
+      "market": {
+        "mae": 9.835,
+        "rmse": 12.689
+      },
+      "ratings": {
+        "mae": 10.395,
+        "rmse": 13.306
+      },
+      "best_ratings_weight": 0.0,
+      "blend_mae": 9.835,
+      "resid_sd_blend": 12.69,
+      "ratings_straight_up_hit": 0.6405,
+      "market_straight_up_hit": 0.6655,
+      "ratings_ats_when_disagree_3plus": {
+        "n": 678,
+        "hit": 0.5059
+      },
+      "n_games": 1759
+    },
+    {
+      "prior_games": 8.0,
+      "qb_change_prior": 0.5,
+      "market": {
+        "mae": 9.835,
+        "rmse": 12.689
+      },
+      "ratings": {
+        "mae": 10.343,
+        "rmse": 13.237
+      },
+      "best_ratings_weight": 0.0,
+      "blend_mae": 9.835,
+      "resid_sd_blend": 12.69,
+      "ratings_straight_up_hit": 0.6422,
+      "market_straight_up_hit": 0.6655,
+      "ratings_ats_when_disagree_3plus": {
+        "n": 627,
+        "hit": 0.4928
+      },
+      "n_games": 1759
+    },
+    {
+      "prior_games": 8.0,
+      "qb_change_prior": 0.25,
+      "market": {
+        "mae": 9.835,
+        "rmse": 12.689
+      },
+      "ratings": {
+        "mae": 10.348,
+        "rmse": 13.22
+      },
+      "best_ratings_weight": 0.0,
+      "blend_mae": 9.835,
+      "resid_sd_blend": 12.69,
+      "ratings_straight_up_hit": 0.6416,
+      "market_straight_up_hit": 0.6655,
+      "ratings_ats_when_disagree_3plus": {
+        "n": 627,
+        "hit": 0.4992
+      },
+      "n_games": 1759
+    },
+    {
+      "prior_games": 12.0,
+      "qb_change_prior": 1.0,
+      "market": {
+        "mae": 9.835,
+        "rmse": 12.689
+      },
+      "ratings": {
+        "mae": 10.496,
+        "rmse": 13.41
+      },
+      "best_ratings_weight": 0.0,
+      "blend_mae": 9.835,
+      "resid_sd_blend": 12.69,
+      "ratings_straight_up_hit": 0.6313,
+      "market_straight_up_hit": 0.6655,
+      "ratings_ats_when_disagree_3plus": {
+        "n": 769,
+        "hit": 0.4902
+      },
+      "n_games": 1759
+    },
+    {
+      "prior_games": 12.0,
+      "qb_change_prior": 0.5,
+      "market": {
+        "mae": 9.835,
+        "rmse": 12.689
+      },
+      "ratings": {
+        "mae": 10.405,
+        "rmse": 13.307
+      },
+      "best_ratings_weight": 0.0,
+      "blend_mae": 9.835,
+      "resid_sd_blend": 12.69,
+      "ratings_straight_up_hit": 0.6387,
+      "market_straight_up_hit": 0.6655,
+      "ratings_ats_when_disagree_3plus": {
+        "n": 680,
+        "hit": 0.5
+      },
+      "n_games": 1759
+    },
+    {
+      "prior_games": 12.0,
+      "qb_change_prior": 0.25,
+      "market": {
+        "mae": 9.835,
+        "rmse": 12.689
+      },
+      "ratings": {
+        "mae": 10.377,
+        "rmse": 13.262
+      },
+      "best_ratings_weight": 0.0,
+      "blend_mae": 9.835,
+      "resid_sd_blend": 12.69,
+      "ratings_straight_up_hit": 0.6365,
+      "market_straight_up_hit": 0.6655,
+      "ratings_ats_when_disagree_3plus": {
+        "n": 664,
+        "hit": 0.491
+      },
+      "n_games": 1759
+    }
+  ],
+  "totals": {
+    "n": 1759,
+    "market_mae": 10.365,
+    "ratings_mae": 10.872,
+    "best_ratings_weight": 0.0,
+    "ou_hit_when_disagree_3plus": 0.4886,
+    "n_disagree": 659,
+    "actual_sd_vs_market": 13.12
+  }
+}

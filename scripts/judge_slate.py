@@ -82,7 +82,7 @@ def pct(x):
 def to_markdown(slate: dict, res: dict, elapsed: float, sims: int) -> str:
     L = [f"# Judge — {slate['slate']}", ""]
     L.append(f"Rule: **win probability first, price second.** {sims:,} Monte Carlo games per matchup + "
-             f"{sims:,} Bernoulli slips per parlay. NFL σ={res['nfl_sigma']} (fitted to this slate). "
+             f"{sims:,} Bernoulli slips per parlay. NFL σ={res['nfl_sigma']} (fitted to 1,759 real games 2019-2025). "
              f"Ran in {elapsed:.1f}s.")
     L.append(f"Lines: {slate.get('captured_at', '?')} — {slate.get('capture_method', '')}")
     L.append("")
@@ -116,9 +116,29 @@ def to_markdown(slate: dict, res: dict, elapsed: float, sims: int) -> str:
                  + f" · weights {g['weights']}")
         tp = g.get("total_projection") or {}
         if tp.get("ratings") is not None:
-            L.append(f"- 🔢 Total: market {tp['market']} · offense×defense ratings {tp['ratings']} "
-                     f"(home {tp.get('home_pts')}, away {tp.get('away_pts')}, {tp.get('season')} data) "
-                     f"→ blended {tp['blended']}")
+            split = (f" (home {tp['home_pts']}, away {tp['away_pts']}, {tp.get('season')} data)"
+                     if tp.get("home_pts") is not None else "")
+            L.append(f"- 🔢 Total: market {tp['market']} · offense×defense ratings {tp['ratings']}{split} "
+                     f"→ blended {tp['blended']} (ratings weight {tp.get('ratings_weight', 0):.0%})")
+        ctx = g.get("context") or {}
+        if ctx:
+            qb = ctx.get("qb", {})
+            L.append(f"- 🏈 QBs: {qb.get('away')} @ {qb.get('home')}"
+                     + (f" · rest {ctx['rest_days']['away']}d / {ctx['rest_days']['home']}d" if ctx.get("rest_days") else "")
+                     + (f" · {ctx['roof']}" if isinstance(ctx.get("roof"), str) else "")
+                     + (" · division game" if ctx.get("div_game") else ""))
+            for side in ("away", "home"):
+                r = (ctx.get("ratings") or {}).get(side) or {}
+                st = (ctx.get("playstyle") or {}).get(side) or {}
+                if r or st:
+                    L.append(f"- 📊 {side}: net {r.get('net', 0):+.1f} pts vs avg (off {r.get('off', 0):+.1f} / def {r.get('def', 0):+.1f}, "
+                             f"{r.get('games_this_season', 0)} games in 2026"
+                             + (", NEW QB since 2025 (prior halved)" if r.get("qb_changed") else "") + ")"
+                             + (f" · EPA/play off {st['off_epa_play']:+.3f} def {st['def_epa_play']:+.3f} · "
+                                f"pass rate {st['pass_rate']:.0%} · {st['plays_pg']} plays/g" if st else ""))
+            for side in ("away", "home"):
+                for w in (ctx.get("injury_watch") or {}).get(side, []):
+                    L.append(f"- 👀 {side}: {w}")
         prof = tp.get("matchup_profile") or {}
         for side in ("away", "home"):
             d = prof.get(f"{side}_defense")
@@ -144,14 +164,28 @@ def to_markdown(slate: dict, res: dict, elapsed: float, sims: int) -> str:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("slate")
+    ap.add_argument("slate", nargs="?", help="slate JSON (or use --nflverse)")
+    ap.add_argument("--nflverse", help="SEASON:WEEK — build the slate from the nflverse feed")
+    ap.add_argument("--refresh", action="store_true", help="download fresh nflverse files first")
     ap.add_argument("--sims", type=int, default=wj.N_SIMS)
     ap.add_argument("--min-decimal", type=float, default=wj.MIN_DECIMAL)
     ap.add_argument("--out")
     a = ap.parse_args()
-    slate = json.loads(Path(a.slate).read_text())
     t = time.time()
-    res = wj.judge_slate(to_judge_games(slate), n_sims=a.sims, min_decimal=a.min_decimal)
+    if a.nflverse:
+        import nflverse_feed as nf
+        season, week = map(int, a.nflverse.split(":"))
+        if a.refresh:
+            print(nf.refresh(season), file=sys.stderr)
+        sl = nf.week_slate(season, week, overrides=nf.load_overrides(season))
+        fresh = ", ".join(f"{k} {v}" for k, v in sl["freshness"].items() if not k.startswith("pbp"))
+        slate = {"slate": f"NFL {season} Week {week} — nflverse feed", "sport": "NFL",
+                 "captured_at": fresh, "capture_method": sl["lines_source"]}
+        games = sl["games"]
+    else:
+        slate = json.loads(Path(a.slate).read_text())
+        games = to_judge_games(slate)
+    res = wj.judge_slate(games, n_sims=a.sims, min_decimal=a.min_decimal)
     md = to_markdown(slate, res, time.time() - t, a.sims)
     print(md)
     if a.out:
