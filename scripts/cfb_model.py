@@ -42,7 +42,9 @@ MIN_CURRENT_GAMES = 30     # league-wide games before the current season is solv
 UNKNOWN_TEAM = -10.0       # off/def for a team with no FBS history (FCS visitors)
 SIGMA_MARGIN = 17.15       # walk-forward residual σ (ratings); kept for blends too (conservative)
 SIGMA_TOTAL = 16.19
-HOME_BIAS = -2.21          # ratings over-rate home teams by this much (backtest mean residual)
+HOME_BIAS = -2.21          # ratings over-rate home teams by this much (backtest mean residual).
+# Out-of-sample check: fit on 2022-23 (-2.18) -> tested 2024-25: mean error -2.24 -> -0.09,
+# MAE 13.72 -> 13.56, Brier 0.1819 -> 0.1777. It generalises.
 MARKET_WEIGHT = 0.65       # same market share the Judge uses
 FAV_TOTAL_RHO = 0.123      # backtest: favourite's margin residual vs total residual (dog cover ~ under)
 BACKTEST_GAMES = 3138      # walk-forward games behind the σ, bias and ρ above
