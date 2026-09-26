@@ -1389,6 +1389,27 @@ def _to_fair(obj):
     return obj
 
 
+# ── Winner-first Judge (4th agent) — market + ratings + sims + agents vote ────
+class JudgeReq(BaseModel):
+    sport: str = "NFL"
+    games: Optional[list] = None          # judge-format games (winner_judge.py)
+    odds_events: Optional[list] = None    # raw The Odds API /odds payload
+    n_sims: int = 2_000_000
+    min_decimal: float = 1.10
+
+
+@app.post("/judge-slate")
+def judge_slate_endpoint(req: JudgeReq):
+    import winner_judge as wj
+    games = req.games or []
+    if req.odds_events:
+        games += wj.games_from_odds_api(req.odds_events, req.sport.upper())
+    if not games:
+        return {"status": "NO_GAMES", "board": [], "games": []}
+    n = max(10_000, min(req.n_sims, 5_000_000))
+    return wj.judge_slate(games, n_sims=n, min_decimal=req.min_decimal)
+
+
 class FullBoardReq(BaseModel):
     home_team: str = "Home"
     away_team: str = "Away"

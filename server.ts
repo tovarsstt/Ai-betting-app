@@ -4461,6 +4461,43 @@ app.post('/api/full-board', async (req: express.Request, res: express.Response) 
   }
 });
 
+// ── Winner board — the Judge (4th agent): market + ratings + 2M sims + agents
+// vote on every market; ranked by WIN PROBABILITY, price/EV shown second.
+// Margin sports only (NFL/NBA/WNBA/MLB/NHL); soccer/tennis keep their own boards.
+const JUDGE_SPORTS = ['NFL', 'NBA', 'WNBA', 'MLB', 'NHL'];
+app.get('/api/winner-board', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 10, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  const sport = ((req.query.sport as string) || defaultSport()).toUpperCase();
+  if (!JUDGE_SPORTS.includes(sport)) {
+    return res.status(400).json({ error: 'SPORT_NOT_SUPPORTED', supported: JUDGE_SPORTS });
+  }
+  const nSims = Math.min(5_000_000, Math.max(10_000, Number(req.query.sims) || 2_000_000));
+  const cacheKey = `winner-board:${sport}:${nSims}`;
+  const cached = getCached(cacheKey);
+  if (cached) return res.json(cached);
+  if (!ODDS_API_KEY) return res.status(503).json({ error: 'ODDS_API_KEY_MISSING' });
+  try {
+    const key = (SPORT_KEYS[sport] || [])[0];
+    const oddsRes = await oddsFetch(
+      `${ODDS_API_BASE}/sports/${key}/odds?apiKey=${ODDS_API_KEY}&regions=us,eu&markets=h2h,spreads,totals&dateFormat=iso&oddsFormat=american`,
+      8000);
+    if (!oddsRes.ok) return res.status(502).json({ error: 'ODDS_API_ERROR', status: oddsRes.status });
+    const events = await oddsRes.json();
+    const r = await fetch('http://127.0.0.1:8001/judge-slate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sport, odds_events: events, n_sims: nSims }),
+      signal: AbortSignal.timeout(120_000),
+    });
+    if (!r.ok) return res.status(502).json({ error: 'EDGE_API_ERROR', status: r.status });
+    const payload = { success: true, sport, data: await r.json() };
+    setCache(cacheKey, payload, 10 * 60 * 1000);
+    res.json(payload);
+  } catch (e: unknown) {
+    res.status(503).json({ error: 'WINNER_BOARD_FAILURE', message: e instanceof Error ? e.message : String(e) });
+  }
+});
+
 // Player prop simulator — REAL game logs (ESPN/Sofascore, free) -> distribution
 // fit -> Monte Carlo -> P(over line) + fair/min odds + BET/LEAN/NO_BET.
 // Live network per call (game-log fetch): real usage only, never debug.

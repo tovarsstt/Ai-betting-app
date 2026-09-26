@@ -6,113 +6,462 @@
   "default_price": -110,
   "games": [
     {
-      "id": "LAC@BUF", "away": "Los Angeles Chargers", "home": "Buffalo Bills", "kickoff_et": "13:00",
-      "spread": { "home": -7 }, "total": { "points": 50.5 },
-      "moneylines": [ { "book": "unnamed book (search snippet)", "home": -370, "away": 295 } ],
-      "notes": ["BUF -7 at DK/Caesars/Fanatics/BetMGM, -7.5 at FanDuel/bet365", "Total 50 at BetMGM/Caesars/Fanatics, 50.5 at DK/FD/bet365", "Another snippet listed BUF -340 with no LAC price"],
-      "sources": ["https://www.si.com/betting/chargers-vs-bills-prediction-odds-spread-injuries-trends-for-nfl-week-3-2026", "https://www.covers.com/nfl/chargers-vs-bills-predictions-odds-early-leans-week-3-2026"]
+      "id": "LAC@BUF",
+      "away": "Los Angeles Chargers",
+      "home": "Buffalo Bills",
+      "kickoff_et": "13:00",
+      "spread": {
+        "home": -7
+      },
+      "total": {
+        "points": 50.5
+      },
+      "moneylines": [
+        {
+          "book": "unnamed book (search snippet)",
+          "home": -370,
+          "away": 295
+        }
+      ],
+      "notes": [
+        "BUF -7 at DK/Caesars/Fanatics/BetMGM, -7.5 at FanDuel/bet365",
+        "Total 50 at BetMGM/Caesars/Fanatics, 50.5 at DK/FD/bet365",
+        "Another snippet listed BUF -340 with no LAC price"
+      ],
+      "sources": [
+        "https://www.si.com/betting/chargers-vs-bills-prediction-odds-spread-injuries-trends-for-nfl-week-3-2026",
+        "https://www.covers.com/nfl/chargers-vs-bills-predictions-odds-early-leans-week-3-2026"
+      ],
+      "offers": [
+        {
+          "label": "Buffalo Bills -5.5 (Stake)",
+          "kind": "spread",
+          "side": "home",
+          "line": -5.5,
+          "price": 1.67
+        }
+      ]
     },
     {
-      "id": "CAR@CLE", "away": "Carolina Panthers", "home": "Cleveland Browns", "kickoff_et": "13:00",
-      "spread": { "home": 2.5 }, "total": { "points": 42.5 },
-      "moneylines": [ { "book": "FanDuel Research (search snippet)", "home": 124, "away": -148 } ],
+      "id": "CAR@CLE",
+      "away": "Carolina Panthers",
+      "home": "Cleveland Browns",
+      "kickoff_et": "13:00",
+      "spread": {
+        "home": 2.5
+      },
+      "total": {
+        "points": 42.5
+      },
+      "moneylines": [
+        {
+          "book": "FanDuel Research (search snippet)",
+          "home": 124,
+          "away": -148
+        }
+      ],
       "notes": [],
-      "sources": ["https://www.fanduel.com/research/panthers-vs-browns-predictions-odds-picks-best-bets-for-nfl-week-3-2026"]
+      "sources": [
+        "https://www.fanduel.com/research/panthers-vs-browns-predictions-odds-picks-best-bets-for-nfl-week-3-2026"
+      ]
     },
     {
-      "id": "NYJ@DET", "away": "New York Jets", "home": "Detroit Lions", "kickoff_et": "13:00",
-      "spread": { "home": -6.5 }, "total": { "points": 47.5 },
+      "id": "NYJ@DET",
+      "away": "New York Jets",
+      "home": "Detroit Lions",
+      "kickoff_et": "13:00",
+      "spread": {
+        "home": -6.5
+      },
+      "total": {
+        "points": 47.5
+      },
       "moneylines": [
-        { "book": "unnamed book (search snippet)", "home": -319, "away": 260 },
-        { "book": "Fanatics (search snippet)", "home": -300, "away": 240 }
+        {
+          "book": "unnamed book (search snippet)",
+          "home": -319,
+          "away": 260
+        },
+        {
+          "book": "Fanatics (search snippet)",
+          "home": -300,
+          "away": 240
+        }
       ],
-      "notes": ["Snippets disagree on total (46.5 / 47.5 / 48.5); one snippet said DET by 10 — treated as a model projection, not a line"],
-      "sources": ["https://www.fanduel.com/research/lions-vs-jets-predictions-odds-picks-best-bets-for-nfl-week-3-2026", "https://www.si.com/betting/jets-vs-lions-prediction-odds-spread-injuries-trends-for-nfl-week-3-01m33d4admtz"]
+      "notes": [
+        "Snippets disagree on total (46.5 / 47.5 / 48.5); one snippet said DET by 10 — treated as a model projection, not a line"
+      ],
+      "sources": [
+        "https://www.fanduel.com/research/lions-vs-jets-predictions-odds-picks-best-bets-for-nfl-week-3-2026",
+        "https://www.si.com/betting/jets-vs-lions-prediction-odds-spread-injuries-trends-for-nfl-week-3-01m33d4admtz"
+      ],
+      "offers": [
+        {
+          "label": "Detroit Lions -3.5 (Stake)",
+          "kind": "spread",
+          "side": "home",
+          "line": -3.5,
+          "price": 1.61
+        }
+      ]
     },
     {
-      "id": "HOU@IND", "away": "Houston Texans", "home": "Indianapolis Colts", "kickoff_et": "13:00",
-      "spread": { "home": 1.5 }, "total": { "points": 42.5 },
-      "moneylines": [ { "book": "FanDuel Research (search snippet)", "home": 125, "away": -150 } ],
-      "notes": ["Nico Collins (hamstring) questionable for HOU per Sports Interaction headline"],
-      "sources": ["https://www.fanduel.com/research/texans-vs-colts-predictions-odds-picks-best-bets-for-nfl-week-3-2026", "https://news.sportsinteraction.com/nfl/story/texans-vs-colts-odds-prediction-092726-215950"]
-    },
-    {
-      "id": "KC@MIA", "away": "Kansas City Chiefs", "home": "Miami Dolphins", "kickoff_et": "13:00",
-      "spread": { "home": 10.5 }, "total": { "points": 45.5 },
+      "id": "HOU@IND",
+      "away": "Houston Texans",
+      "home": "Indianapolis Colts",
+      "kickoff_et": "13:00",
+      "spread": {
+        "home": 1.5
+      },
+      "total": {
+        "points": 42.5
+      },
       "moneylines": [
-        { "book": "unnamed book (search snippet)", "home": 470, "away": -650 },
-        { "book": "unnamed book (search snippet)", "home": 540, "away": -769 },
-        { "book": "FanDuel (search snippet)", "home": null, "away": -720 }
+        {
+          "book": "FanDuel Research (search snippet)",
+          "home": 125,
+          "away": -150
+        }
       ],
-      "notes": ["Total opened 44.5", "MIA WR injuries (Caleb Douglas) per team-site tracker"],
-      "sources": ["https://www.fanduel.com/research/chiefs-vs-dolphins-predictions-odds-picks-best-bets-for-nfl-week-3-2026", "https://www.chiefs.com/news/week-3-injury-report-chiefs-vs-dolphins-2026"]
+      "notes": [
+        "Nico Collins (hamstring) questionable for HOU per Sports Interaction headline"
+      ],
+      "sources": [
+        "https://www.fanduel.com/research/texans-vs-colts-predictions-odds-picks-best-bets-for-nfl-week-3-2026",
+        "https://news.sportsinteraction.com/nfl/story/texans-vs-colts-odds-prediction-092726-215950"
+      ]
     },
     {
-      "id": "CIN@PIT", "away": "Cincinnati Bengals", "home": "Pittsburgh Steelers", "kickoff_et": "13:00",
-      "spread": { "home": 3.5 }, "total": { "points": 42.5 },
-      "moneylines": [ { "book": "unnamed book (search snippet)", "home": 154, "away": -184 } ],
-      "notes": ["Total reported opening 47.5 (another snippet: 43.5)", "PIT: Joey Porter Jr. out; Rico Dowdle (toe) DNP; Burrow off report"],
-      "sources": ["https://www.si.com/betting/bengals-vs-steelers-prediction-odds-spread-injuries-trends-for-nfl-week-3-01m32wwcjkpw", "https://www.bengals.com/news/steelers-bengals-injury-report-week-3-2026"]
-    },
-    {
-      "id": "SEA@WAS", "away": "Seattle Seahawks", "home": "Washington Commanders", "kickoff_et": "13:00",
-      "spread": { "home": 6.5 }, "total": { "points": 40.5, "over_price": -108, "under_price": -112 },
-      "moneylines": [ { "book": "unnamed book (search snippet)", "home": 265, "away": -330 } ],
-      "notes": ["Jayden Daniels (elbow) out — Marcus Mariota starts", "Look-ahead line was WAS +1.5 before the injury; spread quoted 6.5–7.5 across snippets"],
-      "sources": ["https://www.si.com/betting/seahawks-vs-commanders-prediction-odds-spread-injuries-trends-for-nfl-week-3-2026", "https://news.sportsinteraction.com/nfl/story/seahawks-vs-commanders-odds-prediction-092726-215954"]
-    },
-    {
-      "id": "NE@JAX", "away": "New England Patriots", "home": "Jacksonville Jaguars", "kickoff_et": "13:00",
-      "spread": { "home": -3 }, "total": { "points": 45.5 },
-      "moneylines": [ { "book": "unnamed book (search snippet)", "home": -160, "away": 135 } ],
-      "notes": ["Home/away not confirmed from a primary source — verify venue"],
-      "sources": ["https://defirate.com/prediction-markets/sports/nfl/new-england-vs-jacksonville-09-27-2026/"]
-    },
-    {
-      "id": "TEN@NYG", "away": "Tennessee Titans", "home": "New York Giants", "kickoff_et": "13:00",
-      "spread": { "home": -2.5 }, "total": { "points": 38.5 },
-      "moneylines": [ { "book": "unnamed book (search snippet)", "home": -150, "away": 125 } ],
-      "notes": ["Home/away not confirmed from a primary source — verify venue"],
-      "sources": ["https://www.fanduel.com/research/nfl-games-week-3-odds-predictions-picks-tv-info-2026"]
-    },
-    {
-      "id": "MIN@TB", "away": "Minnesota Vikings", "home": "Tampa Bay Buccaneers", "kickoff_et": "16:05",
-      "spread": { "home": 2.5 }, "total": { "points": 43.5 },
-      "moneylines": [ { "book": "DraftKings opener (search snippet)", "home": 110, "away": -130 } ],
-      "notes": ["ML is the opening number; total 43.5 FanDuel / 44.5 elsewhere"],
-      "sources": ["https://www.si.com/betting/vikings-vs-buccaneers-prediction-odds-spread-injuries-trends-for-nfl-week-3-2026", "https://www.sportsbettingdime.com/news/nfl/week-3-odds-opening-spread-total-moneyline-all-games-2026/"]
-    },
-    {
-      "id": "ARI@SF", "away": "Arizona Cardinals", "home": "San Francisco 49ers", "kickoff_et": "16:05",
-      "spread": { "home": -8.5 }, "total": { "points": 47.5 },
-      "moneylines": [ { "book": "unnamed book (search snippet)", "home": -455, "away": 350 } ],
-      "notes": ["ESPN FPI reportedly 90% SF"],
-      "sources": ["https://www.covers.com/nfl/cardinals-vs-49ers-predictions-odds-early-leans-week-3-2026"]
-    },
-    {
-      "id": "DAL@BAL (Rio)", "away": "Dallas Cowboys", "home": "Baltimore Ravens", "kickoff_et": "16:25", "neutral": true,
-      "spread": { "home": -3, "home_price": -104, "away_price": -115 }, "total": { "points": 52.5, "over_price": -113, "under_price": -107 },
+      "id": "KC@MIA",
+      "away": "Kansas City Chiefs",
+      "home": "Miami Dolphins",
+      "kickoff_et": "13:00",
+      "spread": {
+        "home": 10.5
+      },
+      "total": {
+        "points": 45.5
+      },
       "moneylines": [
-        { "book": "Caesars (search snippet)", "home": -157, "away": 132 },
-        { "book": "DraftKings (search snippet)", "home": -175, "away": 145 },
-        { "book": "Fanatics (search snippet)", "home": -190, "away": 155 }
+        {
+          "book": "unnamed book (search snippet)",
+          "home": 470,
+          "away": -650
+        },
+        {
+          "book": "unnamed book (search snippet)",
+          "home": 540,
+          "away": -769
+        },
+        {
+          "book": "FanDuel (search snippet)",
+          "home": null,
+          "away": -720
+        }
       ],
-      "notes": ["Neutral site: Maracanã, Rio de Janeiro. 'home' = Baltimore for math only", "Some books BAL -3.5 (-105)"],
-      "sources": ["https://www.si.com/betting/ravens-vs-cowboys-prediction-odds-spread-injuries-trends-for-nfl-week-3-2026", "https://www.nbcsports.com/betting/nfl/news/ravens-vs-cowboys-odds-expert-picks-team-and-player-news-betting-trends-and-stats"]
+      "notes": [
+        "Total opened 44.5",
+        "MIA WR injuries (Caleb Douglas) per team-site tracker"
+      ],
+      "sources": [
+        "https://www.fanduel.com/research/chiefs-vs-dolphins-predictions-odds-picks-best-bets-for-nfl-week-3-2026",
+        "https://www.chiefs.com/news/week-3-injury-report-chiefs-vs-dolphins-2026"
+      ],
+      "offers": [
+        {
+          "label": "Kansas City Chiefs -10.5 (Stake)",
+          "kind": "spread",
+          "side": "away",
+          "line": -10.5,
+          "price": 1.9
+        }
+      ]
     },
     {
-      "id": "LV@NO", "away": "Las Vegas Raiders", "home": "New Orleans Saints", "kickoff_et": "16:25",
-      "spread": { "home": -3.5 }, "total": { "points": 43.5, "over_price": -112, "under_price": -108 },
-      "moneylines": [ { "book": "consensus (search snippet)", "home": -180, "away": 152 } ],
-      "notes": ["Saints home opener"],
-      "sources": ["https://www.covers.com/nfl/raiders-vs-saints-predictions-odds-early-leans-week-3-2026"]
+      "id": "CIN@PIT",
+      "away": "Cincinnati Bengals",
+      "home": "Pittsburgh Steelers",
+      "kickoff_et": "13:00",
+      "spread": {
+        "home": 3.5
+      },
+      "total": {
+        "points": 42.5
+      },
+      "moneylines": [
+        {
+          "book": "unnamed book (search snippet)",
+          "home": 154,
+          "away": -184
+        }
+      ],
+      "notes": [
+        "Total reported opening 47.5 (another snippet: 43.5)",
+        "PIT: Joey Porter Jr. out; Rico Dowdle (toe) DNP; Burrow off report"
+      ],
+      "sources": [
+        "https://www.si.com/betting/bengals-vs-steelers-prediction-odds-spread-injuries-trends-for-nfl-week-3-01m32wwcjkpw",
+        "https://www.bengals.com/news/steelers-bengals-injury-report-week-3-2026"
+      ],
+      "conditions": {
+        "home": [
+          {
+            "severity": "minor",
+            "note": "CB Joey Porter Jr. OUT",
+            "source": "https://www.si.com/betting/bengals-vs-steelers-prediction-odds-spread-injuries-trends-for-nfl-week-3-01m32wwcjkpw"
+          }
+        ]
+      }
     },
     {
-      "id": "LAR@DEN", "away": "Los Angeles Rams", "home": "Denver Broncos", "kickoff_et": "20:20",
-      "spread": { "home": 2.5 }, "total": { "points": 44.5 },
-      "moneylines": [ { "book": "Fanatics (search snippet)", "home": 120, "away": -145 } ],
-      "notes": ["Sunday Night Football (NBC)", "Total 43.5 at DraftKings, 44.5 elsewhere", "One search summary contradicted itself on the favorite; majority of snippets have LAR -2.5"],
-      "sources": ["https://www.si.com/betting/rams-vs-broncos-prediction-odds-spread-injuries-trends-for-nfl-week-3-2026", "https://www.covers.com/nfl/rams-vs-broncos-predictions-odds-early-leans-week-3-2026"]
+      "id": "SEA@WAS",
+      "away": "Seattle Seahawks",
+      "home": "Washington Commanders",
+      "kickoff_et": "13:00",
+      "spread": {
+        "home": 6.5
+      },
+      "total": {
+        "points": 40.5,
+        "over_price": -108,
+        "under_price": -112
+      },
+      "moneylines": [
+        {
+          "book": "unnamed book (search snippet)",
+          "home": 265,
+          "away": -330
+        }
+      ],
+      "notes": [
+        "Jayden Daniels (elbow) out — Marcus Mariota starts",
+        "Look-ahead line was WAS +1.5 before the injury; spread quoted 6.5–7.5 across snippets"
+      ],
+      "sources": [
+        "https://www.si.com/betting/seahawks-vs-commanders-prediction-odds-spread-injuries-trends-for-nfl-week-3-2026",
+        "https://news.sportsinteraction.com/nfl/story/seahawks-vs-commanders-odds-prediction-092726-215954"
+      ],
+      "conditions": {
+        "home": [
+          {
+            "severity": "major",
+            "note": "QB Jayden Daniels OUT (dislocated left elbow) — Marcus Mariota starts",
+            "source": "https://www.nfl.com/news/marcus-mariota-commanders-week-3-qb-jayden-daniels-elbow"
+          },
+          {
+            "severity": "minor",
+            "note": "S Nick Cross ruled OUT",
+            "source": "https://www.si.com/betting/seahawks-vs-commanders-prediction-odds-spread-injuries-trends-for-nfl-week-3-2026"
+          }
+        ]
+      },
+      "offers": [
+        {
+          "label": "Seattle Seahawks -4.5 (Stake)",
+          "kind": "spread",
+          "side": "away",
+          "line": -4.5,
+          "price": 1.52
+        }
+      ]
+    },
+    {
+      "id": "NE@JAX",
+      "away": "New England Patriots",
+      "home": "Jacksonville Jaguars",
+      "kickoff_et": "13:00",
+      "spread": {
+        "home": -3
+      },
+      "total": {
+        "points": 45.5
+      },
+      "moneylines": [
+        {
+          "book": "unnamed book (search snippet)",
+          "home": -160,
+          "away": 135
+        }
+      ],
+      "notes": [
+        "Home/away not confirmed from a primary source — verify venue"
+      ],
+      "sources": [
+        "https://defirate.com/prediction-markets/sports/nfl/new-england-vs-jacksonville-09-27-2026/"
+      ]
+    },
+    {
+      "id": "TEN@NYG",
+      "away": "Tennessee Titans",
+      "home": "New York Giants",
+      "kickoff_et": "13:00",
+      "spread": {
+        "home": -2.5
+      },
+      "total": {
+        "points": 38.5
+      },
+      "moneylines": [
+        {
+          "book": "unnamed book (search snippet)",
+          "home": -150,
+          "away": 125
+        }
+      ],
+      "notes": [
+        "Home/away not confirmed from a primary source — verify venue"
+      ],
+      "sources": [
+        "https://www.fanduel.com/research/nfl-games-week-3-odds-predictions-picks-tv-info-2026"
+      ]
+    },
+    {
+      "id": "MIN@TB",
+      "away": "Minnesota Vikings",
+      "home": "Tampa Bay Buccaneers",
+      "kickoff_et": "16:05",
+      "spread": {
+        "home": 2.5
+      },
+      "total": {
+        "points": 43.5
+      },
+      "moneylines": [
+        {
+          "book": "DraftKings opener (search snippet)",
+          "home": 110,
+          "away": -130
+        }
+      ],
+      "notes": [
+        "ML is the opening number; total 43.5 FanDuel / 44.5 elsewhere"
+      ],
+      "sources": [
+        "https://www.si.com/betting/vikings-vs-buccaneers-prediction-odds-spread-injuries-trends-for-nfl-week-3-2026",
+        "https://www.sportsbettingdime.com/news/nfl/week-3-odds-opening-spread-total-moneyline-all-games-2026/"
+      ]
+    },
+    {
+      "id": "ARI@SF",
+      "away": "Arizona Cardinals",
+      "home": "San Francisco 49ers",
+      "kickoff_et": "16:05",
+      "spread": {
+        "home": -8.5
+      },
+      "total": {
+        "points": 47.5
+      },
+      "moneylines": [
+        {
+          "book": "unnamed book (search snippet)",
+          "home": -455,
+          "away": 350
+        }
+      ],
+      "notes": [
+        "ESPN FPI reportedly 90% SF"
+      ],
+      "sources": [
+        "https://www.covers.com/nfl/cardinals-vs-49ers-predictions-odds-early-leans-week-3-2026"
+      ]
+    },
+    {
+      "id": "DAL@BAL (Rio)",
+      "away": "Dallas Cowboys",
+      "home": "Baltimore Ravens",
+      "kickoff_et": "16:25",
+      "neutral": true,
+      "spread": {
+        "home": -3,
+        "home_price": -104,
+        "away_price": -115
+      },
+      "total": {
+        "points": 52.5,
+        "over_price": -113,
+        "under_price": -107
+      },
+      "moneylines": [
+        {
+          "book": "Caesars (search snippet)",
+          "home": -157,
+          "away": 132
+        },
+        {
+          "book": "DraftKings (search snippet)",
+          "home": -175,
+          "away": 145
+        },
+        {
+          "book": "Fanatics (search snippet)",
+          "home": -190,
+          "away": 155
+        }
+      ],
+      "notes": [
+        "Neutral site: Maracanã, Rio de Janeiro. 'home' = Baltimore for math only",
+        "Some books BAL -3.5 (-105)"
+      ],
+      "sources": [
+        "https://www.si.com/betting/ravens-vs-cowboys-prediction-odds-spread-injuries-trends-for-nfl-week-3-2026",
+        "https://www.nbcsports.com/betting/nfl/news/ravens-vs-cowboys-odds-expert-picks-team-and-player-news-betting-trends-and-stats"
+      ]
+    },
+    {
+      "id": "LV@NO",
+      "away": "Las Vegas Raiders",
+      "home": "New Orleans Saints",
+      "kickoff_et": "16:25",
+      "spread": {
+        "home": -3.5
+      },
+      "total": {
+        "points": 43.5,
+        "over_price": -112,
+        "under_price": -108
+      },
+      "moneylines": [
+        {
+          "book": "consensus (search snippet)",
+          "home": -180,
+          "away": 152
+        }
+      ],
+      "notes": [
+        "Saints home opener"
+      ],
+      "sources": [
+        "https://www.covers.com/nfl/raiders-vs-saints-predictions-odds-early-leans-week-3-2026"
+      ]
+    },
+    {
+      "id": "LAR@DEN",
+      "away": "Los Angeles Rams",
+      "home": "Denver Broncos",
+      "kickoff_et": "20:20",
+      "spread": {
+        "home": 2.5
+      },
+      "total": {
+        "points": 44.5
+      },
+      "moneylines": [
+        {
+          "book": "Fanatics (search snippet)",
+          "home": 120,
+          "away": -145
+        }
+      ],
+      "notes": [
+        "Sunday Night Football (NBC)",
+        "Total 43.5 at DraftKings, 44.5 elsewhere",
+        "One search summary contradicted itself on the favorite; majority of snippets have LAR -2.5"
+      ],
+      "sources": [
+        "https://www.si.com/betting/rams-vs-broncos-prediction-odds-spread-injuries-trends-for-nfl-week-3-2026",
+        "https://www.covers.com/nfl/rams-vs-broncos-predictions-odds-early-leans-week-3-2026"
+      ]
     }
   ]
 }

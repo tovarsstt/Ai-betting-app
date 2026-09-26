@@ -1,0 +1,2868 @@
+{
+  "nfl_sigma": 10.75,
+  "rule": "win probability first; price/EV second",
+  "board": [
+    {
+      "label": "Kansas City Chiefs ML",
+      "kind": "ml",
+      "side": "away",
+      "line": 0.0,
+      "decimal": 1.1538461538461537,
+      "win_prob": 0.8349,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.8472,
+        "ratings": 0.6585,
+        "sim": 0.8346
+      },
+      "worst_lens": 0.6585,
+      "lenses_agree": true,
+      "grade": "LOCK",
+      "fair_decimal": 1.2,
+      "ev_pct": -3.7,
+      "price_note": "OVERPRICED \u2014 fair 1.20, book pays 1.15",
+      "game": "Kansas City Chiefs @ Miami Dolphins"
+    },
+    {
+      "label": "San Francisco 49ers ML",
+      "kind": "ml",
+      "side": "home",
+      "line": 0.0,
+      "decimal": 1.2197802197802199,
+      "win_prob": 0.7982,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.7958,
+        "ratings": 0.8064,
+        "sim": 0.7981
+      },
+      "worst_lens": 0.7958,
+      "lenses_agree": true,
+      "grade": "LOCK",
+      "fair_decimal": 1.25,
+      "ev_pct": -2.6,
+      "price_note": "OVERPRICED \u2014 fair 1.25, book pays 1.22",
+      "game": "Arizona Cardinals @ San Francisco 49ers"
+    },
+    {
+      "label": "Buffalo Bills ML",
+      "kind": "ml",
+      "side": "home",
+      "line": 0.0,
+      "decimal": 1.2702702702702702,
+      "win_prob": 0.7715,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.756,
+        "ratings": 0.8402,
+        "sim": 0.7708
+      },
+      "worst_lens": 0.756,
+      "lenses_agree": true,
+      "grade": "LOCK",
+      "fair_decimal": 1.3,
+      "ev_pct": -2.0,
+      "price_note": "OVERPRICED \u2014 fair 1.30, book pays 1.27",
+      "game": "Los Angeles Chargers @ Buffalo Bills"
+    },
+    {
+      "label": "Detroit Lions ML",
+      "kind": "ml",
+      "side": "home",
+      "line": 0.0,
+      "decimal": 1.3333333333333333,
+      "win_prob": 0.7397,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.7268,
+        "ratings": 0.7906,
+        "sim": 0.739
+      },
+      "worst_lens": 0.7268,
+      "lenses_agree": true,
+      "grade": "LOCK",
+      "fair_decimal": 1.35,
+      "ev_pct": -1.4,
+      "price_note": "OVERPRICED \u2014 fair 1.35, book pays 1.33",
+      "game": "New York Jets @ Detroit Lions"
+    },
+    {
+      "label": "Seattle Seahawks ML",
+      "kind": "ml",
+      "side": "away",
+      "line": 0.0,
+      "decimal": 1.303030303030303,
+      "win_prob": 0.7211,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.7326,
+        "ratings": 0.6721,
+        "sim": 0.7202
+      },
+      "worst_lens": 0.6721,
+      "lenses_agree": true,
+      "grade": "LOCK",
+      "fair_decimal": 1.39,
+      "ev_pct": -6.0,
+      "price_note": "OVERPRICED \u2014 fair 1.39, book pays 1.30",
+      "game": "Seattle Seahawks @ Washington Commanders"
+    },
+    {
+      "label": "New Orleans Saints ML",
+      "kind": "ml",
+      "side": "home",
+      "line": 0.0,
+      "decimal": 1.5555555555555556,
+      "win_prob": 0.6512,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.6297,
+        "ratings": 0.7986,
+        "sim": 0.6509
+      },
+      "worst_lens": 0.6297,
+      "lenses_agree": true,
+      "grade": "PICK",
+      "fair_decimal": 1.54,
+      "ev_pct": 1.3,
+      "price_note": "VALUE",
+      "game": "Las Vegas Raiders @ New Orleans Saints"
+    },
+    {
+      "label": "Cincinnati Bengals ML",
+      "kind": "ml",
+      "side": "away",
+      "line": 0.0,
+      "decimal": 1.5434782608695652,
+      "win_prob": 0.6123,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.6315,
+        "ratings": 0.3903,
+        "sim": 0.6113
+      },
+      "worst_lens": 0.3903,
+      "lenses_agree": true,
+      "grade": "LEAN",
+      "fair_decimal": 1.63,
+      "ev_pct": -5.5,
+      "price_note": "OVERPRICED \u2014 fair 1.63, book pays 1.54",
+      "game": "Cincinnati Bengals @ Pittsburgh Steelers"
+    },
+    {
+      "label": "Baltimore Ravens ML",
+      "kind": "ml",
+      "side": "home",
+      "line": 0.0,
+      "decimal": 1.6369426751592355,
+      "win_prob": 0.6046,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.5956,
+        "ratings": 0.6378,
+        "sim": 0.6046
+      },
+      "worst_lens": 0.5956,
+      "lenses_agree": true,
+      "grade": "LEAN",
+      "fair_decimal": 1.65,
+      "ev_pct": -1.0,
+      "price_note": "OVERPRICED \u2014 fair 1.65, book pays 1.64",
+      "game": "Dallas Cowboys @ Baltimore Ravens"
+    },
+    {
+      "label": "Jacksonville Jaguars ML",
+      "kind": "ml",
+      "side": "home",
+      "line": 0.0,
+      "decimal": 1.625,
+      "win_prob": 0.572,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.593,
+        "ratings": 0.3015,
+        "sim": 0.571
+      },
+      "worst_lens": 0.3015,
+      "lenses_agree": true,
+      "grade": "LEAN",
+      "fair_decimal": 1.75,
+      "ev_pct": -7.1,
+      "price_note": "OVERPRICED \u2014 fair 1.75, book pays 1.62",
+      "game": "New England Patriots @ Jacksonville Jaguars"
+    },
+    {
+      "label": "Los Angeles Rams ML",
+      "kind": "ml",
+      "side": "away",
+      "line": 0.0,
+      "decimal": 1.6896551724137931,
+      "win_prob": 0.5459,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.5568,
+        "ratings": 0.5037,
+        "sim": 0.5449
+      },
+      "worst_lens": 0.5037,
+      "lenses_agree": true,
+      "grade": "LEAN",
+      "fair_decimal": 1.83,
+      "ev_pct": -7.8,
+      "price_note": "OVERPRICED \u2014 fair 1.83, book pays 1.69",
+      "game": "Los Angeles Rams @ Denver Broncos"
+    },
+    {
+      "label": "Carolina Panthers ML",
+      "kind": "ml",
+      "side": "away",
+      "line": 0.0,
+      "decimal": 1.6756756756756757,
+      "win_prob": 0.5387,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.5601,
+        "ratings": 0.273,
+        "sim": 0.5379
+      },
+      "worst_lens": 0.273,
+      "lenses_agree": true,
+      "grade": "LEAN",
+      "fair_decimal": 1.86,
+      "ev_pct": -9.7,
+      "price_note": "OVERPRICED \u2014 fair 1.86, book pays 1.68",
+      "game": "Carolina Panthers @ Cleveland Browns"
+    },
+    {
+      "label": "New York Giants ML",
+      "kind": "ml",
+      "side": "home",
+      "line": 0.0,
+      "decimal": 1.6666666666666665,
+      "win_prob": 0.5384,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.5613,
+        "ratings": 0.3868,
+        "sim": 0.5372
+      },
+      "worst_lens": 0.3868,
+      "lenses_agree": true,
+      "grade": "LEAN",
+      "fair_decimal": 1.86,
+      "ev_pct": -10.3,
+      "price_note": "OVERPRICED \u2014 fair 1.86, book pays 1.67",
+      "game": "Tennessee Titans @ New York Giants"
+    },
+    {
+      "label": "Houston Texans ML",
+      "kind": "ml",
+      "side": "away",
+      "line": 0.0,
+      "decimal": 1.6666666666666665,
+      "win_prob": 0.5306,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.5505,
+        "ratings": 0.2824,
+        "sim": 0.53
+      },
+      "worst_lens": 0.2824,
+      "lenses_agree": true,
+      "grade": "LEAN",
+      "fair_decimal": 1.88,
+      "ev_pct": -11.6,
+      "price_note": "OVERPRICED \u2014 fair 1.88, book pays 1.67",
+      "game": "Houston Texans @ Indianapolis Colts"
+    },
+    {
+      "label": "Tampa Bay Buccaneers +2.5",
+      "kind": "spread",
+      "side": "home",
+      "line": 2.5,
+      "decimal": 1.9090909090909092,
+      "win_prob": 0.5244,
+      "push_prob": 0.0,
+      "lenses": {
+        "market": 0.5026,
+        "ratings": 0.6435,
+        "sim": 0.5246
+      },
+      "worst_lens": 0.5026,
+      "lenses_agree": true,
+      "grade": "LEAN",
+      "fair_decimal": 1.91,
+      "ev_pct": 0.1,
+      "price_note": "VALUE",
+      "game": "Minnesota Vikings @ Tampa Bay Buccaneers"
+    }
+  ],
+  "winning_parlays": [
+    {
+      "legs": [
+        "Kansas City Chiefs ML @ 1.15 (83%)",
+        "San Francisco 49ers ML @ 1.22 (80%)"
+      ],
+      "sim_hit_rate": 0.667,
+      "exact_hit_rate": 0.6664,
+      "decimal": 1.41,
+      "ev_pct": -6.1,
+      "n_sims": 2000000
+    },
+    {
+      "legs": [
+        "Kansas City Chiefs ML @ 1.15 (83%)",
+        "Buffalo Bills ML @ 1.27 (77%)"
+      ],
+      "sim_hit_rate": 0.644,
+      "exact_hit_rate": 0.6441,
+      "decimal": 1.47,
+      "ev_pct": -5.6,
+      "n_sims": 2000000
+    },
+    {
+      "legs": [
+        "Kansas City Chiefs ML @ 1.15 (83%)",
+        "Detroit Lions ML @ 1.33 (74%)"
+      ],
+      "sim_hit_rate": 0.6177,
+      "exact_hit_rate": 0.6176,
+      "decimal": 1.54,
+      "ev_pct": -5.0,
+      "n_sims": 2000000
+    },
+    {
+      "legs": [
+        "San Francisco 49ers ML @ 1.22 (80%)",
+        "Buffalo Bills ML @ 1.27 (77%)"
+      ],
+      "sim_hit_rate": 0.6156,
+      "exact_hit_rate": 0.6158,
+      "decimal": 1.55,
+      "ev_pct": -4.6,
+      "n_sims": 2000000
+    },
+    {
+      "legs": [
+        "Kansas City Chiefs ML @ 1.15 (83%)",
+        "Seattle Seahawks ML @ 1.30 (72%)"
+      ],
+      "sim_hit_rate": 0.6024,
+      "exact_hit_rate": 0.602,
+      "decimal": 1.5,
+      "ev_pct": -9.4,
+      "n_sims": 2000000
+    },
+    {
+      "legs": [
+        "San Francisco 49ers ML @ 1.22 (80%)",
+        "Detroit Lions ML @ 1.33 (74%)"
+      ],
+      "sim_hit_rate": 0.5899,
+      "exact_hit_rate": 0.5904,
+      "decimal": 1.63,
+      "ev_pct": -4.1,
+      "n_sims": 2000000
+    },
+    {
+      "legs": [
+        "Kansas City Chiefs ML @ 1.15 (83%)",
+        "San Francisco 49ers ML @ 1.22 (80%)",
+        "Buffalo Bills ML @ 1.27 (77%)"
+      ],
+      "sim_hit_rate": 0.5144,
+      "exact_hit_rate": 0.5141,
+      "decimal": 1.79,
+      "ev_pct": -8.0,
+      "n_sims": 2000000
+    },
+    {
+      "legs": [
+        "Kansas City Chiefs ML @ 1.15 (83%)",
+        "San Francisco 49ers ML @ 1.22 (80%)",
+        "Buffalo Bills ML @ 1.27 (77%)",
+        "Detroit Lions ML @ 1.33 (74%)"
+      ],
+      "sim_hit_rate": 0.3807,
+      "exact_hit_rate": 0.3803,
+      "decimal": 2.38,
+      "ev_pct": -9.3,
+      "n_sims": 2000000
+    }
+  ],
+  "games": [
+    {
+      "game": "Los Angeles Chargers @ Buffalo Bills",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": 8.01,
+        "market": 7.46,
+        "ratings": 10.7
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.1306,
+        "agents": 0.0
+      },
+      "sigma": 10.75,
+      "n_sims": 2000000,
+      "ratings_detail": {
+        "home": {
+          "ppg": 26.7,
+          "pag": 18.7,
+          "net": 8.0
+        },
+        "away": {
+          "ppg": 22.8,
+          "pag": 23.0,
+          "net": -0.2
+        }
+      },
+      "best_winning_pick": {
+        "label": "Buffalo Bills ML",
+        "kind": "ml",
+        "side": "home",
+        "line": 0.0,
+        "decimal": 1.2702702702702702,
+        "win_prob": 0.7715,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.756,
+          "ratings": 0.8402,
+          "sim": 0.7708
+        },
+        "worst_lens": 0.756,
+        "lenses_agree": true,
+        "grade": "LOCK",
+        "fair_decimal": 1.3,
+        "ev_pct": -2.0,
+        "price_note": "OVERPRICED \u2014 fair 1.30, book pays 1.27"
+      },
+      "markets": [
+        {
+          "label": "Buffalo Bills ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 1.2702702702702702,
+          "win_prob": 0.7715,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.756,
+            "ratings": 0.8402,
+            "sim": 0.7708
+          },
+          "worst_lens": 0.756,
+          "lenses_agree": true,
+          "grade": "LOCK",
+          "fair_decimal": 1.3,
+          "ev_pct": -2.0,
+          "price_note": "OVERPRICED \u2014 fair 1.30, book pays 1.27"
+        },
+        {
+          "label": "Buffalo Bills -5.5 (Stake)",
+          "kind": "spread",
+          "side": "home",
+          "line": -5.5,
+          "decimal": 1.67,
+          "offered": true,
+          "win_prob": 0.5928,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5734,
+            "ratings": 0.6851,
+            "sim": 0.5929
+          },
+          "worst_lens": 0.5734,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.69,
+          "ev_pct": -1.0,
+          "price_note": "OVERPRICED \u2014 fair 1.69, book pays 1.67"
+        },
+        {
+          "label": "Over 50.5",
+          "kind": "total",
+          "side": "over",
+          "line": 50.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5,
+            "sim": 0.5004
+          },
+          "worst_lens": 0.5,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.0,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.00, book pays 1.91"
+        },
+        {
+          "label": "Under 50.5",
+          "kind": "total",
+          "side": "under",
+          "line": 50.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5,
+            "sim": 0.4996
+          },
+          "worst_lens": 0.4996,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.0,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.00, book pays 1.91"
+        },
+        {
+          "label": "Buffalo Bills -7",
+          "kind": "spread",
+          "side": "home",
+          "line": -7.0,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.4879,
+          "push_prob": 0.0654,
+          "lenses": {
+            "market": 0.4681,
+            "ratings": 0.5862,
+            "sim": 0.4882
+          },
+          "worst_lens": 0.4681,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.05,
+          "ev_pct": -6.9,
+          "price_note": "OVERPRICED \u2014 fair 2.05, book pays 1.91"
+        },
+        {
+          "label": "Los Angeles Chargers +7",
+          "kind": "spread",
+          "side": "away",
+          "line": 7.0,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.4467,
+          "push_prob": 0.0654,
+          "lenses": {
+            "market": 0.4663,
+            "ratings": 0.3516,
+            "sim": 0.4463
+          },
+          "worst_lens": 0.3516,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.24,
+          "ev_pct": -14.7,
+          "price_note": "OVERPRICED \u2014 fair 2.24, book pays 1.91"
+        },
+        {
+          "label": "Los Angeles Chargers ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 3.95,
+          "win_prob": 0.2285,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.244,
+            "ratings": 0.1598,
+            "sim": 0.2278
+          },
+          "worst_lens": 0.1598,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 4.38,
+          "ev_pct": -9.8,
+          "price_note": "OVERPRICED \u2014 fair 4.38, book pays 3.95"
+        }
+      ],
+      "flags": []
+    },
+    {
+      "game": "Carolina Panthers @ Cleveland Browns",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": -1.05,
+        "market": -1.63,
+        "ratings": 6.5
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.05,
+        "agents": 0.0
+      },
+      "sigma": 10.75,
+      "n_sims": 2000000,
+      "ratings_detail": {
+        "home": {
+          "ppg": 21.9,
+          "pag": 23.7,
+          "net": -1.8
+        },
+        "away": {
+          "ppg": 19.8,
+          "pag": 25.6,
+          "net": -5.7
+        }
+      },
+      "best_winning_pick": {
+        "label": "Carolina Panthers ML",
+        "kind": "ml",
+        "side": "away",
+        "line": 0.0,
+        "decimal": 1.6756756756756757,
+        "win_prob": 0.5387,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.5601,
+          "ratings": 0.273,
+          "sim": 0.5379
+        },
+        "worst_lens": 0.273,
+        "lenses_agree": true,
+        "grade": "LEAN",
+        "fair_decimal": 1.86,
+        "ev_pct": -9.7,
+        "price_note": "OVERPRICED \u2014 fair 1.86, book pays 1.68"
+      },
+      "markets": [
+        {
+          "label": "Carolina Panthers ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 1.6756756756756757,
+          "win_prob": 0.5387,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5601,
+            "ratings": 0.273,
+            "sim": 0.5379
+          },
+          "worst_lens": 0.273,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.86,
+          "ev_pct": -9.7,
+          "price_note": "OVERPRICED \u2014 fair 1.86, book pays 1.68"
+        },
+        {
+          "label": "Cleveland Browns +2.5",
+          "kind": "spread",
+          "side": "home",
+          "line": 2.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5092,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4879,
+            "ratings": 0.7637,
+            "sim": 0.5094
+          },
+          "worst_lens": 0.4879,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 1.96,
+          "ev_pct": -2.8,
+          "price_note": "OVERPRICED \u2014 fair 1.96, book pays 1.91"
+        },
+        {
+          "label": "Over 42.5",
+          "kind": "total",
+          "side": "over",
+          "line": 42.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5,
+            "sim": 0.5004
+          },
+          "worst_lens": 0.5,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.0,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.00, book pays 1.91"
+        },
+        {
+          "label": "Under 42.5",
+          "kind": "total",
+          "side": "under",
+          "line": 42.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5,
+            "sim": 0.4996
+          },
+          "worst_lens": 0.4996,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.0,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.00, book pays 1.91"
+        },
+        {
+          "label": "Carolina Panthers -2.5",
+          "kind": "spread",
+          "side": "away",
+          "line": -2.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.4908,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5121,
+            "ratings": 0.2363,
+            "sim": 0.4906
+          },
+          "worst_lens": 0.2363,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 2.04,
+          "ev_pct": -6.3,
+          "price_note": "OVERPRICED \u2014 fair 2.04, book pays 1.91"
+        },
+        {
+          "label": "Cleveland Browns ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 2.24,
+          "win_prob": 0.4613,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4399,
+            "ratings": 0.727,
+            "sim": 0.4603
+          },
+          "worst_lens": 0.4399,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.17,
+          "ev_pct": 3.3,
+          "price_note": "VALUE"
+        }
+      ],
+      "flags": [
+        "RATINGS_DISAGREE: team ratings say home +6.5, market -1.6 \u2014 season ratings miss today's news (injuries/QB/form); ratings weight cut to 5%"
+      ]
+    },
+    {
+      "game": "New York Jets @ Detroit Lions",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": 6.91,
+        "market": 6.5,
+        "ratings": 8.7
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.1528,
+        "agents": 0.0
+      },
+      "sigma": 10.75,
+      "n_sims": 2000000,
+      "ratings_detail": {
+        "home": {
+          "ppg": 24.8,
+          "pag": 25.1,
+          "net": -0.3
+        },
+        "away": {
+          "ppg": 17.5,
+          "pag": 24.0,
+          "net": -6.5
+        }
+      },
+      "best_winning_pick": {
+        "label": "Detroit Lions ML",
+        "kind": "ml",
+        "side": "home",
+        "line": 0.0,
+        "decimal": 1.3333333333333333,
+        "win_prob": 0.7397,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.7268,
+          "ratings": 0.7906,
+          "sim": 0.739
+        },
+        "worst_lens": 0.7268,
+        "lenses_agree": true,
+        "grade": "LOCK",
+        "fair_decimal": 1.35,
+        "ev_pct": -1.4,
+        "price_note": "OVERPRICED \u2014 fair 1.35, book pays 1.33"
+      },
+      "markets": [
+        {
+          "label": "Detroit Lions ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 1.3333333333333333,
+          "win_prob": 0.7397,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.7268,
+            "ratings": 0.7906,
+            "sim": 0.739
+          },
+          "worst_lens": 0.7268,
+          "lenses_agree": true,
+          "grade": "LOCK",
+          "fair_decimal": 1.35,
+          "ev_pct": -1.4,
+          "price_note": "OVERPRICED \u2014 fair 1.35, book pays 1.33"
+        },
+        {
+          "label": "Detroit Lions -3.5 (Stake)",
+          "kind": "spread",
+          "side": "home",
+          "line": -3.5,
+          "decimal": 1.61,
+          "offered": true,
+          "win_prob": 0.6086,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5938,
+            "ratings": 0.6696,
+            "sim": 0.6084
+          },
+          "worst_lens": 0.5938,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.64,
+          "ev_pct": -2.0,
+          "price_note": "OVERPRICED \u2014 fair 1.64, book pays 1.61"
+        },
+        {
+          "label": "Detroit Lions -6.5",
+          "kind": "spread",
+          "side": "home",
+          "line": -6.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5137,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4984,
+            "ratings": 0.5783,
+            "sim": 0.5133
+          },
+          "worst_lens": 0.4984,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 1.95,
+          "ev_pct": -1.9,
+          "price_note": "OVERPRICED \u2014 fair 1.95, book pays 1.91"
+        },
+        {
+          "label": "Over 47.5",
+          "kind": "total",
+          "side": "over",
+          "line": 47.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5,
+            "sim": 0.4988
+          },
+          "worst_lens": 0.4988,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.0,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.00, book pays 1.91"
+        },
+        {
+          "label": "Under 47.5",
+          "kind": "total",
+          "side": "under",
+          "line": 47.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5,
+            "sim": 0.5012
+          },
+          "worst_lens": 0.5,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.0,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.00, book pays 1.91"
+        },
+        {
+          "label": "New York Jets +6.5",
+          "kind": "spread",
+          "side": "away",
+          "line": 6.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.4863,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5016,
+            "ratings": 0.4217,
+            "sim": 0.4867
+          },
+          "worst_lens": 0.4217,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.06,
+          "ev_pct": -7.2,
+          "price_note": "OVERPRICED \u2014 fair 2.06, book pays 1.91"
+        },
+        {
+          "label": "New York Jets ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 3.6,
+          "win_prob": 0.2603,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.2732,
+            "ratings": 0.2094,
+            "sim": 0.2595
+          },
+          "worst_lens": 0.2094,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 3.84,
+          "ev_pct": -6.3,
+          "price_note": "OVERPRICED \u2014 fair 3.84, book pays 3.60"
+        }
+      ],
+      "flags": []
+    },
+    {
+      "game": "Houston Texans @ Indianapolis Colts",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": -0.83,
+        "market": -1.37,
+        "ratings": 6.2
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.05,
+        "agents": 0.0
+      },
+      "sigma": 10.75,
+      "n_sims": 2000000,
+      "ratings_detail": {
+        "home": {
+          "ppg": 23.0,
+          "pag": 22.9,
+          "net": 0.1
+        },
+        "away": {
+          "ppg": 20.5,
+          "pag": 24.1,
+          "net": -3.6
+        }
+      },
+      "best_winning_pick": {
+        "label": "Houston Texans ML",
+        "kind": "ml",
+        "side": "away",
+        "line": 0.0,
+        "decimal": 1.6666666666666665,
+        "win_prob": 0.5306,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.5505,
+          "ratings": 0.2824,
+          "sim": 0.53
+        },
+        "worst_lens": 0.2824,
+        "lenses_agree": true,
+        "grade": "LEAN",
+        "fair_decimal": 1.88,
+        "ev_pct": -11.6,
+        "price_note": "OVERPRICED \u2014 fair 1.88, book pays 1.67"
+      },
+      "markets": [
+        {
+          "label": "Houston Texans ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 1.6666666666666665,
+          "win_prob": 0.5306,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5505,
+            "ratings": 0.2824,
+            "sim": 0.53
+          },
+          "worst_lens": 0.2824,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.88,
+          "ev_pct": -11.6,
+          "price_note": "OVERPRICED \u2014 fair 1.88, book pays 1.67"
+        },
+        {
+          "label": "Houston Texans -1.5",
+          "kind": "spread",
+          "side": "away",
+          "line": -1.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5043,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5242,
+            "ratings": 0.2612,
+            "sim": 0.5045
+          },
+          "worst_lens": 0.2612,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.98,
+          "ev_pct": -3.7,
+          "price_note": "OVERPRICED \u2014 fair 1.98, book pays 1.91"
+        },
+        {
+          "label": "Over 42.5",
+          "kind": "total",
+          "side": "over",
+          "line": 42.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5,
+            "sim": 0.5001
+          },
+          "worst_lens": 0.5,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.0,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.00, book pays 1.91"
+        },
+        {
+          "label": "Under 42.5",
+          "kind": "total",
+          "side": "under",
+          "line": 42.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5,
+            "sim": 0.4999
+          },
+          "worst_lens": 0.4999,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.0,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.00, book pays 1.91"
+        },
+        {
+          "label": "Indianapolis Colts +1.5",
+          "kind": "spread",
+          "side": "home",
+          "line": 1.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.4957,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4758,
+            "ratings": 0.7388,
+            "sim": 0.4955
+          },
+          "worst_lens": 0.4758,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.02,
+          "ev_pct": -5.4,
+          "price_note": "OVERPRICED \u2014 fair 2.02, book pays 1.91"
+        },
+        {
+          "label": "Indianapolis Colts ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 2.25,
+          "win_prob": 0.4694,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4495,
+            "ratings": 0.7176,
+            "sim": 0.4682
+          },
+          "worst_lens": 0.4495,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.13,
+          "ev_pct": 5.6,
+          "price_note": "VALUE"
+        }
+      ],
+      "flags": [
+        "RATINGS_DISAGREE: team ratings say home +6.2, market -1.4 \u2014 season ratings miss today's news (injuries/QB/form); ratings weight cut to 5%"
+      ]
+    },
+    {
+      "game": "Kansas City Chiefs @ Miami Dolphins",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": -10.47,
+        "market": -11.01,
+        "ratings": -4.4
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.0583,
+        "agents": 0.0
+      },
+      "sigma": 10.75,
+      "n_sims": 2000000,
+      "ratings_detail": {
+        "home": {
+          "ppg": 23.1,
+          "pag": 23.4,
+          "net": -0.4
+        },
+        "away": {
+          "ppg": 27.2,
+          "pag": 20.6,
+          "net": 6.6
+        }
+      },
+      "best_winning_pick": {
+        "label": "Kansas City Chiefs ML",
+        "kind": "ml",
+        "side": "away",
+        "line": 0.0,
+        "decimal": 1.1538461538461537,
+        "win_prob": 0.8349,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.8472,
+          "ratings": 0.6585,
+          "sim": 0.8346
+        },
+        "worst_lens": 0.6585,
+        "lenses_agree": true,
+        "grade": "LOCK",
+        "fair_decimal": 1.2,
+        "ev_pct": -3.7,
+        "price_note": "OVERPRICED \u2014 fair 1.20, book pays 1.15"
+      },
+      "markets": [
+        {
+          "label": "Kansas City Chiefs ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 1.1538461538461537,
+          "win_prob": 0.8349,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.8472,
+            "ratings": 0.6585,
+            "sim": 0.8346
+          },
+          "worst_lens": 0.6585,
+          "lenses_agree": true,
+          "grade": "LOCK",
+          "fair_decimal": 1.2,
+          "ev_pct": -3.7,
+          "price_note": "OVERPRICED \u2014 fair 1.20, book pays 1.15"
+        },
+        {
+          "label": "Miami Dolphins +10.5",
+          "kind": "spread",
+          "side": "home",
+          "line": 10.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.531,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5107,
+            "ratings": 0.7395,
+            "sim": 0.5305
+          },
+          "worst_lens": 0.5107,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.88,
+          "ev_pct": 1.4,
+          "price_note": "VALUE"
+        },
+        {
+          "label": "Over 45.5",
+          "kind": "total",
+          "side": "over",
+          "line": 45.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5,
+            "sim": 0.4999
+          },
+          "worst_lens": 0.4999,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.0,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.00, book pays 1.91"
+        },
+        {
+          "label": "Under 45.5",
+          "kind": "total",
+          "side": "under",
+          "line": 45.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5,
+            "sim": 0.5001
+          },
+          "worst_lens": 0.5,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.0,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.00, book pays 1.91"
+        },
+        {
+          "label": "Kansas City Chiefs -10.5",
+          "kind": "spread",
+          "side": "away",
+          "line": -10.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.469,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4893,
+            "ratings": 0.2605,
+            "sim": 0.4695
+          },
+          "worst_lens": 0.2605,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.13,
+          "ev_pct": -10.5,
+          "price_note": "OVERPRICED \u2014 fair 2.13, book pays 1.91"
+        },
+        {
+          "label": "Kansas City Chiefs -10.5 (Stake)",
+          "kind": "spread",
+          "side": "away",
+          "line": -10.5,
+          "decimal": 1.9,
+          "offered": true,
+          "win_prob": 0.469,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4893,
+            "ratings": 0.2605,
+            "sim": 0.4695
+          },
+          "worst_lens": 0.2605,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.13,
+          "ev_pct": -10.9,
+          "price_note": "OVERPRICED \u2014 fair 2.13, book pays 1.90"
+        },
+        {
+          "label": "Miami Dolphins ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 6.4,
+          "win_prob": 0.1651,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.1528,
+            "ratings": 0.3415,
+            "sim": 0.1642
+          },
+          "worst_lens": 0.1528,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 6.06,
+          "ev_pct": 5.7,
+          "price_note": "VALUE"
+        }
+      ],
+      "flags": [
+        "RATINGS_DISAGREE: team ratings say home -4.4, market -11.0 \u2014 season ratings miss today's news (injuries/QB/form); ratings weight cut to 6%"
+      ]
+    },
+    {
+      "game": "Cincinnati Bengals @ Pittsburgh Steelers",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": -3.08,
+        "market": -3.62,
+        "ratings": 3.0
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.0582,
+        "agents": 0.0
+      },
+      "sigma": 10.75,
+      "n_sims": 2000000,
+      "ratings_detail": {
+        "home": {
+          "ppg": 21.1,
+          "pag": 20.4,
+          "net": 0.7
+        },
+        "away": {
+          "ppg": 22.7,
+          "pag": 24.0,
+          "net": -1.3
+        },
+        "conditions_applied": [
+          "Pittsburgh Steelers: CB Joey Porter Jr. OUT (-1.5 home margin) [https://www.si.com/betting/bengals-vs-steelers-prediction-odds-spread-injuries-trends-for-nfl-week-3-01m32wwcjkpw]"
+        ]
+      },
+      "best_winning_pick": {
+        "label": "Cincinnati Bengals ML",
+        "kind": "ml",
+        "side": "away",
+        "line": 0.0,
+        "decimal": 1.5434782608695652,
+        "win_prob": 0.6123,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.6315,
+          "ratings": 0.3903,
+          "sim": 0.6113
+        },
+        "worst_lens": 0.3903,
+        "lenses_agree": true,
+        "grade": "LEAN",
+        "fair_decimal": 1.63,
+        "ev_pct": -5.5,
+        "price_note": "OVERPRICED \u2014 fair 1.63, book pays 1.54"
+      },
+      "markets": [
+        {
+          "label": "Cincinnati Bengals ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 1.5434782608695652,
+          "win_prob": 0.6123,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.6315,
+            "ratings": 0.3903,
+            "sim": 0.6113
+          },
+          "worst_lens": 0.3903,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.63,
+          "ev_pct": -5.5,
+          "price_note": "OVERPRICED \u2014 fair 1.63, book pays 1.54"
+        },
+        {
+          "label": "Pittsburgh Steelers +3.5",
+          "kind": "spread",
+          "side": "home",
+          "line": 3.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5295,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5098,
+            "ratings": 0.7346,
+            "sim": 0.529
+          },
+          "worst_lens": 0.5098,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.89,
+          "ev_pct": 1.1,
+          "price_note": "VALUE"
+        },
+        {
+          "label": "Over 42.5",
+          "kind": "total",
+          "side": "over",
+          "line": 42.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5,
+            "sim": 0.5002
+          },
+          "worst_lens": 0.5,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.0,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.00, book pays 1.91"
+        },
+        {
+          "label": "Under 42.5",
+          "kind": "total",
+          "side": "under",
+          "line": 42.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5,
+            "sim": 0.4998
+          },
+          "worst_lens": 0.4998,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.0,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.00, book pays 1.91"
+        },
+        {
+          "label": "Cincinnati Bengals -3.5",
+          "kind": "spread",
+          "side": "away",
+          "line": -3.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.4705,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4902,
+            "ratings": 0.2654,
+            "sim": 0.471
+          },
+          "worst_lens": 0.2654,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.13,
+          "ev_pct": -10.2,
+          "price_note": "OVERPRICED \u2014 fair 2.13, book pays 1.91"
+        },
+        {
+          "label": "Pittsburgh Steelers ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 2.54,
+          "win_prob": 0.3877,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.3685,
+            "ratings": 0.6097,
+            "sim": 0.387
+          },
+          "worst_lens": 0.3685,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.58,
+          "ev_pct": -1.5,
+          "price_note": "OVERPRICED \u2014 fair 2.58, book pays 2.54"
+        }
+      ],
+      "flags": [
+        "RATINGS_DISAGREE: team ratings say home +3.0, market -3.6 \u2014 season ratings miss today's news (injuries/QB/form); ratings weight cut to 6%"
+      ]
+    },
+    {
+      "game": "Seattle Seahawks @ Washington Commanders",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": -6.31,
+        "market": -6.68,
+        "ratings": -4.8
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.1597,
+        "agents": 0.0
+      },
+      "sigma": 10.75,
+      "n_sims": 2000000,
+      "ratings_detail": {
+        "home": {
+          "ppg": 22.8,
+          "pag": 24.3,
+          "net": -1.5
+        },
+        "away": {
+          "ppg": 24.7,
+          "pag": 23.9,
+          "net": 0.7
+        },
+        "conditions_applied": [
+          "Washington Commanders: QB Jayden Daniels OUT (dislocated left elbow) \u2014 Marcus Mariota starts (-3.5 home margin) [https://www.nfl.com/news/marcus-mariota-commanders-week-3-qb-jayden-daniels-elbow]",
+          "Washington Commanders: S Nick Cross ruled OUT (-1.5 home margin) [https://www.si.com/betting/seahawks-vs-commanders-prediction-odds-spread-injuries-trends-for-nfl-week-3-2026]"
+        ]
+      },
+      "best_winning_pick": {
+        "label": "Seattle Seahawks ML",
+        "kind": "ml",
+        "side": "away",
+        "line": 0.0,
+        "decimal": 1.303030303030303,
+        "win_prob": 0.7211,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.7326,
+          "ratings": 0.6721,
+          "sim": 0.7202
+        },
+        "worst_lens": 0.6721,
+        "lenses_agree": true,
+        "grade": "LOCK",
+        "fair_decimal": 1.39,
+        "ev_pct": -6.0,
+        "price_note": "OVERPRICED \u2014 fair 1.39, book pays 1.30"
+      },
+      "markets": [
+        {
+          "label": "Seattle Seahawks ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 1.303030303030303,
+          "win_prob": 0.7211,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.7326,
+            "ratings": 0.6721,
+            "sim": 0.7202
+          },
+          "worst_lens": 0.6721,
+          "lenses_agree": true,
+          "grade": "LOCK",
+          "fair_decimal": 1.39,
+          "ev_pct": -6.0,
+          "price_note": "OVERPRICED \u2014 fair 1.39, book pays 1.30"
+        },
+        {
+          "label": "Seattle Seahawks -4.5 (Stake)",
+          "kind": "spread",
+          "side": "away",
+          "line": -4.5,
+          "decimal": 1.52,
+          "offered": true,
+          "win_prob": 0.5552,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5686,
+            "ratings": 0.5004,
+            "sim": 0.5555
+          },
+          "worst_lens": 0.5004,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.8,
+          "ev_pct": -15.6,
+          "price_note": "OVERPRICED \u2014 fair 1.80, book pays 1.52"
+        },
+        {
+          "label": "Washington Commanders +6.5",
+          "kind": "spread",
+          "side": "home",
+          "line": 6.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5083,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4948,
+            "ratings": 0.563,
+            "sim": 0.508
+          },
+          "worst_lens": 0.4948,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 1.97,
+          "ev_pct": -3.0,
+          "price_note": "OVERPRICED \u2014 fair 1.97, book pays 1.91"
+        },
+        {
+          "label": "Under 40.5",
+          "kind": "total",
+          "side": "under",
+          "line": 40.5,
+          "decimal": 1.8928571428571428,
+          "win_prob": 0.5043,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5043,
+            "sim": 0.504
+          },
+          "worst_lens": 0.504,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.98,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 1.98, book pays 1.89"
+        },
+        {
+          "label": "Over 40.5",
+          "kind": "total",
+          "side": "over",
+          "line": 40.5,
+          "decimal": 1.925925925925926,
+          "win_prob": 0.4957,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4957,
+            "sim": 0.496
+          },
+          "worst_lens": 0.4957,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.02,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.02, book pays 1.93"
+        },
+        {
+          "label": "Seattle Seahawks -6.5",
+          "kind": "spread",
+          "side": "away",
+          "line": -6.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.4917,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5052,
+            "ratings": 0.437,
+            "sim": 0.492
+          },
+          "worst_lens": 0.437,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.03,
+          "ev_pct": -6.1,
+          "price_note": "OVERPRICED \u2014 fair 2.03, book pays 1.91"
+        },
+        {
+          "label": "Washington Commanders ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 3.65,
+          "win_prob": 0.2789,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.2674,
+            "ratings": 0.3279,
+            "sim": 0.2782
+          },
+          "worst_lens": 0.2674,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 3.59,
+          "ev_pct": 1.8,
+          "price_note": "VALUE"
+        }
+      ],
+      "flags": []
+    },
+    {
+      "game": "New England Patriots @ Jacksonville Jaguars",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": 1.96,
+        "market": 2.54,
+        "ratings": -5.6
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.05,
+        "agents": 0.0
+      },
+      "sigma": 10.75,
+      "n_sims": 2000000,
+      "ratings_detail": {
+        "home": {
+          "ppg": 19.3,
+          "pag": 25.3,
+          "net": -6.0
+        },
+        "away": {
+          "ppg": 20.9,
+          "pag": 18.8,
+          "net": 2.1
+        }
+      },
+      "best_winning_pick": {
+        "label": "Jacksonville Jaguars ML",
+        "kind": "ml",
+        "side": "home",
+        "line": 0.0,
+        "decimal": 1.625,
+        "win_prob": 0.572,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.593,
+          "ratings": 0.3015,
+          "sim": 0.571
+        },
+        "worst_lens": 0.3015,
+        "lenses_agree": true,
+        "grade": "LEAN",
+        "fair_decimal": 1.75,
+        "ev_pct": -7.1,
+        "price_note": "OVERPRICED \u2014 fair 1.75, book pays 1.62"
+      },
+      "markets": [
+        {
+          "label": "Jacksonville Jaguars ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 1.625,
+          "win_prob": 0.572,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.593,
+            "ratings": 0.3015,
+            "sim": 0.571
+          },
+          "worst_lens": 0.3015,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.75,
+          "ev_pct": -7.1,
+          "price_note": "OVERPRICED \u2014 fair 1.75, book pays 1.62"
+        },
+        {
+          "label": "Over 45.5",
+          "kind": "total",
+          "side": "over",
+          "line": 45.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5,
+            "sim": 0.5001
+          },
+          "worst_lens": 0.5,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.0,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.00, book pays 1.91"
+        },
+        {
+          "label": "Under 45.5",
+          "kind": "total",
+          "side": "under",
+          "line": 45.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5,
+            "sim": 0.4999
+          },
+          "worst_lens": 0.4999,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.0,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.00, book pays 1.91"
+        },
+        {
+          "label": "New England Patriots +3",
+          "kind": "spread",
+          "side": "away",
+          "line": 3.0,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.476,
+          "push_prob": 0.0939,
+          "lenses": {
+            "market": 0.4547,
+            "ratings": 0.7374,
+            "sim": 0.4759
+          },
+          "worst_lens": 0.4547,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.1,
+          "ev_pct": -9.1,
+          "price_note": "OVERPRICED \u2014 fair 2.10, book pays 1.91"
+        },
+        {
+          "label": "Jacksonville Jaguars -3",
+          "kind": "spread",
+          "side": "home",
+          "line": -3.0,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.4302,
+          "push_prob": 0.0939,
+          "lenses": {
+            "market": 0.451,
+            "ratings": 0.1939,
+            "sim": 0.4302
+          },
+          "worst_lens": 0.1939,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.32,
+          "ev_pct": -17.9,
+          "price_note": "OVERPRICED \u2014 fair 2.32, book pays 1.91"
+        },
+        {
+          "label": "New England Patriots ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 2.35,
+          "win_prob": 0.428,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.407,
+            "ratings": 0.6985,
+            "sim": 0.4273
+          },
+          "worst_lens": 0.407,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.34,
+          "ev_pct": 0.6,
+          "price_note": "VALUE"
+        }
+      ],
+      "flags": [
+        "RATINGS_DISAGREE: team ratings say home -5.6, market +2.5 \u2014 season ratings miss today's news (injuries/QB/form); ratings weight cut to 5%"
+      ]
+    },
+    {
+      "game": "Tennessee Titans @ New York Giants",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": 1.04,
+        "market": 1.66,
+        "ratings": -3.1
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.098,
+        "agents": 0.0
+      },
+      "sigma": 10.75,
+      "n_sims": 2000000,
+      "ratings_detail": {
+        "home": {
+          "ppg": 17.3,
+          "pag": 23.5,
+          "net": -6.3
+        },
+        "away": {
+          "ppg": 22.0,
+          "pag": 22.6,
+          "net": -0.6
+        }
+      },
+      "best_winning_pick": {
+        "label": "New York Giants ML",
+        "kind": "ml",
+        "side": "home",
+        "line": 0.0,
+        "decimal": 1.6666666666666665,
+        "win_prob": 0.5384,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.5613,
+          "ratings": 0.3868,
+          "sim": 0.5372
+        },
+        "worst_lens": 0.3868,
+        "lenses_agree": true,
+        "grade": "LEAN",
+        "fair_decimal": 1.86,
+        "ev_pct": -10.3,
+        "price_note": "OVERPRICED \u2014 fair 1.86, book pays 1.67"
+      },
+      "markets": [
+        {
+          "label": "New York Giants ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 1.6666666666666665,
+          "win_prob": 0.5384,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5613,
+            "ratings": 0.3868,
+            "sim": 0.5372
+          },
+          "worst_lens": 0.3868,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.86,
+          "ev_pct": -10.3,
+          "price_note": "OVERPRICED \u2014 fair 1.86, book pays 1.67"
+        },
+        {
+          "label": "Tennessee Titans +2.5",
+          "kind": "spread",
+          "side": "away",
+          "line": 2.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5096,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4867,
+            "ratings": 0.6572,
+            "sim": 0.51
+          },
+          "worst_lens": 0.4867,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 1.96,
+          "ev_pct": -2.7,
+          "price_note": "OVERPRICED \u2014 fair 1.96, book pays 1.91"
+        },
+        {
+          "label": "Over 38.5",
+          "kind": "total",
+          "side": "over",
+          "line": 38.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5,
+            "sim": 0.4998
+          },
+          "worst_lens": 0.4998,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.0,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.00, book pays 1.91"
+        },
+        {
+          "label": "Under 38.5",
+          "kind": "total",
+          "side": "under",
+          "line": 38.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5,
+            "sim": 0.5002
+          },
+          "worst_lens": 0.5,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.0,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.00, book pays 1.91"
+        },
+        {
+          "label": "New York Giants -2.5",
+          "kind": "spread",
+          "side": "home",
+          "line": -2.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.4904,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5133,
+            "ratings": 0.3428,
+            "sim": 0.49
+          },
+          "worst_lens": 0.3428,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 2.04,
+          "ev_pct": -6.4,
+          "price_note": "OVERPRICED \u2014 fair 2.04, book pays 1.91"
+        },
+        {
+          "label": "Tennessee Titans ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 2.25,
+          "win_prob": 0.4616,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4387,
+            "ratings": 0.6132,
+            "sim": 0.461
+          },
+          "worst_lens": 0.4387,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.17,
+          "ev_pct": 3.9,
+          "price_note": "VALUE"
+        }
+      ],
+      "flags": [
+        "RATINGS_DISAGREE: team ratings say home -3.1, market +1.7 \u2014 season ratings miss today's news (injuries/QB/form); ratings weight cut to 10%"
+      ]
+    },
+    {
+      "game": "Minnesota Vikings @ Tampa Bay Buccaneers",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": -0.63,
+        "market": -1.23,
+        "ratings": 2.7
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.1158,
+        "agents": 0.0
+      },
+      "sigma": 10.75,
+      "n_sims": 2000000,
+      "ratings_detail": {
+        "home": {
+          "ppg": 25.7,
+          "pag": 22.9,
+          "net": 2.8
+        },
+        "away": {
+          "ppg": 25.1,
+          "pag": 22.5,
+          "net": 2.6
+        }
+      },
+      "best_winning_pick": {
+        "label": "Tampa Bay Buccaneers +2.5",
+        "kind": "spread",
+        "side": "home",
+        "line": 2.5,
+        "decimal": 1.9090909090909092,
+        "win_prob": 0.5244,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.5026,
+          "ratings": 0.6435,
+          "sim": 0.5246
+        },
+        "worst_lens": 0.5026,
+        "lenses_agree": true,
+        "grade": "LEAN",
+        "fair_decimal": 1.91,
+        "ev_pct": 0.1,
+        "price_note": "VALUE"
+      },
+      "markets": [
+        {
+          "label": "Tampa Bay Buccaneers +2.5",
+          "kind": "spread",
+          "side": "home",
+          "line": 2.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5244,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5026,
+            "ratings": 0.6435,
+            "sim": 0.5246
+          },
+          "worst_lens": 0.5026,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.91,
+          "ev_pct": 0.1,
+          "price_note": "VALUE"
+        },
+        {
+          "label": "Minnesota Vikings ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 1.7692307692307692,
+          "win_prob": 0.5235,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5454,
+            "ratings": 0.4011,
+            "sim": 0.5225
+          },
+          "worst_lens": 0.4011,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 1.91,
+          "ev_pct": -7.4,
+          "price_note": "OVERPRICED \u2014 fair 1.91, book pays 1.77"
+        },
+        {
+          "label": "Over 43.5",
+          "kind": "total",
+          "side": "over",
+          "line": 43.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5,
+            "sim": 0.4999
+          },
+          "worst_lens": 0.4999,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.0,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.00, book pays 1.91"
+        },
+        {
+          "label": "Under 43.5",
+          "kind": "total",
+          "side": "under",
+          "line": 43.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5,
+            "sim": 0.5001
+          },
+          "worst_lens": 0.5,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.0,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.00, book pays 1.91"
+        },
+        {
+          "label": "Tampa Bay Buccaneers ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 2.1,
+          "win_prob": 0.4765,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4546,
+            "ratings": 0.5989,
+            "sim": 0.4758
+          },
+          "worst_lens": 0.4546,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.1,
+          "ev_pct": 0.1,
+          "price_note": "VALUE"
+        },
+        {
+          "label": "Minnesota Vikings -2.5",
+          "kind": "spread",
+          "side": "away",
+          "line": -2.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.4756,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4974,
+            "ratings": 0.3565,
+            "sim": 0.4754
+          },
+          "worst_lens": 0.3565,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.1,
+          "ev_pct": -9.2,
+          "price_note": "OVERPRICED \u2014 fair 2.10, book pays 1.91"
+        }
+      ],
+      "flags": [
+        "RATINGS_DISAGREE: team ratings say home +2.7, market -1.2 \u2014 season ratings miss today's news (injuries/QB/form); ratings weight cut to 12%"
+      ]
+    },
+    {
+      "game": "Arizona Cardinals @ San Francisco 49ers",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": 8.98,
+        "market": 8.89,
+        "ratings": 9.3
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.1913,
+        "agents": 0.0
+      },
+      "sigma": 10.75,
+      "n_sims": 2000000,
+      "ratings_detail": {
+        "home": {
+          "ppg": 25.9,
+          "pag": 20.1,
+          "net": 5.8
+        },
+        "away": {
+          "ppg": 23.2,
+          "pag": 24.2,
+          "net": -1.0
+        }
+      },
+      "best_winning_pick": {
+        "label": "San Francisco 49ers ML",
+        "kind": "ml",
+        "side": "home",
+        "line": 0.0,
+        "decimal": 1.2197802197802199,
+        "win_prob": 0.7982,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.7958,
+          "ratings": 0.8064,
+          "sim": 0.7981
+        },
+        "worst_lens": 0.7958,
+        "lenses_agree": true,
+        "grade": "LOCK",
+        "fair_decimal": 1.25,
+        "ev_pct": -2.6,
+        "price_note": "OVERPRICED \u2014 fair 1.25, book pays 1.22"
+      },
+      "markets": [
+        {
+          "label": "San Francisco 49ers ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 1.2197802197802199,
+          "win_prob": 0.7982,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.7958,
+            "ratings": 0.8064,
+            "sim": 0.7981
+          },
+          "worst_lens": 0.7958,
+          "lenses_agree": true,
+          "grade": "LOCK",
+          "fair_decimal": 1.25,
+          "ev_pct": -2.6,
+          "price_note": "OVERPRICED \u2014 fair 1.25, book pays 1.22"
+        },
+        {
+          "label": "Arizona Cardinals +8.5",
+          "kind": "spread",
+          "side": "away",
+          "line": 8.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.509,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5124,
+            "ratings": 0.4973,
+            "sim": 0.5082
+          },
+          "worst_lens": 0.4973,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 1.96,
+          "ev_pct": -2.8,
+          "price_note": "OVERPRICED \u2014 fair 1.96, book pays 1.91"
+        },
+        {
+          "label": "Over 47.5",
+          "kind": "total",
+          "side": "over",
+          "line": 47.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5,
+            "sim": 0.4997
+          },
+          "worst_lens": 0.4997,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.0,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.00, book pays 1.91"
+        },
+        {
+          "label": "Under 47.5",
+          "kind": "total",
+          "side": "under",
+          "line": 47.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5,
+            "sim": 0.5003
+          },
+          "worst_lens": 0.5,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.0,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.00, book pays 1.91"
+        },
+        {
+          "label": "San Francisco 49ers -8.5",
+          "kind": "spread",
+          "side": "home",
+          "line": -8.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.491,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4876,
+            "ratings": 0.5027,
+            "sim": 0.4918
+          },
+          "worst_lens": 0.4876,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.04,
+          "ev_pct": -6.3,
+          "price_note": "OVERPRICED \u2014 fair 2.04, book pays 1.91"
+        },
+        {
+          "label": "Arizona Cardinals ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 4.5,
+          "win_prob": 0.2018,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.2042,
+            "ratings": 0.1936,
+            "sim": 0.2005
+          },
+          "worst_lens": 0.1936,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 4.96,
+          "ev_pct": -9.2,
+          "price_note": "OVERPRICED \u2014 fair 4.96, book pays 4.50"
+        }
+      ],
+      "flags": []
+    },
+    {
+      "game": "Dallas Cowboys @ Baltimore Ravens",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": 2.86,
+        "market": 2.61,
+        "ratings": 3.8
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.1744,
+        "agents": 0.0
+      },
+      "sigma": 10.75,
+      "n_sims": 2000000,
+      "ratings_detail": {
+        "home": {
+          "ppg": 27.2,
+          "pag": 19.9,
+          "net": 7.3
+        },
+        "away": {
+          "ppg": 26.4,
+          "pag": 22.9,
+          "net": 3.5
+        }
+      },
+      "best_winning_pick": {
+        "label": "Baltimore Ravens ML",
+        "kind": "ml",
+        "side": "home",
+        "line": 0.0,
+        "decimal": 1.6369426751592355,
+        "win_prob": 0.6046,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.5956,
+          "ratings": 0.6378,
+          "sim": 0.6046
+        },
+        "worst_lens": 0.5956,
+        "lenses_agree": true,
+        "grade": "LEAN",
+        "fair_decimal": 1.65,
+        "ev_pct": -1.0,
+        "price_note": "OVERPRICED \u2014 fair 1.65, book pays 1.64"
+      },
+      "markets": [
+        {
+          "label": "Baltimore Ravens ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 1.6369426751592355,
+          "win_prob": 0.6046,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5956,
+            "ratings": 0.6378,
+            "sim": 0.6046
+          },
+          "worst_lens": 0.5956,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.65,
+          "ev_pct": -1.0,
+          "price_note": "OVERPRICED \u2014 fair 1.65, book pays 1.64"
+        },
+        {
+          "label": "Over 52.5",
+          "kind": "total",
+          "side": "over",
+          "line": 52.5,
+          "decimal": 1.8849557522123894,
+          "win_prob": 0.5065,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5065,
+            "sim": 0.5061
+          },
+          "worst_lens": 0.5061,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.97,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 1.97, book pays 1.88"
+        },
+        {
+          "label": "Under 52.5",
+          "kind": "total",
+          "side": "under",
+          "line": 52.5,
+          "decimal": 1.9345794392523366,
+          "win_prob": 0.4935,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4935,
+            "sim": 0.4939
+          },
+          "worst_lens": 0.4935,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.03,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.03, book pays 1.93"
+        },
+        {
+          "label": "Baltimore Ravens -3",
+          "kind": "spread",
+          "side": "home",
+          "line": -3.0,
+          "decimal": 1.9615384615384617,
+          "win_prob": 0.4627,
+          "push_prob": 0.0944,
+          "lenses": {
+            "market": 0.4536,
+            "ratings": 0.4967,
+            "sim": 0.4632
+          },
+          "worst_lens": 0.4536,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.16,
+          "ev_pct": -9.2,
+          "price_note": "OVERPRICED \u2014 fair 2.16, book pays 1.96"
+        },
+        {
+          "label": "Dallas Cowboys +3",
+          "kind": "spread",
+          "side": "away",
+          "line": 3.0,
+          "decimal": 1.8695652173913042,
+          "win_prob": 0.443,
+          "push_prob": 0.0944,
+          "lenses": {
+            "market": 0.4522,
+            "ratings": 0.4091,
+            "sim": 0.4422
+          },
+          "worst_lens": 0.4091,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.26,
+          "ev_pct": -17.2,
+          "price_note": "OVERPRICED \u2014 fair 2.26, book pays 1.87"
+        },
+        {
+          "label": "Dallas Cowboys ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 2.55,
+          "win_prob": 0.3954,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4044,
+            "ratings": 0.3622,
+            "sim": 0.3937
+          },
+          "worst_lens": 0.3622,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.53,
+          "ev_pct": 0.8,
+          "price_note": "VALUE"
+        }
+      ],
+      "flags": []
+    },
+    {
+      "game": "Las Vegas Raiders @ New Orleans Saints",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": 4.19,
+        "market": 3.57,
+        "ratings": 9.0
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.0836,
+        "agents": 0.0
+      },
+      "sigma": 10.75,
+      "n_sims": 2000000,
+      "ratings_detail": {
+        "home": {
+          "ppg": 23.8,
+          "pag": 21.7,
+          "net": 2.1
+        },
+        "away": {
+          "ppg": 21.6,
+          "pag": 26.0,
+          "net": -4.4
+        }
+      },
+      "best_winning_pick": {
+        "label": "New Orleans Saints ML",
+        "kind": "ml",
+        "side": "home",
+        "line": 0.0,
+        "decimal": 1.5555555555555556,
+        "win_prob": 0.6512,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.6297,
+          "ratings": 0.7986,
+          "sim": 0.6509
+        },
+        "worst_lens": 0.6297,
+        "lenses_agree": true,
+        "grade": "PICK",
+        "fair_decimal": 1.54,
+        "ev_pct": 1.3,
+        "price_note": "VALUE"
+      },
+      "markets": [
+        {
+          "label": "New Orleans Saints ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 1.5555555555555556,
+          "win_prob": 0.6512,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.6297,
+            "ratings": 0.7986,
+            "sim": 0.6509
+          },
+          "worst_lens": 0.6297,
+          "lenses_agree": true,
+          "grade": "PICK",
+          "fair_decimal": 1.54,
+          "ev_pct": 1.3,
+          "price_note": "VALUE"
+        },
+        {
+          "label": "New Orleans Saints -3.5",
+          "kind": "spread",
+          "side": "home",
+          "line": -3.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5108,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4883,
+            "ratings": 0.6794,
+            "sim": 0.5113
+          },
+          "worst_lens": 0.4883,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 1.96,
+          "ev_pct": -2.5,
+          "price_note": "OVERPRICED \u2014 fair 1.96, book pays 1.91"
+        },
+        {
+          "label": "Over 43.5",
+          "kind": "total",
+          "side": "over",
+          "line": 43.5,
+          "decimal": 1.8928571428571428,
+          "win_prob": 0.5043,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5043,
+            "sim": 0.5042
+          },
+          "worst_lens": 0.5042,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.98,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 1.98, book pays 1.89"
+        },
+        {
+          "label": "Under 43.5",
+          "kind": "total",
+          "side": "under",
+          "line": 43.5,
+          "decimal": 1.925925925925926,
+          "win_prob": 0.4957,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4957,
+            "sim": 0.4958
+          },
+          "worst_lens": 0.4957,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.02,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.02, book pays 1.93"
+        },
+        {
+          "label": "Las Vegas Raiders +3.5",
+          "kind": "spread",
+          "side": "away",
+          "line": 3.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.4892,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5117,
+            "ratings": 0.3206,
+            "sim": 0.4887
+          },
+          "worst_lens": 0.3206,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 2.04,
+          "ev_pct": -6.6,
+          "price_note": "OVERPRICED \u2014 fair 2.04, book pays 1.91"
+        },
+        {
+          "label": "Las Vegas Raiders ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 2.52,
+          "win_prob": 0.3488,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.3703,
+            "ratings": 0.2014,
+            "sim": 0.3474
+          },
+          "worst_lens": 0.2014,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.87,
+          "ev_pct": -12.1,
+          "price_note": "OVERPRICED \u2014 fair 2.87, book pays 2.52"
+        }
+      ],
+      "flags": [
+        "RATINGS_DISAGREE: team ratings say home +9.0, market +3.6 \u2014 season ratings miss today's news (injuries/QB/form); ratings weight cut to 8%"
+      ]
+    },
+    {
+      "game": "Los Angeles Rams @ Denver Broncos",
+      "sport": "NFL",
+      "expected_home_margin": {
+        "blended": -1.24,
+        "market": -1.54,
+        "ratings": -0.1
+      },
+      "weights": {
+        "market": 0.65,
+        "ratings": 0.1691,
+        "agents": 0.0
+      },
+      "sigma": 10.75,
+      "n_sims": 2000000,
+      "ratings_detail": {
+        "home": {
+          "ppg": 19.3,
+          "pag": 20.8,
+          "net": -1.6
+        },
+        "away": {
+          "ppg": 22.8,
+          "pag": 21.7,
+          "net": 1.1
+        }
+      },
+      "best_winning_pick": {
+        "label": "Los Angeles Rams ML",
+        "kind": "ml",
+        "side": "away",
+        "line": 0.0,
+        "decimal": 1.6896551724137931,
+        "win_prob": 0.5459,
+        "push_prob": 0.0,
+        "lenses": {
+          "market": 0.5568,
+          "ratings": 0.5037,
+          "sim": 0.5449
+        },
+        "worst_lens": 0.5037,
+        "lenses_agree": true,
+        "grade": "LEAN",
+        "fair_decimal": 1.83,
+        "ev_pct": -7.8,
+        "price_note": "OVERPRICED \u2014 fair 1.83, book pays 1.69"
+      },
+      "markets": [
+        {
+          "label": "Los Angeles Rams ML",
+          "kind": "ml",
+          "side": "away",
+          "line": 0.0,
+          "decimal": 1.6896551724137931,
+          "win_prob": 0.5459,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5568,
+            "ratings": 0.5037,
+            "sim": 0.5449
+          },
+          "worst_lens": 0.5037,
+          "lenses_agree": true,
+          "grade": "LEAN",
+          "fair_decimal": 1.83,
+          "ev_pct": -7.8,
+          "price_note": "OVERPRICED \u2014 fair 1.83, book pays 1.69"
+        },
+        {
+          "label": "Denver Broncos +2.5",
+          "kind": "spread",
+          "side": "home",
+          "line": 2.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5021,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4912,
+            "ratings": 0.5439,
+            "sim": 0.5021
+          },
+          "worst_lens": 0.4912,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 1.99,
+          "ev_pct": -4.1,
+          "price_note": "OVERPRICED \u2014 fair 1.99, book pays 1.91"
+        },
+        {
+          "label": "Over 44.5",
+          "kind": "total",
+          "side": "over",
+          "line": 44.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5,
+            "sim": 0.5004
+          },
+          "worst_lens": 0.5,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.0,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.00, book pays 1.91"
+        },
+        {
+          "label": "Under 44.5",
+          "kind": "total",
+          "side": "under",
+          "line": 44.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.5,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5,
+            "sim": 0.4996
+          },
+          "worst_lens": 0.4996,
+          "lenses_agree": false,
+          "grade": "COINFLIP",
+          "fair_decimal": 2.0,
+          "ev_pct": -4.5,
+          "price_note": "OVERPRICED \u2014 fair 2.00, book pays 1.91"
+        },
+        {
+          "label": "Los Angeles Rams -2.5",
+          "kind": "spread",
+          "side": "away",
+          "line": -2.5,
+          "decimal": 1.9090909090909092,
+          "win_prob": 0.4979,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.5088,
+            "ratings": 0.4561,
+            "sim": 0.4979
+          },
+          "worst_lens": 0.4561,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.01,
+          "ev_pct": -4.9,
+          "price_note": "OVERPRICED \u2014 fair 2.01, book pays 1.91"
+        },
+        {
+          "label": "Denver Broncos ML",
+          "kind": "ml",
+          "side": "home",
+          "line": 0.0,
+          "decimal": 2.2,
+          "win_prob": 0.4541,
+          "push_prob": 0.0,
+          "lenses": {
+            "market": 0.4432,
+            "ratings": 0.4963,
+            "sim": 0.4532
+          },
+          "worst_lens": 0.4432,
+          "lenses_agree": false,
+          "grade": "SPLIT",
+          "fair_decimal": 2.2,
+          "ev_pct": -0.1,
+          "price_note": "OVERPRICED \u2014 fair 2.20, book pays 2.20"
+        }
+      ],
+      "flags": []
+    }
+  ]
+}
