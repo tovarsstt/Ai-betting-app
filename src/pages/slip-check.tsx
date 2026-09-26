@@ -148,7 +148,7 @@ export default function SlipCheckPage() {
       {data && (
         <div className="space-y-4">
           <p className="text-[10px] text-muted-foreground/60 font-mono">
-            NFL {data.season} week {data.week} · spreads/ML/totals = Judge margin model · props = real 2025-26 game logs, recency weighted · 21+ entertainment only
+            NFL {data.season} week {data.week} + college FBS · NFL spreads/ML/totals = Judge margin model · college = ratings (71% winners in backtest) blended with sourced lines · props = real 2025-26 game logs, recency weighted · 21+ entertainment only
           </p>
           {data.tickets.map((t, i) => <Ticket key={i} t={t} />)}
           {!data.tickets.length && <p className="text-sm text-muted-foreground">No ticket found in that text.</p>}

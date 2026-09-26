@@ -1,17 +1,17 @@
 # NFL 2026 Week 3 — full game-by-game analysis & simulation
 
-15 games · 2,000,000 Monte Carlo games each · margin σ 12.75 and total σ 13.1 fitted to 1,759 real games · lines: nflverse games.csv (consensus lines, updated daily) · injuries: official report + Friday finals (starters only) · built in 18s
+15 games · 2,000,000 Monte Carlo games each · margin σ 12.75 and total σ 13.1 fitted to 1,759 real games · lines: nflverse games.csv (consensus lines, updated daily) · injuries: official report + Friday finals (starters only) · built in 13s
 
 ## Slate at a glance
 
 | Game | Fav | Fav wins | Upset | Spread fav/dog | Proj. score | Total O/U |
 |---|---|---|---|---|---|---|
-| LAC @ BUF | BUF -7 | 73.5% | 26.5% | 49.0% / 45.5% | LAC 21–29 BUF | 49.5: 51.7% / 48.3% |
+| LAC @ BUF | BUF -7 | 73.6% | 26.4% | 49.2% / 45.3% | LAC 21–29 BUF | 50.5: 48.3% / 51.7% |
 | CAR @ CLE | CAR -2.5 | 55.4% | 44.6% | 51.4% / 48.6% | CAR 22–20 CLE | 42.5: 50.0% / 50.0% |
 | NYJ @ DET | DET -6.5 | 71.8% | 28.2% | 52.6% / 47.4% | NYJ 21–28 DET | 48.5: 49.6% / 50.4% |
 | HOU @ IND | HOU -1.5 | 53.6% | 46.4% | 51.4% / 48.6% | HOU 22–21 IND | 42.5: 51.7% / 48.3% |
 | NE @ JAX | JAX -3 | 57.4% | 42.6% | 45.3% / 46.7% | NE 22–24 JAX | 46.5: 48.9% / 51.1% |
-| KC @ MIA | KC -10 | 81.6% | 18.4% | 50.7% / 45.3% | KC 28–17 MIA | 45.5: 49.6% / 50.4% |
+| KC @ MIA | KC -10 | 81.9% | 18.1% | 51.0% / 45.0% | KC 28–17 MIA | 45.5: 49.6% / 50.4% |
 | TEN @ NYG | NYG -2.5 | 54.6% | 45.4% | 50.5% / 49.5% | TEN 18–20 NYG | 38.5: 49.6% / 50.4% |
 | CIN @ PIT | CIN -3.5 | 61.9% | 38.1% | 49.9% / 50.1% | CIN 23–19 PIT | 42.5: 50.4% / 49.6% |
 | SEA @ WAS | SEA -7.5 | 76.1% | 23.9% | 52.3% / 47.7% | SEA 24–15 WAS | 40.5: 48.3% / 51.7% |
@@ -22,13 +22,13 @@
 | LA @ DEN | LA -2.5 | 53.6% | 46.4% | 49.6% / 50.4% | LA 23–21 DEN | 44.5: 48.3% / 51.7% |
 | PHI @ CHI | PHI -4.5 | 67.3% | 32.7% | 52.9% / 47.1% | PHI 23–18 CHI | 41.5: 48.9% / 51.1% |
 
-**Upsets across the slate (2,000,000 simulated Sundays):** expected 5.4 of 15 · ≥3: 95.1% · ≥5: 68.5% · ≥7: 27.1% · all favorites win: 0.1%
+**Upsets across the slate (2,000,000 simulated Sundays):** expected 5.4 of 15 · ≥3: 95.1% · ≥5: 68.4% · ≥7: 27.1% · all favorites win: 0.1%
 
 ## LAC @ BUF — 2026-09-27 13:00 ET
 
-**Line:** BUF -7 · total 49.5 · ML LAC +270 / BUF -340  
-**Projected score (2,000,000 sims):** LAC 21.1 – BUF 29.0 (expected margin BUF +8.0, total 50.1)  
-**Win the game:** LAC 26.5% · BUF 73.5% → favorite **BUF**, upset chance **26.5%**  
+**Line:** BUF -7 · total 50.5 · ML LAC +275 / BUF -345  
+**Projected score (2,000,000 sims):** LAC 21.0 – BUF 28.9 (expected margin BUF +8.1, total 49.9)  
+**Win the game:** LAC 26.4% · BUF 73.6% → favorite **BUF**, upset chance **26.4%**  
 **Key numbers:** decided by exactly 3 = 12.9%, exactly 7 = 8.3%
 
 - 🏈 **QBs:** Justin Herbert @ Josh Allen · rest 7d / 10d · outdoors
@@ -40,31 +40,31 @@
 
 | BUF result | chance |
 |---|---|
-| lose by 8+ | 10.3% |
-| lose by 4-7 | 7.6% |
+| lose by 8+ | 10.2% |
+| lose by 4-7 | 7.5% |
 | lose by 1-3 | 8.5% |
 | tie | 0.1% |
-| win by 1-3 | 11.0% |
+| win by 1-3 | 10.9% |
 | win by 4-7 | 13.5% |
 | win by 8-14 | 19.4% |
-| win by 15+ | 29.6% |
+| win by 15+ | 29.8% |
 
 | Line | ML | -13.5 | -10.5 | -7.5 | -6.5 | -3.5 | -2.5 | -1.5 | +1.5 | +2.5 | +3.5 | +6.5 | +7.5 | +10.5 | +13.5 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| **LAC** win % | 26.5% | 4.7% | 6.6% | 10.3% | 13.1% | 17.9% | 23.4% | 24.8% | 28.4% | 30.1% | 37.5% | 45.5% | 51.0% | 60.3% | 66.5% |
-| LAC fair odds | 3.77 | 21.50 | 15.17 | 9.67 | 7.62 | 5.58 | 4.27 | 4.04 | 3.52 | 3.32 | 2.66 | 2.20 | 1.96 | 1.66 | 1.50 |
-| **BUF** win % | 73.5% | 33.5% | 39.7% | 49.0% | 54.5% | 62.5% | 69.9% | 71.6% | 75.2% | 76.6% | 82.1% | 86.9% | 89.7% | 93.4% | 95.3% |
-| BUF fair odds | 1.36 | 2.99 | 2.52 | 2.04 | 1.83 | 1.60 | 1.43 | 1.40 | 1.33 | 1.31 | 1.22 | 1.15 | 1.12 | 1.07 | 1.05 |
+| **LAC** win % | 26.3% | 4.6% | 6.5% | 10.2% | 13.0% | 17.8% | 23.3% | 24.6% | 28.3% | 29.9% | 37.3% | 45.3% | 50.8% | 60.0% | 66.3% |
+| LAC fair odds | 3.80 | 21.74 | 15.33 | 9.76 | 7.69 | 5.62 | 4.30 | 4.06 | 3.54 | 3.34 | 2.68 | 2.21 | 1.97 | 1.67 | 1.51 |
+| **BUF** win % | 73.7% | 33.7% | 40.0% | 49.2% | 54.7% | 62.7% | 70.1% | 71.7% | 75.4% | 76.7% | 82.2% | 87.0% | 89.8% | 93.5% | 95.4% |
+| BUF fair odds | 1.36 | 2.97 | 2.50 | 2.03 | 1.83 | 1.60 | 1.43 | 1.39 | 1.33 | 1.30 | 1.22 | 1.15 | 1.11 | 1.07 | 1.05 |
 
-| Total | 42.5 | 46 | 49.5 | 53 | 56.5 |
+| Total | 43.5 | 47 | 50.5 | 54 | 57.5 |
 |---|---|---|---|---|---|
-| Over | 71.9% | 60.9% | 51.9% | 39.8% | 31.3% |
-| Under | 28.1% | 36.2% | 48.1% | 57.3% | 68.7% |
+| Over | 68.7% | 57.3% | 48.2% | 36.3% | 28.1% |
+| Under | 31.3% | 39.7% | 51.8% | 60.8% | 71.9% |
 
 **Judge verdicts**
-- 🏆 Winner-first pick: **Buffalo Bills ML** — 73.5% (LOCK) @ 1.29, fair 1.36, EV -4.9%
-- 🐶 Underdog: **LAC ML** wins 26.5% @ 3.70 (fair 3.77, EV -1.8%)
-- 🔢 Total lean: **Over 49.5** 51.7% (coin flip) @ 1.85
+- 🏆 Winner-first pick: **Buffalo Bills ML** — 73.6% (LOCK) @ 1.29, fair 1.36, EV -5.0%
+- 🐶 Underdog: **LAC ML** wins 26.4% @ 3.75 (fair 3.79, EV -1.1%)
+- 🔢 Total lean: **Under 50.5** 51.7% (coin flip) @ 1.85
 
 ## CAR @ CLE — 2026-09-27 13:00 ET
 
@@ -76,8 +76,7 @@
 - 🏈 **QBs:** Bryce Young @ Deshaun Watson · rest 7d / 7d · outdoors
 - 📊 **CAR:** net -1.4 pts vs avg (off -0.3, def -1.2; 2 games in 2026) · EPA/play off +0.009, def allowed +0.046 · pass 62% · 60.1 plays/g
 - 📊 **CLE:** net -5.7 pts vs avg (off -5.1, def -0.6; 2 games in 2026, NEW QB since 2025) · EPA/play off -0.167, def allowed -0.053 · pass 63% · 53.5 plays/g
-- 👀 CAR: S Nick Scott: DNP, no game status yet
-- 👀 CAR: LB Devin Lloyd: DNP, no game status yet
+- 🏥 **CAR out/doubtful (starters):** LB Devin Lloyd OUT, S Nick Scott OUT
 - 👀 CLE: G Teven Jenkins: DNP, no game status yet
 
 | CLE result | chance |
@@ -159,11 +158,11 @@
 - 🏈 **QBs:** C.J. Stroud @ Daniel Jones · rest 7d / 7d · division game
 - 📊 **HOU:** net +4.0 pts vs avg (off +0.0, def +4.0; 2 games in 2026) · EPA/play off -0.047, def allowed -0.112 · pass 63% · 71.8 plays/g
 - 📊 **IND:** net +1.6 pts vs avg (off +4.2, def -2.6; 2 games in 2026) · EPA/play off +0.048, def allowed +0.074 · pass 59% · 58.4 plays/g
+- 🏥 **HOU out/doubtful (starters):** WR Nico Collins OUT, LB Jake Hummel OUT
 - 👀 HOU: TE Dalton Schultz: DNP, no game status yet
-- 👀 HOU: WR Nico Collins: DNP, no game status yet
 - 👀 HOU: LB Jacob Hummel: DNP, no game status yet
+- 🏥 **IND out/doubtful (starters):** WR Ashton Dulin OUT
 - 👀 IND: DT Grover Stewart: DNP, no game status yet
-- 👀 IND: WR Ashton Dulin: DNP, no game status yet
 
 | IND result | chance |
 |---|---|
@@ -203,7 +202,7 @@
 - 🏈 **QBs:** Drake Maye @ Trevor Lawrence · rest 7d / 7d · outdoors
 - 📊 **NE:** net +5.4 pts vs avg (off +1.0, def +4.4; 2 games in 2026) · EPA/play off +0.052, def allowed -0.110 · pass 60% · 59.4 plays/g
 - 📊 **JAX:** net +5.7 pts vs avg (off +3.1, def +2.6; 2 games in 2026) · EPA/play off +0.055, def allowed -0.072 · pass 58% · 56.2 plays/g
-- 👀 NE: LB Dre'Mont Jones: DNP, no game status yet
+- 🏥 **NE out/doubtful (starters):** EDGE Dre'Mont Jones OUT
 - 👀 NE: S Craig Woodson: DNP, no game status yet
 
 | JAX result | chance |
@@ -236,10 +235,10 @@
 
 ## KC @ MIA — 2026-09-27 13:00 ET
 
-**Line:** MIA +10 · total 45.5 · ML KC -625 / MIA +455  
-**Projected score (2,000,000 sims):** KC 28.4 – MIA 17.0 (expected margin MIA -11.5, total 45.4)  
-**Win the game:** KC 81.6% · MIA 18.4% → favorite **KC**, upset chance **18.4%**  
-**Key numbers:** decided by exactly 3 = 10.6%, exactly 7 = 7.2%
+**Line:** MIA +10 · total 45.5 · ML KC -650 / MIA +470  
+**Projected score (2,000,000 sims):** KC 28.4 – MIA 17.0 (expected margin MIA -11.7, total 45.4)  
+**Win the game:** KC 81.9% · MIA 18.1% → favorite **KC**, upset chance **18.1%**  
+**Key numbers:** decided by exactly 3 = 10.5%, exactly 7 = 7.1%
 
 - 🏈 **QBs:** Patrick Mahomes @ Malik Willis · rest 7d / 7d · outdoors
 - 📊 **KC:** net +2.6 pts vs avg (off +0.1, def +2.5; 2 games in 2026) · EPA/play off +0.081, def allowed -0.028 · pass 64% · 68.6 plays/g
@@ -248,21 +247,21 @@
 
 | MIA result | chance |
 |---|---|
-| lose by 8+ | 59.8% |
+| lose by 8+ | 60.2% |
 | lose by 4-7 | 12.4% |
-| lose by 1-3 | 9.4% |
+| lose by 1-3 | 9.3% |
 | tie | 0.1% |
 | win by 1-3 | 6.5% |
-| win by 4-7 | 5.5% |
+| win by 4-7 | 5.4% |
 | win by 8-14 | 4.3% |
-| win by 15+ | 2.0% |
+| win by 15+ | 1.9% |
 
 | Line | ML | -13.5 | -10.5 | -7.5 | -6.5 | -3.5 | -2.5 | -1.5 | +1.5 | +2.5 | +3.5 | +6.5 | +7.5 | +10.5 | +13.5 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| **KC** win % | 81.7% | 44.0% | 50.7% | 59.8% | 65.1% | 72.3% | 78.7% | 80.1% | 83.1% | 84.1% | 88.3% | 91.8% | 93.7% | 96.2% | 97.5% |
-| KC fair odds | 1.22 | 2.27 | 1.97 | 1.67 | 1.54 | 1.38 | 1.27 | 1.25 | 1.20 | 1.19 | 1.13 | 1.09 | 1.07 | 1.04 | 1.03 |
-| **MIA** win % | 18.3% | 2.5% | 3.8% | 6.3% | 8.2% | 11.7% | 15.9% | 16.9% | 19.9% | 21.3% | 27.7% | 34.9% | 40.2% | 49.3% | 56.0% |
-| MIA fair odds | 5.46 | 39.36 | 26.57 | 15.94 | 12.18 | 8.52 | 6.29 | 5.90 | 5.03 | 4.69 | 3.60 | 2.86 | 2.49 | 2.03 | 1.79 |
+| **KC** win % | 81.9% | 44.4% | 51.0% | 60.2% | 65.4% | 72.5% | 78.9% | 80.3% | 83.3% | 84.3% | 88.4% | 91.9% | 93.8% | 96.3% | 97.5% |
+| KC fair odds | 1.22 | 2.25 | 1.96 | 1.66 | 1.53 | 1.38 | 1.27 | 1.24 | 1.20 | 1.19 | 1.13 | 1.09 | 1.07 | 1.04 | 1.03 |
+| **MIA** win % | 18.1% | 2.5% | 3.7% | 6.2% | 8.1% | 11.6% | 15.7% | 16.7% | 19.7% | 21.1% | 27.5% | 34.6% | 39.8% | 49.0% | 55.6% |
+| MIA fair odds | 5.53 | 40.13 | 27.08 | 16.21 | 12.37 | 8.65 | 6.37 | 5.98 | 5.09 | 4.75 | 3.64 | 2.89 | 2.51 | 2.04 | 1.80 |
 
 | Total | 38.5 | 42 | 45.5 | 49 | 52.5 |
 |---|---|---|---|---|---|
@@ -270,8 +269,8 @@
 | Under | 29.9% | 38.3% | 50.3% | 59.4% | 70.6% |
 
 **Judge verdicts**
-- 🏆 Winner-first pick: **Kansas City Chiefs ML** — 81.6% (LOCK) @ 1.16, fair 1.22, EV -5.3%
-- 🐶 Underdog: **MIA ML** wins 18.4% @ 5.55 (fair 5.45, EV +1.9%)
+- 🏆 Winner-first pick: **Kansas City Chiefs ML** — 81.9% (LOCK) @ 1.15, fair 1.22, EV -5.5%
+- 🐶 Underdog: **MIA ML** wins 18.1% @ 5.70 (fair 5.52, EV +3.3%)
 - 🔢 Total lean: **Under 45.5** 50.4% (coin flip) @ 1.89
 
 ## TEN @ NYG — 2026-09-27 13:00 ET
@@ -409,8 +408,8 @@
 - 📊 **ARI:** net -3.8 pts vs avg (off -1.4, def -2.4; 2 games in 2026) · EPA/play off -0.025, def allowed +0.060 · pass 68% · 59.3 plays/g
 - 📊 **SF:** net +6.0 pts vs avg (off +3.2, def +2.7; 2 games in 2026) · EPA/play off +0.111, def allowed +0.026 · pass 59% · 57.2 plays/g
 - 👀 ARI: DT Roy Lopez: DNP, no game status yet
+- 🏥 **SF out/doubtful (starters):** EDGE Nick Bosa OUT
 - 👀 SF: WR Mike Evans: DNP, no game status yet
-- 👀 SF: DE Nick Bosa: DNP, no game status yet
 
 | SF result | chance |
 |---|---|
@@ -451,8 +450,7 @@
 - 📊 **MIN:** net +3.7 pts vs avg (off -1.4, def +5.1; 2 games in 2026, NEW QB since 2025) · EPA/play off -0.098, def allowed -0.113 · pass 58% · 55.1 plays/g
 - 📊 **TB:** net -1.6 pts vs avg (off +0.3, def -1.8; 2 games in 2026) · EPA/play off -0.045, def allowed +0.011 · pass 62% · 58.1 plays/g
 - 👀 MIN: P Brett Thorson: DNP, no game status yet
-- 👀 TB: LB Rueben Bain Jr.: DNP, no game status yet
-- 👀 TB: LB Josiah Trotter: DNP, no game status yet
+- 🏥 **TB out/doubtful (starters):** EDGE Rueben Bain Jr. OUT, LB Josiah Trotter OUT
 
 | TB result | chance |
 |---|---|
@@ -492,7 +490,7 @@
 - 🏈 **QBs:** Lamar Jackson @ Dak Prescott · rest 7d / 7d
 - 📊 **BAL:** net +1.5 pts vs avg (off +1.8, def -0.3; 2 games in 2026) · EPA/play off +0.082, def allowed +0.013 · pass 54% · 57.2 plays/g
 - 📊 **DAL:** net -2.2 pts vs avg (off +3.4, def -5.6; 2 games in 2026) · EPA/play off +0.125, def allowed +0.181 · pass 63% · 56.1 plays/g
-- 👀 BAL: T Ronnie Stanley: DNP, no game status yet
+- 🏥 **BAL out/doubtful (starters):** LT Ronnie Stanley OUT
 - 👀 BAL: WR Zay Flowers: DNP, no game status yet
 - 🏥 **DAL out/doubtful (starters):** S Malik Hooker OUT (Forearm), CB Cobie Durant OUT (Hamstring), LB DeMarvion Overshown OUT (Hamstring)
 
@@ -534,9 +532,9 @@
 - 🏈 **QBs:** Kirk Cousins @ Tyler Shough · rest 7d / 7d · dome
 - 📊 **LV:** net -2.9 pts vs avg (off -3.2, def +0.3; 2 games in 2026, NEW QB since 2025) · EPA/play off -0.175, def allowed -0.040 · pass 61% · 59.2 plays/g
 - 📊 **NO:** net -2.2 pts vs avg (off -2.8, def +0.6; 2 games in 2026) · EPA/play off -0.050, def allowed -0.030 · pass 64% · 71.8 plays/g
+- 🏥 **LV out/doubtful (starters):** S Treydan Stukes OUT
 - 👀 LV: DE Kwity Paye: DNP, no game status yet
-- 👀 LV: S Treydan Stukes: DNP, no game status yet
-- 👀 NO: WR Barion Brown: DNP, no game status yet
+- 🏥 **NO out/doubtful (starters):** WR Barion Brown OUT
 
 | NO result | chance |
 |---|---|
@@ -576,9 +574,8 @@
 - 🏈 **QBs:** Matthew Stafford @ Bo Nix · rest 6d / 7d · outdoors
 - 📊 **LA:** net +7.5 pts vs avg (off +4.5, def +3.0; 2 games in 2026) · EPA/play off +0.118, def allowed -0.058 · pass 58% · 57.8 plays/g
 - 📊 **DEN:** net +1.5 pts vs avg (off -1.2, def +2.6; 2 games in 2026) · EPA/play off +0.008, def allowed -0.047 · pass 63% · 54.2 plays/g
+- 🏥 **LA out/doubtful (starters):** WR Puka Nacua DOUBTFUL, S Kamren Kinchens DOUBTFUL
 - 👀 LA: TE Colby Parkinson: DNP, no game status yet
-- 👀 LA: WR Puka Nacua: DNP, no game status yet
-- 👀 LA: S Kamren Kinchens: DNP, no game status yet
 
 | DEN result | chance |
 |---|---|
@@ -615,16 +612,16 @@
 **Win the game:** PHI 67.3% · CHI 32.7% → favorite **PHI**, upset chance **32.7%**  
 **Key numbers:** decided by exactly 3 = 14.2%, exactly 7 = 8.9%
 
-- 🏈 **QBs:** Jalen Hurts @ Caleb Williams · rest 8d / 8d · outdoors
+- 🏈 **QBs:** Jalen Hurts @ Tyson Bagent · rest 8d / 8d · outdoors
 - 📊 **PHI:** net +1.3 pts vs avg (off -1.2, def +2.5; 2 games in 2026) · EPA/play off +0.029, def allowed -0.038 · pass 58% · 60.9 plays/g
 - 📊 **CHI:** net +2.5 pts vs avg (off +3.0, def -0.5; 2 games in 2026) · EPA/play off +0.091, def allowed +0.039 · pass 59% · 68.6 plays/g
 - 👀 PHI: TE Dallas Goedert: DNP, no game status yet
 - 👀 PHI: WR DeVonta Smith: DNP, no game status yet
 - 👀 PHI: RB Will Shipley: DNP, no game status yet
+- 🏥 **CHI out/doubtful (starters):** QB Caleb Williams OUT
 - 👀 CHI: K Cairo Santos: DNP, no game status yet
 - 👀 CHI: DT Grady Jarrett: DNP, no game status yet
 - 👀 CHI: CB Tyrique Stevenson: DNP, no game status yet
-- 👀 CHI: QB Caleb Williams: DNP, no game status yet
 
 | CHI result | chance |
 |---|---|

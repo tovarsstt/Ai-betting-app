@@ -31,13 +31,16 @@ import pandas as pd
 from scipy.stats import norm, poisson
 
 sys.path.insert(0, str(Path(__file__).parent))
+import cfb_model as cm  # noqa: E402
 import nflverse_feed as nf  # noqa: E402
 import winner_judge as wj  # noqa: E402
 
 HALFLIFE = 8          # games back for half weight
 PRIOR_K = 4.0         # pseudo-games given to the fitted distribution
 CORR_K = 8.0          # shared games before a measured correlation counts fully
-MIN_GAMES = 4         # below this a prop is UNPRICED
+MIN_GAMES = 2         # below this a prop is UNPRICED
+FULL_GAMES = 8        # below this the read is pulled toward 50% (SMALL SAMPLE)
+SMALL_K = 4.0         # pseudo-games of 50/50 added to a small sample
 MIN_CV = 0.3          # yardage never less spread than 30% of its mean (NFL game-to-game)
 
 ODDS = re.compile(r"^\d+[.,]\d+$")
@@ -164,7 +167,8 @@ def parse(text: str) -> list[Ticket]:
 
 def _matchup_after(L: list, j: int) -> Optional[tuple]:
     """Single legs list the game AFTER the price: date, time, home, away."""
-    names = [x for x in L[j:j + 6] if x in TEAMS]
+    known = TEAMS | cm.teams()
+    names = [x for x in L[j:j + 6] if x in known]
     return (names[0], names[1]) if len(names) >= 2 else None
 
 
@@ -209,7 +213,7 @@ def _game_for(team: Optional[str], matchup: Optional[tuple], slate: dict):
 def price_game_leg(leg: Leg, slate: dict) -> tuple[Optional[float], str]:
     key, g = _game_for(leg.team, leg.matchup, slate)
     if g is None:
-        return None, "no model for this game (NFL only)"
+        return _cfb_leg(leg)
     if leg.kind == "total":
         if g["total"] is None:
             return None, "no total projection"
@@ -221,6 +225,33 @@ def price_game_leg(leg: Leg, slate: dict) -> tuple[Optional[float], str]:
     shift = 0.0 if leg.kind == "ml" else leg.line
     p = sum(v for m, v in pmf.items() if sgn * m + shift > 0)
     return float(p), f"exp. margin {sgn * g['mu']:+.1f}"
+
+
+def _cfb_view(leg: Leg) -> Optional[dict]:
+    if not leg.matchup:
+        return None
+    home, away = leg.matchup
+    ln = cm.market_lines().get(f"{away} @ {home}", {})
+    return cm.game_view(home, away, market_spread=ln.get("home_spread"), market_total=ln.get("total"),
+                        neutral=bool(ln.get("neutral")))
+
+
+def _cfb_spec(leg: Leg, v: dict):
+    if leg.kind == "total":
+        return ("total", leg.line, leg.over)
+    return ("side", leg.team == v["home"], 0.0 if leg.kind == "ml" else leg.line)
+
+
+def _cfb_leg(leg: Leg) -> tuple[Optional[float], str]:
+    v = _cfb_view(leg)
+    if v is None or (leg.kind != "total" and leg.team not in (v["home"], v["away"])):
+        return None, "no model for this game (NFL + college FBS only)"
+    spec = _cfb_spec(leg, v)
+    p = cm.p_total(v["total"], spec[1], spec[2]) if spec[0] == "total" else cm.p_side(v["mu"], spec[2], spec[1])
+    side = v["mu"] if leg.kind == "total" or leg.team == v["home"] else -v["mu"]
+    note = (f"college {v['source']}: exp. margin {side:+.1f}, total {v['total']:.1f}" if leg.kind != "total"
+            else f"college {v['source']}: proj. total {v['total']:.1f}")
+    return p, note
 
 
 @lru_cache(maxsize=1)
@@ -287,9 +318,13 @@ def price_prop(leg: Leg) -> tuple[Optional[float], str, Optional[pd.Series]]:
     if len(log) < MIN_GAMES:
         return None, f"only {len(log)} NFL games — too few", None
     p = prop_prob(log.to_numpy(), leg.line, leg.over, val in COUNT_STATS)
+    small = len(log) < FULL_GAMES
+    if small:                                   # thin history: don't trust it like a full one
+        p = 0.5 + (p - 0.5) * len(log) / (len(log) + SMALL_K)
     hit = (log > leg.line) if leg.over else (log < leg.line)
     last = ", ".join(str(int(x)) for x in log.tail(5))
-    return p, f"{len(log)} gms, avg {log.mean():.1f}, hit {hit.mean():.0%}; last 5: {last}", hit
+    return p, (f"{'SMALL SAMPLE — ' if small else ''}{len(log)} gms, avg {log.mean():.1f}, "
+               f"hit {hit.mean():.0%}; last 5: {last}"), hit
 
 
 def _game_hits(leg: Leg) -> Optional[pd.Series]:
@@ -343,6 +378,10 @@ def price_ticket(t: Ticket, slate: dict, n_sims: int = 2_000_000, seed: int = 11
         else:
             corr = sgp_factor(hits) if b.sgp else (1.0, 0)
             bp = min(float(np.prod(ps)) * corr[0], min(ps))
+            cfb = _cfb_view(b.legs[0]) if b.sgp and all("college" in x["note"] for x in legs) else None
+            if cfb is not None:          # one college game: margin + total simulated jointly
+                bp = cm.joint_prob(cfb, [_cfb_spec(leg, cfb) for leg in b.legs], n_sims)
+                corr = (bp / float(np.prod(ps)), cm.BACKTEST_GAMES)
         probs.append(bp)
         blocks.append({"sgp": b.sgp, "decimal": b.decimal, "prob": bp, "legs": legs,
                        "corr_factor": round(corr[0], 3), "corr_games": corr[1],
@@ -367,7 +406,8 @@ def price_ticket(t: Ticket, slate: dict, n_sims: int = 2_000_000, seed: int = 11
         out.update({"prob_all": p_all, "sim_all": float(np.mean(hits == n)), "need": 1 / dec,
                     "ev_pct": (p_all * dec - 1) * 100, "sims": n_sims,
                     "hits_dist": {k: float(np.mean(hits == k)) for k in range(n, -1, -1)},
-                    "weakest": blocks[weakest]["legs"][0]["label"] if blocks[weakest]["legs"] else None})
+                    "weakest": (" + ".join(x["label"] for x in blocks[weakest]["legs"]) if blocks[weakest]["sgp"]
+                                else blocks[weakest]["legs"][0]["label"])})
     return out
 
 
@@ -387,7 +427,7 @@ def _pct(x):
 
 
 def to_markdown(res: dict) -> str:
-    L = [f"# Slip check — NFL {res['season']} week {res['week']}", ""]
+    L = [f"# Slip check — NFL {res['season']} week {res['week']} + college FBS", ""]
     for t in res["tickets"]:
         L.append(f"## {t['header']} @ {t['decimal']} (stake {t['stake']}, pays {t['payout']})")
         for b in t["blocks"]:

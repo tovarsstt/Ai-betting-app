@@ -7,7 +7,7 @@ POST /predict  {"sport","home_team","away_team","spread","home_odds","away_odds"
 GET  /health
 GET  /teams/{sport}
 """
-import json, pickle, numpy as np
+import json, pickle, time, numpy as np
 from pathlib import Path
 from typing import Optional
 from scipy.stats import norm, poisson as sp_poisson
@@ -1447,9 +1447,14 @@ class SlipReq(BaseModel):
 @app.post("/price-slip")
 def price_slip_endpoint(req: SlipReq):
     """Open-ticket checker: every leg's hit chance + whole-ticket odds (local nflverse data only)."""
+    import cfb_model as cm
     import slip_pricer as sp
     if not req.text.strip() or len(req.text) > 50_000:
         return {"error": "EMPTY_OR_TOO_LONG"}
+    try:
+        cm.refresh(time.gmtime().tm_year)          # college scores, GitHub, max 6h old
+    except Exception as e:  # noqa: BLE001 — stale data still prices; the age shows in freshness
+        print(f"cfb refresh failed: {e}")
     res = sp.price_text(req.text, n_sims=max(10_000, min(req.n_sims, 5_000_000)))
     return json.loads(json.dumps(res, default=float))
 

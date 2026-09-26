@@ -107,5 +107,6 @@ def test_ticket_math_and_unpriced_legs(monkeypatch):
     assert all(p is not None for p in probs)
     assert abs(r["prob_all"] - np.prod(probs)) < 1e-12 and abs(r["sim_all"] - r["prob_all"]) < 0.01
     assert abs(sum(r["hits_dist"].values()) - 1) < 1e-9 and r["need"] == 1 / 5.0
+    monkeypatch.setattr(sp.cm, "game_view", lambda *a, **k: None)      # a league with no model
     cfb = sp.price_ticket(sp.parse(SLIP)[0], slate, n_sims=10_000)
     assert "prob_all" not in cfb and len(cfb["unpriced"]) == 2
