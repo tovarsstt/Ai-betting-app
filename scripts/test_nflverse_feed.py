@@ -111,3 +111,10 @@ def test_week_slate_is_json_safe_with_missing_fields(feed):
     sl = nf.week_slate(2026, 3)
     json.dumps(sl["games"], allow_nan=False)                 # raises on NaN
     assert sl["games"][0]["context"]["roof"] is None
+
+
+def test_override_skips_depth_chart_backups(feed):
+    ov = {"AAA": [{"player": "AAA CB3", "position": "CB", "status": "Out", "source": "x"}],
+          "BBB": [{"player": "BBB CB1", "position": "CB", "status": "Out", "source": "x"}]}
+    cond, _ = nf.injury_conditions(2026, 3, overrides=ov)
+    assert "AAA CB3" not in {c["player"] for c in cond.get("AAA", [])}   # backup (rank 3)

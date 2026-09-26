@@ -12,10 +12,10 @@
       "push_prob": 0.0,
       "lenses": {
         "market": 0.8164,
-        "ratings": 0.6934,
+        "ratings": 0.6619,
         "sim": 0.8155
       },
-      "worst_lens": 0.6934,
+      "worst_lens": 0.6619,
       "lenses_agree": true,
       "grade": "LOCK",
       "fair_decimal": 1.22,
@@ -54,7 +54,7 @@
       "push_prob": 0.0,
       "lenses": {
         "market": 0.7614,
-        "ratings": 0.9404,
+        "ratings": 0.9512,
         "sim": 0.7612
       },
       "worst_lens": 0.7612,
@@ -75,10 +75,10 @@
       "push_prob": 0.0,
       "lenses": {
         "market": 0.7347,
-        "ratings": 0.7115,
+        "ratings": 0.7564,
         "sim": 0.734
       },
-      "worst_lens": 0.7115,
+      "worst_lens": 0.734,
       "lenses_agree": true,
       "grade": "LOCK",
       "fair_decimal": 1.36,
@@ -96,7 +96,7 @@
       "push_prob": 0.0,
       "lenses": {
         "market": 0.7183,
-        "ratings": 0.7417,
+        "ratings": 0.7678,
         "sim": 0.7176
       },
       "worst_lens": 0.7176,
@@ -217,20 +217,20 @@
       "kind": "ml",
       "side": "away",
       "line": 0.0,
-      "decimal": 1.6756756756756757,
-      "win_prob": 0.5618,
+      "decimal": 1.704225352112676,
+      "win_prob": 0.5543,
       "push_prob": 0.0,
       "lenses": {
-        "market": 0.5618,
+        "market": 0.5543,
         "ratings": 0.5855,
-        "sim": 0.5611
+        "sim": 0.5535
       },
-      "worst_lens": 0.5611,
+      "worst_lens": 0.5535,
       "lenses_agree": true,
       "grade": "LEAN",
-      "fair_decimal": 1.78,
-      "ev_pct": -5.9,
-      "price_note": "OVERPRICED \u2014 fair 1.78, book pays 1.68",
+      "fair_decimal": 1.8,
+      "ev_pct": -5.5,
+      "price_note": "OVERPRICED \u2014 fair 1.80, book pays 1.70",
       "game": "Carolina Panthers @ Cleveland Browns"
     },
     {
@@ -418,7 +418,7 @@
       "expected_home_margin": {
         "blended": 8.03,
         "market": 8.03,
-        "ratings": 7.15
+        "ratings": 8.9
       },
       "weights": {
         "market": 0.65,
@@ -428,7 +428,15 @@
       },
       "sigma": 12.75,
       "n_sims": 2000000,
-      "ratings_detail": {},
+      "ratings_detail": {
+        "conditions_applied": [
+          "Buffalo Bills: DL T.J. Sanders OUT \u2014 illness (-0.5 home margin) [https://www.buffalobills.com/news/buffalo-bills-injury-report-vs-chargers-week-3]",
+          "Los Angeles Chargers: S Elijah Molden OUT \u2014 hamstring (+0.5 home margin) [https://sports.yahoo.com/articles/chargers-week-3-injury-report-194341681.html]",
+          "Los Angeles Chargers: DL Dalvin Tomlinson OUT \u2014 hamstring (+0.5 home margin) [https://sports.yahoo.com/articles/chargers-week-3-injury-report-194341681.html]",
+          "Los Angeles Chargers: OL Trey Pipkins OUT \u2014 knee (+0.75 home margin) [https://sports.yahoo.com/articles/chargers-week-3-injury-report-194341681.html]",
+          "Los Angeles Chargers: TE Charlie Kolar OUT \u2014 forearm (+0.5 home margin) [https://sports.yahoo.com/articles/chargers-week-3-injury-report-194341681.html]"
+        ]
+      },
       "total_projection": {
         "blended": 50.1,
         "market": 50.1,
@@ -485,15 +493,9 @@
         "div_game": false,
         "injury_watch": {
           "home": [
-            "WR DJ Moore: DNP, no game status yet",
-            "DE T.J. Sanders: DNP, no game status yet"
+            "WR DJ Moore: DNP, no game status yet"
           ],
-          "away": [
-            "DT Dalvin Tomlinson: DNP, no game status yet",
-            "T Trey Pipkins: DNP, no game status yet",
-            "S Elijah Molden: DNP, no game status yet",
-            "TE Charlie Kolar: DNP, no game status yet"
-          ]
+          "away": []
         }
       },
       "kickoff": "2026-09-27 13:00 ET",
@@ -507,10 +509,10 @@
         "push_prob": 0.0,
         "lenses": {
           "market": 0.7347,
-          "ratings": 0.7115,
+          "ratings": 0.7564,
           "sim": 0.734
         },
-        "worst_lens": 0.7115,
+        "worst_lens": 0.734,
         "lenses_agree": true,
         "grade": "LOCK",
         "fair_decimal": 1.36,
@@ -528,10 +530,10 @@
           "push_prob": 0.0,
           "lenses": {
             "market": 0.7347,
-            "ratings": 0.7115,
+            "ratings": 0.7564,
             "sim": 0.734
           },
-          "worst_lens": 0.7115,
+          "worst_lens": 0.734,
           "lenses_agree": true,
           "grade": "LOCK",
           "fair_decimal": 1.36,
@@ -568,10 +570,10 @@
           "push_prob": 0.0553,
           "lenses": {
             "market": 0.4901,
-            "ratings": 0.4627,
+            "ratings": 0.5168,
             "sim": 0.4905
           },
-          "worst_lens": 0.4627,
+          "worst_lens": 0.4901,
           "lenses_agree": false,
           "grade": "COINFLIP",
           "fair_decimal": 2.04,
@@ -608,10 +610,10 @@
           "push_prob": 0.0553,
           "lenses": {
             "market": 0.4546,
-            "ratings": 0.4818,
+            "ratings": 0.4282,
             "sim": 0.4543
           },
-          "worst_lens": 0.4543,
+          "worst_lens": 0.4282,
           "lenses_agree": false,
           "grade": "SPLIT",
           "fair_decimal": 2.2,
@@ -628,10 +630,10 @@
           "push_prob": 0.0,
           "lenses": {
             "market": 0.2653,
-            "ratings": 0.2885,
+            "ratings": 0.2436,
             "sim": 0.2647
           },
-          "worst_lens": 0.2647,
+          "worst_lens": 0.2436,
           "lenses_agree": false,
           "grade": "SPLIT",
           "fair_decimal": 3.77,
@@ -647,8 +649,8 @@
       "game": "Carolina Panthers @ Cleveland Browns",
       "sport": "NFL",
       "expected_home_margin": {
-        "blended": -2.0,
-        "market": -2.0,
+        "blended": -1.75,
+        "market": -1.75,
         "ratings": -2.77
       },
       "weights": {
@@ -730,20 +732,20 @@
         "kind": "ml",
         "side": "away",
         "line": 0.0,
-        "decimal": 1.6756756756756757,
-        "win_prob": 0.5618,
+        "decimal": 1.704225352112676,
+        "win_prob": 0.5543,
         "push_prob": 0.0,
         "lenses": {
-          "market": 0.5618,
+          "market": 0.5543,
           "ratings": 0.5855,
-          "sim": 0.5611
+          "sim": 0.5535
         },
-        "worst_lens": 0.5611,
+        "worst_lens": 0.5535,
         "lenses_agree": true,
         "grade": "LEAN",
-        "fair_decimal": 1.78,
-        "ev_pct": -5.9,
-        "price_note": "OVERPRICED \u2014 fair 1.78, book pays 1.68"
+        "fair_decimal": 1.8,
+        "ev_pct": -5.5,
+        "price_note": "OVERPRICED \u2014 fair 1.80, book pays 1.70"
       },
       "markets": [
         {
@@ -751,40 +753,40 @@
           "kind": "ml",
           "side": "away",
           "line": 0.0,
-          "decimal": 1.6756756756756757,
-          "win_prob": 0.5618,
+          "decimal": 1.704225352112676,
+          "win_prob": 0.5543,
           "push_prob": 0.0,
           "lenses": {
-            "market": 0.5618,
+            "market": 0.5543,
             "ratings": 0.5855,
-            "sim": 0.5611
+            "sim": 0.5535
           },
-          "worst_lens": 0.5611,
+          "worst_lens": 0.5535,
           "lenses_agree": true,
           "grade": "LEAN",
-          "fair_decimal": 1.78,
-          "ev_pct": -5.9,
-          "price_note": "OVERPRICED \u2014 fair 1.78, book pays 1.68"
+          "fair_decimal": 1.8,
+          "ev_pct": -5.5,
+          "price_note": "OVERPRICED \u2014 fair 1.80, book pays 1.70"
         },
         {
           "label": "Carolina Panthers -2.5",
           "kind": "spread",
           "side": "away",
           "line": -2.5,
-          "decimal": 1.8695652173913042,
-          "win_prob": 0.5212,
+          "decimal": 1.8928571428571428,
+          "win_prob": 0.5136,
           "push_prob": 0.0,
           "lenses": {
-            "market": 0.5212,
+            "market": 0.5136,
             "ratings": 0.545,
-            "sim": 0.5211
+            "sim": 0.5136
           },
-          "worst_lens": 0.5211,
+          "worst_lens": 0.5136,
           "lenses_agree": true,
           "grade": "LEAN",
-          "fair_decimal": 1.92,
-          "ev_pct": -2.6,
-          "price_note": "OVERPRICED \u2014 fair 1.92, book pays 1.87"
+          "fair_decimal": 1.95,
+          "ev_pct": -2.8,
+          "price_note": "OVERPRICED \u2014 fair 1.95, book pays 1.89"
         },
         {
           "label": "Over 42.5",
@@ -831,40 +833,40 @@
           "kind": "spread",
           "side": "home",
           "line": 2.5,
-          "decimal": 1.9523809523809523,
-          "win_prob": 0.4788,
+          "decimal": 1.925925925925926,
+          "win_prob": 0.4864,
           "push_prob": 0.0,
           "lenses": {
-            "market": 0.4788,
+            "market": 0.4864,
             "ratings": 0.455,
-            "sim": 0.4789
+            "sim": 0.4864
           },
           "worst_lens": 0.455,
           "lenses_agree": false,
-          "grade": "SPLIT",
-          "fair_decimal": 2.09,
-          "ev_pct": -6.5,
-          "price_note": "OVERPRICED \u2014 fair 2.09, book pays 1.95"
+          "grade": "COINFLIP",
+          "fair_decimal": 2.06,
+          "ev_pct": -6.3,
+          "price_note": "OVERPRICED \u2014 fair 2.06, book pays 1.93"
         },
         {
           "label": "Cleveland Browns ML",
           "kind": "ml",
           "side": "home",
           "line": 0.0,
-          "decimal": 2.24,
-          "win_prob": 0.4382,
+          "decimal": 2.2,
+          "win_prob": 0.4457,
           "push_prob": 0.0,
           "lenses": {
-            "market": 0.4382,
+            "market": 0.4457,
             "ratings": 0.4145,
-            "sim": 0.4374
+            "sim": 0.445
           },
           "worst_lens": 0.4145,
           "lenses_agree": false,
           "grade": "SPLIT",
-          "fair_decimal": 2.28,
-          "ev_pct": -1.8,
-          "price_note": "OVERPRICED \u2014 fair 2.28, book pays 2.24"
+          "fair_decimal": 2.24,
+          "ev_pct": -1.9,
+          "price_note": "OVERPRICED \u2014 fair 2.24, book pays 2.20"
         }
       ],
       "flags": [
@@ -877,7 +879,7 @@
       "expected_home_margin": {
         "blended": 7.41,
         "market": 7.41,
-        "ratings": 8.31
+        "ratings": 9.37
       },
       "weights": {
         "market": 0.65,
@@ -887,7 +889,14 @@
       },
       "sigma": 12.75,
       "n_sims": 2000000,
-      "ratings_detail": {},
+      "ratings_detail": {
+        "conditions_applied": [
+          "Detroit Lions: S Thomas Harper OUT \u2014 ruled out (-0.5 home margin) [https://www.thegreymanes.com/post/week-3-jets-lions-final-injury-report]",
+          "New York Jets: S Minkah Fitzpatrick OUT \u2014 ruled out (+0.5 home margin) [https://www.si.com/nfl/jets/onsi/jets-rule-out-3-key-players-sunday-game-lions-hurt-why-matters-01m3ckkrqnqd]",
+          "New York Jets: LB Francisco Mauigoa OUT \u2014 ruled out (+0.5 home margin) [https://www.si.com/nfl/jets/onsi/jets-rule-out-3-key-players-sunday-game-lions-hurt-why-matters-01m3ckkrqnqd]",
+          "New York Jets: RB Kene Nwangwu DOUBTFUL \u2014 doubtful (+0.5625 home margin) [https://www.si.com/nfl/jets/onsi/jets-rule-out-3-key-players-sunday-game-lions-hurt-why-matters-01m3ckkrqnqd]"
+        ]
+      },
       "total_projection": {
         "blended": 48.4,
         "market": 48.4,
@@ -943,14 +952,8 @@
         "roof": "dome",
         "div_game": false,
         "injury_watch": {
-          "home": [
-            "S Thomas Harper: DNP, no game status yet"
-          ],
-          "away": [
-            "S Minkah Fitzpatrick: DNP, no game status yet",
-            "RB Kene Nwangwu: DNP, no game status yet",
-            "LB Francisco Mauigoa: DNP, no game status yet"
-          ]
+          "home": [],
+          "away": []
         }
       },
       "kickoff": "2026-09-27 13:00 ET",
@@ -964,7 +967,7 @@
         "push_prob": 0.0,
         "lenses": {
           "market": 0.7183,
-          "ratings": 0.7417,
+          "ratings": 0.7678,
           "sim": 0.7176
         },
         "worst_lens": 0.7176,
@@ -985,7 +988,7 @@
           "push_prob": 0.0,
           "lenses": {
             "market": 0.7183,
-            "ratings": 0.7417,
+            "ratings": 0.7678,
             "sim": 0.7176
           },
           "worst_lens": 0.7176,
@@ -1005,7 +1008,7 @@
           "push_prob": 0.0,
           "lenses": {
             "market": 0.5261,
-            "ratings": 0.5538,
+            "ratings": 0.5861,
             "sim": 0.5257
           },
           "worst_lens": 0.5257,
@@ -1065,10 +1068,10 @@
           "push_prob": 0.0,
           "lenses": {
             "market": 0.4739,
-            "ratings": 0.4462,
+            "ratings": 0.4139,
             "sim": 0.4743
           },
-          "worst_lens": 0.4462,
+          "worst_lens": 0.4139,
           "lenses_agree": false,
           "grade": "SPLIT",
           "fair_decimal": 2.11,
@@ -1085,10 +1088,10 @@
           "push_prob": 0.0,
           "lenses": {
             "market": 0.2817,
-            "ratings": 0.2583,
+            "ratings": 0.2322,
             "sim": 0.2811
           },
-          "worst_lens": 0.2583,
+          "worst_lens": 0.2322,
           "lenses_agree": false,
           "grade": "SPLIT",
           "fair_decimal": 3.55,
@@ -1562,7 +1565,7 @@
       "expected_home_margin": {
         "blended": -11.54,
         "market": -11.54,
-        "ratings": -6.48
+        "ratings": -5.36
       },
       "weights": {
         "market": 0.65,
@@ -1572,7 +1575,12 @@
       },
       "sigma": 12.75,
       "n_sims": 2000000,
-      "ratings_detail": {},
+      "ratings_detail": {
+        "conditions_applied": [
+          "Kansas City Chiefs: OL Josh Simmons OUT \u2014 LT, back (+0.75 home margin) [https://www.arrowheadpride.com/kansas-city-chiefs-injuries/211359/chiefs-dolphins-week-3-final-injury-report-chamarri-conner-doubtful]",
+          "Kansas City Chiefs: S Chamarri Conner DOUBTFUL \u2014 knee (+0.375 home margin) [https://www.arrowheadpride.com/kansas-city-chiefs-injuries/211359/chiefs-dolphins-week-3-final-injury-report-chamarri-conner-doubtful]"
+        ]
+      },
       "total_projection": {
         "blended": 45.4,
         "market": 45.4,
@@ -1629,9 +1637,7 @@
         "div_game": false,
         "injury_watch": {
           "home": [],
-          "away": [
-            "T Josh Simmons: DNP, no game status yet"
-          ]
+          "away": []
         }
       },
       "kickoff": "2026-09-27 13:00 ET",
@@ -1645,10 +1651,10 @@
         "push_prob": 0.0,
         "lenses": {
           "market": 0.8164,
-          "ratings": 0.6934,
+          "ratings": 0.6619,
           "sim": 0.8155
         },
-        "worst_lens": 0.6934,
+        "worst_lens": 0.6619,
         "lenses_agree": true,
         "grade": "LOCK",
         "fair_decimal": 1.22,
@@ -1666,10 +1672,10 @@
           "push_prob": 0.0,
           "lenses": {
             "market": 0.8164,
-            "ratings": 0.6934,
+            "ratings": 0.6619,
             "sim": 0.8155
           },
-          "worst_lens": 0.6934,
+          "worst_lens": 0.6619,
           "lenses_agree": true,
           "grade": "LOCK",
           "fair_decimal": 1.22,
@@ -1686,10 +1692,10 @@
           "push_prob": 0.0399,
           "lenses": {
             "market": 0.5068,
-            "ratings": 0.352,
+            "ratings": 0.3199,
             "sim": 0.5071
           },
-          "worst_lens": 0.352,
+          "worst_lens": 0.3199,
           "lenses_agree": true,
           "grade": "LEAN",
           "fair_decimal": 1.97,
@@ -1746,7 +1752,7 @@
           "push_prob": 0.0399,
           "lenses": {
             "market": 0.4532,
-            "ratings": 0.6095,
+            "ratings": 0.6427,
             "sim": 0.4534
           },
           "worst_lens": 0.4532,
@@ -1766,7 +1772,7 @@
           "push_prob": 0.0,
           "lenses": {
             "market": 0.1836,
-            "ratings": 0.3066,
+            "ratings": 0.3381,
             "sim": 0.1834
           },
           "worst_lens": 0.1834,
@@ -2242,7 +2248,7 @@
       "expected_home_margin": {
         "blended": -9.1,
         "market": -9.1,
-        "ratings": -19.87
+        "ratings": -21.12
       },
       "weights": {
         "market": 0.65,
@@ -2255,12 +2261,16 @@
       "ratings_detail": {
         "conditions_applied": [
           "Washington Commanders: QB Jayden Daniels OUT \u2014 dislocated left elbow; Marcus Mariota starts. 4.98 = 12-oddsmaker avg Daniels-over-Mariota (-4.98 home margin) [https://www.nfl.com/news/marcus-mariota-commanders-week-3-qb-jayden-daniels-elbow ; https://uk.sports.yahoo.com/news/oddsmakers-rank-all-32-nfl-starting-qbs-by-point-spread-value-how-valuable-is-jayden-daniels-to-the-spread-150837317.html]",
-          "Washington Commanders: S Nick Cross OUT \u2014 ruled out (-0.5 home margin) [https://www.si.com/betting/seahawks-vs-commanders-prediction-odds-spread-injuries-trends-for-nfl-week-3-2026]"
+          "Washington Commanders: S Nick Cross OUT \u2014 ruled out (-0.5 home margin) [https://www.si.com/betting/seahawks-vs-commanders-prediction-odds-spread-injuries-trends-for-nfl-week-3-2026]",
+          "Washington Commanders: LB Frankie Luvu OUT \u2014 groin (-0.5 home margin) [https://www.hogshaven.com/washington-commanders-injuries/443424/commanders-seahawks-injury-report-frankie-luvu-chig-okonkwo-sam-cosmi-jayden-daniels-nick-cross]",
+          "Washington Commanders: TE Chig Okonkwo OUT \u2014 hamstring (-0.5 home margin) [https://www.hogshaven.com/washington-commanders-injuries/443424/commanders-seahawks-injury-report-frankie-luvu-chig-okonkwo-sam-cosmi-jayden-daniels-nick-cross]",
+          "Washington Commanders: OL Sam Cosmi OUT \u2014 concussion (-0.75 home margin) [https://www.hogshaven.com/washington-commanders-injuries/443424/commanders-seahawks-injury-report-frankie-luvu-chig-okonkwo-sam-cosmi-jayden-daniels-nick-cross]",
+          "Seattle Seahawks: S Julian Love OUT \u2014 ruled out (+0.5 home margin) [https://www.fieldgulls.com/seattle-seahawks-injury-report/175696/seahawks-commanders-injury-designations-sam-darnold-returns-julian-love-ruled-out]"
         ]
       },
       "total_projection": {
-        "blended": 40.1,
-        "market": 40.1,
+        "blended": 39.9,
+        "market": 39.9,
         "ratings": 45.6,
         "ratings_weight": 0.0
       },
@@ -2313,13 +2323,8 @@
         "roof": "outdoors",
         "div_game": false,
         "injury_watch": {
-          "home": [
-            "LB Frankie Luvu: DNP, no game status yet",
-            "G Sam Cosmi: DNP, no game status yet",
-            "TE Chig Okonkwo: DNP, no game status yet"
-          ],
+          "home": [],
           "away": [
-            "S Julian Love: DNP, no game status yet",
             "S Ty Okada: DNP, no game status yet"
           ]
         }
@@ -2335,7 +2340,7 @@
         "push_prob": 0.0,
         "lenses": {
           "market": 0.7614,
-          "ratings": 0.9404,
+          "ratings": 0.9512,
           "sim": 0.7612
         },
         "worst_lens": 0.7612,
@@ -2356,7 +2361,7 @@
           "push_prob": 0.0,
           "lenses": {
             "market": 0.7614,
-            "ratings": 0.9404,
+            "ratings": 0.9512,
             "sim": 0.7612
           },
           "worst_lens": 0.7612,
@@ -2376,7 +2381,7 @@
           "push_prob": 0.0,
           "lenses": {
             "market": 0.5232,
-            "ratings": 0.816,
+            "ratings": 0.841,
             "sim": 0.5235
           },
           "worst_lens": 0.5232,
@@ -2387,19 +2392,19 @@
           "price_note": "OVERPRICED \u2014 fair 1.91, book pays 1.85"
         },
         {
-          "label": "Over 39.5",
+          "label": "Under 40.5",
           "kind": "total",
-          "side": "over",
-          "line": 39.5,
+          "side": "under",
+          "line": 40.5,
           "decimal": 1.847457627118644,
           "win_prob": 0.5174,
           "push_prob": 0.0,
           "lenses": {
             "market": 0.5174,
-            "ratings": 0.6793,
-            "sim": 0.5173
+            "ratings": 0.3485,
+            "sim": 0.5176
           },
-          "worst_lens": 0.5173,
+          "worst_lens": 0.3485,
           "lenses_agree": true,
           "grade": "LEAN",
           "fair_decimal": 1.93,
@@ -2407,19 +2412,19 @@
           "price_note": "OVERPRICED \u2014 fair 1.93, book pays 1.85"
         },
         {
-          "label": "Under 39.5",
+          "label": "Over 40.5",
           "kind": "total",
-          "side": "under",
-          "line": 39.5,
+          "side": "over",
+          "line": 40.5,
           "decimal": 1.9803921568627452,
           "win_prob": 0.4826,
           "push_prob": 0.0,
           "lenses": {
             "market": 0.4826,
-            "ratings": 0.3207,
-            "sim": 0.4827
+            "ratings": 0.6515,
+            "sim": 0.4824
           },
-          "worst_lens": 0.3207,
+          "worst_lens": 0.4824,
           "lenses_agree": false,
           "grade": "COINFLIP",
           "fair_decimal": 2.07,
@@ -2436,10 +2441,10 @@
           "push_prob": 0.0,
           "lenses": {
             "market": 0.4768,
-            "ratings": 0.184,
+            "ratings": 0.159,
             "sim": 0.4765
           },
-          "worst_lens": 0.184,
+          "worst_lens": 0.159,
           "lenses_agree": false,
           "grade": "SPLIT",
           "fair_decimal": 2.1,
@@ -2456,10 +2461,10 @@
           "push_prob": 0.0,
           "lenses": {
             "market": 0.2386,
-            "ratings": 0.0596,
+            "ratings": 0.0488,
             "sim": 0.2376
           },
-          "worst_lens": 0.0596,
+          "worst_lens": 0.0488,
           "lenses_agree": false,
           "grade": "SPLIT",
           "fair_decimal": 4.19,

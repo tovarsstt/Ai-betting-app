@@ -2,15 +2,192 @@
   "note": "Confirmed news not yet in the nflverse injury report. Every entry needs a source. Remove once the official report carries it.",
   "teams": {
     "WAS": [
-      {"player": "Jayden Daniels", "position": "QB", "status": "Out", "pts": 4.98,
-       "note": "dislocated left elbow; Marcus Mariota starts. 4.98 = 12-oddsmaker avg Daniels-over-Mariota",
-       "source": "https://www.nfl.com/news/marcus-mariota-commanders-week-3-qb-jayden-daniels-elbow ; https://uk.sports.yahoo.com/news/oddsmakers-rank-all-32-nfl-starting-qbs-by-point-spread-value-how-valuable-is-jayden-daniels-to-the-spread-150837317.html"},
-      {"player": "Nick Cross", "position": "S", "status": "Out", "note": "ruled out",
-       "source": "https://www.si.com/betting/seahawks-vs-commanders-prediction-odds-spread-injuries-trends-for-nfl-week-3-2026"}
+      {
+        "player": "Jayden Daniels",
+        "position": "QB",
+        "status": "Out",
+        "pts": 4.98,
+        "note": "dislocated left elbow; Marcus Mariota starts. 4.98 = 12-oddsmaker avg Daniels-over-Mariota",
+        "source": "https://www.nfl.com/news/marcus-mariota-commanders-week-3-qb-jayden-daniels-elbow ; https://uk.sports.yahoo.com/news/oddsmakers-rank-all-32-nfl-starting-qbs-by-point-spread-value-how-valuable-is-jayden-daniels-to-the-spread-150837317.html"
+      },
+      {
+        "player": "Nick Cross",
+        "position": "S",
+        "status": "Out",
+        "note": "ruled out",
+        "source": "https://www.si.com/betting/seahawks-vs-commanders-prediction-odds-spread-injuries-trends-for-nfl-week-3-2026"
+      },
+      {
+        "player": "Frankie Luvu",
+        "position": "LB",
+        "status": "Out",
+        "note": "groin",
+        "source": "https://www.hogshaven.com/washington-commanders-injuries/443424/commanders-seahawks-injury-report-frankie-luvu-chig-okonkwo-sam-cosmi-jayden-daniels-nick-cross"
+      },
+      {
+        "player": "Chig Okonkwo",
+        "position": "TE",
+        "status": "Out",
+        "note": "hamstring",
+        "source": "https://www.hogshaven.com/washington-commanders-injuries/443424/commanders-seahawks-injury-report-frankie-luvu-chig-okonkwo-sam-cosmi-jayden-daniels-nick-cross"
+      },
+      {
+        "player": "Sam Cosmi",
+        "position": "OL",
+        "status": "Out",
+        "note": "concussion",
+        "source": "https://www.hogshaven.com/washington-commanders-injuries/443424/commanders-seahawks-injury-report-frankie-luvu-chig-okonkwo-sam-cosmi-jayden-daniels-nick-cross"
+      }
     ],
     "PIT": [
-      {"player": "Joey Porter Jr.", "position": "CB", "status": "Out", "note": "ruled out",
-       "source": "https://www.si.com/betting/bengals-vs-steelers-prediction-odds-spread-injuries-trends-for-nfl-week-3-01m32wwcjkpw"}
+      {
+        "player": "Joey Porter Jr.",
+        "position": "CB",
+        "status": "Out",
+        "note": "ruled out",
+        "source": "https://www.si.com/betting/bengals-vs-steelers-prediction-odds-spread-injuries-trends-for-nfl-week-3-01m32wwcjkpw"
+      }
+    ],
+    "SEA": [
+      {
+        "player": "Julian Love",
+        "position": "S",
+        "status": "Out",
+        "note": "ruled out",
+        "source": "https://www.fieldgulls.com/seattle-seahawks-injury-report/175696/seahawks-commanders-injury-designations-sam-darnold-returns-julian-love-ruled-out"
+      }
+    ],
+    "KC": [
+      {
+        "player": "Josh Simmons",
+        "position": "OL",
+        "status": "Out",
+        "note": "LT, back",
+        "source": "https://www.arrowheadpride.com/kansas-city-chiefs-injuries/211359/chiefs-dolphins-week-3-final-injury-report-chamarri-conner-doubtful"
+      },
+      {
+        "player": "Chamarri Conner",
+        "position": "S",
+        "status": "Doubtful",
+        "note": "knee",
+        "source": "https://www.arrowheadpride.com/kansas-city-chiefs-injuries/211359/chiefs-dolphins-week-3-final-injury-report-chamarri-conner-doubtful"
+      }
+    ],
+    "MIA": [
+      {
+        "player": "Caleb Douglas",
+        "position": "WR",
+        "status": "Out",
+        "note": "ankle",
+        "source": "https://www.si.com/nfl/dolphins/onsi/final-dolphins-chiefs-week-3-injury-report-some-relief-at-wide-receiver-01m3d3gv30xd"
+      },
+      {
+        "player": "Robert Beal Jr.",
+        "position": "EDGE",
+        "status": "Out",
+        "note": "ruled out",
+        "source": "https://www.si.com/nfl/dolphins/onsi/final-dolphins-chiefs-week-3-injury-report-some-relief-at-wide-receiver-01m3d3gv30xd"
+      }
+    ],
+    "BUF": [
+      {
+        "player": "Jordan Hancock",
+        "position": "CB",
+        "status": "Out",
+        "note": "hamstring",
+        "source": "https://www.buffalobills.com/news/buffalo-bills-injury-report-vs-chargers-week-3"
+      },
+      {
+        "player": "T.J. Sanders",
+        "position": "DL",
+        "status": "Out",
+        "note": "illness",
+        "source": "https://www.buffalobills.com/news/buffalo-bills-injury-report-vs-chargers-week-3"
+      }
+    ],
+    "LAC": [
+      {
+        "player": "Elijah Molden",
+        "position": "S",
+        "status": "Out",
+        "note": "hamstring",
+        "source": "https://sports.yahoo.com/articles/chargers-week-3-injury-report-194341681.html"
+      },
+      {
+        "player": "Dalvin Tomlinson",
+        "position": "DL",
+        "status": "Out",
+        "note": "hamstring",
+        "source": "https://sports.yahoo.com/articles/chargers-week-3-injury-report-194341681.html"
+      },
+      {
+        "player": "Trey Pipkins",
+        "position": "OL",
+        "status": "Out",
+        "note": "knee",
+        "source": "https://sports.yahoo.com/articles/chargers-week-3-injury-report-194341681.html"
+      },
+      {
+        "player": "Kayode Awosika",
+        "position": "DL",
+        "status": "Out",
+        "note": "fibula",
+        "source": "https://sports.yahoo.com/articles/chargers-week-3-injury-report-194341681.html"
+      },
+      {
+        "player": "Brenen Thompson",
+        "position": "WR",
+        "status": "Out",
+        "note": "quad",
+        "source": "https://sports.yahoo.com/articles/chargers-week-3-injury-report-194341681.html"
+      },
+      {
+        "player": "Charlie Kolar",
+        "position": "TE",
+        "status": "Out",
+        "note": "forearm",
+        "source": "https://sports.yahoo.com/articles/chargers-week-3-injury-report-194341681.html"
+      }
+    ],
+    "NYJ": [
+      {
+        "player": "Minkah Fitzpatrick",
+        "position": "S",
+        "status": "Out",
+        "note": "ruled out",
+        "source": "https://www.si.com/nfl/jets/onsi/jets-rule-out-3-key-players-sunday-game-lions-hurt-why-matters-01m3ckkrqnqd"
+      },
+      {
+        "player": "Francisco Mauigoa",
+        "position": "LB",
+        "status": "Out",
+        "note": "ruled out",
+        "source": "https://www.si.com/nfl/jets/onsi/jets-rule-out-3-key-players-sunday-game-lions-hurt-why-matters-01m3ckkrqnqd"
+      },
+      {
+        "player": "Mason Taylor",
+        "position": "TE",
+        "status": "Out",
+        "note": "thumb",
+        "source": "https://www.si.com/nfl/jets/onsi/jets-rule-out-3-key-players-sunday-game-lions-hurt-why-matters-01m3ckkrqnqd"
+      },
+      {
+        "player": "Kene Nwangwu",
+        "position": "RB",
+        "status": "Doubtful",
+        "note": "doubtful",
+        "source": "https://www.si.com/nfl/jets/onsi/jets-rule-out-3-key-players-sunday-game-lions-hurt-why-matters-01m3ckkrqnqd"
+      }
+    ],
+    "DET": [
+      {
+        "player": "Thomas Harper",
+        "position": "S",
+        "status": "Out",
+        "note": "ruled out",
+        "source": "https://www.thegreymanes.com/post/week-3-jets-lions-final-injury-report"
+      }
     ]
-  }
+  },
+  "updated": "2026-09-26 Friday final injury reports"
 }

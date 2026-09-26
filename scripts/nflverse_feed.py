@@ -206,10 +206,14 @@ def injury_conditions(season: int, week: int, overrides: Optional[dict] = None) 
         elif (r.gsis_id in starters and pd.isna(r.report_status)
               and str(r.practice_status).startswith("Did Not Participate")):
             watch.setdefault(r.team, []).append(f"{r.position} {r.full_name}: DNP, no game status yet")
+    rank = d.groupby(["team", "player_name"]).pos_rank.min().to_dict()
     for team, items in (overrides or {}).items():
         for o in items:
             if o["player"] in {c["player"] for c in cond.get(team, [])}:
                 continue                                           # already in the report
+            r = rank.get((team, o["player"]))
+            if o.get("pts") is None and r is not None and r > 1:
+                continue                                           # backup: not priced
             cond.setdefault(team, []).append({
                 "player": o["player"], "position": o["position"], "status": o["status"],
                 "weight": STATUS_WEIGHT.get(o["status"], 1.0),

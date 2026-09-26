@@ -1,23 +1,23 @@
 # Judge — NFL 2026 Week 3 — nflverse feed
 
-Rule: **win probability first, price second.** 2,000,000 Monte Carlo games per matchup + 2,000,000 Bernoulli slips per parlay. NFL σ=12.75 (fitted to 1,759 real games 2019-2025). Ran in 18.2s.
-Lines: depth_charts_2026.csv 2026-09-26 01:03 UTC, games.csv 2026-09-26 01:02 UTC, injuries_2026.csv 2026-09-26 01:02 UTC, play_by_play_2025.csv.gz 2026-09-26 01:03 UTC, roster_2026.csv 2026-09-26 01:04 UTC, roster_weekly_2026.csv 2026-09-26 01:04 UTC — nflverse games.csv (consensus lines, updated daily)
+Rule: **win probability first, price second.** 2,000,000 Monte Carlo games per matchup + 2,000,000 Bernoulli slips per parlay. NFL σ=12.75 (fitted to 1,759 real games 2019-2025). Ran in 18.7s.
+Lines: depth_charts_2026.csv 2026-09-26 01:17 UTC, games.csv 2026-09-26 01:17 UTC, injuries_2026.csv 2026-09-26 01:17 UTC, play_by_play_2025.csv.gz 2026-09-26 01:03 UTC, roster_2026.csv 2026-09-26 01:04 UTC, roster_weekly_2026.csv 2026-09-26 01:17 UTC — nflverse games.csv (consensus lines, updated daily)
 
 ## Best winning pick per game (ranked by win %)
 
 | # | Game | Pick | Win % | 2M-sim % | Market | Ratings | Grade | Price | Fair | EV (2nd) |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Kansas City Chiefs @ Miami Dolphins | **Kansas City Chiefs ML** | **81.6%** | 81.5% | 81.6% | 69.3% | LOCK | 1.16 | 1.22 | -5.3% |
+| 1 | Kansas City Chiefs @ Miami Dolphins | **Kansas City Chiefs ML** | **81.6%** | 81.5% | 81.6% | 66.2% | LOCK | 1.16 | 1.22 | -5.3% |
 | 2 | Arizona Cardinals @ San Francisco 49ers | **San Francisco 49ers ML** | **77.2%** | 77.1% | 77.2% | 81.0% | LOCK | 1.23 | 1.3 | -5.3% |
-| 3 | Seattle Seahawks @ Washington Commanders | **Seattle Seahawks ML** | **76.1%** | 76.1% | 76.1% | 94.0% | LOCK | 1.25 | 1.31 | -4.6% |
-| 4 | Los Angeles Chargers @ Buffalo Bills | **Buffalo Bills ML** | **73.5%** | 73.4% | 73.5% | 71.2% | LOCK | 1.29 | 1.36 | -4.9% |
-| 5 | New York Jets @ Detroit Lions | **Detroit Lions ML** | **71.8%** | 71.8% | 71.8% | 74.2% | LOCK | 1.33 | 1.39 | -4.6% |
+| 3 | Seattle Seahawks @ Washington Commanders | **Seattle Seahawks ML** | **76.1%** | 76.1% | 76.1% | 95.1% | LOCK | 1.25 | 1.31 | -4.6% |
+| 4 | Los Angeles Chargers @ Buffalo Bills | **Buffalo Bills ML** | **73.5%** | 73.4% | 73.5% | 75.6% | LOCK | 1.29 | 1.36 | -4.9% |
+| 5 | New York Jets @ Detroit Lions | **Detroit Lions ML** | **71.8%** | 71.8% | 71.8% | 76.8% | LOCK | 1.33 | 1.39 | -4.6% |
 | 6 | Philadelphia Eagles @ Chicago Bears | **Philadelphia Eagles ML** | **67.3%** | 67.2% | 67.3% | 41.4% | PICK | 1.42 | 1.49 | -4.5% |
 | 7 | Cincinnati Bengals @ Pittsburgh Steelers | **Cincinnati Bengals ML** | **61.9%** | 61.8% | 61.9% | 47.9% | LEAN | 1.54 | 1.62 | -4.6% |
 | 8 | Las Vegas Raiders @ New Orleans Saints | **New Orleans Saints ML** | **61.3%** | 61.3% | 61.3% | 57.0% | LEAN | 1.54 | 1.63 | -5.5% |
 | 9 | Baltimore Ravens @ Dallas Cowboys | **Baltimore Ravens ML** | **60.9%** | 60.8% | 60.9% | 67.2% | LEAN | 1.57 | 1.64 | -4.3% |
 | 10 | New England Patriots @ Jacksonville Jaguars | **Jacksonville Jaguars ML** | **57.4%** | 57.2% | 57.4% | 55.6% | LEAN | 1.65 | 1.74 | -5.6% |
-| 11 | Carolina Panthers @ Cleveland Browns | **Carolina Panthers ML** | **56.2%** | 56.1% | 56.2% | 58.6% | LEAN | 1.68 | 1.78 | -5.9% |
+| 11 | Carolina Panthers @ Cleveland Browns | **Carolina Panthers ML** | **55.4%** | 55.4% | 55.4% | 58.6% | LEAN | 1.70 | 1.8 | -5.5% |
 | 12 | Tennessee Titans @ New York Giants | **New York Giants ML** | **54.6%** | 54.5% | 54.6% | 65.0% | LEAN | 1.74 | 1.83 | -4.9% |
 | 13 | Los Angeles Rams @ Denver Broncos | **Los Angeles Rams ML** | **53.6%** | 53.5% | 53.6% | 63.8% | LEAN | 1.77 | 1.86 | -5.1% |
 | 14 | Houston Texans @ Indianapolis Colts | **Houston Texans ML** | **53.6%** | 53.6% | 53.6% | 52.7% | LEAN | 1.80 | 1.87 | -3.5% |
@@ -39,30 +39,30 @@ Lines: depth_charts_2026.csv 2026-09-26 01:03 UTC, games.csv 2026-09-26 01:02 UT
 ## Per game — every market, every lens
 
 ### Los Angeles Chargers @ Buffalo Bills
-Expected home margin — blended +8.0 | market +8.0 | ratings +7.2 · weights {'market': 0.65, 'ratings': 0.0, 'engine': 0.0, 'agents': 0.0}
+Expected home margin — blended +8.0 | market +8.0 | ratings +8.9 · weights {'market': 0.65, 'ratings': 0.0, 'engine': 0.0, 'agents': 0.0}
 - 🔢 Total: market 50.1 · offense×defense ratings 49.7 → blended 50.1 (ratings weight 0%)
 - 🏈 QBs: Justin Herbert @ Josh Allen · rest 7d / 10d · outdoors
 - 📊 away: net -1.6 pts vs avg (off -2.3 / def +0.8, 2 games in 2026) · EPA/play off -0.084 def -0.049 · pass rate 62% · 58.3 plays/g
 - 📊 home: net +4.0 pts vs avg (off +5.6 / def -1.6, 2 games in 2026) · EPA/play off +0.183 def +0.030 · pass rate 57% · 60.1 plays/g
-- 👀 away: DT Dalvin Tomlinson: DNP, no game status yet
-- 👀 away: T Trey Pipkins: DNP, no game status yet
-- 👀 away: S Elijah Molden: DNP, no game status yet
-- 👀 away: TE Charlie Kolar: DNP, no game status yet
 - 👀 home: WR DJ Moore: DNP, no game status yet
-- 👀 home: DE T.J. Sanders: DNP, no game status yet
+- 🏥 Buffalo Bills: DL T.J. Sanders OUT — illness (-0.5 home margin) [https://www.buffalobills.com/news/buffalo-bills-injury-report-vs-chargers-week-3]
+- 🏥 Los Angeles Chargers: S Elijah Molden OUT — hamstring (+0.5 home margin) [https://sports.yahoo.com/articles/chargers-week-3-injury-report-194341681.html]
+- 🏥 Los Angeles Chargers: DL Dalvin Tomlinson OUT — hamstring (+0.5 home margin) [https://sports.yahoo.com/articles/chargers-week-3-injury-report-194341681.html]
+- 🏥 Los Angeles Chargers: OL Trey Pipkins OUT — knee (+0.75 home margin) [https://sports.yahoo.com/articles/chargers-week-3-injury-report-194341681.html]
+- 🏥 Los Angeles Chargers: TE Charlie Kolar OUT — forearm (+0.5 home margin) [https://sports.yahoo.com/articles/chargers-week-3-injury-report-194341681.html]
 - ⚠️ RATINGS_DISPLAY_ONLY: NFL backtest shows the market beats team ratings (best blend weight 0) — ratings shown for context, no vote
 
 | Market | Win % | Sim % | Lenses | Grade | Price | EV |
 |---|---|---|---|---|---|---|
-| Buffalo Bills ML | 73.5% | 73.4% | market 73 · ratings 71 · sim 73 | LOCK | 1.29 | -4.9% |
+| Buffalo Bills ML | 73.5% | 73.4% | market 73 · ratings 76 · sim 73 | LOCK | 1.29 | -4.9% |
 | Over 49.5 | 51.7% | 51.8% | market 52 · ratings 51 · sim 52 | LEAN | 1.85 | -4.4% |
-| Buffalo Bills -7 | 49.0% | 49.0% | market 49 · ratings 46 · sim 49 | COINFLIP | 1.87 | -8.4% |
+| Buffalo Bills -7 | 49.0% | 49.0% | market 49 · ratings 52 · sim 49 | COINFLIP | 1.87 | -8.4% |
 | Under 49.5 | 48.3% | 48.2% | market 48 · ratings 49 · sim 48 | COINFLIP | 1.98 | -4.4% |
-| Los Angeles Chargers +7 | 45.5% | 45.4% | market 45 · ratings 48 · sim 45 | SPLIT | 1.95 | -11.2% |
-| Los Angeles Chargers ML | 26.5% | 26.5% | market 27 · ratings 29 · sim 26 | SPLIT | 3.70 | -1.8% |
+| Los Angeles Chargers +7 | 45.5% | 45.4% | market 45 · ratings 43 · sim 45 | SPLIT | 1.95 | -11.2% |
+| Los Angeles Chargers ML | 26.5% | 26.5% | market 27 · ratings 24 · sim 26 | SPLIT | 3.70 | -1.8% |
 
 ### Carolina Panthers @ Cleveland Browns
-Expected home margin — blended -2.0 | market -2.0 | ratings -2.8 · weights {'market': 0.65, 'ratings': 0.0, 'engine': 0.0, 'agents': 0.0}
+Expected home margin — blended -1.8 | market -1.8 | ratings -2.8 · weights {'market': 0.65, 'ratings': 0.0, 'engine': 0.0, 'agents': 0.0}
 - 🔢 Total: market 42.5 · offense×defense ratings 42.0 → blended 42.5 (ratings weight 0%)
 - 🏈 QBs: Bryce Young @ Deshaun Watson · rest 7d / 7d · outdoors
 - 📊 away: net -1.4 pts vs avg (off -0.3 / def -1.2, 2 games in 2026) · EPA/play off +0.009 def +0.046 · pass rate 62% · 60.1 plays/g
@@ -74,33 +74,33 @@ Expected home margin — blended -2.0 | market -2.0 | ratings -2.8 · weights {'
 
 | Market | Win % | Sim % | Lenses | Grade | Price | EV |
 |---|---|---|---|---|---|---|
-| Carolina Panthers ML | 56.2% | 56.1% | market 56 · ratings 59 · sim 56 | LEAN | 1.68 | -5.9% |
-| Carolina Panthers -2.5 | 52.1% | 52.1% | market 52 · ratings 55 · sim 52 | LEAN | 1.87 | -2.6% |
+| Carolina Panthers ML | 55.4% | 55.4% | market 55 · ratings 59 · sim 55 | LEAN | 1.70 | -5.5% |
+| Carolina Panthers -2.5 | 51.4% | 51.4% | market 51 · ratings 55 · sim 51 | LEAN | 1.89 | -2.8% |
 | Over 42.5 | 50.0% | 50.0% | market 50 · ratings 48 · sim 50 | COINFLIP | 1.91 | -4.5% |
 | Under 42.5 | 50.0% | 50.0% | market 50 · ratings 52 · sim 50 | COINFLIP | 1.91 | -4.5% |
-| Cleveland Browns +2.5 | 47.9% | 47.9% | market 48 · ratings 46 · sim 48 | SPLIT | 1.95 | -6.5% |
-| Cleveland Browns ML | 43.8% | 43.7% | market 44 · ratings 41 · sim 44 | SPLIT | 2.24 | -1.8% |
+| Cleveland Browns +2.5 | 48.6% | 48.6% | market 49 · ratings 46 · sim 49 | COINFLIP | 1.93 | -6.3% |
+| Cleveland Browns ML | 44.6% | 44.5% | market 45 · ratings 41 · sim 44 | SPLIT | 2.20 | -1.9% |
 
 ### New York Jets @ Detroit Lions
-Expected home margin — blended +7.4 | market +7.4 | ratings +8.3 · weights {'market': 0.65, 'ratings': 0.0, 'engine': 0.0, 'agents': 0.0}
+Expected home margin — blended +7.4 | market +7.4 | ratings +9.4 · weights {'market': 0.65, 'ratings': 0.0, 'engine': 0.0, 'agents': 0.0}
 - 🔢 Total: market 48.4 · offense×defense ratings 49.6 → blended 48.4 (ratings weight 0%)
 - 🏈 QBs: Geno Smith @ Jared Goff · rest 7d / 10d · dome
 - 📊 away: net -4.9 pts vs avg (off -3.7 / def -1.2, 2 games in 2026, NEW QB since 2025 (prior halved)) · EPA/play off -0.087 def +0.080 · pass rate 60% · 63.9 plays/g
 - 📊 home: net +1.9 pts vs avg (off +4.2 / def -2.3, 2 games in 2026) · EPA/play off +0.089 def +0.043 · pass rate 60% · 66.0 plays/g
-- 👀 away: S Minkah Fitzpatrick: DNP, no game status yet
-- 👀 away: RB Kene Nwangwu: DNP, no game status yet
-- 👀 away: LB Francisco Mauigoa: DNP, no game status yet
-- 👀 home: S Thomas Harper: DNP, no game status yet
+- 🏥 Detroit Lions: S Thomas Harper OUT — ruled out (-0.5 home margin) [https://www.thegreymanes.com/post/week-3-jets-lions-final-injury-report]
+- 🏥 New York Jets: S Minkah Fitzpatrick OUT — ruled out (+0.5 home margin) [https://www.si.com/nfl/jets/onsi/jets-rule-out-3-key-players-sunday-game-lions-hurt-why-matters-01m3ckkrqnqd]
+- 🏥 New York Jets: LB Francisco Mauigoa OUT — ruled out (+0.5 home margin) [https://www.si.com/nfl/jets/onsi/jets-rule-out-3-key-players-sunday-game-lions-hurt-why-matters-01m3ckkrqnqd]
+- 🏥 New York Jets: RB Kene Nwangwu DOUBTFUL — doubtful (+0.5625 home margin) [https://www.si.com/nfl/jets/onsi/jets-rule-out-3-key-players-sunday-game-lions-hurt-why-matters-01m3ckkrqnqd]
 - ⚠️ RATINGS_DISPLAY_ONLY: NFL backtest shows the market beats team ratings (best blend weight 0) — ratings shown for context, no vote
 
 | Market | Win % | Sim % | Lenses | Grade | Price | EV |
 |---|---|---|---|---|---|---|
-| Detroit Lions ML | 71.8% | 71.8% | market 72 · ratings 74 · sim 72 | LOCK | 1.33 | -4.6% |
-| Detroit Lions -6.5 | 52.6% | 52.6% | market 53 · ratings 55 · sim 53 | LEAN | 1.83 | -3.5% |
+| Detroit Lions ML | 71.8% | 71.8% | market 72 · ratings 77 · sim 72 | LOCK | 1.33 | -4.6% |
+| Detroit Lions -6.5 | 52.6% | 52.6% | market 53 · ratings 59 · sim 53 | LEAN | 1.83 | -3.5% |
 | Under 48.5 | 50.4% | 50.6% | market 50 · ratings 47 · sim 51 | LEAN | 1.89 | -4.5% |
 | Over 48.5 | 49.6% | 49.4% | market 50 · ratings 53 · sim 49 | COINFLIP | 1.93 | -4.5% |
-| New York Jets +6.5 | 47.4% | 47.4% | market 47 · ratings 45 · sim 47 | SPLIT | 2.00 | -5.2% |
-| New York Jets ML | 28.2% | 28.1% | market 28 · ratings 26 · sim 28 | SPLIT | 3.45 | -2.8% |
+| New York Jets +6.5 | 47.4% | 47.4% | market 47 · ratings 41 · sim 47 | SPLIT | 2.00 | -5.2% |
+| New York Jets ML | 28.2% | 28.1% | market 28 · ratings 23 · sim 28 | SPLIT | 3.45 | -2.8% |
 
 ### Houston Texans @ Indianapolis Colts
 Expected home margin — blended -1.2 | market -1.2 | ratings -0.9 · weights {'market': 0.65, 'ratings': 0.0, 'engine': 0.0, 'agents': 0.0}
@@ -144,22 +144,23 @@ Expected home margin — blended +2.4 | market +2.4 | ratings +1.8 · weights {'
 | New England Patriots ML | 42.6% | 42.6% | market 43 · ratings 44 · sim 43 | SPLIT | 2.30 | -2.0% |
 
 ### Kansas City Chiefs @ Miami Dolphins
-Expected home margin — blended -11.5 | market -11.5 | ratings -6.5 · weights {'market': 0.65, 'ratings': 0.0, 'engine': 0.0, 'agents': 0.0}
+Expected home margin — blended -11.5 | market -11.5 | ratings -5.4 · weights {'market': 0.65, 'ratings': 0.0, 'engine': 0.0, 'agents': 0.0}
 - 🔢 Total: market 45.4 · offense×defense ratings 42.9 → blended 45.4 (ratings weight 0%)
 - 🏈 QBs: Patrick Mahomes @ Malik Willis · rest 7d / 7d · outdoors
 - 📊 away: net +2.6 pts vs avg (off +0.1 / def +2.5, 2 games in 2026) · EPA/play off +0.081 def -0.028 · pass rate 64% · 68.6 plays/g
 - 📊 home: net -5.4 pts vs avg (off -2.9 / def -2.6, 2 games in 2026, NEW QB since 2025 (prior halved)) · EPA/play off -0.040 def +0.108 · pass rate 58% · 53.6 plays/g
-- 👀 away: T Josh Simmons: DNP, no game status yet
+- 🏥 Kansas City Chiefs: OL Josh Simmons OUT — LT, back (+0.75 home margin) [https://www.arrowheadpride.com/kansas-city-chiefs-injuries/211359/chiefs-dolphins-week-3-final-injury-report-chamarri-conner-doubtful]
+- 🏥 Kansas City Chiefs: S Chamarri Conner DOUBTFUL — knee (+0.375 home margin) [https://www.arrowheadpride.com/kansas-city-chiefs-injuries/211359/chiefs-dolphins-week-3-final-injury-report-chamarri-conner-doubtful]
 - ⚠️ RATINGS_DISPLAY_ONLY: NFL backtest shows the market beats team ratings (best blend weight 0) — ratings shown for context, no vote
 
 | Market | Win % | Sim % | Lenses | Grade | Price | EV |
 |---|---|---|---|---|---|---|
-| Kansas City Chiefs ML | 81.6% | 81.5% | market 82 · ratings 69 · sim 82 | LOCK | 1.16 | -5.3% |
-| Kansas City Chiefs -10 | 50.7% | 50.7% | market 51 · ratings 35 · sim 51 | LEAN | 1.87 | -5.2% |
+| Kansas City Chiefs ML | 81.6% | 81.5% | market 82 · ratings 66 · sim 82 | LOCK | 1.16 | -5.3% |
+| Kansas City Chiefs -10 | 50.7% | 50.7% | market 51 · ratings 32 · sim 51 | LEAN | 1.87 | -5.2% |
 | Under 45.5 | 50.4% | 50.4% | market 50 · ratings 58 · sim 50 | LEAN | 1.89 | -4.5% |
 | Over 45.5 | 49.6% | 49.6% | market 50 · ratings 42 · sim 50 | COINFLIP | 1.93 | -4.5% |
-| Miami Dolphins +10 | 45.3% | 45.3% | market 45 · ratings 61 · sim 45 | SPLIT | 1.95 | -11.5% |
-| Miami Dolphins ML | 18.4% | 18.3% | market 18 · ratings 31 · sim 18 | SPLIT | 5.55 | +1.9% |
+| Miami Dolphins +10 | 45.3% | 45.3% | market 45 · ratings 64 · sim 45 | SPLIT | 1.95 | -11.5% |
+| Miami Dolphins ML | 18.4% | 18.3% | market 18 · ratings 34 · sim 18 | SPLIT | 5.55 | +1.9% |
 
 ### Tennessee Titans @ New York Giants
 Expected home margin — blended +1.5 | market +1.5 | ratings +4.9 · weights {'market': 0.65, 'ratings': 0.0, 'engine': 0.0, 'agents': 0.0}
@@ -200,28 +201,28 @@ Expected home margin — blended -3.9 | market -3.9 | ratings +0.7 · weights {'
 | Pittsburgh Steelers ML | 38.1% | 38.0% | market 38 · ratings 52 · sim 38 | SPLIT | 2.54 | -3.2% |
 
 ### Seattle Seahawks @ Washington Commanders
-Expected home margin — blended -9.1 | market -9.1 | ratings -19.9 · weights {'market': 0.65, 'ratings': 0.0, 'engine': 0.0, 'agents': 0.0}
-- 🔢 Total: market 40.1 · offense×defense ratings 45.6 → blended 40.1 (ratings weight 0%)
+Expected home margin — blended -9.1 | market -9.1 | ratings -21.1 · weights {'market': 0.65, 'ratings': 0.0, 'engine': 0.0, 'agents': 0.0}
+- 🔢 Total: market 39.9 · offense×defense ratings 45.6 → blended 39.9 (ratings weight 0%)
 - 🏈 QBs: Sam Darnold @ Marcus Mariota · rest 7d / 7d · outdoors
 - 📊 away: net +10.9 pts vs avg (off +4.6 / def +6.3, 2 games in 2026) · EPA/play off +0.058 def -0.139 · pass rate 51% · 57.6 plays/g
 - 📊 home: net -5.0 pts vs avg (off -1.6 / def -3.4, 2 games in 2026) · EPA/play off +0.023 def +0.145 · pass rate 59% · 64.9 plays/g
-- 👀 away: S Julian Love: DNP, no game status yet
 - 👀 away: S Ty Okada: DNP, no game status yet
-- 👀 home: LB Frankie Luvu: DNP, no game status yet
-- 👀 home: G Sam Cosmi: DNP, no game status yet
-- 👀 home: TE Chig Okonkwo: DNP, no game status yet
 - 🏥 Washington Commanders: QB Jayden Daniels OUT — dislocated left elbow; Marcus Mariota starts. 4.98 = 12-oddsmaker avg Daniels-over-Mariota (-4.98 home margin) [https://www.nfl.com/news/marcus-mariota-commanders-week-3-qb-jayden-daniels-elbow ; https://uk.sports.yahoo.com/news/oddsmakers-rank-all-32-nfl-starting-qbs-by-point-spread-value-how-valuable-is-jayden-daniels-to-the-spread-150837317.html]
 - 🏥 Washington Commanders: S Nick Cross OUT — ruled out (-0.5 home margin) [https://www.si.com/betting/seahawks-vs-commanders-prediction-odds-spread-injuries-trends-for-nfl-week-3-2026]
+- 🏥 Washington Commanders: LB Frankie Luvu OUT — groin (-0.5 home margin) [https://www.hogshaven.com/washington-commanders-injuries/443424/commanders-seahawks-injury-report-frankie-luvu-chig-okonkwo-sam-cosmi-jayden-daniels-nick-cross]
+- 🏥 Washington Commanders: TE Chig Okonkwo OUT — hamstring (-0.5 home margin) [https://www.hogshaven.com/washington-commanders-injuries/443424/commanders-seahawks-injury-report-frankie-luvu-chig-okonkwo-sam-cosmi-jayden-daniels-nick-cross]
+- 🏥 Washington Commanders: OL Sam Cosmi OUT — concussion (-0.75 home margin) [https://www.hogshaven.com/washington-commanders-injuries/443424/commanders-seahawks-injury-report-frankie-luvu-chig-okonkwo-sam-cosmi-jayden-daniels-nick-cross]
+- 🏥 Seattle Seahawks: S Julian Love OUT — ruled out (+0.5 home margin) [https://www.fieldgulls.com/seattle-seahawks-injury-report/175696/seahawks-commanders-injury-designations-sam-darnold-returns-julian-love-ruled-out]
 - ⚠️ RATINGS_DISPLAY_ONLY: NFL backtest shows the market beats team ratings (best blend weight 0) — ratings shown for context, no vote
 
 | Market | Win % | Sim % | Lenses | Grade | Price | EV |
 |---|---|---|---|---|---|---|
-| Seattle Seahawks ML | 76.1% | 76.1% | market 76 · ratings 94 · sim 76 | LOCK | 1.25 | -4.6% |
-| Seattle Seahawks -7.5 | 52.3% | 52.3% | market 52 · ratings 82 · sim 52 | LEAN | 1.85 | -3.3% |
-| Over 39.5 | 51.7% | 51.7% | market 52 · ratings 68 · sim 52 | LEAN | 1.85 | -4.4% |
-| Under 39.5 | 48.3% | 48.3% | market 48 · ratings 32 · sim 48 | COINFLIP | 1.98 | -4.4% |
-| Washington Commanders +7.5 | 47.7% | 47.6% | market 48 · ratings 18 · sim 48 | SPLIT | 1.98 | -5.6% |
-| Washington Commanders ML | 23.9% | 23.8% | market 24 · ratings 6 · sim 24 | SPLIT | 4.10 | -2.2% |
+| Seattle Seahawks ML | 76.1% | 76.1% | market 76 · ratings 95 · sim 76 | LOCK | 1.25 | -4.6% |
+| Seattle Seahawks -7.5 | 52.3% | 52.3% | market 52 · ratings 84 · sim 52 | LEAN | 1.85 | -3.3% |
+| Under 40.5 | 51.7% | 51.8% | market 52 · ratings 35 · sim 52 | LEAN | 1.85 | -4.4% |
+| Over 40.5 | 48.3% | 48.2% | market 48 · ratings 65 · sim 48 | COINFLIP | 1.98 | -4.4% |
+| Washington Commanders +7.5 | 47.7% | 47.6% | market 48 · ratings 16 · sim 48 | SPLIT | 1.98 | -5.6% |
+| Washington Commanders ML | 23.9% | 23.8% | market 24 · ratings 5 · sim 24 | SPLIT | 4.10 | -2.2% |
 
 ### Arizona Cardinals @ San Francisco 49ers
 Expected home margin — blended +9.5 | market +9.5 | ratings +11.2 · weights {'market': 0.65, 'ratings': 0.0, 'engine': 0.0, 'agents': 0.0}
