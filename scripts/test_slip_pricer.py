@@ -110,3 +110,41 @@ def test_ticket_math_and_unpriced_legs(monkeypatch):
     monkeypatch.setattr(sp.cm, "game_view", lambda *a, **k: None)      # a league with no model
     cfb = sp.price_ticket(sp.parse(SLIP)[0], slate, n_sims=10_000)
     assert "prob_all" not in cfb and len(cfb["unpriced"]) == 2
+
+
+def test_prop_estimate_over_under_complement_and_platt(monkeypatch):
+    vals = np.array([60.0, 80, 55, 90, 70, 65, 75, 85, 50, 95])
+    for val in ("rushing_yards", "passing_yards", "receiving_yards"):
+        o = sp.prop_estimate(vals, 69.5, True, "rusher_player_id", val)
+        u = sp.prop_estimate(vals, 69.5, False, "rusher_player_id", val)
+        assert abs(o + u - 1) < 1e-9 and 0.05 < o < 0.95
+    hi = sp.prop_estimate(vals, 49.5, True, "rusher_player_id", "rushing_yards")
+    lo = sp.prop_estimate(vals, 99.5, True, "rusher_player_id", "rushing_yards")
+    assert hi > 0.5 > lo                                                # monotone in the line
+    weak_d = sp.prop_estimate(vals, 69.5, True, "passer_player_id", "passing_yards", (1.3, 40))
+    strong_d = sp.prop_estimate(vals, 69.5, True, "passer_player_id", "passing_yards", (0.7, 40))
+    assert weak_d > strong_d                                            # opponent defense matters
+
+
+def test_td_props_shrink_to_league_rate(monkeypatch):
+    monkeypatch.setattr(sp, "league_base", lambda idc, val, line, over: 0.30)
+    scorer = np.array([1.0] * 10)
+    p = sp.prop_estimate(scorer, 0.5, True, "td_player_id", None)
+    assert 0.5 < p < 0.9                                               # 10/10 history is NOT 100%
+
+
+def test_sgp_factor_shrinks_toward_league_prior():
+    idx = [f"g{i}" for i in range(2)]
+    a = pd.Series([True, True], index=idx)
+    f, n = sp.sgp_factor([a, a.copy()], prior=1.25)
+    assert n == 2 and abs(f - 1.25) < 0.2                              # 2 games: mostly the prior
+    assert sp.sgp_factor([a], prior=1.25) == (1.25, 0)
+
+
+def test_win_corr_prior_links_player_to_his_team(monkeypatch):
+    monkeypatch.setattr(sp, "_roster_ids", lambda: {"rb one": ("id", "SEA")})
+    legs = [sp.Leg("prop", "", line=43.5, over=True, player="RB One", stat='["rusher_player_id", "rushing_yards"]'),
+            sp.Leg("ml", "", team="Seattle Seahawks")]
+    assert sp.win_corr_prior(legs) == sp.LEAGUE_WIN_CORR["rushing_yards"]
+    legs[1] = sp.Leg("ml", "", team="Washington Commanders")
+    assert sp.win_corr_prior(legs) == 1.0

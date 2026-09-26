@@ -10,7 +10,9 @@ Legs it prices (NFL, from the local nflverse feed — no paid API calls):
   - spread / moneyline / game total  -> the Judge's blended margin + fitted σ
   - player props (pass/rush/rec yds, receptions, pass TDs, anytime TD, ...)
     -> the player's real 2025-2026 game logs (play-by-play), recency weighted,
-       shrunk toward a fitted distribution when the sample is small
+       shrunk toward a fitted distribution; per-stat settings, opponent-defense
+       factor, TD base rates and logit recalibration all chosen by walk-forward
+       log-loss (scripts/backtest_props.py; every stat beats the base rate)
   - same-game blocks -> correlation MEASURED from games where all legs had a
     result (e.g. Allen yards + Allen pass TDs), shrunk toward independence
 Anything else (college, other leagues) is listed as UNPRICED — never guessed.
@@ -66,6 +68,26 @@ PROP_STATS = [
     (("touchdown en cualquier momento", "anytime touchdown", "anytime td"), "td_player_id", None),
 ]
 COUNT_STATS = {"pass_touchdown", "complete_pass", "pass_attempt", None}
+TD_STATS = {"pass_touchdown", None}   # scoring events: clumpy, priced by shrunk frequency
+# Per-stat settings picked by walk-forward log-loss on 2025-26 play-by-play
+# (scripts/backtest_props.py → data/benchmarks/props_backtest.json).
+# opp_k: pseudo-games that shrink the opponent-defense factor (None = no opponent adjustment;
+# it only helped passing yards / catches). freq_k: pseudo-games of league base rate for TD props.
+# platt: (a, b) logit recalibration of P(over), fit 2025 → tested on 2026 out of sample; kept
+# only where it improved 2026 log-loss (rush, rec yds, catches, anytime TD — not pass yds/TDs).
+PROP_PARAMS = {
+    "passing_yards": {"halflife": 12, "prior_k": 24, "min_cv": 0.45, "opp_k": 16.0},
+    "rushing_yards": {"halflife": 8, "prior_k": 8, "min_cv": 0.6, "opp_k": None, "platt": (-0.212, 1.102)},
+    "receiving_yards": {"halflife": 8, "prior_k": 12, "min_cv": 0.8, "opp_k": 16.0, "platt": (-0.297, 0.959)},
+    "complete_pass": {"halflife": 8, "prior_k": 8, "min_cv": 0.3, "opp_k": 16.0, "platt": (-0.227, 0.774)},
+    "pass_attempt": {"halflife": 8, "prior_k": 8, "min_cv": 0.3, "opp_k": 16.0},
+    "pass_touchdown": {"halflife": 16, "freq_k": 16.0},
+    None: {"halflife": 8, "freq_k": 16.0, "platt": (0.072, 1.546)},
+}
+# Players who actually carry the stat (league base rates are measured over these).
+VOLUME_FLOOR = {"passing_yards": 150, "rushing_yards": 30, "receiving_yards": 25, "complete_pass": 2.5,
+                "pass_attempt": 20, "pass_touchdown": 0.8, None: 0.2}
+ROLES = ("passer_player_id", "rusher_player_id", "receiver_player_id")
 
 
 @dataclass
@@ -256,7 +278,7 @@ def _cfb_leg(leg: Leg) -> tuple[Optional[float], str]:
 
 @lru_cache(maxsize=1)
 def _pbp() -> pd.DataFrame:
-    cols = ["game_id", "season", "week", "season_type", "passer_player_id", "rusher_player_id",
+    cols = ["game_id", "season", "week", "season_type", "posteam", "defteam", "passer_player_id", "rusher_player_id",
             "receiver_player_id", "td_player_id", "passing_yards", "rushing_yards", "receiving_yards",
             "pass_touchdown", "complete_pass", "pass_attempt"]
     frames = [pd.read_csv(p, usecols=lambda c: c in cols, low_memory=False)
@@ -293,18 +315,90 @@ def player_log(pid: str, idc: str, val: Optional[str]) -> pd.Series:
     return s.reindex(player_games(pid), fill_value=0).astype(float)
 
 
-def prop_prob(values: np.ndarray, line: float, over: bool, count: bool) -> float:
+def prop_prob(values: np.ndarray, line: float, over: bool, count: bool,
+              halflife: float = HALFLIFE, prior_k: float = PRIOR_K, min_cv: float = MIN_CV,
+              freq_base: Optional[float] = None, freq_k: float = 16.0) -> float:
     n = len(values)
-    w = 0.5 ** (np.arange(n)[::-1] / HALFLIFE)
+    w = 0.5 ** (np.arange(n)[::-1] / halflife)
     hit = (values > line) if over else (values < line)
+    if freq_base is not None:                  # TD props: player's hit rate shrunk to the league's
+        return float((np.sum(w * hit) + freq_k * freq_base) / (np.sum(w) + freq_k))
     mean = float(np.average(values, weights=w))
     if count:
         prior = float(1 - poisson.cdf(np.floor(line), max(mean, 1e-6)))
     else:
-        sd = max(float(np.sqrt(np.average((values - mean) ** 2, weights=w))), MIN_CV * abs(mean), 1.0)
+        sd = max(float(np.sqrt(np.average((values - mean) ** 2, weights=w))), min_cv * abs(mean), 1.0)
         prior = float(1 - norm.cdf(line, mean, sd))
     prior = prior if over else 1 - prior
-    return float((np.sum(w * hit) + PRIOR_K * prior) / (np.sum(w) + PRIOR_K))
+    return float((np.sum(w * hit) + prior_k * prior) / (np.sum(w) + prior_k))
+
+
+@lru_cache(maxsize=16)
+def stat_logs(idc: str, val: Optional[str]) -> pd.DataFrame:
+    """One row per (player, game) the player took part in (any pass/rush/target), stat 0 if
+    none, with team and opponent defense. Players who never record the stat are dropped."""
+    d = _pbp()
+    played = pd.concat([d[[c, "game_id", "posteam", "defteam", "season", "week"]].dropna(subset=[c])
+                        .set_axis(["pid", "game_id", "team", "defteam", "season", "week"], axis=1)
+                        for c in ROLES]).drop_duplicates(["pid", "game_id"])
+    rows = d[d[idc].notna()]
+    agg = rows.groupby([idc, "game_id"]).size() if val is None else rows.groupby([idc, "game_id"])[val].sum()
+    agg = agg.rename("v").reset_index().rename(columns={idc: "pid"})
+    out = played.merge(agg, on=["pid", "game_id"], how="left").fillna({"v": 0.0})
+    return out[out.pid.isin(agg.pid)].sort_values(["pid", "season", "week"]).reset_index(drop=True)
+
+
+@lru_cache(maxsize=64)
+def league_base(idc: str, val: Optional[str], line: float, over: bool) -> float:
+    """How often a regular (volume-floor) player clears this line — the TD-prop prior."""
+    logs = stat_logs(idc, val)
+    regular = logs.groupby("pid").v.transform("mean") >= VOLUME_FLOOR.get(val, 0.0)
+    v = logs.loc[regular, "v"]
+    return float(((v > line) if over else (v < line)).mean())
+
+
+def opp_factor(idc: str, val: Optional[str], defteam: Optional[str]) -> tuple[float, int]:
+    """Stat allowed per player-game by this defense / league (last season + this one)."""
+    if not defteam:
+        return 1.0, 0
+    logs = stat_logs(idc, val)
+    logs = logs[logs.season >= logs.season.max() - 1]
+    g = logs[logs.defteam == defteam]
+    league = logs.v.mean()
+    return (float(g.v.mean() / league) if len(g) and league > 0 else 1.0), int(len(g))
+
+
+def prop_estimate(values: np.ndarray, line: float, over: bool, idc: str, val: Optional[str],
+                  opp: tuple[float, int] = (1.0, 0)) -> float:
+    """Production prop probability with the backtested per-stat settings."""
+    prm = PROP_PARAMS.get(val, PROP_PARAMS["complete_pass"])
+    if val in TD_STATS:
+        p_over = prop_prob(values, line, True, True, prm["halflife"],
+                           freq_base=league_base(idc, val, line, True), freq_k=prm["freq_k"])
+    else:
+        f, n = opp
+        if prm["opp_k"]:
+            values = values * (1 + (f - 1) * n / (n + prm["opp_k"]))
+        p_over = prop_prob(values, line, True, val in COUNT_STATS, prm["halflife"], prm["prior_k"], prm["min_cv"])
+    if prm.get("platt"):
+        a, b = prm["platt"]
+        x = np.log(np.clip(p_over, 1e-4, 1 - 1e-4) / np.clip(1 - p_over, 1e-4, 1))
+        p_over = float(1 / (1 + np.exp(-(a + b * x))))
+    return p_over if over else 1 - p_over
+
+
+def _opponent(team: Optional[str]) -> Optional[str]:
+    """This week's opponent from the nflverse schedule."""
+    if not team:
+        return None
+    g = nf.load_games()
+    season = int(g.season.max())
+    wk = g[(g.season == season) & (g.week == nf.current_week(season, g))]
+    row = wk[(wk.home_team == team) | (wk.away_team == team)]
+    if row.empty:
+        return None
+    r = row.iloc[0]
+    return r.away_team if r.home_team == team else r.home_team
 
 
 def price_prop(leg: Leg) -> tuple[Optional[float], str, Optional[pd.Series]]:
@@ -317,14 +411,18 @@ def price_prop(leg: Leg) -> tuple[Optional[float], str, Optional[pd.Series]]:
     log = player_log(info[0], idc, val)
     if len(log) < MIN_GAMES:
         return None, f"only {len(log)} NFL games — too few", None
-    p = prop_prob(log.to_numpy(), leg.line, leg.over, val in COUNT_STATS)
+    opp_team = _opponent(info[1])
+    opp = opp_factor(idc, val, opp_team)
+    p = prop_estimate(log.to_numpy(), leg.line, leg.over, idc, val, opp)
     small = len(log) < FULL_GAMES
     if small:                                   # thin history: don't trust it like a full one
         p = 0.5 + (p - 0.5) * len(log) / (len(log) + SMALL_K)
     hit = (log > leg.line) if leg.over else (log < leg.line)
     last = ", ".join(str(int(x)) for x in log.tail(5))
+    prm = PROP_PARAMS.get(val, PROP_PARAMS["complete_pass"])
+    vs = (f"; vs {opp_team} D ×{opp[0]:.2f}" if opp_team and prm.get("opp_k") else "")
     return p, (f"{'SMALL SAMPLE — ' if small else ''}{len(log)} gms, avg {log.mean():.1f}, "
-               f"hit {hit.mean():.0%}; last 5: {last}"), hit
+               f"hit {hit.mean():.0%}; last 5: {last}{vs}"), hit
 
 
 def _game_hits(leg: Leg) -> Optional[pd.Series]:
@@ -339,22 +437,46 @@ def _game_hits(leg: Leg) -> Optional[pd.Series]:
     return pd.Series(margin + shift > 0, index=g.game_id)
 
 
-def sgp_factor(hits: list) -> tuple[float, int]:
-    """Measured joint / product of marginals over games where every leg has a result."""
+# League-wide lift of "player over his median line" when HIS team wins, 2025-26
+# play-by-play (game script: winning teams run the ball, score more). Used as the
+# prior a same-game block shrinks toward when the pair has few shared games.
+LEAGUE_WIN_CORR = {"passing_yards": 1.088, "rushing_yards": 1.247, "receiving_yards": 1.028,
+                   "complete_pass": 0.947, "pass_touchdown": 1.174, None: 1.154}
+
+
+def win_corr_prior(block_legs: list) -> float:
+    """Product of league lifts for each prop whose player's team is a moneyline/spread
+    favourite leg in the same block (player + 'his team wins')."""
+    teams = {next((k for k, v in nf.TEAM_NAMES.items() if v == leg.team), None)
+             for leg in block_legs if leg.kind in ("ml", "spread") and (leg.line or 0) <= 0}
+    f = 1.0
+    for leg in block_legs:
+        if leg.kind != "prop" or not leg.stat:
+            continue
+        info = _roster_ids().get((leg.player or "").lower())
+        if info and info[1] in teams:
+            val = json.loads(leg.stat)[1]
+            f *= LEAGUE_WIN_CORR.get(val, 1.0) if leg.over else 1.0
+    return f
+
+
+def sgp_factor(hits: list, prior: float = 1.0) -> tuple[float, int]:
+    """Measured joint / product of marginals over games where every leg has a result,
+    shrunk toward `prior` (league-wide lift) by the number of shared games."""
     hits = [h for h in hits if h is not None]
     if len(hits) < 2:
-        return 1.0, 0
+        return prior, 0
     idx = hits[0].index
     for h in hits[1:]:
         idx = idx.intersection(h.index)
     n = len(idx)
     if n == 0:
-        return 1.0, 0
+        return prior, 0
     M = np.column_stack([hits_i.reindex(idx).to_numpy(bool) for hits_i in hits])
     prod = float(np.prod(M.mean(0)))
     joint = float(M.all(1).mean())
     raw = joint / prod if prod > 0 else 1.0
-    f = 1 + (raw - 1) * n / (n + CORR_K)
+    f = prior + (raw - prior) * n / (n + CORR_K)
     return float(np.clip(f, 0.5, 2.0)), n
 
 
@@ -376,7 +498,7 @@ def price_ticket(t: Ticket, slate: dict, n_sims: int = 2_000_000, seed: int = 11
         if any(p is None for p in ps) or not ps:
             bp, corr = None, (1.0, 0)
         else:
-            corr = sgp_factor(hits) if b.sgp else (1.0, 0)
+            corr = sgp_factor(hits, win_corr_prior(b.legs)) if b.sgp else (1.0, 0)
             bp = min(float(np.prod(ps)) * corr[0], min(ps))
             cfb = _cfb_view(b.legs[0]) if b.sgp and all("college" in x["note"] for x in legs) else None
             if cfb is not None:          # one college game: margin + total simulated jointly
