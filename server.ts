@@ -4521,6 +4521,29 @@ app.post('/api/winner-pick', async (req: express.Request, res: express.Response)
   }
 });
 
+// Slip check — paste an OPEN Stake ticket; every leg priced (NFL spreads/ML/totals
+// via the Judge, props via nflverse game logs, SGP correlation measured) + ticket odds.
+// Local data only: no Odds API / BallDontLie calls.
+app.post('/api/price-slip', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 10, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  const text = req.body?.text;
+  if (typeof text !== 'string' || !text.trim() || text.length > 50_000) {
+    return res.status(400).json({ error: 'NEED_SLIP_TEXT' });
+  }
+  try {
+    const r = await fetch('http://127.0.0.1:8001/price-slip', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+      signal: AbortSignal.timeout(120_000),
+    });
+    if (!r.ok) return res.status(502).json({ error: 'EDGE_API_ERROR', status: r.status });
+    res.json({ success: true, data: await r.json() });
+  } catch (e: unknown) {
+    res.status(503).json({ error: 'EDGE_API_UNAVAILABLE', message: e instanceof Error ? e.message : String(e) });
+  }
+});
+
 // Player prop simulator — REAL game logs (ESPN/Sofascore, free) -> distribution
 // fit -> Monte Carlo -> P(over line) + fair/min odds + BET/LEAN/NO_BET.
 // Live network per call (game-log fetch): real usage only, never debug.

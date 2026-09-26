@@ -11,6 +11,7 @@ import SharpScannerPage from "./pages/sharp-scanner";
 import ArbitragePage from "./pages/arbitrage";
 import TrackRecordPage from "./pages/track-record";
 import UpsetRadarPage from "./pages/upset-radar";
+import SlipCheckPage from "./pages/slip-check";
 import NotFound from "./pages/not-found";
 
 const queryClient = new QueryClient({
@@ -29,6 +30,7 @@ function Router() {
         <Route path="/arbitrage" component={ArbitragePage} />
         <Route path="/track-record" component={TrackRecordPage} />
         <Route path="/upset-radar" component={UpsetRadarPage} />
+        <Route path="/slip-check" component={SlipCheckPage} />
         <Route component={NotFound} />
       </Switch>
     </AppLayout>

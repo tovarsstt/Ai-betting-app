@@ -5,7 +5,7 @@ import {
   SidebarGroupContent, SidebarMenu, SidebarMenuItem,
   SidebarMenuButton, SidebarTrigger, SidebarHeader
 } from "@/components/ui/sidebar";
-import { Swords, TrendingUp, BarChart3, Zap, Shield, Trophy, Radar, Crosshair } from "lucide-react";
+import { Swords, TrendingUp, BarChart3, Zap, Shield, Trophy, Radar, Crosshair, ScanLine } from "lucide-react";
 
 const navigation = [
   { name: "Game Breakdown", href: "/", icon: Swords },
@@ -15,6 +15,7 @@ const navigation = [
   { name: "Sharp Scanner", href: "/sharp-scanner", icon: Zap },
   { name: "Arbitrage", href: "/arbitrage", icon: Shield },
   { name: "Upset Radar", href: "/upset-radar", icon: Radar },
+  { name: "Slip Check", href: "/slip-check", icon: ScanLine },
   { name: "Track Record", href: "/track-record", icon: Trophy },
 ];
 

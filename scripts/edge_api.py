@@ -1439,6 +1439,21 @@ class JudgeReq(BaseModel):
     refresh: bool = True                  # pull fresh nflverse files (max 6h old)
 
 
+class SlipReq(BaseModel):
+    text: str                             # Stake slip exactly as copied (Spanish or English)
+    n_sims: int = 2_000_000
+
+
+@app.post("/price-slip")
+def price_slip_endpoint(req: SlipReq):
+    """Open-ticket checker: every leg's hit chance + whole-ticket odds (local nflverse data only)."""
+    import slip_pricer as sp
+    if not req.text.strip() or len(req.text) > 50_000:
+        return {"error": "EMPTY_OR_TOO_LONG"}
+    res = sp.price_text(req.text, n_sims=max(10_000, min(req.n_sims, 5_000_000)))
+    return json.loads(json.dumps(res, default=float))
+
+
 @app.post("/judge-slate")
 def judge_slate_endpoint(req: JudgeReq):
     import winner_judge as wj
