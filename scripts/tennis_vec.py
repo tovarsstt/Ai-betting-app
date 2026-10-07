@@ -168,8 +168,8 @@ try:
         n = z.shape[0]
         need = best_of // 2 + 1
         out = np.zeros((n, 7), dtype=np.int16)     # winner, setsA, setsB, s1w, s1g, gA, gB
-        np.random.seed(seed)
         for i in prange(n):
+            np.random.seed((seed * 1000003 + i * 7919) & 0x7FFFFFFF)       # per-match seed -> identical results regardless of thread scheduling
             pai = min(0.90, max(0.30, pa + sda * z[i, 0]))
             pbi = min(0.90, max(0.30, pb + sdb * z[i, 1]))
             ha, hb = _hold_nb(pai), _hold_nb(pbi)
