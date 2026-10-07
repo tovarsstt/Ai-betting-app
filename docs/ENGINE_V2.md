@@ -138,3 +138,10 @@ R2 4.7%, p<1e-4 in both periods) — so the proxy is real. Against the CLOSING l
 Rotation players out: +0.21 pts each (p=0.014; fit seasons +0.13 p=0.27, test +0.31 p=0.014) — shrank from +0.39 when the sample doubled (regression to 0).
 Totals: +0.053 pts per unit of missing talent (p=0.002 on 2022-24; same sign p=0.22 on 2025-26): the line may over-lower totals for absences. Both are WATCH
 items, not validated. Betting the healthier side when the opponent misses >=3 more rotation players: ATS 53-55% (n=260/252), ROI +1.4%/+4.3% (se ±6%).
+
+## NFL starting quarterback — `scripts/qb_effects_nfl.py` (3,461 games, 2012-2025, ESPN box scores + closing lines)
+Starter = most pass attempts; quality = past-only shrunk adjusted yards/attempt (prior = league AY/A worth 250 attempts).
+Sanity (realised margin): +4.45 pts per AY/A unit (R2 7.5%, both periods); a backup starting costs ~5 points (R2 3.4%).
+Against the CLOSING line: QB quality residual +0.46 pts/unit (p=0.056; fit +0.72 p=0.03, test +0.17 p=0.6) -> the market prices ~90%.
+Backup / unusual starter: residual -1.5 pts (p=0.0003; fit -2.15, test -0.82 p=0.15). Betting against the backup team: 54.5% (2012-19, ROI +4.1%)
+-> 51.4% (2020-25, ROI -2.0%): an edge that DECAYED once the market caught up. Watch item, not validated.

@@ -45,7 +45,7 @@ def _parse(gid, d):
             for a in grp.get("athletes", []):
                 st = dict(zip(keys, a.get("stats", [])))
                 ath = a.get("athlete") or {}
-                rec["players"].append({"id": ath.get("id") or ath.get("displayName"), "name": ath.get("displayName", "?"), "pos": (ath.get("position") or {}).get("abbreviation"),
+                rec["players"].append({"group": grp.get("name"), "id": ath.get("id") or ath.get("displayName"), "name": ath.get("displayName", "?"), "pos": (ath.get("position") or {}).get("abbreviation"),
                                        "starter": a.get("starter"), "dnp": a.get("didNotPlay"), "reason": a.get("reason"), "active": a.get("active"), "stats": st})
         out["teams"].append(rec)
     for inj in d.get("injuries", []):

@@ -57,8 +57,9 @@ REGISTRY: Dict[str, dict] = {
     "nfl": {
         "family": "empirical key-number residual pmf (3,6,7,10,14) around the implied margin; sigma_margin 13.29, sigma_total 13.42",
         "validated": {"wind>=15mph -> Under": "scoring multiplier exp(-wind_scoring*sigmoid(0.25*(mph-15))); Under 57.9% train n=618 / 68.5% test n=73 (realised wind, forecasts are noisier)"},
-        "priced": {"short_week": f"CI {_ci('nfl','spread_resid','home_short_week')}", "bye": f"CI {_ci('nfl','spread_resid','home_bye')}", "divisional": "not replicated", "thursday": "not replicated", "dome": "not replicated"},
-        "untested": {"QB/injury news": "needs live injury feed (Linemate wired in the app, not yet backtested)", "coaching/travel": "no data"},
+        "priced": {"starting QB quality (3,461 games 2012-25)": "explains realised margin (+4.45 pts per AY/A unit, R2 7.5%) but the line prices ~90% of it (residual +0.46, p=0.056, test +0.17 p=0.6)", "short_week": f"CI {_ci('nfl','spread_resid','home_short_week')}", "bye": f"CI {_ci('nfl','spread_resid','home_bye')}", "divisional": "not replicated", "thursday": "not replicated", "dome": "not replicated"},
+        "watch": {"backup / unusual starting QB (967 games)": "opponent of the backup team covered 54.5% in 2012-19 (ROI +4.1%) but 51.4% in 2020-25 (ROI -2.0%): the effect DECAYED, market adapted — NOT validated", "heavy favourite (|line|>=7) vs a backup QB": "55.7% (n=334, subset mined after the fact) — hypothesis only"},
+        "untested": {"live injury news timing": "needs timestamped reports (Linemate wired in the app, not backtested)", "coaching/travel": "no data"},
     },
     "nba": {
         "family": "Normal margin sigma 11.77 (falls 0.12/pt of spread; Student-t nu=18.5), Normal total sigma 17.47, corr(margin,total) -0.01; win prob from the SPREAD beats the de-vigged ML (log-loss 0.6103 vs 0.6118)",
