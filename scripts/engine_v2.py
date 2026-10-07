@@ -47,6 +47,36 @@ DAY_SD: float = float(CAL.get("day_sd", 0.05))
 TOTALS_OFFSET: Dict[str, float] = CAL.get("totals_offset", {"ATP": -0.067, "WTA": -0.564})
 PTS_PER_MATCH = 60
 _SIM = tv.simulate_nb if tv.HAVE_NUMBA else tv.simulate
+CTX_PATH = DATA / "tennis_context_coefficients.json"
+CTX = json.loads(CTX_PATH.read_text()) if CTX_PATH.exists() else {}
+
+
+def context_effect(ctx: Optional[dict]) -> Dict[str, object]:
+    """Apply ONLY data-validated context effects (never a guess). ctx keys (all optional):
+    rest_days_a/b (days since last match), games_last7d_a/b, altitude_m, narratives={"birthday_a":True,...}.
+    Win effects shift the ANCHOR logit (the price already contains most context; these are the
+    measured incremental effects). Narrative flags are reported with what the data can rule out, but
+    move nothing: no study has detected them."""
+    out: Dict[str, object] = {"delta_logit": 0.0, "total_offset": 0.0, "applied": [], "narratives": []}
+    if not ctx or not CTX:
+        return out
+    if "rest_days_a" in ctx and "rest_days_b" in ctx:
+        d = min(float(ctx["rest_days_a"]), 7.0) - min(float(ctx["rest_days_b"]), 7.0)
+        out["delta_logit"] += CTX["rest_days_logit_per_day"] * d
+        out["applied"].append(f"rest_days diff {d:+.1f}d -> {CTX['rest_days_logit_per_day'] * d:+.4f} logit")
+    if "games_last7d_a" in ctx and "games_last7d_b" in ctx:
+        d = (float(ctx["games_last7d_a"]) - float(ctx["games_last7d_b"])) / 10.0
+        out["delta_logit"] += CTX["load7_logit_per_10_games"] * d
+        out["applied"].append(f"load7 diff {d * 10:+.0f} games -> {CTX['load7_logit_per_10_games'] * d:+.4f} logit")
+    if float(ctx.get("altitude_m", 0.0)) >= 500:
+        out["total_offset"] += CTX["altitude_500m_total_games"]
+        out["applied"].append(f"altitude >=500m -> totals {CTX['altitude_500m_total_games']:+.2f} games")
+    ns = CTX.get("not_supported", {})
+    for flag, key in (("birthday_a", "win:birthday"), ("birthday_b", "win:birthday"), ("back_to_back", "win:rest_short"), ("long_prev_match", "win:prev_games")):
+        if (ctx.get("narratives") or {}).get(flag) and key in ns:
+            lo, hi = ns[key]["ci95"]
+            out["narratives"].append(f"{flag}: no effect beyond the price detected; data rules out effects outside [{lo:+.3f}, {hi:+.3f}] logit -> applied 0")
+    return out
 
 
 # ── simulation ──────────────────────────────────────────────────────────────────────
@@ -64,7 +94,7 @@ def calibrate_level(pa: float, pb: float, sd: Tuple[float, float], target: float
     return (lo + hi) / 2
 
 
-def simulate_match(a: str, b: str, ml: Tuple[float, float], n: int = 400_000, seed: int = 5) -> Optional[dict]:
+def simulate_match(a: str, b: str, ml: Tuple[float, float], n: int = 400_000, seed: int = 5, ctx: Optional[dict] = None) -> Optional[dict]:
     """Level-anchored (to the power-devigged ML), hierarchical simulation of one match."""
     doc = tgm.load()["players"]
     ka, kb = tgm.player_key(a, doc), tgm.player_key(b, doc)
@@ -73,11 +103,14 @@ def simulate_match(a: str, b: str, ml: Tuple[float, float], n: int = 400_000, se
     pa, pb = tgm.point_prob(doc[ka]), tgm.point_prob(doc[kb])
     sd = (player_sd(doc[ka].get("n", 30), pa), player_sd(doc[kb].get("n", 30), pb))
     target = float(bm.devig_power(list(ml))[0])
+    ce = context_effect(ctx)
+    if ce["delta_logit"]:
+        target = float(1 / (1 + np.exp(-(np.log(target / (1 - target)) + ce["delta_logit"]))))
     d = calibrate_level(pa, pb, sd, target)
     r = _SIM(pa + d, pb - d, n, sd, seed)
     rows = np.column_stack([r["winner"], r["sets"][:, 0], r["sets"][:, 1], r["s1w"], r["s1g"], r["games"][:, 0], r["games"][:, 1]]).astype(np.int16)
     tour = (doc[ka].get("tour") or "ATP").upper()
-    return {"rows": rows, "off": TOTALS_OFFSET.get(tour, 0.0), "k": 1.0, "ka": ka, "kb": kb, "sd": sd,
+    return {"rows": rows, "off": TOTALS_OFFSET.get(tour, 0.0) + ce["total_offset"], "context": ce, "k": 1.0, "ka": ka, "kb": kb, "sd": sd,
             "n_pts": (doc[ka].get("n", 0), doc[kb].get("n", 0)), "serve": (pa + d, pb - d)}
 
 

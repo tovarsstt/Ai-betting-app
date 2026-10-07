@@ -50,3 +50,24 @@ data; v2 prices it -8.6%) and size what is left with uncertainty-aware Kelly.
 - Serve stats are a current snapshot applied to 2025 matches (lookahead); margin tails/totals are far less sensitive to it.
 - The handicap price test has n=83-115 qualifying bets: ROI figures are noise-level; Brier/log-loss are the reliable numbers.
 - The Kaggle handicap columns are in the source's player order (see `align_handicap`).
+
+## Context effects (rest / fatigue / narratives) — unbiased test, 2026-10-07
+Design: frozen hypothesis list, Holm correction, features from strictly earlier matches only, effects measured as an
+OFFSET on the de-vigged closing price (incremental to what the market already believes), random A/B orientation,
+fit <=2022 / replicate >=2023, accepted only if significant in BOTH periods with the same sign.
+`scripts/context_effects_tennis.py` -> `data/tennis_context_coefficients.json`, applied by `engine_v2.context_effect`.
+
+| Effect (217k tennis win rows, 88k totals rows) | Result |
+|---|---|
+| Days since last match (cap 7) | **ACCEPTED**: -0.018 logit/day (train p<1e-4, test p=6e-4). Match rhythm, not fatigue: the longer layoff does slightly WORSE than the price says. 5 extra days ≈ -0.09 logit (~2 pts). |
+| Games played last 7 days | **ACCEPTED**: +0.0075 logit per 10 games (p=0.0003 / 0.002). Tiny. |
+| Altitude >=500 m | **ACCEPTED**: +0.46 total games (p=0.0002 / 0.005). |
+| Back-to-back day (<=1 day rest) | Not beyond the price. 95% CI -0.011..+0.043 logit (±1 pt). |
+| Long previous match | Significant on train, did NOT replicate (test p=0.50) -> 0. |
+| Birthday | Underpowered (269 ATP birthday matches): CI -0.16..+0.35 logit. Can't rule out ±8 pts, can't detect it either -> 0. |
+| NBA back-to-back (22.8k games) | ATS residual -0.02 / +0.24 pts (t=-0.1/1.1): already in the line. |
+| NHL back-to-back (29.4k games) | totals residual ~0 (t=0.3): already in the line. |
+
+Reading: rest/back-to-back effects are REAL — and the market already charges for them (that is why the residual is ~0).
+Injecting them again would double count; only the measured incremental parts above enter. Personal goals / pressure /
+press index have NO outcome data anywhere -> reported, never applied.
