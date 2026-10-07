@@ -114,3 +114,27 @@ Literature on rest -> injuries is MIXED (PubMed): NBA game injuries not associat
 NFL Thursday/short rest had FEWER in-game injuries (1.26 vs 1.53 per team-game); soccer 2 matches/week 25.6 vs 4.1 injuries/1000h at one
 Champions League club, but 8 matches in 26 days showed no injury increase at another. Injuries move results through availability, which
 the closing line prices once known.
+
+## Team ratings for every league (offence / defence / team-specific venue edge / weather / pace) — `scripts/team_ratings.py`
+Time-decayed ridge (hierarchical shrinkage), refit every 28 days, walk-forward on the last 40% of each league, tuned half-life and ridge,
+tested against the league's own closing line. Question: does (model - line) predict (result - line)?
+| League | n | Margin MSE line / model / blend | slope of residual on (model-line) |
+|---|---|---|---|
+| NFL (+wind/cold/dome, +team venue edge) | 3,750 | 167.7 / 182.8 / 171.3 | +0.02 (t=0.4); totals with weather: +0.04..+0.05 (t≈0.6) |
+| NBA (+team venue edge) | 9,126 | 176.7 / 195.4 / 181.7 | -0.04 (t=-1.1) |
+| Premier League | 537 | 2.64 / 2.72 / 2.65 | +0.14 (t=0.7) |
+| La Liga | 533 | 2.04 / 2.13 / 2.06 | -0.06 |
+| Bundesliga | 413 | 3.11 / 3.36 / 3.20 | -0.51 (t=-2.0) |
+| Serie A | 536 | 2.03 / 2.16 / 2.07 | -0.22 |
+| Ligue 1 | 456 | 2.90 / 3.06 / 2.95 | -0.11 |
+Reading: in all 7 leagues the ratings model is 5-10% WORSE than the line and what it disagrees with the line about carries no signal. Team
+strength, venue, weather and pace are already in the closing price. Use ratings where there is NO sharp line (alternative markets, props,
+thin leagues, openers) as the prior; where a line exists the line is the model. `scripts/recalibrate.py` re-fits everything and reports drift.
+
+## Player availability (who plays) — NBA, 6,251 games, 5 seasons — `scripts/player_availability_nba.py`
+From ESPN box scores (free summary API) + closing lines: each player's expected minutes and Game Score/min from EARLIER games only; per team-game
+"talent missing" = sum over rotation players (exp. minutes >= 15) who did not play. Sanity: it explains the REALISED margin (beta +0.29 pts/unit,
+R2 4.7%, p<1e-4 in both periods) — so the proxy is real. Against the CLOSING line: residual beta +0.025 (p=0.09) -> the market already prices ~91% of it.
+Rotation players out: +0.21 pts each (p=0.014; fit seasons +0.13 p=0.27, test +0.31 p=0.014) — shrank from +0.39 when the sample doubled (regression to 0).
+Totals: +0.053 pts per unit of missing talent (p=0.002 on 2022-24; same sign p=0.22 on 2025-26): the line may over-lower totals for absences. Both are WATCH
+items, not validated. Betting the healthier side when the opponent misses >=3 more rotation players: ATS 53-55% (n=260/252), ROI +1.4%/+4.3% (se ±6%).

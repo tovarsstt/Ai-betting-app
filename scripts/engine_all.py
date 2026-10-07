@@ -63,8 +63,9 @@ REGISTRY: Dict[str, dict] = {
     "nba": {
         "family": "Normal margin sigma 11.77 (falls 0.12/pt of spread; Student-t nu=18.5), Normal total sigma 17.47, corr(margin,total) -0.01; win prob from the SPREAD beats the de-vigged ML (log-loss 0.6103 vs 0.6118)",
         "validated": {},
-        "priced": {"back_to_back": f"ATS CI {_ci('nba','ats_resid','road_b2b')}", "denver/utah altitude": f"ATS CI {_ci('nba','ats_resid','denver_home')} (Utah significant on train only)", "3-in-4": "not replicated"},
-        "untested": {"star rest/injury": "needs injury feed; the closing line moves on it, so only pre-close news has value"},
+        "priced": {"player availability (talent out, 6,251 games, 5 seasons)": "explains realised margin (beta 0.29/unit, R2 4.7%) but the closing line already prices ~91% of it (residual beta +0.025, p=0.09)", "back_to_back": f"ATS CI {_ci('nba','ats_resid','road_b2b')}", "denver/utah altitude": f"ATS CI {_ci('nba','ats_resid','denver_home')} (Utah significant on train only)", "3-in-4": "not replicated"},
+        "watch": {"talent missing -> totals": "+0.053 pts per unit of missing talent (p=0.002 on 2022-24, same sign but p=0.22 on 2025-26): the market may over-lower totals for absences — NOT validated", "rotation players out -> margin": "+0.21 pts per extra rotation player out (p=0.014, did not replicate on the train seasons) — NOT validated"},
+        "untested": {"pre-close injury news timing": "needs timestamped injury reports; closing lines already contain what was known at tip"},
     },
     "nhl": {
         "family": "Poisson (no over-dispersion once anchored: NB r->600, bivariate 0)",
@@ -117,10 +118,10 @@ def registry_text() -> str:
     lines = []
     for sp, r in REGISTRY.items():
         lines.append(f"\n=== {sp.upper()} ===\n  family   : {r['family']}")
-        for sec in ("validated", "priced", "untested"):
-            for k, v in r[sec].items():
+        for sec in ("validated", "priced", "watch", "untested"):
+            for k, v in r.get(sec, {}).items():
                 lines.append(f"  {sec:<9}: {k} — {v}")
-            if not r[sec]:
+            if not r.get(sec) and sec != "watch":
                 lines.append(f"  {sec:<9}: (none)")
     return "\n".join(lines)
 
