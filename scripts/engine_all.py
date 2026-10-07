@@ -58,7 +58,8 @@ REGISTRY: Dict[str, dict] = {
         "family": "empirical key-number residual pmf (3,6,7,10,14) around the implied margin; sigma_margin 13.29, sigma_total 13.42",
         "validated": {"wind>=15mph -> Under": "scoring multiplier exp(-wind_scoring*sigmoid(0.25*(mph-15))); Under 57.9% train n=618 / 68.5% test n=73 (realised wind, forecasts are noisier)"},
         "priced": {"starting QB quality (3,461 games 2012-25)": "explains realised margin (+4.45 pts per AY/A unit, R2 7.5%) but the line prices ~90% of it (residual +0.46, p=0.056, test +0.17 p=0.6)", "short_week": f"CI {_ci('nfl','spread_resid','home_short_week')}", "bye": f"CI {_ci('nfl','spread_resid','home_bye')}", "divisional": "not replicated", "thursday": "not replicated", "dome": "not replicated"},
-        "watch": {"backup / unusual starting QB (967 games)": "opponent of the backup team covered 54.5% in 2012-19 (ROI +4.1%) but 51.4% in 2020-25 (ROI -2.0%): the effect DECAYED, market adapted — NOT validated", "heavy favourite (|line|>=7) vs a backup QB": "55.7% (n=334, subset mined after the fact) — hypothesis only"},
+        "watch": {"backup / unusual starting QB": "opponent-of-backup covered 54.7% in 2012-19 and 52.4% in 2020-25; the backup team's residual went -2.4 pts (CI -3.6..-1.2) -> -0.9 (CI -2.0..+0.3); decay trend +0.13 pts/yr (p=0.27) = shrinking NOT proven. Pooled 53.5%, p=0.25. Now scored FORWARD on unseen 2026 games (forward_tests.py) — stake 0 until n>=150 and p<0.0167",
+                  "heavy favourite (|line|>=7) vs a backup QB": "55.5% n=339 was found AFTER looking at 8 cuts: raw one-sided p=0.14, Bonferroni p=1.0; 58.4% (2012-19) -> 52.6% (2020-25). Registered as its own forward rule, treated as noise until proven"},
         "untested": {"live injury news timing": "needs timestamped reports (Linemate wired in the app, not backtested)", "coaching/travel": "no data"},
     },
     "nba": {

@@ -1,0 +1,1700 @@
+{
+ "frozen_on": "2026-10-07",
+ "freeze_from": "2026-09-01",
+ "rules": {
+  "nfl_fade_backup_qb": "NFL: exactly one team starts a backup/unusual QB (not its modal starter of the last 6 games, >=3 prior) -> bet the OTHER team ATS at the posted spread",
+  "nfl_fade_backup_qb_heavy_fav": "same, restricted to |spread| >= 7 (a subset found after the fact \u2014 registered separately and Bonferroni-counted)",
+  "nfl_under_wind15": "NFL outdoor game, kickoff-hour wind >= 15 mph (Open-Meteo archive) -> bet the UNDER at the posted total (validated in-sample 57.9% n=618; this is its first genuine out-of-sample count)"
+ },
+ "games": {
+  "401872656": {
+   "utc": "2026-09-10T00:20Z",
+   "home": "Seattle Seahawks",
+   "away": "New England Patriots",
+   "hp": 13,
+   "ap": 10,
+   "starters": {
+    "New England Patriots": "4431452",
+    "Seattle Seahawks": "3924327"
+   },
+   "backup": {
+    "New England Patriots": false,
+    "Seattle Seahawks": true
+   },
+   "spread": -3.0,
+   "ou": 44.5,
+   "home_odds": 1.8333333333333335,
+   "away_odds": 2.0,
+   "under_odds": 1.8928571428571428,
+   "indoor": false,
+   "city": "Seattle",
+   "wind_mph": 5.8,
+   "results": {}
+  },
+  "401872657": {
+   "utc": "2026-09-11T00:35Z",
+   "home": "Los Angeles Rams",
+   "away": "San Francisco 49ers",
+   "hp": 7,
+   "ap": 27,
+   "starters": {
+    "San Francisco 49ers": "4361741",
+    "Los Angeles Rams": "12483"
+   },
+   "backup": {
+    "San Francisco 49ers": false,
+    "Los Angeles Rams": false
+   },
+   "spread": -3.5,
+   "ou": 47.5,
+   "home_odds": 1.8695652173913042,
+   "away_odds": 1.9523809523809523,
+   "under_odds": 1.9523809523809523,
+   "indoor": true,
+   "city": "Melbourne",
+   "results": {}
+  },
+  "401872925": {
+   "utc": "2026-09-13T17:00Z",
+   "home": "Cincinnati Bengals",
+   "away": "Tampa Bay Buccaneers",
+   "hp": 33,
+   "ap": 27,
+   "starters": {
+    "Tampa Bay Buccaneers": "3052587",
+    "Cincinnati Bengals": "3915511"
+   },
+   "backup": {
+    "Tampa Bay Buccaneers": false,
+    "Cincinnati Bengals": false
+   },
+   "spread": -3.5,
+   "ou": 50.5,
+   "home_odds": 1.8928571428571428,
+   "away_odds": 1.925925925925926,
+   "under_odds": 1.9090909090909092,
+   "indoor": false,
+   "city": "Cincinnati",
+   "wind_mph": 4.8,
+   "results": {}
+  },
+  "401872923": {
+   "utc": "2026-09-13T17:00Z",
+   "home": "Detroit Lions",
+   "away": "New Orleans Saints",
+   "hp": 31,
+   "ap": 30,
+   "starters": {
+    "New Orleans Saints": "4360689",
+    "Detroit Lions": "3046779"
+   },
+   "backup": {
+    "New Orleans Saints": false,
+    "Detroit Lions": false
+   },
+   "spread": -7.0,
+   "ou": 49.5,
+   "home_odds": 1.9090909090909092,
+   "away_odds": 1.9090909090909092,
+   "under_odds": 1.9523809523809523,
+   "indoor": true,
+   "city": "Detroit",
+   "results": {}
+  },
+  "401872924": {
+   "utc": "2026-09-13T17:00Z",
+   "home": "Tennessee Titans",
+   "away": "New York Jets",
+   "hp": 10,
+   "ap": 23,
+   "starters": {
+    "New York Jets": "15864",
+    "Tennessee Titans": "4688380"
+   },
+   "backup": {
+    "New York Jets": true,
+    "Tennessee Titans": false
+   },
+   "spread": -1.5,
+   "ou": 39.5,
+   "home_odds": 1.9523809523809523,
+   "away_odds": 1.8695652173913042,
+   "under_odds": 1.9090909090909092,
+   "indoor": false,
+   "city": "Nashville",
+   "wind_mph": 0.4,
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": false,
+     "odds": 1.9523809523809523
+    }
+   }
+  },
+  "401872659": {
+   "utc": "2026-09-13T17:00Z",
+   "home": "Indianapolis Colts",
+   "away": "Baltimore Ravens",
+   "hp": 23,
+   "ap": 41,
+   "starters": {
+    "Baltimore Ravens": "3916387",
+    "Indianapolis Colts": "3917792"
+   },
+   "backup": {
+    "Baltimore Ravens": false,
+    "Indianapolis Colts": true
+   },
+   "spread": 3.0,
+   "ou": 48.5,
+   "home_odds": 1.9090909090909092,
+   "away_odds": 1.9090909090909092,
+   "under_odds": 1.8695652173913042,
+   "indoor": true,
+   "city": "Indianapolis",
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": true,
+     "odds": 1.9090909090909092
+    }
+   }
+  },
+  "401872658": {
+   "utc": "2026-09-13T17:00Z",
+   "home": "Pittsburgh Steelers",
+   "away": "Atlanta Falcons",
+   "hp": 20,
+   "ap": 13,
+   "starters": {
+    "Atlanta Falcons": "2972515",
+    "Pittsburgh Steelers": "8439"
+   },
+   "backup": {
+    "Atlanta Falcons": true,
+    "Pittsburgh Steelers": false
+   },
+   "spread": -6.5,
+   "ou": 40.5,
+   "home_odds": 1.8928571428571428,
+   "away_odds": 1.925925925925926,
+   "under_odds": 1.925925925925926,
+   "indoor": false,
+   "city": "Pittsburgh",
+   "wind_mph": 5.4,
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": true,
+     "odds": 1.8928571428571428
+    }
+   }
+  },
+  "401872661": {
+   "utc": "2026-09-13T17:00Z",
+   "home": "Carolina Panthers",
+   "away": "Chicago Bears",
+   "hp": 37,
+   "ap": 59,
+   "starters": {
+    "Chicago Bears": "4431611",
+    "Carolina Panthers": "4685720"
+   },
+   "backup": {
+    "Chicago Bears": false,
+    "Carolina Panthers": false
+   },
+   "spread": 3.0,
+   "ou": 47.5,
+   "home_odds": 1.925925925925926,
+   "away_odds": 1.8928571428571428,
+   "under_odds": 1.8695652173913042,
+   "indoor": false,
+   "city": "Charlotte",
+   "wind_mph": 3.3,
+   "results": {}
+  },
+  "401872922": {
+   "utc": "2026-09-13T17:00Z",
+   "home": "Jacksonville Jaguars",
+   "away": "Cleveland Browns",
+   "hp": 34,
+   "ap": 10,
+   "starters": {
+    "Cleveland Browns": "3122840",
+    "Jacksonville Jaguars": "4360310"
+   },
+   "backup": {
+    "Cleveland Browns": true,
+    "Jacksonville Jaguars": false
+   },
+   "spread": -8.5,
+   "ou": 40.5,
+   "home_odds": 1.8695652173913042,
+   "away_odds": 1.9523809523809523,
+   "under_odds": 1.847457627118644,
+   "indoor": false,
+   "city": "Jacksonville",
+   "wind_mph": 2.6,
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": true,
+     "odds": 1.8695652173913042
+    },
+    "nfl_fade_backup_qb_heavy_fav": {
+     "win": true,
+     "odds": 1.8695652173913042
+    }
+   }
+  },
+  "401872660": {
+   "utc": "2026-09-13T17:00Z",
+   "home": "Houston Texans",
+   "away": "Buffalo Bills",
+   "hp": 31,
+   "ap": 36,
+   "starters": {
+    "Buffalo Bills": "3918298",
+    "Houston Texans": "4432577"
+   },
+   "backup": {
+    "Buffalo Bills": false,
+    "Houston Texans": false
+   },
+   "spread": 1.5,
+   "ou": 44.5,
+   "home_odds": 1.8695652173913042,
+   "away_odds": 1.9523809523809523,
+   "under_odds": 1.9090909090909092,
+   "indoor": true,
+   "city": "Houston",
+   "results": {}
+  },
+  "401872928": {
+   "utc": "2026-09-13T20:25Z",
+   "home": "Las Vegas Raiders",
+   "away": "Miami Dolphins",
+   "hp": 27,
+   "ap": 13,
+   "starters": {
+    "Miami Dolphins": "4242512",
+    "Las Vegas Raiders": "14880"
+   },
+   "backup": {
+    "Miami Dolphins": true,
+    "Las Vegas Raiders": true
+   },
+   "spread": -3.0,
+   "ou": 40.5,
+   "home_odds": 1.9090909090909092,
+   "away_odds": 1.9090909090909092,
+   "under_odds": 1.9090909090909092,
+   "indoor": true,
+   "city": "Las Vegas",
+   "results": {}
+  },
+  "401872927": {
+   "utc": "2026-09-13T20:25Z",
+   "home": "Minnesota Vikings",
+   "away": "Green Bay Packers",
+   "hp": 39,
+   "ap": 22,
+   "starters": {
+    "Green Bay Packers": "4036378",
+    "Minnesota Vikings": "2573079"
+   },
+   "backup": {
+    "Green Bay Packers": false,
+    "Minnesota Vikings": true
+   },
+   "spread": -2.5,
+   "ou": 46.5,
+   "home_odds": 1.9090909090909092,
+   "away_odds": 1.9090909090909092,
+   "under_odds": 1.847457627118644,
+   "indoor": true,
+   "city": "Minneapolis",
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": false,
+     "odds": 1.9090909090909092
+    }
+   }
+  },
+  "401872929": {
+   "utc": "2026-09-13T20:25Z",
+   "home": "Philadelphia Eagles",
+   "away": "Washington Commanders",
+   "hp": 24,
+   "ap": 22,
+   "starters": {
+    "Washington Commanders": "4426348",
+    "Philadelphia Eagles": "4040715"
+   },
+   "backup": {
+    "Washington Commanders": true,
+    "Philadelphia Eagles": false
+   },
+   "spread": -6.0,
+   "ou": 43.5,
+   "home_odds": 1.9090909090909092,
+   "away_odds": 1.9090909090909092,
+   "under_odds": 1.9523809523809523,
+   "indoor": false,
+   "city": "Philadelphia",
+   "wind_mph": 3.4,
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": false,
+     "odds": 1.9090909090909092
+    }
+   }
+  },
+  "401872926": {
+   "utc": "2026-09-13T20:25Z",
+   "home": "Los Angeles Chargers",
+   "away": "Arizona Cardinals",
+   "hp": 14,
+   "ap": 26,
+   "starters": {
+    "Arizona Cardinals": "2578570",
+    "Los Angeles Chargers": "4038941"
+   },
+   "backup": {
+    "Arizona Cardinals": false,
+    "Los Angeles Chargers": false
+   },
+   "spread": -8.5,
+   "ou": 47.5,
+   "home_odds": 1.8333333333333335,
+   "away_odds": 2.0,
+   "under_odds": 1.847457627118644,
+   "indoor": true,
+   "city": "Inglewood",
+   "results": {}
+  },
+  "401872930": {
+   "utc": "2026-09-14T00:20Z",
+   "home": "New York Giants",
+   "away": "Dallas Cowboys",
+   "hp": 28,
+   "ap": 20,
+   "starters": {
+    "Dallas Cowboys": "2577417",
+    "New York Giants": "4689114"
+   },
+   "backup": {
+    "Dallas Cowboys": false,
+    "New York Giants": false
+   },
+   "spread": 3.0,
+   "ou": 47.5,
+   "home_odds": 1.925925925925926,
+   "away_odds": 1.8928571428571428,
+   "under_odds": 1.9523809523809523,
+   "indoor": false,
+   "city": "East Rutherford",
+   "wind_mph": 3.9,
+   "results": {}
+  },
+  "401872931": {
+   "utc": "2026-09-15T00:15Z",
+   "home": "Kansas City Chiefs",
+   "away": "Denver Broncos",
+   "hp": 31,
+   "ap": 10,
+   "starters": {
+    "Denver Broncos": "4426338",
+    "Kansas City Chiefs": "3139477"
+   },
+   "backup": {
+    "Denver Broncos": false,
+    "Kansas City Chiefs": false
+   },
+   "spread": -2.5,
+   "ou": 42.5,
+   "home_odds": 1.925925925925926,
+   "away_odds": 1.8928571428571428,
+   "under_odds": 1.9090909090909092,
+   "indoor": false,
+   "city": "Kansas City",
+   "wind_mph": 10.1,
+   "results": {}
+  },
+  "401872932": {
+   "utc": "2026-09-18T00:15Z",
+   "home": "Buffalo Bills",
+   "away": "Detroit Lions",
+   "hp": 41,
+   "ap": 31,
+   "starters": {
+    "Detroit Lions": "3046779",
+    "Buffalo Bills": "3918298"
+   },
+   "backup": {
+    "Detroit Lions": false,
+    "Buffalo Bills": false
+   },
+   "spread": -5.5,
+   "ou": 54.5,
+   "home_odds": 1.9523809523809523,
+   "away_odds": 1.8695652173913042,
+   "under_odds": 1.9803921568627452,
+   "indoor": false,
+   "city": "Orchard Park",
+   "wind_mph": 2.9,
+   "results": {}
+  },
+  "401872933": {
+   "utc": "2026-09-20T17:00Z",
+   "home": "Atlanta Falcons",
+   "away": "Carolina Panthers",
+   "hp": 3,
+   "ap": 34,
+   "starters": {
+    "Carolina Panthers": "4685720",
+    "Atlanta Falcons": "2972515"
+   },
+   "backup": {
+    "Carolina Panthers": false,
+    "Atlanta Falcons": true
+   },
+   "spread": 2.5,
+   "ou": 43.5,
+   "home_odds": 1.9803921568627452,
+   "away_odds": 1.847457627118644,
+   "under_odds": 1.9090909090909092,
+   "indoor": true,
+   "city": "Atlanta",
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": true,
+     "odds": 1.847457627118644
+    }
+   }
+  },
+  "401872937": {
+   "utc": "2026-09-20T17:00Z",
+   "home": "Chicago Bears",
+   "away": "Minnesota Vikings",
+   "hp": 3,
+   "ap": 9,
+   "starters": {
+    "Minnesota Vikings": "2573079",
+    "Chicago Bears": "4431611"
+   },
+   "backup": {
+    "Minnesota Vikings": true,
+    "Chicago Bears": false
+   },
+   "spread": -4.5,
+   "ou": 46.5,
+   "home_odds": 1.8928571428571428,
+   "away_odds": 1.925925925925926,
+   "under_odds": 1.9523809523809523,
+   "indoor": false,
+   "city": "Chicago",
+   "wind_mph": 10.9,
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": false,
+     "odds": 1.8928571428571428
+    }
+   }
+  },
+  "401872939": {
+   "utc": "2026-09-20T17:00Z",
+   "home": "Tennessee Titans",
+   "away": "Philadelphia Eagles",
+   "hp": 20,
+   "ap": 24,
+   "starters": {
+    "Philadelphia Eagles": "4040715",
+    "Tennessee Titans": "4688380"
+   },
+   "backup": {
+    "Philadelphia Eagles": false,
+    "Tennessee Titans": false
+   },
+   "spread": 7.0,
+   "ou": 39.5,
+   "home_odds": 1.9523809523809523,
+   "away_odds": 1.8695652173913042,
+   "under_odds": 1.925925925925926,
+   "indoor": false,
+   "city": "Nashville",
+   "wind_mph": 2.4,
+   "results": {}
+  },
+  "401872946": {
+   "utc": "2026-09-20T17:00Z",
+   "home": "New England Patriots",
+   "away": "Pittsburgh Steelers",
+   "hp": 20,
+   "ap": 3,
+   "starters": {
+    "Pittsburgh Steelers": "8439",
+    "New England Patriots": "4431452"
+   },
+   "backup": {
+    "Pittsburgh Steelers": false,
+    "New England Patriots": false
+   },
+   "spread": -4.5,
+   "ou": 41.5,
+   "home_odds": 1.847457627118644,
+   "away_odds": 1.9803921568627452,
+   "under_odds": 1.8695652173913042,
+   "indoor": false,
+   "city": "Foxborough",
+   "wind_mph": 6.4,
+   "results": {}
+  },
+  "401872936": {
+   "utc": "2026-09-20T17:00Z",
+   "home": "New York Jets",
+   "away": "Green Bay Packers",
+   "hp": 17,
+   "ap": 20,
+   "starters": {
+    "Green Bay Packers": "4036378",
+    "New York Jets": "15864"
+   },
+   "backup": {
+    "Green Bay Packers": false,
+    "New York Jets": true
+   },
+   "spread": 3.5,
+   "ou": 44.5,
+   "home_odds": 1.8928571428571428,
+   "away_odds": 1.925925925925926,
+   "under_odds": 1.9090909090909092,
+   "indoor": false,
+   "city": "East Rutherford",
+   "wind_mph": 7.9,
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": false,
+     "odds": 1.925925925925926
+    }
+   }
+  },
+  "401872935": {
+   "utc": "2026-09-20T17:00Z",
+   "home": "Tampa Bay Buccaneers",
+   "away": "Cleveland Browns",
+   "hp": 19,
+   "ap": 23,
+   "starters": {
+    "Cleveland Browns": "3122840",
+    "Tampa Bay Buccaneers": "3052587"
+   },
+   "backup": {
+    "Cleveland Browns": true,
+    "Tampa Bay Buccaneers": false
+   },
+   "spread": -8.5,
+   "ou": 41.5,
+   "home_odds": 1.9523809523809523,
+   "away_odds": 1.8695652173913042,
+   "under_odds": 1.8928571428571428,
+   "indoor": false,
+   "city": "Tampa",
+   "wind_mph": 2.3,
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": false,
+     "odds": 1.9523809523809523
+    },
+    "nfl_fade_backup_qb_heavy_fav": {
+     "win": false,
+     "odds": 1.9523809523809523
+    }
+   }
+  },
+  "401872938": {
+   "utc": "2026-09-20T17:00Z",
+   "home": "Baltimore Ravens",
+   "away": "New Orleans Saints",
+   "hp": 17,
+   "ap": 24,
+   "starters": {
+    "New Orleans Saints": "4360689",
+    "Baltimore Ravens": "3916387"
+   },
+   "backup": {
+    "New Orleans Saints": false,
+    "Baltimore Ravens": false
+   },
+   "spread": -8.5,
+   "ou": 45.5,
+   "home_odds": 1.9523809523809523,
+   "away_odds": 1.8695652173913042,
+   "under_odds": 1.8695652173913042,
+   "indoor": false,
+   "city": "Baltimore",
+   "wind_mph": 5.9,
+   "results": {}
+  },
+  "401872934": {
+   "utc": "2026-09-20T17:00Z",
+   "home": "Houston Texans",
+   "away": "Cincinnati Bengals",
+   "hp": 6,
+   "ap": 20,
+   "starters": {
+    "Cincinnati Bengals": "3915511",
+    "Houston Texans": "4432577"
+   },
+   "backup": {
+    "Cincinnati Bengals": false,
+    "Houston Texans": false
+   },
+   "spread": -3.0,
+   "ou": 45.5,
+   "home_odds": 1.9803921568627452,
+   "away_odds": 1.847457627118644,
+   "under_odds": 1.9090909090909092,
+   "indoor": true,
+   "city": "Houston",
+   "results": {}
+  },
+  "401872940": {
+   "utc": "2026-09-20T20:05Z",
+   "home": "Denver Broncos",
+   "away": "Jacksonville Jaguars",
+   "hp": 20,
+   "ap": 13,
+   "starters": {
+    "Jacksonville Jaguars": "4360310",
+    "Denver Broncos": "4426338"
+   },
+   "backup": {
+    "Jacksonville Jaguars": false,
+    "Denver Broncos": false
+   },
+   "spread": -2.5,
+   "ou": 45.5,
+   "home_odds": 1.8695652173913042,
+   "away_odds": 1.9523809523809523,
+   "under_odds": 1.9090909090909092,
+   "indoor": false,
+   "city": "Denver",
+   "wind_mph": 7.0,
+   "results": {}
+  },
+  "401872941": {
+   "utc": "2026-09-20T20:05Z",
+   "home": "Los Angeles Chargers",
+   "away": "Las Vegas Raiders",
+   "hp": 14,
+   "ap": 26,
+   "starters": {
+    "Las Vegas Raiders": "14880",
+    "Los Angeles Chargers": "4038941"
+   },
+   "backup": {
+    "Las Vegas Raiders": true,
+    "Los Angeles Chargers": false
+   },
+   "spread": -6.5,
+   "ou": 43.5,
+   "home_odds": 1.819672131147541,
+   "away_odds": 2.02,
+   "under_odds": 1.9090909090909092,
+   "indoor": true,
+   "city": "Inglewood",
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": false,
+     "odds": 1.819672131147541
+    }
+   }
+  },
+  "401872944": {
+   "utc": "2026-09-20T20:25Z",
+   "home": "Dallas Cowboys",
+   "away": "Washington Commanders",
+   "hp": 37,
+   "ap": 20,
+   "starters": {
+    "Washington Commanders": "4426348",
+    "Dallas Cowboys": "2577417"
+   },
+   "backup": {
+    "Washington Commanders": true,
+    "Dallas Cowboys": false
+   },
+   "spread": -4.5,
+   "ou": 51.5,
+   "home_odds": 1.9523809523809523,
+   "away_odds": 1.8695652173913042,
+   "under_odds": 1.9090909090909092,
+   "indoor": true,
+   "city": "Arlington",
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": true,
+     "odds": 1.9523809523809523
+    }
+   }
+  },
+  "401872943": {
+   "utc": "2026-09-20T20:25Z",
+   "home": "Arizona Cardinals",
+   "away": "Seattle Seahawks",
+   "hp": 7,
+   "ap": 31,
+   "starters": {
+    "Seattle Seahawks": "3924327",
+    "Arizona Cardinals": "2578570"
+   },
+   "backup": {
+    "Seattle Seahawks": true,
+    "Arizona Cardinals": false
+   },
+   "spread": 3.5,
+   "ou": 40.5,
+   "home_odds": 2.0,
+   "away_odds": 1.8333333333333335,
+   "under_odds": 1.9523809523809523,
+   "indoor": true,
+   "city": "Glendale",
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": false,
+     "odds": 2.0
+    }
+   }
+  },
+  "401872942": {
+   "utc": "2026-09-20T20:25Z",
+   "home": "San Francisco 49ers",
+   "away": "Miami Dolphins",
+   "hp": 35,
+   "ap": 13,
+   "starters": {
+    "Miami Dolphins": "4242512",
+    "San Francisco 49ers": "4361741"
+   },
+   "backup": {
+    "Miami Dolphins": true,
+    "San Francisco 49ers": false
+   },
+   "spread": -12.5,
+   "ou": 44.5,
+   "home_odds": 1.9090909090909092,
+   "away_odds": 1.9090909090909092,
+   "under_odds": 1.9523809523809523,
+   "indoor": false,
+   "city": "Santa Clara",
+   "wind_mph": 7.4,
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": true,
+     "odds": 1.9090909090909092
+    },
+    "nfl_fade_backup_qb_heavy_fav": {
+     "win": true,
+     "odds": 1.9090909090909092
+    }
+   }
+  },
+  "401872945": {
+   "utc": "2026-09-21T00:20Z",
+   "home": "Kansas City Chiefs",
+   "away": "Indianapolis Colts",
+   "hp": 33,
+   "ap": 30,
+   "starters": {
+    "Indianapolis Colts": "3917792",
+    "Kansas City Chiefs": "3139477"
+   },
+   "backup": {
+    "Indianapolis Colts": true,
+    "Kansas City Chiefs": false
+   },
+   "spread": -6.0,
+   "ou": 46.5,
+   "home_odds": 1.925925925925926,
+   "away_odds": 1.8928571428571428,
+   "under_odds": 1.847457627118644,
+   "indoor": false,
+   "city": "Kansas City",
+   "wind_mph": 6.1,
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": false,
+     "odds": 1.925925925925926
+    }
+   }
+  },
+  "401872947": {
+   "utc": "2026-09-22T00:15Z",
+   "home": "Los Angeles Rams",
+   "away": "New York Giants",
+   "hp": 28,
+   "ap": 6,
+   "starters": {
+    "New York Giants": "2969939",
+    "Los Angeles Rams": "12483"
+   },
+   "backup": {
+    "New York Giants": true,
+    "Los Angeles Rams": false
+   },
+   "spread": -7.0,
+   "ou": 47.5,
+   "home_odds": 2.02,
+   "away_odds": 1.819672131147541,
+   "under_odds": 1.8928571428571428,
+   "indoor": true,
+   "city": "Inglewood",
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": true,
+     "odds": 2.02
+    },
+    "nfl_fade_backup_qb_heavy_fav": {
+     "win": true,
+     "odds": 2.02
+    }
+   }
+  },
+  "401872948": {
+   "utc": "2026-09-25T00:15Z",
+   "home": "Green Bay Packers",
+   "away": "Atlanta Falcons",
+   "hp": 14,
+   "ap": 35,
+   "starters": {
+    "Atlanta Falcons": "4360423",
+    "Green Bay Packers": "4036378"
+   },
+   "backup": {
+    "Atlanta Falcons": true,
+    "Green Bay Packers": false
+   },
+   "spread": -4.5,
+   "ou": 43.5,
+   "home_odds": 1.8928571428571428,
+   "away_odds": 1.925925925925926,
+   "under_odds": 1.8695652173913042,
+   "indoor": false,
+   "city": "Green Bay",
+   "wind_mph": 5.9,
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": false,
+     "odds": 1.8928571428571428
+    }
+   }
+  },
+  "401872953": {
+   "utc": "2026-09-27T17:00Z",
+   "home": "Buffalo Bills",
+   "away": "Los Angeles Chargers",
+   "hp": 24,
+   "ap": 16,
+   "starters": {
+    "Los Angeles Chargers": "4038941",
+    "Buffalo Bills": "3918298"
+   },
+   "backup": {
+    "Los Angeles Chargers": false,
+    "Buffalo Bills": false
+   },
+   "spread": -7.0,
+   "ou": 50.5,
+   "home_odds": 1.8695652173913042,
+   "away_odds": 1.9523809523809523,
+   "under_odds": 1.9090909090909092,
+   "indoor": false,
+   "city": "Orchard Park",
+   "wind_mph": 11.5,
+   "results": {}
+  },
+  "401872949": {
+   "utc": "2026-09-27T17:00Z",
+   "home": "Cleveland Browns",
+   "away": "Carolina Panthers",
+   "hp": 21,
+   "ap": 18,
+   "starters": {
+    "Carolina Panthers": "4685720",
+    "Cleveland Browns": "3122840"
+   },
+   "backup": {
+    "Carolina Panthers": false,
+    "Cleveland Browns": true
+   },
+   "spread": 2.5,
+   "ou": 41.5,
+   "home_odds": 1.8928571428571428,
+   "away_odds": 1.925925925925926,
+   "under_odds": 1.9523809523809523,
+   "indoor": false,
+   "city": "Cleveland",
+   "wind_mph": 11.2,
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": false,
+     "odds": 1.925925925925926
+    }
+   }
+  },
+  "401872954": {
+   "utc": "2026-09-27T17:00Z",
+   "home": "Detroit Lions",
+   "away": "New York Jets",
+   "hp": 31,
+   "ap": 24,
+   "starters": {
+    "New York Jets": "15864",
+    "Detroit Lions": "3046779"
+   },
+   "backup": {
+    "New York Jets": true,
+    "Detroit Lions": false
+   },
+   "spread": -7.0,
+   "ou": 49.5,
+   "home_odds": 1.8695652173913042,
+   "away_odds": 1.9523809523809523,
+   "under_odds": 1.9090909090909092,
+   "indoor": true,
+   "city": "Detroit",
+   "results": {}
+  },
+  "401872951": {
+   "utc": "2026-09-27T17:00Z",
+   "home": "Indianapolis Colts",
+   "away": "Houston Texans",
+   "hp": 19,
+   "ap": 17,
+   "starters": {
+    "Houston Texans": "4432577",
+    "Indianapolis Colts": "3917792"
+   },
+   "backup": {
+    "Houston Texans": false,
+    "Indianapolis Colts": true
+   },
+   "spread": 1.5,
+   "ou": 42.5,
+   "home_odds": 1.925925925925926,
+   "away_odds": 1.8928571428571428,
+   "under_odds": 1.9090909090909092,
+   "indoor": true,
+   "city": "Indianapolis",
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": false,
+     "odds": 1.8928571428571428
+    }
+   }
+  },
+  "401872952": {
+   "utc": "2026-09-27T17:00Z",
+   "home": "Miami Dolphins",
+   "away": "Kansas City Chiefs",
+   "hp": 10,
+   "ap": 24,
+   "starters": {
+    "Kansas City Chiefs": "3139477",
+    "Miami Dolphins": "4242512"
+   },
+   "backup": {
+    "Kansas City Chiefs": false,
+    "Miami Dolphins": true
+   },
+   "spread": 10.0,
+   "ou": 45.5,
+   "home_odds": 1.8928571428571428,
+   "away_odds": 1.925925925925926,
+   "under_odds": 1.9090909090909092,
+   "indoor": false,
+   "city": "Miami Gardens",
+   "wind_mph": 0.9,
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": true,
+     "odds": 1.925925925925926
+    },
+    "nfl_fade_backup_qb_heavy_fav": {
+     "win": true,
+     "odds": 1.925925925925926
+    }
+   }
+  },
+  "401872956": {
+   "utc": "2026-09-27T17:00Z",
+   "home": "New York Giants",
+   "away": "Tennessee Titans",
+   "hp": 12,
+   "ap": 7,
+   "starters": {
+    "Tennessee Titans": "4688380",
+    "New York Giants": "2969939"
+   },
+   "backup": {
+    "Tennessee Titans": false,
+    "New York Giants": true
+   },
+   "spread": -2.5,
+   "ou": 37.5,
+   "home_odds": 1.847457627118644,
+   "away_odds": 1.9803921568627452,
+   "under_odds": 1.925925925925926,
+   "indoor": false,
+   "city": "East Rutherford",
+   "wind_mph": 13.3,
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": false,
+     "odds": 1.9803921568627452
+    }
+   }
+  },
+  "401872950": {
+   "utc": "2026-09-27T17:00Z",
+   "home": "Pittsburgh Steelers",
+   "away": "Cincinnati Bengals",
+   "hp": 30,
+   "ap": 27,
+   "starters": {
+    "Cincinnati Bengals": "3915511",
+    "Pittsburgh Steelers": "8439"
+   },
+   "backup": {
+    "Cincinnati Bengals": false,
+    "Pittsburgh Steelers": false
+   },
+   "spread": 3.5,
+   "ou": 42.5,
+   "home_odds": 1.8928571428571428,
+   "away_odds": 1.925925925925926,
+   "under_odds": 1.925925925925926,
+   "indoor": false,
+   "city": "Pittsburgh",
+   "wind_mph": 12.0,
+   "results": {}
+  },
+  "401872955": {
+   "utc": "2026-09-27T17:00Z",
+   "home": "Washington Commanders",
+   "away": "Seattle Seahawks",
+   "hp": 33,
+   "ap": 31,
+   "starters": {
+    "Seattle Seahawks": "3912547",
+    "Washington Commanders": "2576980"
+   },
+   "backup": {
+    "Seattle Seahawks": false,
+    "Washington Commanders": false
+   },
+   "spread": 8.5,
+   "ou": 40.5,
+   "home_odds": 1.8695652173913042,
+   "away_odds": 1.9523809523809523,
+   "under_odds": 1.8928571428571428,
+   "indoor": false,
+   "city": "Landover",
+   "wind_mph": 13.1,
+   "results": {}
+  },
+  "401872957": {
+   "utc": "2026-09-27T17:00Z",
+   "home": "Jacksonville Jaguars",
+   "away": "New England Patriots",
+   "hp": 35,
+   "ap": 6,
+   "starters": {
+    "New England Patriots": "4431452",
+    "Jacksonville Jaguars": "4360310"
+   },
+   "backup": {
+    "New England Patriots": false,
+    "Jacksonville Jaguars": false
+   },
+   "spread": -3.0,
+   "ou": 46.5,
+   "home_odds": 1.9803921568627452,
+   "away_odds": 1.847457627118644,
+   "under_odds": 1.9523809523809523,
+   "indoor": false,
+   "city": "Jacksonville",
+   "wind_mph": 3.7,
+   "results": {}
+  },
+  "401872958": {
+   "utc": "2026-09-27T20:05Z",
+   "home": "San Francisco 49ers",
+   "away": "Arizona Cardinals",
+   "hp": 36,
+   "ap": 30,
+   "starters": {
+    "Arizona Cardinals": "2578570",
+    "San Francisco 49ers": "4361741"
+   },
+   "backup": {
+    "Arizona Cardinals": false,
+    "San Francisco 49ers": false
+   },
+   "spread": -7.5,
+   "ou": 48.5,
+   "home_odds": 1.9090909090909092,
+   "away_odds": 1.9090909090909092,
+   "under_odds": 1.8695652173913042,
+   "indoor": false,
+   "city": "Santa Clara",
+   "wind_mph": 6.4,
+   "results": {}
+  },
+  "401872959": {
+   "utc": "2026-09-27T20:05Z",
+   "home": "Tampa Bay Buccaneers",
+   "away": "Minnesota Vikings",
+   "hp": 16,
+   "ap": 23,
+   "starters": {
+    "Minnesota Vikings": "3917315",
+    "Tampa Bay Buccaneers": "3052587"
+   },
+   "backup": {
+    "Minnesota Vikings": true,
+    "Tampa Bay Buccaneers": false
+   },
+   "spread": -1.5,
+   "ou": 42.5,
+   "home_odds": 1.9803921568627452,
+   "away_odds": 1.847457627118644,
+   "under_odds": 1.925925925925926,
+   "indoor": false,
+   "city": "Tampa",
+   "wind_mph": 5.8,
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": false,
+     "odds": 1.9803921568627452
+    }
+   }
+  },
+  "401872960": {
+   "utc": "2026-09-27T20:25Z",
+   "home": "Dallas Cowboys",
+   "away": "Baltimore Ravens",
+   "hp": 31,
+   "ap": 34,
+   "starters": {
+    "Baltimore Ravens": "3916387",
+    "Dallas Cowboys": "2577417"
+   },
+   "backup": {
+    "Baltimore Ravens": false,
+    "Dallas Cowboys": false
+   },
+   "spread": 3.0,
+   "ou": 54.5,
+   "home_odds": 1.925925925925926,
+   "away_odds": 1.8928571428571428,
+   "under_odds": 1.8928571428571428,
+   "indoor": true,
+   "city": "Rio De Janeiro",
+   "results": {}
+  },
+  "401872961": {
+   "utc": "2026-09-27T20:25Z",
+   "home": "New Orleans Saints",
+   "away": "Las Vegas Raiders",
+   "hp": 27,
+   "ap": 35,
+   "starters": {
+    "Las Vegas Raiders": "14880",
+    "New Orleans Saints": "4360689"
+   },
+   "backup": {
+    "Las Vegas Raiders": false,
+    "New Orleans Saints": false
+   },
+   "spread": -3.5,
+   "ou": 44.5,
+   "home_odds": 1.925925925925926,
+   "away_odds": 1.8928571428571428,
+   "under_odds": 1.9090909090909092,
+   "indoor": true,
+   "city": "New Orleans",
+   "results": {}
+  },
+  "401872962": {
+   "utc": "2026-09-28T00:20Z",
+   "home": "Denver Broncos",
+   "away": "Los Angeles Rams",
+   "hp": 30,
+   "ap": 26,
+   "starters": {
+    "Los Angeles Rams": "12483",
+    "Denver Broncos": "4426338"
+   },
+   "backup": {
+    "Los Angeles Rams": false,
+    "Denver Broncos": false
+   },
+   "spread": -1.5,
+   "ou": 44.5,
+   "home_odds": 1.925925925925926,
+   "away_odds": 1.8928571428571428,
+   "under_odds": 1.8928571428571428,
+   "indoor": false,
+   "city": "Denver",
+   "wind_mph": 5.9,
+   "results": {}
+  },
+  "401872963": {
+   "utc": "2026-09-29T00:15Z",
+   "home": "Chicago Bears",
+   "away": "Philadelphia Eagles",
+   "hp": 27,
+   "ap": 7,
+   "starters": {
+    "Philadelphia Eagles": "4040715",
+    "Chicago Bears": "15168"
+   },
+   "backup": {
+    "Philadelphia Eagles": false,
+    "Chicago Bears": true
+   },
+   "spread": 3.0,
+   "ou": 42.5,
+   "home_odds": 1.9523809523809523,
+   "away_odds": 1.8695652173913042,
+   "under_odds": 1.8928571428571428,
+   "indoor": false,
+   "city": "Chicago",
+   "wind_mph": 2.5,
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": false,
+     "odds": 1.8695652173913042
+    }
+   }
+  },
+  "401872964": {
+   "utc": "2026-10-02T00:15Z",
+   "home": "Cleveland Browns",
+   "away": "Pittsburgh Steelers",
+   "hp": 27,
+   "ap": 24,
+   "starters": {
+    "Pittsburgh Steelers": "8439",
+    "Cleveland Browns": "3122840"
+   },
+   "backup": {
+    "Pittsburgh Steelers": false,
+    "Cleveland Browns": true
+   },
+   "spread": 2.5,
+   "ou": 38.5,
+   "home_odds": 2.0,
+   "away_odds": 1.8333333333333335,
+   "under_odds": 1.8695652173913042,
+   "indoor": false,
+   "city": "Cleveland",
+   "wind_mph": 12.4,
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": false,
+     "odds": 1.8333333333333335
+    }
+   }
+  },
+  "401872965": {
+   "utc": "2026-10-04T13:30Z",
+   "home": "Washington Commanders",
+   "away": "Indianapolis Colts",
+   "hp": 13,
+   "ap": 30,
+   "starters": {
+    "Indianapolis Colts": "3917792",
+    "Washington Commanders": "4432722"
+   },
+   "backup": {
+    "Indianapolis Colts": false,
+    "Washington Commanders": true
+   },
+   "spread": 4.5,
+   "ou": 46.5,
+   "home_odds": 1.9803921568627452,
+   "away_odds": 1.847457627118644,
+   "under_odds": 1.8695652173913042,
+   "indoor": false,
+   "city": "London",
+   "wind_mph": 4.2,
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": true,
+     "odds": 1.847457627118644
+    }
+   }
+  },
+  "401872971": {
+   "utc": "2026-10-04T17:00Z",
+   "home": "Buffalo Bills",
+   "away": "New England Patriots",
+   "hp": 26,
+   "ap": 29,
+   "starters": {
+    "New England Patriots": "4431452",
+    "Buffalo Bills": "3918298"
+   },
+   "backup": {
+    "New England Patriots": false,
+    "Buffalo Bills": false
+   },
+   "spread": -7.0,
+   "ou": 49.5,
+   "home_odds": 1.925925925925926,
+   "away_odds": 1.8928571428571428,
+   "under_odds": 1.8928571428571428,
+   "indoor": false,
+   "city": "Orchard Park",
+   "wind_mph": 11.5,
+   "results": {}
+  },
+  "401872972": {
+   "utc": "2026-10-04T17:00Z",
+   "home": "Chicago Bears",
+   "away": "New York Jets",
+   "hp": 23,
+   "ap": 12,
+   "starters": {
+    "New York Jets": "15864",
+    "Chicago Bears": "4434153"
+   },
+   "backup": {
+    "New York Jets": true,
+    "Chicago Bears": true
+   },
+   "spread": -3.5,
+   "ou": 43.5,
+   "home_odds": 1.9090909090909092,
+   "away_odds": 1.9090909090909092,
+   "under_odds": 1.925925925925926,
+   "indoor": false,
+   "city": "Chicago",
+   "wind_mph": 5.5,
+   "results": {}
+  },
+  "401872969": {
+   "utc": "2026-10-04T17:00Z",
+   "home": "Cincinnati Bengals",
+   "away": "Jacksonville Jaguars",
+   "hp": 17,
+   "ap": 22,
+   "starters": {
+    "Jacksonville Jaguars": "4360310",
+    "Cincinnati Bengals": "3915511"
+   },
+   "backup": {
+    "Jacksonville Jaguars": false,
+    "Cincinnati Bengals": false
+   },
+   "spread": -2.5,
+   "ou": 51.5,
+   "home_odds": 1.847457627118644,
+   "away_odds": 1.9803921568627452,
+   "under_odds": 1.9090909090909092,
+   "indoor": false,
+   "city": "Cincinnati",
+   "wind_mph": 2.8,
+   "results": {}
+  },
+  "401872966": {
+   "utc": "2026-10-04T17:00Z",
+   "home": "New York Giants",
+   "away": "Arizona Cardinals",
+   "hp": 36,
+   "ap": 24,
+   "starters": {
+    "Arizona Cardinals": "2578570",
+    "New York Giants": "2969939"
+   },
+   "backup": {
+    "Arizona Cardinals": false,
+    "New York Giants": true
+   },
+   "spread": 2.5,
+   "ou": 43.5,
+   "home_odds": 1.8695652173913042,
+   "away_odds": 1.9523809523809523,
+   "under_odds": 1.9523809523809523,
+   "indoor": false,
+   "city": "East Rutherford",
+   "wind_mph": 6.1,
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": false,
+     "odds": 1.9523809523809523
+    }
+   }
+  },
+  "401872970": {
+   "utc": "2026-10-04T17:00Z",
+   "home": "Philadelphia Eagles",
+   "away": "Los Angeles Rams",
+   "hp": 20,
+   "ap": 24,
+   "starters": {
+    "Los Angeles Rams": "12483",
+    "Philadelphia Eagles": "4040715"
+   },
+   "backup": {
+    "Los Angeles Rams": false,
+    "Philadelphia Eagles": false
+   },
+   "spread": 4.5,
+   "ou": 42.5,
+   "home_odds": 1.8695652173913042,
+   "away_odds": 1.9523809523809523,
+   "under_odds": 2.0,
+   "indoor": false,
+   "city": "Philadelphia",
+   "wind_mph": 7.5,
+   "results": {}
+  },
+  "401872968": {
+   "utc": "2026-10-04T17:00Z",
+   "home": "Tampa Bay Buccaneers",
+   "away": "Green Bay Packers",
+   "hp": 14,
+   "ap": 17,
+   "starters": {
+    "Green Bay Packers": "4036378",
+    "Tampa Bay Buccaneers": "4596472"
+   },
+   "backup": {
+    "Green Bay Packers": false,
+    "Tampa Bay Buccaneers": true
+   },
+   "spread": 2.5,
+   "ou": 38.5,
+   "home_odds": 1.9803921568627452,
+   "away_odds": 1.847457627118644,
+   "under_odds": 1.9523809523809523,
+   "indoor": false,
+   "city": "Tampa",
+   "wind_mph": 4.8,
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": true,
+     "odds": 1.847457627118644
+    }
+   }
+  },
+  "401872973": {
+   "utc": "2026-10-04T17:00Z",
+   "home": "Baltimore Ravens",
+   "away": "Tennessee Titans",
+   "hp": 24,
+   "ap": 18,
+   "starters": {
+    "Tennessee Titans": "4688380",
+    "Baltimore Ravens": "3916387"
+   },
+   "backup": {
+    "Tennessee Titans": false,
+    "Baltimore Ravens": false
+   },
+   "spread": -11.5,
+   "ou": 41.5,
+   "home_odds": 1.9523809523809523,
+   "away_odds": 1.8695652173913042,
+   "under_odds": 1.9523809523809523,
+   "indoor": false,
+   "city": "Baltimore",
+   "wind_mph": 7.0,
+   "results": {}
+  },
+  "401872967": {
+   "utc": "2026-10-04T17:00Z",
+   "home": "Houston Texans",
+   "away": "Dallas Cowboys",
+   "hp": 30,
+   "ap": 34,
+   "starters": {
+    "Dallas Cowboys": "2577417",
+    "Houston Texans": "4432577"
+   },
+   "backup": {
+    "Dallas Cowboys": false,
+    "Houston Texans": false
+   },
+   "spread": -3.0,
+   "ou": 48.5,
+   "home_odds": 1.9523809523809523,
+   "away_odds": 1.8695652173913042,
+   "under_odds": 1.9523809523809523,
+   "indoor": true,
+   "city": "Houston",
+   "results": {}
+  },
+  "401872974": {
+   "utc": "2026-10-04T20:05Z",
+   "home": "Minnesota Vikings",
+   "away": "Miami Dolphins",
+   "hp": 15,
+   "ap": 10,
+   "starters": {
+    "Miami Dolphins": "4242512",
+    "Minnesota Vikings": "3917315"
+   },
+   "backup": {
+    "Miami Dolphins": false,
+    "Minnesota Vikings": true
+   },
+   "spread": -10.0,
+   "ou": 38.5,
+   "home_odds": 1.9523809523809523,
+   "away_odds": 1.8695652173913042,
+   "under_odds": 1.8928571428571428,
+   "indoor": true,
+   "city": "Minneapolis",
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": true,
+     "odds": 1.8695652173913042
+    },
+    "nfl_fade_backup_qb_heavy_fav": {
+     "win": true,
+     "odds": 1.8695652173913042
+    }
+   }
+  },
+  "401872976": {
+   "utc": "2026-10-04T20:25Z",
+   "home": "Las Vegas Raiders",
+   "away": "Kansas City Chiefs",
+   "hp": 27,
+   "ap": 30,
+   "starters": {
+    "Kansas City Chiefs": "3139477",
+    "Las Vegas Raiders": "14880"
+   },
+   "backup": {
+    "Kansas City Chiefs": true,
+    "Las Vegas Raiders": false
+   },
+   "spread": 3.5,
+   "ou": 47.5,
+   "home_odds": 2.02,
+   "away_odds": 1.819672131147541,
+   "under_odds": 1.8928571428571428,
+   "indoor": true,
+   "city": "Las Vegas",
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": true,
+     "odds": 2.02
+    }
+   }
+  },
+  "401872975": {
+   "utc": "2026-10-04T20:25Z",
+   "home": "San Francisco 49ers",
+   "away": "Denver Broncos",
+   "hp": 24,
+   "ap": 14,
+   "starters": {
+    "Denver Broncos": "4426338",
+    "San Francisco 49ers": "4361741"
+   },
+   "backup": {
+    "Denver Broncos": false,
+    "San Francisco 49ers": false
+   },
+   "spread": -3.0,
+   "ou": 48.5,
+   "home_odds": 1.9523809523809523,
+   "away_odds": 1.8695652173913042,
+   "under_odds": 1.8695652173913042,
+   "indoor": false,
+   "city": "Santa Clara",
+   "wind_mph": 6.6,
+   "results": {}
+  },
+  "401872977": {
+   "utc": "2026-10-04T20:25Z",
+   "home": "Seattle Seahawks",
+   "away": "Los Angeles Chargers",
+   "hp": 30,
+   "ap": 23,
+   "starters": {
+    "Los Angeles Chargers": "4038941",
+    "Seattle Seahawks": "3912547"
+   },
+   "backup": {
+    "Los Angeles Chargers": false,
+    "Seattle Seahawks": false
+   },
+   "spread": -7.0,
+   "ou": 43.5,
+   "home_odds": 1.9523809523809523,
+   "away_odds": 1.8695652173913042,
+   "under_odds": 1.9090909090909092,
+   "indoor": false,
+   "city": "Seattle",
+   "wind_mph": 2.7,
+   "results": {}
+  },
+  "401872978": {
+   "utc": "2026-10-05T00:20Z",
+   "home": "Carolina Panthers",
+   "away": "Detroit Lions",
+   "hp": 32,
+   "ap": 26,
+   "starters": {
+    "Detroit Lions": "3046779",
+    "Carolina Panthers": "4685720"
+   },
+   "backup": {
+    "Detroit Lions": false,
+    "Carolina Panthers": false
+   },
+   "spread": 3.5,
+   "ou": 52.5,
+   "home_odds": 1.9523809523809523,
+   "away_odds": 1.8695652173913042,
+   "under_odds": 1.925925925925926,
+   "indoor": false,
+   "city": "Charlotte",
+   "wind_mph": 3.0,
+   "results": {}
+  },
+  "401872979": {
+   "utc": "2026-10-06T00:15Z",
+   "home": "New Orleans Saints",
+   "away": "Atlanta Falcons",
+   "hp": 24,
+   "ap": 45,
+   "starters": {
+    "Atlanta Falcons": "4360423",
+    "New Orleans Saints": "4360689"
+   },
+   "backup": {
+    "Atlanta Falcons": true,
+    "New Orleans Saints": false
+   },
+   "spread": -1.5,
+   "ou": 48.5,
+   "home_odds": 2.0,
+   "away_odds": 1.8333333333333335,
+   "under_odds": 1.9803921568627452,
+   "indoor": true,
+   "city": "New Orleans",
+   "results": {
+    "nfl_fade_backup_qb": {
+     "win": false,
+     "odds": 2.0
+    }
+   }
+  }
+ }
+}

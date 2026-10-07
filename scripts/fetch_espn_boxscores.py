@@ -50,6 +50,11 @@ def _parse(gid, d):
         out["teams"].append(rec)
     for inj in d.get("injuries", []):
         out["injuries"].append({"team": inj["team"]["displayName"], "list": [{"name": (x.get("athlete") or {}).get("displayName"), "status": x.get("status"), "type": (x.get("type") or {}).get("description")} for x in inj.get("injuries", [])]})
+    pc = (d.get("pickcenter") or [{}])[0]                       # posted line of the finished game (provider priority 1)
+    out["pick"] = {"provider": (pc.get("provider") or {}).get("name"), "spread": pc.get("spread"), "ou": pc.get("overUnder"), "over_odds": pc.get("overOdds"), "under_odds": pc.get("underOdds"),
+                   "home_spread_odds": (pc.get("homeTeamOdds") or {}).get("spreadOdds"), "away_spread_odds": (pc.get("awayTeamOdds") or {}).get("spreadOdds")}
+    gi = d.get("gameInfo", {}).get("venue", {})
+    out["venue"] = {"city": (gi.get("address") or {}).get("city"), "indoor": gi.get("indoor")}
     hd = d.get("header", {}).get("competitions", [{}])[0]
     out["score"] = [(c["team"]["displayName"], c.get("score"), c.get("homeAway")) for c in hd.get("competitors", [])]
     return out

@@ -83,6 +83,7 @@ if __name__ == "__main__":
     if a.refresh:
         refresh()
     run("sport_math.py")
+    run("forward_tests.py")                       # score frozen watch-rules on newly played, never-analysed games
     if not a.quick:
         for s in ("context_effects_tennis.py", "context_effects_sports.py", "heuristic_calibration.py", "team_ratings.py"):
             run(s)

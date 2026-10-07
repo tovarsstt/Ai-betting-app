@@ -143,5 +143,10 @@ items, not validated. Betting the healthier side when the opponent misses >=3 mo
 Starter = most pass attempts; quality = past-only shrunk adjusted yards/attempt (prior = league AY/A worth 250 attempts).
 Sanity (realised margin): +4.45 pts per AY/A unit (R2 7.5%, both periods); a backup starting costs ~5 points (R2 3.4%).
 Against the CLOSING line: QB quality residual +0.46 pts/unit (p=0.056; fit +0.72 p=0.03, test +0.17 p=0.6) -> the market prices ~90%.
-Backup / unusual starter: residual -1.5 pts (p=0.0003; fit -2.15, test -0.82 p=0.15). Betting against the backup team: 54.5% (2012-19, ROI +4.1%)
--> 51.4% (2020-25, ROI -2.0%): an edge that DECAYED once the market caught up. Watch item, not validated.
+Backup / unusual starter (corrected wording): the backup team's residual vs the line was -2.4 pts in 2012-19 (95% CI -3.6..-1.2) and -0.9 pts in 2020-25 (CI -2.0..+0.3);
+the trend is +0.13 pts/yr (p=0.27), so "the edge decayed" is NOT proven — it shrank and the recent sample cannot tell 0 from -2. Betting against the backup team
+wins 53.5% pooled (n=960, one-sided p=0.25 vs break-even 52.4%). The heavy-favourite cut (|line|>=7: 55.5%, n=339) was found after examining 8 cuts: raw p=0.14,
+Bonferroni p=1.0, and 58.4% -> 52.6% across the two eras — treated as noise.
+FIX = forward testing (`scripts/forward_tests.py`, ledger `data/forward_ledger.json`): the rules were frozen on 2026-10-07 and are scored ONLY on games that
+were never analysed (2026 season, 64 NFL games ingested so far), at the posted price, with a Bonferroni threshold; WATCH until n>=150. First count:
+fade-backup n=30, 36.7% (ROI -30%, far below break-even — early-season QB turnover inflates the "backup" flag), heavy-fav n=7 (71%, meaningless at n=7), wind-under n=0.
