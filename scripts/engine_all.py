@@ -32,7 +32,7 @@ import betting_math as bm  # noqa: E402
 import sport_math as sm  # noqa: E402
 
 DATA = Path(__file__).parent.parent / "data"
-WIND = json.loads((DATA / "heuristic_coefficients.json").read_text()).get("wind_scoring", {}) if (DATA / "heuristic_coefficients.json").exists() else {}
+WIND = json.loads((DATA / "nfl_wind_totals_model.json").read_text()) if (DATA / "nfl_wind_totals_model.json").exists() else {}   # hinge form chosen out of sample (nfl_wind_totals.py)
 CTX = json.loads((DATA / "sport_context_coefficients.json").read_text()) if (DATA / "sport_context_coefficients.json").exists() else {}
 
 
@@ -56,7 +56,7 @@ REGISTRY: Dict[str, dict] = {
     },
     "nfl": {
         "family": "empirical key-number residual pmf (3,6,7,10,14) around the implied margin; sigma_margin 13.29, sigma_total 13.42",
-        "validated": {"wind -> totals (RECORDED wind, physics-level)": "slope of (total - line) on recorded wind is negative in EVERY era: -0.26 (1990-03) -0.21 -0.15 -0.53 -0.38 (2022-25, p=0.03) pts/mph. The line under-adjusts; use `wind_mph` on the RECORDED-wind scale (the app's weather feed), NOT raw Open-Meteo"},
+        "validated": {"wind -> totals (RECORDED wind, hinge at 10 mph)": "best walk-forward form (+0.53% held-out MSE, beats the no-wind baseline in 12/16 seasons): -0.375 pts per mph above 10 (p<1e-4), since 2017 -0.68 (p=0.001). Pass `--wind` on the RECORDED scale or `--wind-openmeteo` (converted)"},
         "watch_wind": {"tradeable forecast wind": "free forecasts are a noisy proxy (Open-Meteo vs recorded corr 0.72, R2 0.51). 2022-25 outdoor games, forecast mapped to recorded scale: >=12 mph Under 58.3% (n=144, p=0.09), >=15 mph 50.8% (n=63), >=18 mph 42.1% (n=19): the 15+ mph rule did NOT survive a tradeable measurement -> forward-tested at Open-Meteo>=13.2 mph, stake 0 until n>=150"},
         "priced": {"starting QB quality (3,461 games 2012-25)": "explains realised margin (+4.45 pts per AY/A unit, R2 7.5%) but the line prices ~90% of it (residual +0.46, p=0.056, test +0.17 p=0.6)", "short_week": f"CI {_ci('nfl','spread_resid','home_short_week')}", "bye": f"CI {_ci('nfl','spread_resid','home_bye')}", "divisional": "not replicated", "thursday": "not replicated", "dome": "not replicated"},
         "watch": {"backup / unusual starting QB": "opponent-of-backup covered 54.7% in 2012-19 and 52.4% in 2020-25; the backup team's residual went -2.4 pts (CI -3.6..-1.2) -> -0.9 (CI -2.0..+0.3); decay trend +0.13 pts/yr (p=0.27) = shrinking NOT proven. Pooled 53.5%, p=0.25. Now scored FORWARD on unseen 2026 games (forward_tests.py) — stake 0 until n>=150 and p<0.0167",
@@ -93,15 +93,15 @@ def _blend(model: float, odds: Optional[Tuple[float, float]]) -> Tuple[float, Op
 
 
 def analyze_game(sport: str, total: float, p_home: float, line: Optional[float] = None, total_line: Optional[float] = None,
-                 p_draw: Optional[float] = None, wind_mph: Optional[float] = None, cover_odds: Optional[Tuple[float, float]] = None,
+                 p_draw: Optional[float] = None, wind_mph: Optional[float] = None, wind_openmeteo: Optional[float] = None, cover_odds: Optional[Tuple[float, float]] = None,
                  over_odds: Optional[Tuple[float, float]] = None, bankroll: float = 60.0) -> dict:
     sport = sport.lower()
     notes, tot = [], float(total)
-    if sport == "nfl" and wind_mph is not None and WIND.get("status") == "calibrated":
-        sig = float(1 / (1 + np.exp(-0.25 * (float(wind_mph) - 15.0))))
-        mult = float(np.exp(-WIND["value"] * sig))
-        tot = total * mult
-        notes.append(f"wind {wind_mph} mph -> scoring x{mult:.3f} (validated Under rule): total {total} -> {tot:.1f}")
+    if sport == "nfl" and (wind_mph is not None or wind_openmeteo is not None) and WIND:
+        w = float(wind_mph) if wind_mph is not None else 2.41 + 0.74 * float(wind_openmeteo)       # Open-Meteo -> recorded scale (R2 0.51, data/wind_scale_map.json)
+        shift = WIND["coef_pts_per_unit"] * max(0.0, w - 10.0)                                       # hinge at 10 mph: best walk-forward form (12/16 seasons)
+        tot = total + shift
+        notes.append(f"recorded-scale wind {w:.1f} mph -> total {shift:+.2f} pts ({total} -> {tot:.1f}); hinge-10 fit on {WIND['n']:,} games, since-2017 slope {WIND['coef_2017_plus']:+.2f}/mph")
     r = sm.price_game(sport, tot, p_home, line=line, total_line=total_line, p_draw=p_draw)
     out = {"sport": sport, "family": REGISTRY[sport]["family"].split(";")[0], "inputs": {"total": total, "p_home": p_home}, "model": r, "context": notes, "bets": []}
     from engine_v2 import kelly_stake
@@ -137,7 +137,8 @@ if __name__ == "__main__":
     ap.add_argument("--line", type=float)
     ap.add_argument("--total-line", type=float)
     ap.add_argument("--p-draw", type=float)
-    ap.add_argument("--wind", type=float)
+    ap.add_argument("--wind", type=float, help="RECORDED-scale wind (mph)")
+    ap.add_argument("--wind-openmeteo", type=float, help="raw Open-Meteo forecast wind (mph); converted to the recorded scale")
     ap.add_argument("--cover-odds")
     ap.add_argument("--over-odds")
     ap.add_argument("--bankroll", type=float, default=60.0)
@@ -155,4 +156,4 @@ if __name__ == "__main__":
         print(json.dumps({"P(A wins)": float((r[:, 0] == 0).mean()), "exp_total_games": float(r[:, 5].mean() + r[:, 6].mean() + S["off"]), "serve_sd": S["sd"]}, indent=1))
     else:
         pr = lambda s: tuple(float(x) for x in s.split(",")) if s else None
-        print(json.dumps(analyze_game(a.sport, a.total, a.p_home, a.line, a.total_line, a.p_draw, a.wind, pr(a.cover_odds), pr(a.over_odds), a.bankroll), indent=1, default=float))
+        print(json.dumps(analyze_game(a.sport, a.total, a.p_home, a.line, a.total_line, a.p_draw, a.wind, a.wind_openmeteo, pr(a.cover_odds), pr(a.over_odds), a.bankroll), indent=1, default=float))

@@ -1,0 +1,48 @@
+{
+ "form": "hinge10",
+ "intercept": 1.2654907625439527,
+ "coef_pts_per_unit": -0.3750479995640037,
+ "se": 0.062259940620628576,
+ "p": 1.7025778436338121e-09,
+ "coef_2017_plus": -0.6842117185164035,
+ "p_2017_plus": 0.0010077957168144235,
+ "n": 5886,
+ "walk_forward": {
+  "linear": {
+   "mse_gain_pct": 0.2521251428618828,
+   "seasons_better_than_null": 10,
+   "n_seasons": 16
+  },
+  "hinge6": {
+   "mse_gain_pct": 0.4097857958731227,
+   "seasons_better_than_null": 9,
+   "n_seasons": 16
+  },
+  "hinge8": {
+   "mse_gain_pct": 0.47997420965025284,
+   "seasons_better_than_null": 10,
+   "n_seasons": 16
+  },
+  "hinge10": {
+   "mse_gain_pct": 0.5268066300587615,
+   "seasons_better_than_null": 12,
+   "n_seasons": 16
+  },
+  "hinge12": {
+   "mse_gain_pct": 0.5117290803639335,
+   "seasons_better_than_null": 10,
+   "n_seasons": 16
+  },
+  "hinge15": {
+   "mse_gain_pct": 0.32147184580727955,
+   "seasons_better_than_null": 9,
+   "n_seasons": 16
+  },
+  "sigmoid15": {
+   "mse_gain_pct": 0.43804668353603343,
+   "seasons_better_than_null": 10,
+   "n_seasons": 16
+  }
+ },
+ "scale": "RECORDED wind (stadium/NFL weather feed). Convert Open-Meteo with recorded ~= 2.41 + 0.74 * open_meteo (data/wind_scale_map.json)"
+}
