@@ -98,3 +98,19 @@ market, applies only validated context (NFL wind), blends with the de-vigged mar
 Context sweep (`scripts/context_effects_sports.py`, Holm + train/test replication): soccer rest / short rest / referee,
 NFL rest / short week / bye / divisional / Thursday / dome, NBA back-to-back / 3-in-4 / Denver-Utah altitude — NONE
 replicated beyond the closing line (CIs in data/sport_context_coefficients.json). Tests: `python3 -m pytest tests/test_engine_math.py`.
+
+## Heterogeneity: "the Steelers don't play the Ravens like the Bucs" — `scripts/heterogeneity_tests.py`
+A pooled test can say "no average effect" while team/matchup effects exist and cancel. So test them directly, past-only:
+matchup persistence (does THIS pair's past residual vs the closing line predict its next meeting), team persistence, and
+favourite-size interaction, with first-half / second-half replication.
+| | NFL | NBA | Soccer (5 leagues) |
+|---|---|---|---|
+| Matchup margin persistence | +0.06 (t=1.9) | 0.00 | +0.02 |
+| Matchup total persistence | -0.02 | +0.02 | -0.01 |
+| Team margin persistence (all history) | +0.26 (t=3.1, but sd of past mean only 1.2 pt -> <0.3 pt adjustment) | +0.08 (n.s.) | 0.00 |
+| Betting the "hot"/fading the "cold" team (last 32 games) | ATS 49.3% / 49.5%, ROI ≈ -6% | - | - |
+Reading: the market already knows each team and each pairing; the persistence that exists is too small to beat the vig.
+Literature on rest -> injuries is MIXED (PubMed): NBA game injuries not associated with back-to-back or 4-in-5 alone (away games are);
+NFL Thursday/short rest had FEWER in-game injuries (1.26 vs 1.53 per team-game); soccer 2 matches/week 25.6 vs 4.1 injuries/1000h at one
+Champions League club, but 8 matches in 26 days showed no injury increase at another. Injuries move results through availability, which
+the closing line prices once known.
