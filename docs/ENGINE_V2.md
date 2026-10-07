@@ -89,3 +89,12 @@ Derived-market tests (price a market the model was NOT fitted on, vs the real pr
 soccer Asian handicap (true half-lines only) parity; MLB run line calibrated (NB 0.2391 vs Poisson 0.2398).
 A first soccer AH result of "+9% ROI" was an ARTEFACT: quarter lines (-0.25/+0.75) pay half and were scored as full
 win/loss. Only true half-point lines are valid for a binary cover test.
+
+## One engine, one niche per sport — `scripts/engine_all.py`
+`python3 scripts/engine_all.py registry` lists, per sport: the fitted family, VALIDATED context effects, variables found
+ALREADY PRICED (with the 95% CI of what the data can rule out) and variables UNTESTED for lack of data (applied as 0).
+`engine_all.py <sport> --total --p-home --line --total-line [--wind] [--cover-odds a,b] [--over-odds a,b]` prices every
+market, applies only validated context (NFL wind), blends with the de-vigged market and sizes Kelly with uncertainty.
+Context sweep (`scripts/context_effects_sports.py`, Holm + train/test replication): soccer rest / short rest / referee,
+NFL rest / short week / bye / divisional / Thursday / dome, NBA back-to-back / 3-in-4 / Denver-Utah altitude — NONE
+replicated beyond the closing line (CIs in data/sport_context_coefficients.json). Tests: `python3 -m pytest tests/test_engine_math.py`.

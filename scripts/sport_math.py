@@ -412,6 +412,8 @@ def price_game(sport: str, total: float, p_home: float, line: float | None = Non
             # key-number aware: empirical residuals around the implied margin
             out["cover"] = float(sum(v for r_, v in pm.items() if exp_margin + r_ + line > 0) / tot)
             out["cover_normal"] = float(stats.norm.cdf((exp_margin + line) / sg))
+        if total_line is not None and "sigma_total" in c:
+            out["over"] = float(1 - stats.norm.cdf((total_line - total) / c["sigma_total"]))
         return out
     else:
         raise ValueError(f"no calibrated family for {sport}")
