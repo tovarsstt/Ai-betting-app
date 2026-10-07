@@ -62,7 +62,7 @@ def _simulate(a, b, target_a, n=N_SIM, seed=5):
 
 def probs(s):
     r = s["rows"].astype(np.int32)
-    k = s.get("k", tgm.margin_scale())
+    k = s["k"] if "k" in s else tgm.margin_scale()      # lazy: older tennis_games_model has no margin_scale
     mar = np.rint((r[:, 5] - r[:, 6]) * k)
     tot = r[:, 5] + r[:, 6] + s["off"]
     win, sa, sb, s1w, s1g = r[:, 0], r[:, 1], r[:, 2], r[:, 3], r[:, 4]
