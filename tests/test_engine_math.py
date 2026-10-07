@@ -68,3 +68,13 @@ def test_hierarchical_sd_widens_margin_tails_but_keeps_win_prob():
     a = tv.simulate(0.66, 0.62, 200_000, 0.0, 1)
     b = tv.simulate(0.66, 0.62, 200_000, 0.05, 1)
     assert (np.abs(b["margin"]) > 8).mean() > (np.abs(a["margin"]) > 8).mean()
+
+
+def test_tennis_games_model_uses_v2_for_bo3_and_legacy_for_bo5():
+    import tennis_games_model as t
+    if not t.V2_ENABLED:
+        return
+    d3 = t.predict("Rune, Holger", "Altmaier, Daniel", handicap_a=-2.5, target_match_prob_a=0.657)
+    assert d3["engine"] == "v2"
+    assert abs(list(d3["match_prob"].values())[0] - 0.657) < 0.02            # level stays anchored to the supplied probability
+    assert t.predict("Rune, Holger", "Altmaier, Daniel", best_of=5)["engine"] == "legacy"

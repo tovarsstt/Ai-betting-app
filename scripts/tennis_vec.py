@@ -96,8 +96,9 @@ def simulate(pa, pb, n=20000, sd=0.0, seed=0, best_of=3, antithetic=True):
     half = n // 2 if antithetic else n
     z = rng.standard_normal((half, 2))
     z = np.concatenate([z, -z]) if antithetic else z
-    pa_i = np.clip(pa + sd * z[:, 0], 0.30, 0.90)
-    pb_i = np.clip(pb + sd * z[:, 1], 0.30, 0.90)
+    sda, sdb = (sd if isinstance(sd, (tuple, list)) else (sd, sd))      # per-player sd (thin-data players wider)
+    pa_i = np.clip(pa + sda * z[:, 0], 0.30, 0.90)
+    pb_i = np.clip(pb + sdb * z[:, 1], 0.30, 0.90)
     ha, hb = hold(pa_i), hold(pb_i)
     need = best_of // 2 + 1
     sets = np.zeros((n, 2), dtype=np.int8)
@@ -128,7 +129,7 @@ def calibrate(pa, pb, target_a, sd=0.0, n=6000, iters=14, seed=1):
     lo, hi = -0.10, 0.10
     for _ in range(iters):
         d = (lo + hi) / 2
-        w = simulate(pa + d, pb - d, n, sd, seed)["winner"]
+        w = (globals().get("simulate_nb") or simulate)(pa + d, pb - d, n, sd, seed)["winner"]
         lo, hi = (d, hi) if (w == 0).mean() < target_a else (lo, d)
     return (lo + hi) / 2
 

@@ -299,7 +299,7 @@ def nflwind(week_json: Optional[str] = None) -> None:
     import urllib.request
     j = lambda u: json.load(urllib.request.urlopen(u, timeout=30))
     sb = j("https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?limit=50")
-    print("kickoff(UTC)      match          roof     total  wind  gust | validated rule: Under when wind>=15mph (57.9% train n=618, 68.5% test n=73; break-even 52.4%)")
+    print("kickoff(UTC)      match          roof     total  wind(OpenMeteo) ~recorded | rule: recorded wind>=15mph = Open-Meteo >=13.2mph. In-sample 57.9% (1990-2016) but 2022-25 with FORECAST wind only 50.8% (n=63): WATCH, not a bet")
     for e in sb["events"]:
         c = e["competitions"][0]
         v = c.get("venue", {})
@@ -312,8 +312,9 @@ def nflwind(week_json: Optional[str] = None) -> None:
         w = j("https://api.open-meteo.com/v1/forecast?latitude=%s&longitude=%s&hourly=wind_speed_10m,wind_gusts_10m&wind_speed_unit=mph&forecast_days=7&timezone=UTC" % (r0["latitude"], r0["longitude"]))
         i = [k for k, x in enumerate(w["hourly"]["time"]) if x[:13] == t.strftime("%Y-%m-%dT%H")]
         ws, gu = (w["hourly"]["wind_speed_10m"][i[0]], w["hourly"]["wind_gusts_10m"][i[0]]) if i else (None, None)
-        flag = "  <-- WIND WATCH" if (not v.get("indoor") and ws is not None and ws >= 15) else ""
-        print(f"{e['date'][:16]} {'@'.join(teams):<10} {'indoor ' if v.get('indoor') else 'outdoor'} {o.get('overUnder')}  {ws} {gu}{flag}")
+        rec = (2.41 + 0.74 * ws) if ws is not None else None          # data/wind_scale_map.json OLS, R2=0.51
+        flag = "  <-- WIND WATCH (forward-test only)" if (not v.get("indoor") and ws is not None and ws >= 13.2) else ""
+        print(f"{e['date'][:16]} {'@'.join(teams):<10} {'indoor ' if v.get('indoor') else 'outdoor'} {o.get('overUnder')}  {ws} (gust {gu}) ~{rec:.0f} mph recorded-scale{flag}" if rec is not None else f"{e['date'][:16]} {'@'.join(teams)} no wind")
 
 
 if __name__ == "__main__":

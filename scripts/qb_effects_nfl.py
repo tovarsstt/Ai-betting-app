@@ -88,13 +88,15 @@ def build() -> pd.DataFrame:
     hs = hs.sort_values(["team", "date"]).reset_index(drop=True)
     hs["prev_q"] = hs.groupby("team").qid.shift(1)
     hs["qb_change"] = ((hs.qid != hs.prev_q) & hs.prev_q.notna()).astype(float)
+    # SAME-SEASON primary: the modal starter of this team's earlier games IN THE SAME SEASON (needs >=3). Using last season's games flagged every new
+    # franchise QB in weeks 1-3 as a "backup" (fixed 2026-10-07: that mixed offseason QB turnover with injuries/benchings).
+    hs["season_key"] = (hs.date.dt.year - (hs.date.dt.month < 3)).astype(int)
     top = []
-    for team, grp in hs.groupby("team"):
+    for (team, sk), grp in hs.groupby(["team", "season_key"]):
         q = grp.qid.tolist()
-        att = grp.att.tolist()
         tops = []
         for i in range(len(q)):
-            win = q[max(0, i - 6):i]
+            win = q[:i]
             tops.append(max(set(win), key=win.count) if len(win) >= 3 else None)
         top.append(pd.Series(tops, index=grp.index))
     hs["top6"] = pd.concat(top)

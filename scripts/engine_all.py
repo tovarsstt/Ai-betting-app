@@ -56,7 +56,8 @@ REGISTRY: Dict[str, dict] = {
     },
     "nfl": {
         "family": "empirical key-number residual pmf (3,6,7,10,14) around the implied margin; sigma_margin 13.29, sigma_total 13.42",
-        "validated": {"wind>=15mph -> Under": "scoring multiplier exp(-wind_scoring*sigmoid(0.25*(mph-15))); Under 57.9% train n=618 / 68.5% test n=73 (realised wind, forecasts are noisier)"},
+        "validated": {"wind -> totals (RECORDED wind, physics-level)": "slope of (total - line) on recorded wind is negative in EVERY era: -0.26 (1990-03) -0.21 -0.15 -0.53 -0.38 (2022-25, p=0.03) pts/mph. The line under-adjusts; use `wind_mph` on the RECORDED-wind scale (the app's weather feed), NOT raw Open-Meteo"},
+        "watch_wind": {"tradeable forecast wind": "free forecasts are a noisy proxy (Open-Meteo vs recorded corr 0.72, R2 0.51). 2022-25 outdoor games, forecast mapped to recorded scale: >=12 mph Under 58.3% (n=144, p=0.09), >=15 mph 50.8% (n=63), >=18 mph 42.1% (n=19): the 15+ mph rule did NOT survive a tradeable measurement -> forward-tested at Open-Meteo>=13.2 mph, stake 0 until n>=150"},
         "priced": {"starting QB quality (3,461 games 2012-25)": "explains realised margin (+4.45 pts per AY/A unit, R2 7.5%) but the line prices ~90% of it (residual +0.46, p=0.056, test +0.17 p=0.6)", "short_week": f"CI {_ci('nfl','spread_resid','home_short_week')}", "bye": f"CI {_ci('nfl','spread_resid','home_bye')}", "divisional": "not replicated", "thursday": "not replicated", "dome": "not replicated"},
         "watch": {"backup / unusual starting QB": "opponent-of-backup covered 54.7% in 2012-19 and 52.4% in 2020-25; the backup team's residual went -2.4 pts (CI -3.6..-1.2) -> -0.9 (CI -2.0..+0.3); decay trend +0.13 pts/yr (p=0.27) = shrinking NOT proven. Pooled 53.5%, p=0.25. Now scored FORWARD on unseen 2026 games (forward_tests.py) — stake 0 until n>=150 and p<0.0167",
                   "heavy favourite (|line|>=7) vs a backup QB": "55.5% n=339 was found AFTER looking at 8 cuts: raw one-sided p=0.14, Bonferroni p=1.0; 58.4% (2012-19) -> 52.6% (2020-25). Registered as its own forward rule, treated as noise until proven"},
@@ -120,10 +121,10 @@ def registry_text() -> str:
     lines = []
     for sp, r in REGISTRY.items():
         lines.append(f"\n=== {sp.upper()} ===\n  family   : {r['family']}")
-        for sec in ("validated", "priced", "watch", "untested"):
+        for sec in ("validated", "priced", "watch", "watch_wind", "untested"):
             for k, v in r.get(sec, {}).items():
                 lines.append(f"  {sec:<9}: {k} — {v}")
-            if not r.get(sec) and sec != "watch":
+            if not r.get(sec) and sec in ("validated", "priced", "untested"):
                 lines.append(f"  {sec:<9}: (none)")
     return "\n".join(lines)
 

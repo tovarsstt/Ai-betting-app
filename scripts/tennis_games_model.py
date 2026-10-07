@@ -403,6 +403,35 @@ def shape_totals(totals: list) -> list:
     return [mean + (t - mean) * spread + shift for t in totals]
 
 
+# ── Engine v2 path (hierarchical day-to-day serve-rate sd + Numba kernel) ─────────────────────────────────────
+# Replaces the iid sim + the 1.26 margin multiplier + the +1.7/+2.2-game totals offset for best-of-3 when
+# data/engine_v2_calibration.json exists (see docs/ENGINE_V2.md). Falls back to the old path otherwise.
+V2_CAL_PATH = DATA.parent / "engine_v2_calibration.json"
+try:
+    _V2 = json.loads(V2_CAL_PATH.read_text())
+except (FileNotFoundError, OSError, json.JSONDecodeError):
+    _V2 = {}
+try:
+    import tennis_vec as _tv
+except Exception:                                    # numba/numpy missing -> old path
+    _tv = None
+V2_ENABLED = bool(_V2 and _tv is not None)
+
+
+def _v2_sim(pa: float, pb: float, na: float, nb: float, target: float | None, n: int = 40000, seed: int = 11) -> tuple[dict, float]:
+    """(sim dict in the old schema, level delta). Per-player sd = sqrt(day_sd^2 + se^2): thin serve samples get fatter tails."""
+    day = float(_V2.get("day_sd", 0.05))
+    se = lambda p, m: (max(p * (1 - p), 1e-6) / max(m * 60.0, 60.0)) ** 0.5
+    sd = ((day ** 2 + se(pa, na) ** 2) ** 0.5, (day ** 2 + se(pb, nb) ** 2) ** 0.5)
+    delta = _tv.calibrate(pa, pb, target, sd) if target is not None else 0.0
+    sim_fn = getattr(_tv, "simulate_nb", _tv.simulate)
+    r = sim_fn(pa + delta, pb - delta, n, sd, seed)
+    import collections
+    sc = collections.Counter(zip(r["sets"][:, 0].tolist(), r["sets"][:, 1].tolist()))
+    return ({"match_prob_a": float((r["winner"] == 0).mean()), "totals": r["total"].tolist(), "margins": r["margin"].tolist(),
+             "set1_prob_a": float((r["s1w"] == 0).mean()), "set1_games": r["s1g"].tolist(), "set_scores": dict(sc)}, float(delta))
+
+
 def predict(player_a: str, player_b: str, games_line: float | None = None,
             handicap_a: float | None = None, best_of: int = 3,
             target_match_prob_a: float | None = None) -> dict:
@@ -418,28 +447,34 @@ def predict(player_a: str, player_b: str, games_line: float | None = None,
                 "note": "no serve stats for player(s) — no data, not estimating"}
 
     pa, pb = point_prob(players[ka]), point_prob(players[kb])
-    delta = 0.0
-    if target_match_prob_a is not None:
-        # calibrate LEVEL to the ratings model: common shift, bisected on match prob
-        lo, hi = -0.08, 0.08
-        for _ in range(18):
-            delta = (lo + hi) / 2
-            mp = simulate_match(pa + delta, pb - delta, best_of,
-                                n_sims=2000, seed=SEED)["match_prob_a"]
-            if mp < target_match_prob_a:
-                lo = delta
-            else:
-                hi = delta
-        delta = (lo + hi) / 2
-
-    sim = simulate_match(pa + delta, pb - delta, best_of)
-    # Apply the measured level correction before ANY total is read off the
-    # simulation, so expected_total_games and the over/under probabilities move
-    # together. Both players' tours agree in practice; take player A's.
     tour = (players[ka].get("tour") or players[kb].get("tour") or "")
-    off = totals_offset(tour)
-    totals = [t + off for t in sim["totals"]] if off else sim["totals"]
-    totals = shape_totals(totals)
+    v2 = V2_ENABLED and best_of == 3                   # bo5 tails/offsets were never fitted: keep the old path there
+    if v2:
+        sim, delta = _v2_sim(pa, pb, float(players[ka].get("n", 30)), float(players[kb].get("n", 30)), target_match_prob_a)
+        off = float((_V2.get("totals_offset") or {}).get((tour or "ATP").upper(), 0.0))
+        totals = [t + off for t in sim["totals"]]
+    else:
+        delta = 0.0
+        if target_match_prob_a is not None:
+            # calibrate LEVEL to the ratings model: common shift, bisected on match prob
+            lo, hi = -0.08, 0.08
+            for _ in range(18):
+                delta = (lo + hi) / 2
+                mp = simulate_match(pa + delta, pb - delta, best_of,
+                                    n_sims=2000, seed=SEED)["match_prob_a"]
+                if mp < target_match_prob_a:
+                    lo = delta
+                else:
+                    hi = delta
+            delta = (lo + hi) / 2
+
+        sim = simulate_match(pa + delta, pb - delta, best_of)
+        # Apply the measured level correction before ANY total is read off the
+        # simulation, so expected_total_games and the over/under probabilities move
+        # together. Both players' tours agree in practice; take player A's.
+        off = totals_offset(tour)
+        totals = [t + off for t in sim["totals"]] if off else sim["totals"]
+        totals = shape_totals(totals)
     n = len(totals)
     out: dict = {
         "player_a": ka, "player_b": kb, "best_of": best_of,
@@ -450,7 +485,8 @@ def predict(player_a: str, player_b: str, games_line: float | None = None,
                        kb: round(1 - sim["match_prob_a"], 4)},
         "expected_total_games": round(sum(totals) / n, 2),
         "totals_calibration": {"tour": tour or None, "offset_games": off,
-                               "source": "tennis_totals_backtest --fit"},
+                               "source": "engine_v2 (hierarchical sd)" if v2 else "tennis_totals_backtest --fit"},
+        "engine": "v2" if v2 else "legacy",
         # ── Set 1 ("period") markets — WTA/ATP, from the same game-level sim ──
         "set1": {
             "winner": {ka: round(sim["set1_prob_a"], 4),
@@ -477,7 +513,7 @@ def predict(player_a: str, player_b: str, games_line: float | None = None,
                           "p_under": round((n - over - push) / n, 4),
                           "p_push": round(push / n, 4)}
     if handicap_a is not None:
-        margins = scale_margins(sim["margins"])
+        margins = sim["margins"] if v2 else scale_margins(sim["margins"])
         cover = sum(1 for m in margins if m + handicap_a > 0)
         push = sum(1 for m in margins if m + handicap_a == 0)
         out["game_handicap"] = {f"{ka} {handicap_a:+g}": round(cover / n, 4),
@@ -490,7 +526,7 @@ def predict(player_a: str, player_b: str, games_line: float | None = None,
     out["set_handicap"] = set_handicap(sim, best_of)
     # Games handicap across the lines books actually post, so a caller never has
     # to guess a line or reach for the raw margin distribution.
-    margins = scale_margins(sim["margins"])
+    margins = sim["margins"] if v2 else scale_margins(sim["margins"])
     out["game_handicap_ladder"] = {
         f"{line:+g}": round(sum(1 for m in margins if m + line > 0) / len(margins), 4)
         for line in (-6.5, -5.5, -4.5, -3.5, -2.5, -1.5)

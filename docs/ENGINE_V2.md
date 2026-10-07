@@ -150,3 +150,16 @@ Bonferroni p=1.0, and 58.4% -> 52.6% across the two eras — treated as noise.
 FIX = forward testing (`scripts/forward_tests.py`, ledger `data/forward_ledger.json`): the rules were frozen on 2026-10-07 and are scored ONLY on games that
 were never analysed (2026 season, 64 NFL games ingested so far), at the posted price, with a Bonferroni threshold; WATCH until n>=150. First count:
 fade-backup n=30, 36.7% (ROI -30%, far below break-even — early-season QB turnover inflates the "backup" flag), heavy-fav n=7 (71%, meaningless at n=7), wind-under n=0.
+
+## Fixes after the first review round (2026-10-07)
+1. **Backup-QB flag was wrong, not the market.** The v1 flag compared a QB with last season's last 6 games, so every new franchise QB in weeks 1-3 became a "backup"
+   (26 of 32 flagged 2026 games were false positives). v2 uses the SAME-SEASON modal starter (>=3 earlier games). Corrected study (785 games): the opponent of the
+   backup team covers 57.3% (90% CI 54-60, p=0.003, ROI +9.4%); 2012-19 59.8%, 2020-25 54.8% (ROI +4.6%, p=0.19); the backup team's residual -3.1 pts -> -1.3 pts
+   (95% CI -2.5..-0.02), trend +0.18 pts/yr (p=0.12). |line|>=7 vs <7: 56.9% vs 57.6% -> the "heavy favourite" story was noise. The definition was changed after
+   seeing data (for a logical reason), so in-sample numbers are optimistic: re-registered as forward rule v2, counted from 2026-10-08 (stake 0; ~3.5 qualifying games/week).
+2. **Wind rule tested with FORECAST wind** (`wind_forecast_validation.py`, 705 outdoor games 2022-25). Open-Meteo wind and the recorded-wind feed are NOT on the same scale
+   (corr 0.72, R2 0.51; recorded>=15 mph ≡ Open-Meteo >=13.2 mph by exceedance share). Mapped to the recorded scale, tradeable forecast: >=12 mph Under 58.3% (n=144, p=0.09),
+   >=15 mph 50.8% (n=63), >=18 mph 42.1% (n=19). The slope of (total-line) on RECORDED wind is negative in every era (-0.15..-0.53 pts/mph, 2022-25 p=0.03), so the physics holds,
+   but the 15+ mph betting rule did not survive a tradeable measurement -> WATCH. `nflwind` and the forward rule now use the calibrated scale.
+3. **App path wired to v2.** `tennis_games_model.predict()` (what the app's tennis endpoints call) now uses engine v2 for best-of-3 (hierarchical sd, Numba, per-player sd from
+   the serve-sample size, v2 totals offsets; no extra margin multiplier), legacy for best-of-5. Same output schema plus `engine: "v2"|"legacy"`; 0.06 s per call after warm-up.

@@ -29,11 +29,14 @@ DATA = Path(__file__).parent.parent / "data"
 LEDGER = DATA / "forward_ledger.json"
 FROZEN_ON, FREEZE_FROM = "2026-10-07", "2026-09-01"
 N_MIN, ALPHA = 150, 0.05
+OPENMETEO_EQ_15 = 13.2          # Open-Meteo mph with the same exceedance share (10.7%) as recorded 15 mph (data/wind_scale_map.json)
 RULES = {
-    "nfl_fade_backup_qb": "NFL: exactly one team starts a backup/unusual QB (not its modal starter of the last 6 games, >=3 prior) -> bet the OTHER team ATS at the posted spread",
-    "nfl_fade_backup_qb_heavy_fav": "same, restricted to |spread| >= 7 (a subset found after the fact — registered separately and Bonferroni-counted)",
-    "nfl_under_wind15": "NFL outdoor game, kickoff-hour wind >= 15 mph (Open-Meteo archive) -> bet the UNDER at the posted total (validated in-sample 57.9% n=618; this is its first genuine out-of-sample count)",
+    "nfl_fade_backup_qb": "NFL, v2 definition (same-season): exactly one team starts a QB who is NOT the modal starter of its earlier games IN THE SAME SEASON (needs >=3) -> bet the OTHER team ATS at the posted spread. "
+                          "v2 replaced v1 on 2026-10-07 because v1 flagged every new franchise QB in weeks 1-3 as a 'backup'; counted from 2026-10-08 so the sample that motivated the fix is excluded",
+    "nfl_fade_backup_qb_heavy_fav": "same, |spread| >= 7 (kept only to confirm the subset story is noise: pooled v2 shows 56.9% for |line|>=7 vs 57.6% for <7)",
+    "nfl_under_wind15": "NFL outdoor game, kickoff-hour Open-Meteo wind >= 13.2 mph (= recorded >= 15 mph: both are the top 10.7% of games; raw Open-Meteo and the recorded feed are NOT on the same scale, corr 0.72) -> bet the UNDER at the posted total",
 }
+RULE_FROM = {"nfl_fade_backup_qb": "2026-10-08", "nfl_fade_backup_qb_heavy_fav": "2026-10-08", "nfl_under_wind15": "2026-09-01"}
 dec = lambda a: None if a is None else (1 + a / 100.0 if a > 0 else 1 + 100.0 / -a)
 
 
@@ -71,8 +74,13 @@ def starter(box_team: dict):
     return best[0] if best and best[1] >= 8 else None
 
 
+def season_key(utc: str) -> int:
+    t = datetime.datetime.fromisoformat(utc.replace("Z", "+00:00"))
+    return t.year - (1 if t.month < 3 else 0)
+
+
 def hist_starters() -> dict:
-    """team -> chronological list of starting-QB ids (2012-2025 from the study files)."""
+    """team -> chronological list of (season, starting-QB id) (2012-2025 from the study files)."""
     ev = {json.loads(l)["id"]: json.loads(l) for l in (KG / "espn_nfl_events.jsonl").open()}
     rows = []
     for l in (KG / "espn_nfl_box.jsonl").open():
@@ -83,13 +91,13 @@ def hist_starters() -> dict:
                 rows.append((ev[d["id"]]["utc"], tm["team"], q))
     rows.sort()
     h = {}
-    for _, team, q in rows:
-        h.setdefault(team, []).append(q)
+    for utc, team, q in rows:
+        h.setdefault(team, []).append((season_key(utc), q))
     return h
 
 
-def backup_flag(history: list, q: str) -> bool:
-    win = history[-6:]
+def backup_flag(history: list, q: str, sk: int) -> bool:
+    win = [x for (s_, x) in history if s_ == sk]               # earlier games of the SAME season only
     if len(win) < 3:
         return False
     return q != max(set(win), key=win.count)
@@ -120,6 +128,7 @@ def indoor_home_teams() -> set:
 
 def update() -> dict:
     led = json.loads(LEDGER.read_text()) if LEDGER.exists() else {"frozen_on": FROZEN_ON, "freeze_from": FREEZE_FROM, "rules": RULES, "games": {}}
+    led["rules"], led["rule_from"] = RULES, RULE_FROM
     seen = set(led["games"])
     ev = [e for e in new_events(FREEZE_FROM) if str(e["id"]) not in seen]
     hist = hist_starters()
@@ -128,13 +137,14 @@ def update() -> dict:
     for gid, g in sorted(led["games"].items(), key=lambda kv: kv[1]["utc"]):
         for team, q in g["starters"].items():
             if q:
-                hist.setdefault(team, []).append(q)
+                hist.setdefault(team, []).append((season_key(g["utc"]), q))
     for e in sorted(ev, key=lambda x: x["utc"]):
         box = fb.fetch("nfl", e["id"])
         if not box or len(box["teams"]) < 2:
             continue
         st = {t["team"]: starter(t) for t in box["teams"]}
-        flags = {t: (backup_flag(hist.get(t, []), q) if q else False) for t, q in st.items()}
+        sk = season_key(e["utc"])
+        flags = {t: (backup_flag(hist.get(t, []), q, sk) if q else False) for t, q in st.items()}
         pk, vn = box.get("pick") or {}, box.get("venue") or {}
         spread, ou = pk.get("spread"), pk.get("ou")
         rec = {"utc": e["utc"], "home": e["hn"], "away": e["an"], "hp": e["hp"], "ap": e["ap"], "starters": st, "backup": flags, "spread": spread, "ou": ou,
@@ -154,13 +164,13 @@ def update() -> dict:
             w = wind_mph(vn["city"], e["utc"])
             rec["wind_mph"] = w
             tot = e["hp"] + e["ap"]
-            if w is not None and w >= 15 and tot != ou:
+            if w is not None and w >= OPENMETEO_EQ_15 and tot != ou:
                 res["nfl_under_wind15"] = {"win": bool(tot < ou), "odds": rec["under_odds"] or 1.9091}
         rec["results"] = res
         led["games"][str(e["id"])] = rec
         for team, q in st.items():
             if q:
-                hist.setdefault(team, []).append(q)
+                hist.setdefault(team, []).append((sk, q))
     LEDGER.write_text(json.dumps(led, indent=1))
     return led
 
@@ -169,10 +179,10 @@ def scoreboard(led: dict) -> str:
     lines = [f"FORWARD LEDGER — frozen {led['frozen_on']}, scoring games from {led['freeze_from']}  |  {len(led['games'])} NFL games ingested", ""]
     k = len(led["rules"])
     for rule, desc in led["rules"].items():
-        res = [g["results"][rule] for g in led["games"].values() if rule in g["results"]]
+        res = [g["results"][rule] for g in led["games"].values() if rule in g["results"] and g["utc"][:10] >= RULE_FROM[rule]]
         n = len(res)
         if n == 0:
-            lines.append(f"{rule}: n=0 (no qualifying game yet) -> WATCH, stake 0")
+            lines.append(f"{rule}: n=0 since {RULE_FROM[rule]} (no qualifying game yet) -> WATCH, stake 0")
             continue
         w = sum(r["win"] for r in res)
         roi = float(np.mean([(r["odds"] - 1) if r["win"] else -1 for r in res]) * 100)
