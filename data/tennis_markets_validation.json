@@ -1,0 +1,528 @@
+{
+ "n_matches": 365,
+ "skipped_no_serve_stats": 35,
+ "years": [
+  2025,
+  2026
+ ],
+ "tours": [
+  "atp",
+  "wta"
+ ],
+ "markets": {
+  "A_straight_sets": {
+   "mean_predicted": 0.266,
+   "mean_actual": 0.282,
+   "bias_pts": -1.6,
+   "brier": 0.1882,
+   "brier_baseline": 0.2026,
+   "beats_baseline": true,
+   "reliability": {
+    "0.00-0.30": {
+     "n": 229,
+     "predicted": 0.182,
+     "actual": 0.205
+    },
+    "0.30-0.45": {
+     "n": 103,
+     "predicted": 0.366,
+     "actual": 0.388
+    },
+    "0.45-0.55": {
+     "n": 20,
+     "predicted": 0.494,
+     "actual": 0.4
+    }
+   },
+   "verdict": "OK"
+  },
+  "B_straight_sets": {
+   "mean_predicted": 0.268,
+   "mean_actual": 0.282,
+   "bias_pts": -1.4,
+   "brier": 0.1804,
+   "brier_baseline": 0.2026,
+   "beats_baseline": true,
+   "reliability": {
+    "0.00-0.30": {
+     "n": 224,
+     "predicted": 0.179,
+     "actual": 0.188
+    },
+    "0.30-0.45": {
+     "n": 107,
+     "predicted": 0.365,
+     "actual": 0.402
+    },
+    "0.45-0.55": {
+     "n": 20,
+     "predicted": 0.497,
+     "actual": 0.3
+    }
+   },
+   "verdict": "OK"
+  },
+  "set1_over_9.5": {
+   "mean_predicted": 0.546,
+   "mean_actual": 0.518,
+   "bias_pts": 2.9,
+   "brier": 0.2476,
+   "brier_baseline": 0.2497,
+   "beats_baseline": true,
+   "reliability": {
+    "0.45-0.55": {
+     "n": 184,
+     "predicted": 0.506,
+     "actual": 0.495
+    },
+    "0.55-0.70": {
+     "n": 167,
+     "predicted": 0.599,
+     "actual": 0.551
+    }
+   },
+   "verdict": "OK"
+  },
+  "A_wins_a_set": {
+   "mean_predicted": 0.732,
+   "mean_actual": 0.718,
+   "bias_pts": 1.4,
+   "brier": 0.1804,
+   "brier_baseline": 0.2026,
+   "beats_baseline": true,
+   "reliability": {
+    "0.45-0.55": {
+     "n": 20,
+     "predicted": 0.503,
+     "actual": 0.7
+    },
+    "0.55-0.70": {
+     "n": 106,
+     "predicted": 0.635,
+     "actual": 0.604
+    },
+    "0.70-1.00": {
+     "n": 225,
+     "predicted": 0.821,
+     "actual": 0.809
+    }
+   },
+   "verdict": "OK"
+  },
+  "B_wins_a_set": {
+   "mean_predicted": 0.734,
+   "mean_actual": 0.718,
+   "bias_pts": 1.6,
+   "brier": 0.1882,
+   "brier_baseline": 0.2026,
+   "beats_baseline": true,
+   "reliability": {
+    "0.45-0.55": {
+     "n": 20,
+     "predicted": 0.506,
+     "actual": 0.6
+    },
+    "0.55-0.70": {
+     "n": 102,
+     "predicted": 0.634,
+     "actual": 0.618
+    },
+    "0.70-1.00": {
+     "n": 230,
+     "predicted": 0.818,
+     "actual": 0.791
+    }
+   },
+   "verdict": "OK"
+  },
+  "A_margin_gt_1.5": {
+   "mean_predicted": 0.434,
+   "mean_actual": 0.427,
+   "bias_pts": 0.7,
+   "brier": 0.2178,
+   "brier_baseline": 0.2447,
+   "beats_baseline": true,
+   "reliability": {
+    "0.00-0.30": {
+     "n": 103,
+     "predicted": 0.213,
+     "actual": 0.175
+    },
+    "0.30-0.45": {
+     "n": 88,
+     "predicted": 0.367,
+     "actual": 0.466
+    },
+    "0.45-0.55": {
+     "n": 72,
+     "predicted": 0.503,
+     "actual": 0.5
+    },
+    "0.55-0.70": {
+     "n": 73,
+     "predicted": 0.622,
+     "actual": 0.534
+    },
+    "0.70-1.00": {
+     "n": 29,
+     "predicted": 0.786,
+     "actual": 0.759
+    }
+   },
+   "verdict": "OK"
+  },
+  "B_margin_gt_1.5": {
+   "mean_predicted": 0.438,
+   "mean_actual": 0.49,
+   "bias_pts": -5.3,
+   "brier": 0.2175,
+   "brier_baseline": 0.2499,
+   "beats_baseline": true,
+   "reliability": {
+    "0.00-0.30": {
+     "n": 97,
+     "predicted": 0.211,
+     "actual": 0.268
+    },
+    "0.30-0.45": {
+     "n": 99,
+     "predicted": 0.369,
+     "actual": 0.434
+    },
+    "0.45-0.55": {
+     "n": 60,
+     "predicted": 0.502,
+     "actual": 0.467
+    },
+    "0.55-0.70": {
+     "n": 77,
+     "predicted": 0.615,
+     "actual": 0.714
+    },
+    "0.70-1.00": {
+     "n": 32,
+     "predicted": 0.787,
+     "actual": 0.844
+    }
+   },
+   "verdict": "MODEL UNDERSTATES"
+  },
+  "A_margin_gt_2.5": {
+   "mean_predicted": 0.377,
+   "mean_actual": 0.389,
+   "bias_pts": -1.2,
+   "brier": 0.2118,
+   "brier_baseline": 0.2377,
+   "beats_baseline": true,
+   "reliability": {
+    "0.00-0.30": {
+     "n": 146,
+     "predicted": 0.204,
+     "actual": 0.212
+    },
+    "0.30-0.45": {
+     "n": 91,
+     "predicted": 0.38,
+     "actual": 0.462
+    },
+    "0.45-0.55": {
+     "n": 63,
+     "predicted": 0.492,
+     "actual": 0.492
+    },
+    "0.55-0.70": {
+     "n": 47,
+     "predicted": 0.6,
+     "actual": 0.596
+    },
+    "0.70-1.00": {
+     "n": 18,
+     "predicted": 0.77,
+     "actual": 0.556
+    }
+   },
+   "verdict": "OK"
+  },
+  "B_margin_gt_2.5": {
+   "mean_predicted": 0.379,
+   "mean_actual": 0.436,
+   "bias_pts": -5.7,
+   "brier": 0.2124,
+   "brier_baseline": 0.2459,
+   "beats_baseline": true,
+   "reliability": {
+    "0.00-0.30": {
+     "n": 138,
+     "predicted": 0.201,
+     "actual": 0.246
+    },
+    "0.30-0.45": {
+     "n": 97,
+     "predicted": 0.366,
+     "actual": 0.392
+    },
+    "0.45-0.55": {
+     "n": 67,
+     "predicted": 0.497,
+     "actual": 0.597
+    },
+    "0.55-0.70": {
+     "n": 48,
+     "predicted": 0.617,
+     "actual": 0.708
+    },
+    "0.70-1.00": {
+     "n": 15,
+     "predicted": 0.795,
+     "actual": 0.867
+    }
+   },
+   "verdict": "MODEL UNDERSTATES"
+  },
+  "A_margin_gt_3.5": {
+   "mean_predicted": 0.297,
+   "mean_actual": 0.334,
+   "bias_pts": -3.7,
+   "brier": 0.2045,
+   "brier_baseline": 0.2225,
+   "beats_baseline": true,
+   "reliability": {
+    "0.00-0.30": {
+     "n": 195,
+     "predicted": 0.178,
+     "actual": 0.215
+    },
+    "0.30-0.45": {
+     "n": 110,
+     "predicted": 0.37,
+     "actual": 0.445
+    },
+    "0.45-0.55": {
+     "n": 37,
+     "predicted": 0.49,
+     "actual": 0.486
+    },
+    "0.55-0.70": {
+     "n": 16,
+     "predicted": 0.619,
+     "actual": 0.562
+    }
+   },
+   "verdict": "MODEL UNDERSTATES"
+  },
+  "B_margin_gt_3.5": {
+   "mean_predicted": 0.3,
+   "mean_actual": 0.359,
+   "bias_pts": -5.9,
+   "brier": 0.2106,
+   "brier_baseline": 0.2301,
+   "beats_baseline": true,
+   "reliability": {
+    "0.00-0.30": {
+     "n": 200,
+     "predicted": 0.181,
+     "actual": 0.26
+    },
+    "0.30-0.45": {
+     "n": 98,
+     "predicted": 0.371,
+     "actual": 0.388
+    },
+    "0.45-0.55": {
+     "n": 42,
+     "predicted": 0.494,
+     "actual": 0.571
+    },
+    "0.55-0.70": {
+     "n": 17,
+     "predicted": 0.612,
+     "actual": 0.588
+    }
+   },
+   "verdict": "MODEL UNDERSTATES"
+  },
+  "A_margin_gt_4.5": {
+   "mean_predicted": 0.205,
+   "mean_actual": 0.244,
+   "bias_pts": -3.9,
+   "brier": 0.1711,
+   "brier_baseline": 0.1844,
+   "beats_baseline": true,
+   "reliability": {
+    "0.00-0.30": {
+     "n": 299,
+     "predicted": 0.161,
+     "actual": 0.201
+    },
+    "0.30-0.45": {
+     "n": 47,
+     "predicted": 0.353,
+     "actual": 0.426
+    }
+   },
+   "verdict": "MODEL UNDERSTATES"
+  },
+  "B_margin_gt_4.5": {
+   "mean_predicted": 0.208,
+   "mean_actual": 0.271,
+   "bias_pts": -6.3,
+   "brier": 0.1882,
+   "brier_baseline": 0.1977,
+   "beats_baseline": true,
+   "reliability": {
+    "0.00-0.30": {
+     "n": 280,
+     "predicted": 0.151,
+     "actual": 0.221
+    },
+    "0.30-0.45": {
+     "n": 66,
+     "predicted": 0.356,
+     "actual": 0.394
+    }
+   },
+   "verdict": "MODEL UNDERSTATES"
+  },
+  "A_margin_gt_5.5": {
+   "mean_predicted": 0.126,
+   "mean_actual": 0.164,
+   "bias_pts": -3.8,
+   "brier": 0.1298,
+   "brier_baseline": 0.1374,
+   "beats_baseline": true,
+   "reliability": {
+    "0.00-0.30": {
+     "n": 346,
+     "predicted": 0.111,
+     "actual": 0.153
+    },
+    "0.30-0.45": {
+     "n": 16,
+     "predicted": 0.38,
+     "actual": 0.375
+    }
+   },
+   "verdict": "MODEL UNDERSTATES"
+  },
+  "B_margin_gt_5.5": {
+   "mean_predicted": 0.129,
+   "mean_actual": 0.167,
+   "bias_pts": -3.8,
+   "brier": 0.1316,
+   "brier_baseline": 0.1392,
+   "beats_baseline": true,
+   "reliability": {
+    "0.00-0.30": {
+     "n": 342,
+     "predicted": 0.112,
+     "actual": 0.152
+    },
+    "0.30-0.45": {
+     "n": 19,
+     "predicted": 0.356,
+     "actual": 0.316
+    }
+   },
+   "verdict": "MODEL UNDERSTATES"
+  },
+  "total_over_20.5": {
+   "mean_predicted": 0.556,
+   "mean_actual": 0.605,
+   "bias_pts": -4.9,
+   "brier": 0.2348,
+   "brier_baseline": 0.2389,
+   "beats_baseline": true,
+   "reliability": {
+    "0.30-0.45": {
+     "n": 27,
+     "predicted": 0.395,
+     "actual": 0.407
+    },
+    "0.45-0.55": {
+     "n": 100,
+     "predicted": 0.521,
+     "actual": 0.56
+    },
+    "0.55-0.70": {
+     "n": 238,
+     "predicted": 0.59,
+     "actual": 0.647
+    }
+   },
+   "verdict": "MODEL UNDERSTATES"
+  },
+  "total_over_21.5": {
+   "mean_predicted": 0.5,
+   "mean_actual": 0.556,
+   "bias_pts": -5.6,
+   "brier": 0.246,
+   "brier_baseline": 0.2468,
+   "beats_baseline": true,
+   "reliability": {
+    "0.30-0.45": {
+     "n": 46,
+     "predicted": 0.394,
+     "actual": 0.5
+    },
+    "0.45-0.55": {
+     "n": 278,
+     "predicted": 0.51,
+     "actual": 0.554
+    },
+    "0.55-0.70": {
+     "n": 39,
+     "predicted": 0.563,
+     "actual": 0.641
+    }
+   },
+   "verdict": "MODEL UNDERSTATES"
+  },
+  "total_over_22.5": {
+   "mean_predicted": 0.483,
+   "mean_actual": 0.493,
+   "bias_pts": -1.0,
+   "brier": 0.2478,
+   "brier_baseline": 0.25,
+   "beats_baseline": true,
+   "reliability": {
+    "0.30-0.45": {
+     "n": 64,
+     "predicted": 0.395,
+     "actual": 0.453
+    },
+    "0.45-0.55": {
+     "n": 276,
+     "predicted": 0.499,
+     "actual": 0.5
+    },
+    "0.55-0.70": {
+     "n": 22,
+     "predicted": 0.564,
+     "actual": 0.545
+    }
+   },
+   "verdict": "OK"
+  },
+  "total_over_23.5": {
+   "mean_predicted": 0.442,
+   "mean_actual": 0.458,
+   "bias_pts": -1.5,
+   "brier": 0.2453,
+   "brier_baseline": 0.2482,
+   "beats_baseline": true,
+   "reliability": {
+    "0.30-0.45": {
+     "n": 169,
+     "predicted": 0.412,
+     "actual": 0.456
+    },
+    "0.45-0.55": {
+     "n": 181,
+     "predicted": 0.482,
+     "actual": 0.486
+    }
+   },
+   "verdict": "OK"
+  }
+ }
+}

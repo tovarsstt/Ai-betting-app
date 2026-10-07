@@ -1,0 +1,64 @@
+{
+ "fitted_at": "2026-10-07T08:45:44+00:00",
+ "source": "Kaggle alimoh89 tennis-results-and-betting-odds-2014-2025, bo3, 2025+",
+ "n_matches": 2500,
+ "train_n": 1500,
+ "test_n": 1000,
+ "margin_scale": 1.26,
+ "margin_scale_fitted": 1.26,
+ "totals_shift": 0.0,
+ "totals_spread": 1.0,
+ "method": "fit on earliest 60% by date, kept only if it improves the held-out 40%",
+ "heldout_price_test": {
+  "handicap": {
+   "brier_market": 0.2511,
+   "brier_model": 0.2522,
+   "brier_blend": 0.2506,
+   "edge>=0%": {
+    "n": 361,
+    "roi_pct": 1.15,
+    "hit": 0.529
+   },
+   "edge>=3%": {
+    "n": 248,
+    "roi_pct": 2.17,
+    "hit": 0.528
+   },
+   "edge>=5%": {
+    "n": 192,
+    "roi_pct": 5.32,
+    "hit": 0.542
+   },
+   "edge>=8%": {
+    "n": 130,
+    "roi_pct": 4.45,
+    "hit": 0.531
+   }
+  },
+  "total": {
+   "brier_market": 0.2505,
+   "brier_model": 0.2524,
+   "brier_blend": 0.2513,
+   "edge>=0%": {
+    "n": 132,
+    "roi_pct": -7.2,
+    "hit": 0.492
+   },
+   "edge>=3%": {
+    "n": 52,
+    "roi_pct": -31.06,
+    "hit": 0.365
+   },
+   "edge>=5%": {
+    "n": 26,
+    "roi_pct": -42.31,
+    "hit": 0.308
+   },
+   "edge>=8%": {
+    "n": 13,
+    "roi_pct": -42.62,
+    "hit": 0.308
+   }
+  }
+ }
+}

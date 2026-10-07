@@ -1,0 +1,59 @@
+{
+ "wind_scoring": {
+  "value": 0.07910590679553714,
+  "n": 6772,
+  "n0": 400,
+  "status": "calibrated",
+  "note": "NFL log scoring multiplier per unit sigmoid(0.25*(wind_mph-15)); fit on closing-total residual"
+ },
+ "wind_serve_logit": {
+  "value": 0.0,
+  "status": "uncalibrated",
+  "note": "no outcome data available \u2014 effect set to 0 rather than invented"
+ },
+ "rain_serve_logit": {
+  "value": 0.0,
+  "status": "uncalibrated",
+  "note": "no outcome data available \u2014 effect set to 0 rather than invented"
+ },
+ "wind_sd": {
+  "value": 0.0,
+  "status": "uncalibrated",
+  "note": "no outcome data available \u2014 effect set to 0 rather than invented"
+ },
+ "rain_sd": {
+  "value": 0.0,
+  "status": "uncalibrated",
+  "note": "no outcome data available \u2014 effect set to 0 rather than invented"
+ },
+ "heat_fatigue": {
+  "value": 0.0,
+  "status": "uncalibrated",
+  "note": "no outcome data available \u2014 effect set to 0 rather than invented"
+ },
+ "altitude_fatigue": {
+  "value": 0.0,
+  "status": "uncalibrated",
+  "note": "no outcome data available \u2014 effect set to 0 rather than invented"
+ },
+ "press_sd": {
+  "value": 0.0,
+  "status": "uncalibrated",
+  "note": "no outcome data available \u2014 effect set to 0 rather than invented"
+ },
+ "birthday_sd": {
+  "value": 0.0,
+  "status": "uncalibrated",
+  "note": "no outcome data available \u2014 effect set to 0 rather than invented"
+ },
+ "special_day_sd": {
+  "value": 0.0,
+  "status": "uncalibrated",
+  "note": "no outcome data available \u2014 effect set to 0 rather than invented"
+ },
+ "personal_goal_sd": {
+  "value": 0.0,
+  "status": "uncalibrated",
+  "note": "no outcome data available \u2014 effect set to 0 rather than invented"
+ }
+}

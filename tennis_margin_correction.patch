@@ -1,0 +1,77 @@
+--- /Users/josetovar/Documents/APP AI BETS/scripts/tennis_games_model.py	2026-08-30 12:58:46
++++ scripts/tennis_games_model.py	2026-10-07 03:43:46
+@@ -361,6 +361,48 @@
+     return float(rec.get("offset_games", 0.0)) if rec else 0.0
+ 
+ 
++MARGIN_CALIB_PATH = DATA.parent / "tennis_margin_calibration.json"
++_MCAL: dict | None = None
++
++
++def _margin_cal() -> dict:
++    global _MCAL
++    if _MCAL is None:
++        try:
++            _MCAL = json.loads(MARGIN_CALIB_PATH.read_text())
++        except (FileNotFoundError, OSError, json.JSONDecodeError):
++            _MCAL = {}
++    return _MCAL
++
++
++def margin_scale() -> float:
++    """Measured widening of the games-margin distribution (1.0 = raw simulation).
++
++    The point-by-point sim treats every point as independent, so it underprices
++    lopsided matches: on 365 real matches (tennis_markets_backtest) P(margin >
++    3.5/4.5/5.5 games) came out 4-6 pts too LOW, which inflates every underdog
++    +handicap cover probability. Fit out-of-sample on closing prices by
++    `tennis_price_backtest.py`; absent file = no correction, never a guess.
++    """
++    return float(_margin_cal().get("margin_scale", 1.0))
++
++
++def scale_margins(margins: list) -> list:
++    k = margin_scale()
++    return margins if k == 1.0 else [int(round(m * k)) for m in margins]
++
++
++def shape_totals(totals: list) -> list:
++    """Residual totals correction (shift + spread about the mean), fitted on the
++    same held-out price test; identity when never fitted."""
++    c = _margin_cal()
++    shift, spread = float(c.get("totals_shift", 0.0)), float(c.get("totals_spread", 1.0))
++    if shift == 0.0 and spread == 1.0:
++        return totals
++    mean = sum(totals) / len(totals)
++    return [mean + (t - mean) * spread + shift for t in totals]
++
++
+ def predict(player_a: str, player_b: str, games_line: float | None = None,
+             handicap_a: float | None = None, best_of: int = 3,
+             target_match_prob_a: float | None = None) -> dict:
+@@ -397,6 +439,7 @@
+     tour = (players[ka].get("tour") or players[kb].get("tour") or "")
+     off = totals_offset(tour)
+     totals = [t + off for t in sim["totals"]] if off else sim["totals"]
++    totals = shape_totals(totals)
+     n = len(totals)
+     out: dict = {
+         "player_a": ka, "player_b": kb, "best_of": best_of,
+@@ -434,7 +477,7 @@
+                           "p_under": round((n - over - push) / n, 4),
+                           "p_push": round(push / n, 4)}
+     if handicap_a is not None:
+-        margins = sim["margins"]
++        margins = scale_margins(sim["margins"])
+         cover = sum(1 for m in margins if m + handicap_a > 0)
+         push = sum(1 for m in margins if m + handicap_a == 0)
+         out["game_handicap"] = {f"{ka} {handicap_a:+g}": round(cover / n, 4),
+@@ -447,7 +490,7 @@
+     out["set_handicap"] = set_handicap(sim, best_of)
+     # Games handicap across the lines books actually post, so a caller never has
+     # to guess a line or reach for the raw margin distribution.
+-    margins = sim["margins"]
++    margins = scale_margins(sim["margins"])
+     out["game_handicap_ladder"] = {
+         f"{line:+g}": round(sum(1 for m in margins if m + line > 0) / len(margins), 4)
+         for line in (-6.5, -5.5, -4.5, -3.5, -2.5, -1.5)
