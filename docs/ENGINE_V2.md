@@ -71,3 +71,21 @@ fit <=2022 / replicate >=2023, accepted only if significant in BOTH periods with
 Reading: rest/back-to-back effects are REAL — and the market already charges for them (that is why the residual is ~0).
 Injecting them again would double count; only the measured incremental parts above enter. Personal goals / pressure /
 press index have NO outcome data anywhere -> reported, never applied.
+
+## Per-sport score math (calibrated on each sport's own closing lines) — `scripts/sport_math.py`
+Market-anchored (closing total + de-vigged moneyline/spread fix the two team means); each sport then gets the
+distribution family its scoring process has. Fit on the earliest 60% (or earlier seasons), judged on the rest.
+API: `sport_math.price_game(sport, total, p_home, line=, total_line=, p_draw=)`; parameters in `data/sport_math_calibration.json`.
+
+| Sport (n) | Family fitted | Finding | Gain |
+|---|---|---|---|
+| MLB (2,512) | negative binomial | runs are heavily over-dispersed: shape r≈3 (Poisson is badly wrong) | **+0.41 nats/game** held-out log-lik |
+| NBA (18,537) | Normal margin & total | sigma_margin 11.77, sigma_total 17.47, corr(margin,total) -0.01; sigma falls 0.12 per spread point; Student-t nu=18.5 | spread->win prob (Normal) beats the de-vigged ML: log-loss 0.6103 vs 0.6118 |
+| NFL (9,374) | empirical key-number residual pmf | sigma 13.29; alt lines priced with the empirical residuals | Brier on alternative lines 0.2256 vs 0.2261 (Normal) |
+| NHL (2,847) | Poisson | no over-dispersion once market means anchor it (NB r->600, bivariate 0) | none needed |
+| Soccer (6,166) | Poisson (+ diagonal inflation for 3-way) | Poisson under-prices draws (23.1% vs 25.05%); diag-inflated Poisson reproduces market 1X2 exactly, but Dixon-Coles tau dumps the extra mass on 0-0 (7.7% vs 5.9% actual) -> rejected | pricing parity: AH half-lines paired t=0.14..1.3, O/U parity |
+
+Derived-market tests (price a market the model was NOT fitted on, vs the real price): NHL puck line Brier 0.2177 vs market 0.2179 (parity);
+soccer Asian handicap (true half-lines only) parity; MLB run line calibrated (NB 0.2391 vs Poisson 0.2398).
+A first soccer AH result of "+9% ROI" was an ARTEFACT: quarter lines (-0.25/+0.75) pay half and were scored as full
+win/loss. Only true half-point lines are valid for a binary cover test.
