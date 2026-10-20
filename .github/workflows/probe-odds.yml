@@ -1,0 +1,50 @@
+name: probe-odds
+# One-off: dump the raw odds objects ESPN returns for today's UCL + NBA events (no key, no Odds API).
+on:
+  push:
+    branches: [claude/ucl-nba-data-layer]
+    paths: ['.github/workflows/probe-odds.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: claude/ucl-nba-data-layer }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Dump ESPN odds
+        run: |
+          mkdir -p out
+          D=$(date -u +%Y%m%d)
+          python3 - "$D" <<'PY'
+          import json, sys, urllib.request
+          d = sys.argv[1]
+          urls = {
+            "ucl": f"https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard?dates={d}",
+            "nba": f"https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates={d}",
+          }
+          for k, u in urls.items():
+              try:
+                  raw = json.load(urllib.request.urlopen(urllib.request.Request(u, headers={"User-Agent": "caveman-locks/1.0"}), timeout=30))
+                  out = []
+                  for ev in raw.get("events", []):
+                      comp = ev["competitions"][0]
+                      out.append({"name": ev.get("name"), "date": ev.get("date"), "status": ev["status"]["type"].get("state"),
+                                  "odds": comp.get("odds"), "has_odds_key": "odds" in comp,
+                                  "competitors": [{"homeAway": c["homeAway"], "team": c["team"]["displayName"]} for c in comp["competitors"]]})
+                  json.dump({"url": u, "n_events": len(out), "events": out}, open(f"out/{k}_odds_raw.json", "w"), indent=1)
+                  print(k, "events:", len(out), "with odds:", sum(1 for e in out if e["odds"]))
+              except Exception as e:
+                  print(k, "FAILED", e)
+                  json.dump({"url": u, "error": str(e)}, open(f"out/{k}_odds_raw.json", "w"))
+          PY
+      - name: Push probe
+        run: |
+          git config user.name github-actions; git config user.email actions@users.noreply.github.com
+          git checkout -B data/odds-probe
+          git add -f out/*.json
+          git commit -m "probe: raw ESPN odds $(date -u +%F)" || echo none
+          git push -f origin data/odds-probe
