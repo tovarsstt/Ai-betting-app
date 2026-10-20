@@ -3,6 +3,9 @@ name: fetch-ucl-nba-data
 # Downloads ClubElo / extra leagues / ESPN NBA games, calibrates the UCL Elo->goals
 # model, runs the NBA backtest, and pushes ONLY data files to branch `data/ucl-nba-snapshot`.
 on:
+  push:
+    branches: [claude/ucl-nba-data-layer]
+    paths: ['.github/workflows/fetch-ucl-nba-data.yml']
   workflow_dispatch:
     inputs:
       nba_start:
@@ -25,7 +28,7 @@ jobs:
           python3 scripts/fetch_europe_data.py clubelo
           python3 scripts/fetch_europe_data.py extra-leagues
           python3 scripts/fetch_club_results.py
-          python3 scripts/fetch_europe_data.py nba "${{ inputs.nba_start }}" "$(date -u +%F)"
+          python3 scripts/fetch_europe_data.py nba "${{ inputs.nba_start || '2025-10-21' }}" "$(date -u +%F)"
       - name: Calibrate + backtest
         run: |
           cd scripts
