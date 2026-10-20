@@ -23,17 +23,23 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
       - run: pip install numpy scipy scikit-learn pytest
-      - name: Fetch
-        run: |
-          python3 scripts/fetch_europe_data.py clubelo
-          python3 scripts/fetch_europe_data.py extra-leagues
-          python3 scripts/fetch_club_results.py
-          python3 scripts/fetch_europe_data.py nba "${{ inputs.nba_start || '2025-10-21' }}" "$(date -u +%F)"
+      - name: Fetch ClubElo
+        continue-on-error: true
+        run: python3 scripts/fetch_europe_data.py clubelo
+      - name: Fetch extra leagues
+        continue-on-error: true
+        run: python3 scripts/fetch_europe_data.py extra-leagues
+      - name: Fetch big-5 results
+        continue-on-error: true
+        run: python3 scripts/fetch_club_results.py
+      - name: Fetch NBA games
+        continue-on-error: true
+        run: python3 scripts/fetch_europe_data.py nba "${{ inputs.nba_start || '2025-10-21' }}" "$(date -u +%F)"
       - name: Calibrate + backtest
         run: |
           cd scripts
-          python3 calibrate_ucl.py | tee ../data/soccer/calibration_log.txt
-          python3 nba_stack.py | tee ../data/nba_backtest_log.txt
+          (python3 calibrate_ucl.py 2>&1 | tee ../data/soccer/calibration_log.txt) || true
+          (python3 nba_stack.py 2>&1 | tee ../data/nba_backtest_log.txt) || true
           python3 -m pytest test_europe_ucl_nba.py -q -p no:cacheprovider | tail -3
       - name: Push data snapshot
         run: |

@@ -24,6 +24,7 @@ import datetime
 import io
 import sys
 import time
+import urllib.error
 import urllib.request
 from pathlib import Path
 
@@ -40,11 +41,22 @@ EXTRA_LEAGUES = {
 UA = {"User-Agent": "caveman-locks/1.0"}
 
 
-def _get(url: str, timeout: int = 20) -> str:
-    """Only network call in this module."""
-    req = urllib.request.Request(url, headers=UA)
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return r.read().decode("utf-8-sig", errors="replace")
+def _get(url: str, timeout: int = 20, retries: int = 3) -> str:
+    """Only network call in this module. Retries 5xx/network errors with backoff."""
+    last: Exception | None = None
+    for i in range(retries):
+        try:
+            req = urllib.request.Request(url, headers=UA)
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                return r.read().decode("utf-8-sig", errors="replace")
+        except urllib.error.HTTPError as e:
+            last = e
+            if e.code < 500:
+                break
+        except Exception as e:
+            last = e
+        time.sleep(2 ** i)
+    raise last  # type: ignore[misc]
 
 
 # ── ClubElo ────────────────────────────────────────────────────────────────────
@@ -66,7 +78,15 @@ def parse_clubelo_csv(text: str) -> dict[str, dict]:
 
 def fetch_clubelo(day: datetime.date | None = None) -> dict[str, dict]:
     day = day or datetime.date.today()
-    return parse_clubelo_csv(_get(f"http://api.clubelo.com/{day.isoformat()}"))
+    last: Exception | None = None
+    for scheme in ("https", "http"):
+        try:
+            data = parse_clubelo_csv(_get(f"{scheme}://api.clubelo.com/{day.isoformat()}"))
+            if data:
+                return data
+        except Exception as e:
+            last = e
+    raise RuntimeError(f"ClubElo unavailable: {last}")
 
 
 # ── football-data.co.uk extra leagues ──────────────────────────────────────────
