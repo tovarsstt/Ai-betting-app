@@ -81,7 +81,8 @@ def price_game(nctx, name: str, g: dict, day, params: dict) -> tuple[list[dict],
     info["sim_rho_q"] = rho_q
     ph = float(sim["win_home"].mean())
     for side, p, dec, lab in (("home", ph, g["ml"][0], f"{home} gana (incl. prórroga)"), ("away", 1 - ph, g["ml"][1], f"{away} gana (incl. prórroga)")):
-        pr = fs.p_refund(sim, side)
+        # promo value: halves model fitted on 3,964 real games (H1 variance share, corr(H1,H2)); sigma set to the game-level 13.1
+        pr = nh.refund_prob(m if side == "home" else -m, {**params, "sigma": SIGMA_M})
         rows.append(row(name, "Ganador", lab, p, dec, {"p_refund": pr, "ev_promo": nh.ev_with_refund(p, dec, pr), "side": side}))
     for L, (oh, oa) in g["spread"].items():
         L = float(L)
