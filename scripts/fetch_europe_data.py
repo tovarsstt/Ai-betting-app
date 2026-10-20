@@ -141,6 +141,10 @@ def fetch_nba_range(start: datetime.date, end: datetime.date, pause: float = 0.4
 
 
 def write_csv(rows: list[dict], path: Path, fields: list[str]) -> int:
+    """Never clobber an existing cache with an empty result (all fetches failed)."""
+    if not rows:
+        print(f"  no rows fetched -> {path.name} left untouched")
+        return 0
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore")

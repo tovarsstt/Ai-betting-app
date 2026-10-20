@@ -120,3 +120,10 @@ def test_stacker_probabilities_valid():
         st.update(x["home"], x["away"], x["hs"], x["as"], x["date"])
     p = ns.Stacker().fit(feats, ys).predict(feats)
     assert ((p > 0) & (p < 1)).all()
+
+
+def test_write_csv_does_not_overwrite_with_empty(tmp_path):
+    p = tmp_path / "c.csv"
+    p.write_text("a\n1\n")
+    assert fe.write_csv([], p, ["a"]) == 0
+    assert p.read_text() == "a\n1\n"
