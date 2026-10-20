@@ -127,3 +127,17 @@ def test_write_csv_does_not_overwrite_with_empty(tmp_path):
     p.write_text("a\n1\n")
     assert fe.write_csv([], p, ["a"]) == 0
     assert p.read_text() == "a\n1\n"
+
+
+def test_normalize_bridges_spellings():
+    import calibrate_ucl as cu
+    assert cu.normalize("Ath Madrid") == "atletico" and cu.normalize("Atlético") == "atletico"
+    assert cu.normalize("FC Porto") == "porto" and cu.normalize("Paris SG") == "paris sg"
+
+
+def test_run_drops_unmatched_and_lists_them(tmp_path):
+    import calibrate_ucl as cu
+    (tmp_path / "e.csv").write_text("Club,elo\nTeam A,1700\nTeam B,1600\n")
+    (tmp_path / "r.csv").write_text("home_team,away_team,home_score,away_score,neutral\nTeam A,Team B,2,1,FALSE\nTeam A,Ghost FC,1,0,FALSE\n")
+    res = cu.run(tmp_path / "e.csv", [tmp_path / "r.csv"], tmp_path / "o.json")
+    assert res["unmatched_clubs"] == ["Ghost FC"] and res["calibrated"] is False  # too few matches -> priors
