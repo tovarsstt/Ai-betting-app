@@ -29,10 +29,13 @@ def _num(s, cast=int):
 
 
 def _clock_sec(c: str) -> float:
-    if ":" in c:
-        m, s = c.split(":")
-        return int(m) * 60 + float(s)
-    return float(c or 0)
+    try:
+        if ":" in c:
+            m, s = c.split(":")[-2:]
+            return int(m) * 60 + float(s)
+        return float(c or 0)
+    except ValueError:
+        return 0.0
 
 
 def _elapsed(period: int, clock: str) -> float:
@@ -84,7 +87,9 @@ def player_rows(d: dict) -> tuple[list[dict], dict]:
         blk = t["statistics"][0]
         keys = blk["keys"]
         for a in blk["athletes"]:
-            ath = a["athlete"]
+            ath = a.get("athlete") or {}
+            if "id" not in ath:                                           # ESPN sometimes lists an unnamed/unidentified row: not a player we can key
+                continue
             r = {"game_id": gid, "team_id": tid, "athlete_id": ath["id"], "name": ath["displayName"], "starter": int(bool(a.get("starter"))),
                  "dnp": int(bool(a.get("didNotPlay"))), "reason": a.get("reason", "") if a.get("didNotPlay") else "", "min": 0.0, "pts": 0, "reb": 0, "ast": 0,
                  "fgm": 0, "fga": 0, "fg3m": 0, "fg3a": 0, "ftm": 0, "fta": 0, "tov": 0, "stl": 0, "blk": 0, "oreb": 0, "pf": 0, "pm": 0}

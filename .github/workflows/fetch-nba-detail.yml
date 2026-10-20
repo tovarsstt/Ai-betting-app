@@ -10,6 +10,9 @@ on:
       mode:
         description: "probe | full"
         default: "full"
+      slate_day:
+        description: "Slate date YYYYMMDD (default: today, New York)"
+        default: ""
       seasons:
         description: "Seasons (ESPN season start year), space separated, e.g. '2025' or '2024 2025'"
         default: "2025"
@@ -33,6 +36,11 @@ jobs:
         run: |
           mkdir -p data/nba
           python3 scripts/fetch_nba_detail.py full ${{ inputs.seasons || '2025' }} 2>&1 | tee data/nba/fetch_log.txt
+      - name: Today's slate, injuries and rosters
+        continue-on-error: true
+        run: |
+          mkdir -p data/nba
+          python3 scripts/fetch_nba_detail.py rosters "${{ inputs.slate_day || '' }}$( [ -z '${{ inputs.slate_day }}' ] && TZ=America/New_York date +%Y%m%d )" 2>&1 | tee -a data/nba/fetch_log.txt
       - name: Push data
         run: |
           git config user.name "github-actions"
