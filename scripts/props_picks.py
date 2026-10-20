@@ -27,6 +27,7 @@ K = 10.0
 CV = {"Puntos": 0.40, "Rebotes": 0.50, "Asistencias": 0.60, "Triples": 0.75, "PRA": 0.30}
 COUNT_STATS = {"Rebotes", "Asistencias", "Triples"}
 MIN_ODDS = 1.25
+MIN_PROPS_PER_STAT = 8   # debiasing needs a cross-section; with fewer props it would erase the signal itself
 
 
 def two_way(o, u):
@@ -69,17 +70,49 @@ def tools_for(pr: dict, valid: list[int]) -> dict:
     return out
 
 
-def price(props: list[dict]) -> list[dict]:
+def preseason_scale(props: list[dict], dnp: dict[str, set[int]]) -> dict[str, float]:
+    """The 'last 5' are PRESEASON games (fewer minutes) read against full-season lines, so on average they sit below the
+    line (measured: mean(last5)/line = 0.954 over 48 props) and every tool leaned 'Under'. Per stat, rescale the last-5
+    values by 1/mean(last5/line) so that the AVERAGE prop is unbiased; only RELATIVE signals (this player vs the others)
+    survive. Doble doble is a 0/1 hit rate -> no scale."""
+    ratios: dict[str, list[float]] = {}
+    for pr in props:
+        if pr["stat"] == "Doble doble" or pr["line"] <= 1.0:
+            continue
+        v = [pr["last5"][i] for i in range(5) if i not in dnp.get(pr["player"], set())]
+        if len(v) >= 3:
+            ratios.setdefault(pr["stat"], []).append(float(np.mean(v)) / pr["line"])
+    return {k: 1.0 / float(np.mean(v)) for k, v in ratios.items() if len(v) >= MIN_PROPS_PER_STAT and np.mean(v) > 0}
+
+
+def price(props: list[dict], debias: bool = True) -> list[dict]:
     dnp: dict[str, set[int]] = {}
     for pr in props:
         if pr["stat"] == "PRA":
             dnp[pr["player"]] = {i for i, v in enumerate(pr["last5"]) if v == 0}
-    rows = []
+    scale = preseason_scale(props, dnp) if debias else {}
+    staged = []
     for pr in props:
         valid = [i for i in range(5) if i not in dnp.get(pr["player"], set())]
         if len(valid) < 3:
             continue
-        t = tools_for(pr, valid)
+        k_scale = scale.get(pr["stat"], 1.0)
+        pr_s = {**pr, "last5": [v * k_scale for v in pr["last5"]]} if k_scale != 1.0 else pr
+        t = tools_for(pr_s, valid)
+        staged.append((pr, valid, t))
+    # Second correction: cross-sectional demeaning. Within each stat, subtract mean(model - market) from every model tool so
+    # that the AVERAGE prop is neutral between Over and Under (the preseason sample otherwise tilts everything to Under).
+    shift: dict[str, float] = {}
+    if debias:
+        by: dict[str, list[float]] = {}
+        for pr, _, t in staged:
+            mod = [v for k, v in t.items() if k != "market"]
+            by.setdefault(pr["stat"], []).append(float(np.mean(mod)) - t["market"])
+        shift = {k: float(np.mean(v)) for k, v in by.items() if len(v) >= MIN_PROPS_PER_STAT}
+    rows = []
+    for pr, valid, t in staged:
+        sh = shift.get(pr["stat"], 0.0)
+        t = {k: (v if k == "market" else min(max(v - sh, 0.01), 0.99)) for k, v in t.items()}
         p_mkt = t["market"]
         model = [v for k, v in t.items() if k != "market"]
         p_over = 0.5 * float(np.mean(model)) + 0.5 * p_mkt
@@ -90,12 +123,23 @@ def price(props: list[dict]) -> list[dict]:
     return rows
 
 
+def side_balance(rows: list[dict]) -> dict:
+    """Diagnostics: mean(model - market) P(over) across props (0 = unbiased) and Over/Under counts of a list of picks."""
+    d = [np.mean([v for k, v in r["tools"].items() if k != "market"]) - r["tools"]["market"] for r in rows if " Más de " in r["pick"]]
+    return {"mean_model_minus_market": float(np.mean(d)) if d else 0.0, "n": len(d)}
+
+
 def main() -> None:
     props = json.loads(Path(sys.argv[1]).read_text())["props"]
-    rows = [r for r in price(props) if r["decimal"] >= MIN_ODDS]
+    allrows = price(props)
+    b = side_balance(allrows)
+    print(f"Sesgo modelo-mercado en P(Más): {b['mean_model_minus_market']*100:+.2f} pts sobre {b['n']} props (0 = sin sesgo)")
+    rows = [r for r in allrows if r["decimal"] >= MIN_ODDS]
     rows.sort(key=lambda r: (-round(r["p_win"], 3), -r["decimal"]))
     print(f"PLAYER PROPS NBA — mayor P(win), cuota >= {MIN_ODDS} (EV al final, informativo). Últimos-5 = PRETEMPORADA: evidencia débil, K={K:g}.")
-    for r in rows[:14]:
+    top = rows[:14]
+    print(f"Top-14: 'Más' {sum(' Más de ' in r['pick'] for r in top)} | 'Menos' {sum(' Menos de ' in r['pick'] for r in top)}")
+    for r in top:
         tl = ", ".join(f"{k} {v*100:.0f}%" for k, v in r["tools"].items())
         print(f"- {r['pick']} [{r['team']}]  P(win) {r['p_win']*100:.1f}% | cuota {r['decimal']:.2f} -> $10 pagan ${10*r['decimal']:.2f} | EV {r['ev']*100:+.1f}%\n    herramientas: {tl}"
               + (f"  | {r['dnp_dropped']} juego(s) sin jugar excluido(s)" if r["dnp_dropped"] else ""))

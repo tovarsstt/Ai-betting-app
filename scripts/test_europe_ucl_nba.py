@@ -577,3 +577,28 @@ def test_portfolio_ignores_ev_and_applies_only_payout_floors():
     assert pf2.clean(mk(0.8, 1.3, -0.30, "a"))                              # hugely negative EV still a candidate
     assert not pf2.clean(mk(0.95, 1.02, 0.5, "b"))                          # but a 1.02 'sure thing' fails the payout floor
     assert not pf2.clean(mk(0.45, 2.5, 0.9, "c"))                           # and so does P(win) < 50%
+
+
+def test_props_have_no_directional_bias_when_all_last5_sit_below_the_line():
+    """Preseason regression test: every player's last 5 is ~5% under the line; the pricer must not turn that into 'Under everywhere'."""
+    import props_picks as pp
+    rng = np.random.default_rng(12)
+    props = []
+    for i in range(30):
+        line = float(rng.integers(8, 28)) + 0.5
+        vals = [max(1, round(line * 0.95 + rng.normal(0, line * 0.25))) for _ in range(5)]
+        props += [{"player": f"P{i}", "team": "T", "stat": "Puntos", "last5": vals, "line": line, "over": 1.9, "under": 1.9},
+                  {"player": f"P{i}", "team": "T", "stat": "PRA", "last5": [v * 1.6 for v in vals], "line": line * 1.6, "over": 1.9, "under": 1.9}]
+    rows = pp.price(props)
+    assert abs(pp.side_balance(rows)["mean_model_minus_market"]) < 1e-6
+    top = sorted(rows, key=lambda r: -r["p_win"])[:20]
+    overs = sum(" Más de " in r["pick"] for r in top)
+    assert 5 <= overs <= 15                                              # neither side dominates the top of the list
+
+
+def test_props_over_and_under_are_complements():
+    import props_picks as pp
+    props = [{"player": "A", "team": "T", "stat": "Rebotes", "last5": [9, 11, 8, 12, 10], "line": 9.5, "over": 1.85, "under": 1.95},
+             {"player": "A", "team": "T", "stat": "PRA", "last5": [30, 33, 28, 35, 31], "line": 30.5, "over": 1.9, "under": 1.9}]
+    rows = {r["pick"]: r for r in pp.price(props)}
+    assert abs(rows["A Rebotes Más de 9.5"]["p_win"] + rows["A Rebotes Menos de 9.5"]["p_win"] - 1) < 1e-9
