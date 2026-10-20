@@ -34,6 +34,9 @@ def main() -> None:
     model = um.EloGoalModel(a=m["a"], h=m["h"], b=m["b"], calibrated=m["calibrated"], n_matches=m["n_matches"])
     fixtures = fe.fetch_fixtures(day)
     print(f"{day}: {len(fixtures)} UCL fixtures | model calibrated={model.calibrated} on {model.n_matches} matches")
+    if m.get("n_uefa_matches", 0) < 100:
+        print(f"WARNING: only {m.get('n_uefa_matches', 0)} UEFA matches link the leagues -> Elo is NOT comparable "
+              "across leagues; cross-league prices below are INVALID (same-league ties only).")
     for r in price_fixtures(fixtures, elo, model):
         if "error" in r:
             print(f"- {r['match']}: SKIPPED — {r['error']}")

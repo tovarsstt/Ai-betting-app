@@ -181,3 +181,17 @@ def test_fixtures_parse_and_pricing_skips_unknown_clubs():
     assert len(fx) == 1 and fx[0]["home"] == "Liverpool"
     out = pt.price_fixtures(fx, {"liverpool": 1800.0}, um.EloGoalModel())
     assert "error" in out[0] and "villarreal" in out[0]["error"]
+
+
+def test_fetch_uefa_queries_single_days_tue_to_thu_only(monkeypatch):
+    import json
+    urls = []
+
+    def fake_get(url, *a, **k):
+        urls.append(url)
+        return json.dumps({"events": []})
+
+    monkeypatch.setattr(fe, "_get", fake_get)
+    fe.fetch_uefa(date(2026, 10, 12), date(2026, 10, 18), workers=1)   # Mon..Sun
+    assert len(urls) == 3 * 3                                          # Tue/Wed/Thu x 3 competitions
+    assert all("dates=2026101" in u and "-" not in u.split("dates=")[1] for u in urls)  # no ranges

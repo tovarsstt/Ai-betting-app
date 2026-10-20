@@ -168,25 +168,33 @@ def fetch_fixtures(day: datetime.date, slug: str = "uefa.champions") -> list[dic
     return parse_espn_fixtures(json.loads(_get(url)))
 
 
-def fetch_uefa(start: datetime.date, end: datetime.date, pause: float = 0.3) -> list[dict]:
+def fetch_uefa(start: datetime.date, end: datetime.date, workers: int = 6) -> list[dict]:
+    """ESPN soccer scoreboards reject date ranges (HTTP 400): query ONE day at a time.
+    UEFA club matches fall on Tue/Wed/Thu, so only those days are requested, in parallel."""
     import json
+    from concurrent.futures import ThreadPoolExecutor
+
+    days = [start + datetime.timedelta(days=n) for n in range((end - start).days + 1)]
+    days = [d for d in days if d.weekday() in (1, 2, 3)]
+    jobs = [(slug, label, d) for d in days for slug, label in UEFA_COMPS.items()]
+
+    def one(job: tuple) -> list[dict]:
+        slug, label, d = job
+        url = f"https://site.api.espn.com/apis/site/v2/sports/soccer/{slug}/scoreboard?dates={d:%Y%m%d}"
+        try:
+            return parse_espn_soccer(json.loads(_get(url)), label)
+        except Exception as e:
+            print(f"  {slug} {d}: skip ({e})")
+            return []
+
     seen: set[tuple] = set()
     rows: list[dict] = []
-    # UEFA matches happen Tue-Thu; ESPN accepts a date range, query week-by-week to stay small.
-    d = start
-    while d <= end:
-        rng = f"{d:%Y%m%d}-{min(d + datetime.timedelta(days=6), end):%Y%m%d}"
-        for slug, label in UEFA_COMPS.items():
-            url = f"https://site.api.espn.com/apis/site/v2/sports/soccer/{slug}/scoreboard?dates={rng}&limit=100"
-            try:
-                for r in parse_espn_soccer(json.loads(_get(url)), label):
-                    k = (r["date"], r["home_team"], r["away_team"])
-                    if k not in seen:
-                        seen.add(k); rows.append(r)
-            except Exception as e:
-                print(f"  {slug} {rng}: skip ({e})")
-        d += datetime.timedelta(days=7)
-        time.sleep(pause)
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        for part in ex.map(one, jobs):
+            for r in part:
+                k = (r["date"], r["home_team"], r["away_team"])
+                if k not in seen:
+                    seen.add(k); rows.append(r)
     return sorted(rows, key=lambda r: r["date"])
 
 

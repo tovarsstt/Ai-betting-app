@@ -135,7 +135,7 @@ def price_match(home: str, away: str, elo: dict[str, float], model: EloGoalModel
     eh, ea = elo.get(home), elo.get(away)
     if eh is None or ea is None:
         missing = home if eh is None else away
-        return {"error": f"no ClubElo rating for {missing} (never imputed)"}
+        return {"error": f"no Elo rating for {missing} (club absent from fetched results; never imputed)"}
     lh, la = lambdas(model, eh, ea, neutral)
     book = sm.derive_markets(sm.score_matrix(lh, la))
     raw = {"home": book.home_win, "draw": book.draw, "away": book.away_win}
