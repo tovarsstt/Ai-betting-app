@@ -195,3 +195,32 @@ def test_fetch_uefa_queries_single_days_tue_to_thu_only(monkeypatch):
     fe.fetch_uefa(date(2026, 10, 12), date(2026, 10, 18), workers=1)   # Mon..Sun
     assert len(urls) == 3 * 3                                          # Tue/Wed/Thu x 3 competitions
     assert all("dates=2026101" in u and "-" not in u.split("dates=")[1] for u in urls)  # no ranges
+
+
+def test_low_sample_flag():
+    import price_today as pt
+    fx = [{"home": "Liverpool", "away": "Slovan Bratislava", "kickoff": "x"}]
+    out = pt.price_fixtures(fx, {"liverpool": 1800.0, "slovan bratislava": 1500.0}, um.EloGoalModel(),
+                            {"liverpool": 120, "slovan bratislava": 6})
+    assert out[0]["low_sample"] == ["Slovan Bratislava"]
+
+
+def test_validate_ucl_walk_forward_runs_on_synthetic():
+    import validate_ucl as vu
+    rng = np.random.default_rng(5)
+    teams = {lg: [f"{lg}{i}" for i in range(6)] for lg in "AB"}
+    skill = {t: rng.normal(0, 0.4) for ts in teams.values() for t in ts}
+    rows, day = [], 0
+    def match(h, a, lg):
+        nonlocal day
+        day += 1
+        lh = np.exp(0.2 + 0.15 + skill[h] - skill[a]); la = np.exp(0.2 + skill[a] - skill[h])
+        rows.append({"date": f"2025-{1 + day // 300:02d}-{1 + day % 28:02d}", "home_team": h, "away_team": a,
+                     "home_score": int(rng.poisson(lh)), "away_score": int(rng.poisson(la)), "neutral": "FALSE", "league": lg})
+    for _ in range(40):
+        for lg in "AB":
+            for i in range(6):
+                match(teams[lg][i], teams[lg][(i + 1) % 6], lg)
+        match(rng.choice(teams["A"]), rng.choice(teams["B"]), "UEFA Champions League")
+    res = vu.evaluate(rows, cutoff="2025-02-01", min_games=4)
+    assert res["n_test"] > 0 and res["logloss_model"] is not None

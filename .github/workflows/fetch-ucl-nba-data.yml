@@ -44,6 +44,7 @@ jobs:
           cd scripts
           python3 -m pytest test_europe_ucl_nba.py -q -p no:cacheprovider 2>&1 | tail -3 | tee ../data/test_log.txt
           (python3 calibrate_ucl.py 2>&1 | tee ../data/soccer/calibration_log.txt) || true
+          (python3 validate_ucl.py 2026-03-01 2>&1 | tee ../data/soccer/validation_log.txt) || true
           (python3 price_today.py "$(date -u +%F)" 2>&1 | tee ../data/soccer/price_today.txt) || true
           (python3 price_today.py "$(date -u -d tomorrow +%F)" 2>&1 | tee ../data/soccer/price_tomorrow.txt) || true
           if [ -f ../data/nba_games_2526.csv ]; then (python3 nba_stack.py 2>&1 | tee ../data/nba_backtest_log.txt) || true; fi
@@ -53,7 +54,7 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git checkout -B data/ucl-nba-snapshot
           for f in data/soccer/club_results.csv data/soccer/extra_league_results.csv data/soccer/uefa_results.csv \
-                   data/soccer/elo_ratings.json data/soccer/ucl_elo_goal_model.json data/soccer/calibration_log.txt \
+                   data/soccer/elo_ratings.json data/soccer/club_games.json data/soccer/validation_log.txt data/soccer/ucl_elo_goal_model.json data/soccer/calibration_log.txt \
                    data/soccer/price_today.txt data/soccer/price_tomorrow.txt data/nba_games_2526.csv \
                    data/nba_backtest_log.txt data/test_log.txt; do
             if [ -f "$f" ]; then git add -f "$f"; else echo "missing (not added): $f"; fi

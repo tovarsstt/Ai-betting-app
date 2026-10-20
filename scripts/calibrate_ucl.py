@@ -80,6 +80,10 @@ def run(result_paths: list[Path], out_dir: Path = DATA) -> dict:
            "n_uefa_matches": sum(1 for r in rows if str(r["league"]).startswith("UEFA")),
            "uefa_clubs_without_domestic_data": unlinked}
     (out_dir / "ucl_elo_goal_model.json").write_text(json.dumps(res, indent=2))
+    games = Counter()
+    for r in rows:
+        games[r["home_team"]] += 1; games[r["away_team"]] += 1
+    (out_dir / "club_games.json").write_text(json.dumps(dict(games)))
     (out_dir / "elo_ratings.json").write_text(json.dumps({k: round(v, 1) for k, v in sorted(elo.items(), key=lambda kv: -kv[1])}, indent=1))
     return res
 

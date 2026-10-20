@@ -19,10 +19,18 @@ import ucl_model as um
 DATA = Path(__file__).parent.parent / "data" / "soccer"
 
 
-def price_fixtures(fixtures: list[dict], elo: dict[str, float], model: um.EloGoalModel) -> list[dict]:
+LOW_SAMPLE = 15   # clubs with fewer matches in the data have a noisy Elo
+
+
+def price_fixtures(fixtures: list[dict], elo: dict[str, float], model: um.EloGoalModel,
+                   games: dict[str, int] | None = None) -> list[dict]:
     out = []
     for f in fixtures:
-        r = um.price_match(cu.normalize(f["home"]), cu.normalize(f["away"]), elo, model)
+        h, a = cu.normalize(f["home"]), cu.normalize(f["away"])
+        r = um.price_match(h, a, elo, model)
+        if games is not None and "error" not in r:
+            low = [n for n, c in ((f["home"], games.get(h, 0)), (f["away"], games.get(a, 0))) if c < LOW_SAMPLE]
+            r["low_sample"] = low
         out.append({"match": f"{f['home']} vs {f['away']}", "kickoff": f["kickoff"], **r})
     return out
 
@@ -37,13 +45,16 @@ def main() -> None:
     if m.get("n_uefa_matches", 0) < 100:
         print(f"WARNING: only {m.get('n_uefa_matches', 0)} UEFA matches link the leagues -> Elo is NOT comparable "
               "across leagues; cross-league prices below are INVALID (same-league ties only).")
-    for r in price_fixtures(fixtures, elo, model):
+    gpath = DATA / "club_games.json"
+    games = json.loads(gpath.read_text()) if gpath.exists() else None
+    for r in price_fixtures(fixtures, elo, model, games):
         if "error" in r:
             print(f"- {r['match']}: SKIPPED — {r['error']}")
             continue
         p = r["p_win"]
         print(f"- {r['match']}: P(home)={p['home']*100:.1f}% P(draw)={p['draw']*100:.1f}% P(away)={p['away']*100:.1f}% "
-              f"| xG {r['lambda_home']:.2f}-{r['lambda_away']:.2f} | O2.5 {r['over_2_5']*100:.0f}% BTTS {r['btts']*100:.0f}% | no odds -> no EV")
+              f"| xG {r['lambda_home']:.2f}-{r['lambda_away']:.2f} | O2.5 {r['over_2_5']*100:.0f}% BTTS {r['btts']*100:.0f}% | no odds -> no EV"
+              + (f" | LOW-SAMPLE (<{LOW_SAMPLE} matches): {', '.join(r['low_sample'])} — treat as shaky" if r.get("low_sample") else ""))
 
 
 if __name__ == "__main__":
