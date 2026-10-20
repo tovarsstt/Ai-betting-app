@@ -47,7 +47,10 @@ def one(gid: str) -> dict | None:
     try:
         return nd.parse_summary(fetch_summary(gid))
     except Exception as e:                                           # a failed game is skipped and counted, never invented
-        print(f"  {gid}: skip ({type(e).__name__}: {e})")
+        tb = e.__traceback__
+        while tb.tb_next:
+            tb = tb.tb_next
+        print(f"  {gid}: skip ({type(e).__name__}: {e} @ {tb.tb_frame.f_code.co_name}:{tb.tb_lineno})")
         return None
 
 

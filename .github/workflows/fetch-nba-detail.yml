@@ -30,7 +30,9 @@ jobs:
         run: python3 scripts/fetch_nba_detail.py probe 401809243 401809244 401809245
       - name: Parse every game (box, shots, on/off, pace)
         if: ${{ inputs.mode != 'probe' }}
-        run: python3 scripts/fetch_nba_detail.py full ${{ inputs.seasons || '2025' }} 2>&1 | tee data/nba/fetch_log.txt
+        run: |
+          mkdir -p data/nba
+          python3 scripts/fetch_nba_detail.py full ${{ inputs.seasons || '2025' }} 2>&1 | tee data/nba/fetch_log.txt
       - name: Push data
         run: |
           git config user.name "github-actions"

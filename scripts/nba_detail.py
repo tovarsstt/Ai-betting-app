@@ -17,7 +17,15 @@ NO_COORD = -1000
 
 def _pair(s: str) -> tuple[int, int]:
     a, _, b = s.partition("-")
-    return int(a or 0), int(b or 0)
+    return int(a) if a.isdigit() else 0, int(b) if b.isdigit() else 0
+
+
+def _num(s, cast=int):
+    """ESPN writes '--' for stats of players who did not play."""
+    try:
+        return cast(str(s).replace("+", ""))
+    except ValueError:
+        return cast(0)
 
 
 def _clock_sec(c: str) -> float:
@@ -85,8 +93,8 @@ def player_rows(d: dict) -> tuple[list[dict], dict]:
                 r["fgm"], r["fga"] = _pair(s["fieldGoalsMade-fieldGoalsAttempted"])
                 r["fg3m"], r["fg3a"] = _pair(s["threePointFieldGoalsMade-threePointFieldGoalsAttempted"])
                 r["ftm"], r["fta"] = _pair(s["freeThrowsMade-freeThrowsAttempted"])
-                r.update(min=float(s["minutes"]), pts=int(s["points"]), reb=int(s["rebounds"]), ast=int(s["assists"]), tov=int(s["turnovers"]), stl=int(s["steals"]),
-                         blk=int(s["blocks"]), oreb=int(s["offensiveRebounds"]), pf=int(s["fouls"]), pm=int(str(s["plusMinus"]).replace("+", "") or 0))
+                r.update(min=_num(s["minutes"], float), pts=_num(s["points"]), reb=_num(s["rebounds"]), ast=_num(s["assists"]), tov=_num(s["turnovers"]), stl=_num(s["steals"]),
+                         blk=_num(s["blocks"]), oreb=_num(s["offensiveRebounds"]), pf=_num(s["fouls"]), pm=_num(s["plusMinus"]))
             rows.append(r)
             by_id[ath["id"]] = r
     return rows, by_id
