@@ -131,13 +131,53 @@ def test_write_csv_does_not_overwrite_with_empty(tmp_path):
 
 def test_normalize_bridges_spellings():
     import calibrate_ucl as cu
-    assert cu.normalize("Ath Madrid") == "atletico" and cu.normalize("Atlético") == "atletico"
-    assert cu.normalize("FC Porto") == "porto" and cu.normalize("Paris SG") == "paris sg"
+    assert cu.normalize("Atletico Madrid") == cu.normalize("Ath Madrid") == "ath madrid"
+    assert cu.normalize("Paris Saint-Germain") == cu.normalize("Paris SG") == "paris sg"
+    assert cu.normalize("Manchester City") == cu.normalize("Man City")
 
 
-def test_run_drops_unmatched_and_lists_them(tmp_path):
+def test_build_elo_links_leagues_via_uefa_and_has_no_lookahead():
+    import ucl_model as um
+    rows = []
+    d = 1
+    for _ in range(12):  # league A strong team beats weak; league B likewise
+        for lg, t1, t2 in (("A", "A1", "A2"), ("B", "B1", "B2")):
+            rows.append({"date": f"2026-01-{d:02d}", "home_team": t1, "away_team": t2, "home_score": 2,
+                         "away_score": 0, "neutral": "FALSE", "league": lg}); d += 1
+    for i in range(6):  # A1 repeatedly beats B1 in Europe
+        rows.append({"date": f"2026-02-{i+1:02d}", "home_team": "A1", "away_team": "B1", "home_score": 3,
+                     "away_score": 0, "neutral": "FALSE", "league": "UEFA Champions League"})
+    elo, samples = um.build_elo(rows, burn_in=5)
+    assert elo["A1"] > elo["B1"]
+    first = samples[0]
+    assert first["eh"] == first["eh"] and abs(first["eh"] - 1500) < 200   # pre-match, not final
+
+
+def test_run_reports_unlinked_uefa_clubs(tmp_path):
     import calibrate_ucl as cu
-    (tmp_path / "e.csv").write_text("Club,elo\nTeam A,1700\nTeam B,1600\n")
-    (tmp_path / "r.csv").write_text("home_team,away_team,home_score,away_score,neutral\nTeam A,Team B,2,1,FALSE\nTeam A,Ghost FC,1,0,FALSE\n")
-    res = cu.run(tmp_path / "e.csv", [tmp_path / "r.csv"], tmp_path / "o.json")
-    assert res["unmatched_clubs"] == ["Ghost FC"] and res["calibrated"] is False  # too few matches -> priors
+    (tmp_path / "u.csv").write_text("date,home_team,away_team,home_score,away_score,neutral,league\n"
+                                    "2026-01-01,Slavia Praha,Porto,1,1,FALSE,UEFA Champions League\n")
+    (tmp_path / "c.csv").write_text("date,home_team,away_team,home_score,away_score,neutral,league\n"
+                                    "2026-01-01,Porto,Benfica,1,0,FALSE,Primeira Liga\n")
+    res = cu.run([tmp_path / "c.csv", tmp_path / "u.csv"], tmp_path)
+    assert "slavia praha" in res["uefa_clubs_without_domestic_data"] and res["calibrated"] is False
+
+
+def test_parse_espn_soccer_only_finished():
+    def ev(done, h, a):
+        return {"date": "2026-10-20T19:00Z", "status": {"type": {"completed": done}},
+                "competitions": [{"competitors": [{"homeAway": "home", "score": str(h), "team": {"displayName": "Liverpool"}},
+                                                  {"homeAway": "away", "score": str(a), "team": {"displayName": "Villarreal"}}]}]}
+    out = fe.parse_espn_soccer({"events": [ev(True, 2, 0), ev(False, 0, 0), {"x": 1}]}, "UEFA Champions League")
+    assert len(out) == 1 and out[0]["home_score"] == 2 and out[0]["league"].startswith("UEFA")
+
+
+def test_fixtures_parse_and_pricing_skips_unknown_clubs():
+    import price_today as pt
+    ev = {"date": "2026-10-20T19:00Z", "status": {"type": {"completed": False, "state": "pre"}},
+          "competitions": [{"competitors": [{"homeAway": "home", "team": {"displayName": "Liverpool"}},
+                                            {"homeAway": "away", "team": {"displayName": "Villarreal"}}]}]}
+    fx = fe.parse_espn_fixtures({"events": [ev, {"bad": 1}]})
+    assert len(fx) == 1 and fx[0]["home"] == "Liverpool"
+    out = pt.price_fixtures(fx, {"liverpool": 1800.0}, um.EloGoalModel())
+    assert "error" in out[0] and "villarreal" in out[0]["error"]

@@ -174,9 +174,14 @@ def backtest(games: list[dict], test_season: int, warmup: int = 300, refit_every
 
 def main() -> None:
     games = load_games(DATA / "nba_historical.csv", DATA / "nba_games_2526.csv")
-    seasons = sorted({g["season"] for g in games})
-    r = backtest(games, test_season=seasons[-1])
-    print(f"games={len(games)} seasons={seasons} test_season={seasons[-1]} n={r['n']}")
+    counts: dict[int, int] = {}
+    for g in games:
+        counts[g["season"]] = counts.get(g["season"], 0) + 1
+    seasons = sorted(counts)
+    full = [s for s in seasons if counts[s] >= 800]   # a test season needs a real sample
+    test = full[-1]
+    r = backtest(games, test_season=test)
+    print(f"games={len(games)} per-season={counts} test_season={test} n={r['n']}")
     for k, v in r["logloss"].items():
         print(f"  {k:10s} logloss {v:.4f}")
     print(f"  stacked - elo = {r['diff_vs_elo']:+.4f}  95% CI [{r['ci95'][0]:+.4f}, {r['ci95'][1]:+.4f}]")

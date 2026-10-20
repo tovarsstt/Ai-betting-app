@@ -75,6 +75,53 @@ def calibrate(rows: list[dict], elo: dict[str, float], l2: float = 1e-3, min_mat
     return EloGoalModel(a=a, h=h, b=b, calibrated=True, n_matches=len(X))
 
 
+def build_elo(rows: list[dict], k_dom: float = 20.0, k_eur: float = 40.0, hfa: float = 65.0,
+              burn_in: int = 8) -> tuple[dict[str, float], list[dict]]:
+    """Own cross-league Elo from real results (no ClubElo dependency). Domestic leagues are
+    linked ONLY through UEFA-competition matches (league starts with 'UEFA'), which get a
+    higher K so league strength propagates. Returns (final Elo, training samples) where each
+    sample carries the PRE-match ratings (no look-ahead) and is kept only after both clubs
+    have `burn_in` games."""
+    elo: dict[str, float] = {}
+    gp: dict[str, int] = {}
+    samples: list[dict] = []
+    for r in sorted(rows, key=lambda x: x["date"]):
+        h, a = r["home_team"], r["away_team"]
+        eh, ea = elo.setdefault(h, 1500.0), elo.setdefault(a, 1500.0)
+        neutral = str(r.get("neutral", "FALSE")).upper() == "TRUE"
+        hg, ag = int(r["home_score"]), int(r["away_score"])
+        if gp.get(h, 0) >= burn_in and gp.get(a, 0) >= burn_in:
+            samples.append({"home_team": h, "away_team": a, "home_score": hg, "away_score": ag,
+                            "neutral": r.get("neutral", "FALSE"), "eh": eh, "ea": ea})
+        exp = 1 / (1 + 10 ** (-(eh - ea + (0 if neutral else hfa)) / 400))
+        gd = abs(hg - ag)
+        mult = 1.0 if gd <= 1 else (1.5 if gd == 2 else (11 + gd) / 8)
+        k = k_eur if str(r.get("league", "")).startswith("UEFA") else k_dom
+        delta = k * mult * ((1.0 if hg > ag else 0.5 if hg == ag else 0.0) - exp)
+        elo[h], elo[a] = eh + delta, ea - delta
+        gp[h], gp[a] = gp.get(h, 0) + 1, gp.get(a, 0) + 1
+    return elo, samples
+
+
+def calibrate_pre(samples: list[dict], l2: float = 1e-3, min_matches: int = 200) -> EloGoalModel:
+    """Same Poisson fit as `calibrate`, using the pre-match Elo stored in each sample."""
+    if len(samples) < min_matches:
+        return EloGoalModel()
+    X = np.array([(r["eh"] - r["ea"]) / 400.0 for r in samples])
+    GH = np.array([float(r["home_score"]) for r in samples])
+    GA = np.array([float(r["away_score"]) for r in samples])
+    home = np.array([0.0 if str(r.get("neutral", "FALSE")).upper() == "TRUE" else 1.0 for r in samples])
+
+    def nll(p: np.ndarray) -> float:
+        a, h, b = p
+        eh, ea = a + h * home + b * X, a - b * X
+        return float(np.sum(np.exp(eh) - GH * eh) + np.sum(np.exp(ea) - GA * ea) + l2 * b * b)
+
+    res = minimize(nll, x0=np.array([PRIOR_A, PRIOR_H, PRIOR_B]), method="L-BFGS-B")
+    a, h, b = (float(v) for v in res.x)
+    return EloGoalModel(a=a, h=h, b=b, calibrated=True, n_matches=len(samples))
+
+
 def blend_with_market(model: dict[str, float], market: dict[str, float] | None, w: float = MODEL_WEIGHT) -> dict[str, float]:
     if not market:
         return dict(model)

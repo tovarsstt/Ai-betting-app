@@ -15,6 +15,7 @@ functions touch the network. Run manually — NEVER during tests:
 
     python3 scripts/fetch_europe_data.py clubelo
     python3 scripts/fetch_europe_data.py extra-leagues
+    python3 scripts/fetch_europe_data.py uefa 2024-09-01 2026-10-20
     python3 scripts/fetch_europe_data.py nba 2025-10-21 2026-06-30
 """
 from __future__ import annotations
@@ -32,6 +33,7 @@ DATA = Path(__file__).parent.parent / "data"
 CLUBELO_CSV = DATA / "soccer" / "clubelo.csv"
 EXTRA_RESULTS_CSV = DATA / "soccer" / "extra_league_results.csv"
 NBA_GAMES_CSV = DATA / "nba_games_2526.csv"
+UEFA_RESULTS_CSV = DATA / "soccer" / "uefa_results.csv"
 
 # football-data.co.uk main-format codes (same URL scheme fetch_club_results uses)
 EXTRA_LEAGUES = {
@@ -96,22 +98,96 @@ def season_code(today: datetime.date | None = None) -> str:
     return f"{y % 100:02d}{(y + 1) % 100:02d}"
 
 
+def prev_season_code(code: str) -> str:
+    a = (int(code[:2]) - 1) % 100
+    return f"{a:02d}{int(code[:2]):02d}"
+
+
 def fetch_extra_leagues(season: str | None = None) -> list[dict]:
     from fetch_club_results import _reformat_row
-    season = season or season_code()
+    cur = season or season_code()
     rows: list[dict] = []
-    for div, name in EXTRA_LEAGUES.items():
-        try:
-            text = _get(f"https://www.football-data.co.uk/mmz4281/{season}/{div}.csv")
-        except Exception as e:  # one league failing must not kill the rest
-            print(f"  {name}: skip ({e})")
-            continue
-        for row in csv.DictReader(io.StringIO(text)):
-            r = _reformat_row(row, name)
-            if r:
-                rows.append(r)
-        print(f"  {name}: {sum(1 for r in rows if r['league'] == name)} matches")
+    for sc in (prev_season_code(cur), cur):
+        for div, name in EXTRA_LEAGUES.items():
+            try:
+                text = _get(f"https://www.football-data.co.uk/mmz4281/{sc}/{div}.csv")
+            except Exception as e:  # one league failing must not kill the rest
+                print(f"  {name} {sc}: skip ({e})")
+                continue
+            n0 = len(rows)
+            for row in csv.DictReader(io.StringIO(text)):
+                r = _reformat_row(row, name)
+                if r:
+                    rows.append(r)
+            print(f"  {name} {sc}: {len(rows) - n0} matches")
     return rows
+
+
+# ── ESPN soccer scoreboards (UCL / Europa / Conference): the matches that LINK leagues ──
+UEFA_COMPS = {"uefa.champions": "UEFA Champions League", "uefa.europa": "UEFA Europa League",
+              "uefa.europa.conf": "UEFA Conference League"}
+
+
+def parse_espn_soccer(data: dict, league: str) -> list[dict]:
+    """ESPN soccer scoreboard -> FINISHED matches in club_results.csv shape (never guesses)."""
+    out = []
+    for ev in data.get("events", []) or []:
+        try:
+            comp = ev["competitions"][0]
+            if not ev["status"]["type"].get("completed"):
+                continue
+            by_side = {c["homeAway"]: c for c in comp["competitors"]}
+            h, a = by_side["home"], by_side["away"]
+            out.append({"date": ev["date"][:10], "home_team": h["team"]["displayName"],
+                        "away_team": a["team"]["displayName"], "home_score": int(float(h["score"])),
+                        "away_score": int(float(a["score"])), "neutral": "FALSE", "league": league})
+        except (KeyError, IndexError, TypeError, ValueError):
+            continue
+    return out
+
+
+def parse_espn_fixtures(data: dict) -> list[dict]:
+    """ESPN scoreboard -> NOT-yet-finished matches (home, away, kickoff). Pure parser."""
+    out = []
+    for ev in data.get("events", []) or []:
+        try:
+            comp = ev["competitions"][0]
+            if ev["status"]["type"].get("completed"):
+                continue
+            by_side = {c["homeAway"]: c for c in comp["competitors"]}
+            out.append({"home": by_side["home"]["team"]["displayName"], "away": by_side["away"]["team"]["displayName"],
+                        "kickoff": ev["date"], "state": ev["status"]["type"].get("state")})
+        except (KeyError, IndexError, TypeError):
+            continue
+    return out
+
+
+def fetch_fixtures(day: datetime.date, slug: str = "uefa.champions") -> list[dict]:
+    import json
+    url = f"https://site.api.espn.com/apis/site/v2/sports/soccer/{slug}/scoreboard?dates={day:%Y%m%d}"
+    return parse_espn_fixtures(json.loads(_get(url)))
+
+
+def fetch_uefa(start: datetime.date, end: datetime.date, pause: float = 0.3) -> list[dict]:
+    import json
+    seen: set[tuple] = set()
+    rows: list[dict] = []
+    # UEFA matches happen Tue-Thu; ESPN accepts a date range, query week-by-week to stay small.
+    d = start
+    while d <= end:
+        rng = f"{d:%Y%m%d}-{min(d + datetime.timedelta(days=6), end):%Y%m%d}"
+        for slug, label in UEFA_COMPS.items():
+            url = f"https://site.api.espn.com/apis/site/v2/sports/soccer/{slug}/scoreboard?dates={rng}&limit=100"
+            try:
+                for r in parse_espn_soccer(json.loads(_get(url)), label):
+                    k = (r["date"], r["home_team"], r["away_team"])
+                    if k not in seen:
+                        seen.add(k); rows.append(r)
+            except Exception as e:
+                print(f"  {slug} {rng}: skip ({e})")
+        d += datetime.timedelta(days=7)
+        time.sleep(pause)
+    return sorted(rows, key=lambda r: r["date"])
 
 
 # ── ESPN scoreboard (NBA games) ────────────────────────────────────────────────
@@ -185,6 +261,12 @@ def main(argv: list[str]) -> None:
         n = write_csv(rows, EXTRA_RESULTS_CSV,
                       ["date", "home_team", "away_team", "home_score", "away_score", "neutral", "league"])
         print(f"Extra leagues: {n} matches -> {EXTRA_RESULTS_CSV}")
+    elif cmd == "uefa":
+        s_, e_ = (datetime.date.fromisoformat(a) for a in argv[2:4])
+        rows = fetch_uefa(s_, e_)
+        n = write_csv(rows, UEFA_RESULTS_CSV,
+                      ["date", "home_team", "away_team", "home_score", "away_score", "neutral", "league"])
+        print(f"UEFA comps: {n} finished matches -> {UEFA_RESULTS_CSV}")
     elif cmd == "nba":
         s, e = (datetime.date.fromisoformat(a) for a in argv[2:4])
         rows = fetch_nba_range(s, e)

@@ -1,14 +1,16 @@
 """
-calibrate_ucl.py — fit the Elo->goals model on real fetched results.
+calibrate_ucl.py — build ONE cross-league Elo from real results and fit Elo -> goals.
 
-Inputs (all produced by fetch_europe_data.py / fetch_club_results.py):
-  data/soccer/clubelo.csv, club_results.csv (big-5), extra_league_results.csv
-Output: data/soccer/ucl_elo_goal_model.json  {a,h,b,calibrated,n_matches,unmatched_clubs}
+Why not ClubElo: api.clubelo.com returned 502 even from GitHub runners. Instead we
+use data we CAN get: big-5 + extra-league domestic results (football-data.co.uk) and
+UEFA competition results (ESPN). The UEFA matches are the only bridge between leagues,
+so clubs with no UEFA/domestic link to the rest are reported, not guessed.
 
-Known limitation: uses the CURRENT ClubElo snapshot for past matches (mild
-look-ahead). Name matching: ClubElo vs football-data spell clubs differently;
-`normalize` + ALIASES bridge the common cases and every unmatched club is
-LISTED in the output (matches with an unmatched club are dropped, never guessed).
+Inputs (data/soccer/): club_results.csv, extra_league_results.csv, uefa_results.csv
+Outputs: elo_ratings.json  {club(normalized): elo}   ucl_elo_goal_model.json {a,h,b,...}
+
+Limits: league strength is learned only from the few UEFA matches (K=40), so cross-league
+gaps are noisy early in a season. Elo uses pre-match ratings (no look-ahead).
 """
 from __future__ import annotations
 
@@ -16,35 +18,41 @@ import csv
 import json
 import re
 import unicodedata
+from collections import Counter
 from pathlib import Path
 
 import ucl_model as um
 
 DATA = Path(__file__).parent.parent / "data" / "soccer"
-OUT = DATA / "ucl_elo_goal_model.json"
 
-# football-data spelling -> ClubElo spelling (only pairs I am confident about; extend from the unmatched list)
+# spelling variants -> football-data spelling (normalized). Extend from the `unlinked` report.
 ALIASES = {
-    "man city": "man city", "man united": "man united", "ath madrid": "atletico", "ath bilbao": "athletic",
-    "sociedad": "real sociedad", "betis": "betis", "celta": "celta", "vallecano": "rayo vallecano",
-    "espanol": "espanyol", "nott'm forest": "forest", "paris sg": "paris sg", "st etienne": "st etienne",
-    "m'gladbach": "gladbach", "ein frankfurt": "frankfurt", "leverkusen": "leverkusen",
-    "inter": "inter", "milan": "milan", "sp lisbon": "sporting", "sp braga": "braga",
-    "porto": "porto", "benfica": "benfica", "psv eindhoven": "psv", "feyenoord": "feyenoord",
+    "manchester city": "man city", "manchester united": "man united",
+    "atletico madrid": "ath madrid", "atletico de madrid": "ath madrid",
+    "paris saint germain": "paris sg", "paris saint-germain": "paris sg",
+    "borussia dortmund": "dortmund", "bayer leverkusen": "leverkusen", "bayer 04 leverkusen": "leverkusen",
+    "eintracht frankfurt": "ein frankfurt", "borussia monchengladbach": "m'gladbach",
+    "tottenham hotspur": "tottenham", "newcastle united": "newcastle", "wolverhampton wanderers": "wolves",
+    "west ham united": "west ham", "nottingham forest": "nott'm forest", "brighton hove albion": "brighton",
+    "athletic club": "ath bilbao", "athletic bilbao": "ath bilbao", "real sociedad": "sociedad",
+    "real betis": "betis", "celta vigo": "celta", "rayo vallecano": "vallecano",
+    "inter milan": "inter", "internazionale": "inter", "milan": "milan", "roma": "roma",
+    "sporting cp": "sp lisbon", "sporting lisbon": "sp lisbon", "sporting": "sp lisbon",
+    "olympique marseille": "marseille", "olympique de marseille": "marseille", "olympique lyonnais": "lyon",
+    "vfb stuttgart": "stuttgart", "sc braga": "sp braga", "braga": "sp braga", "psv": "psv eindhoven",
+    "red bull salzburg": "salzburg", "club brugge": "club brugge", "union saint gilloise": "st. gilloise",
+    "royal antwerp": "antwerp", "fenerbahce": "fenerbahce", "galatasaray": "galatasaray",
+    "ajax amsterdam": "ajax", "feyenoord rotterdam": "feyenoord", "as monaco": "monaco",
+    "lille": "lille", "ac milan": "milan", "as roma": "roma", "ssc napoli": "napoli",
 }
 
 
 def normalize(name: str) -> str:
     s = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode().lower()
-    s = re.sub(r"[^a-z0-9' ]", " ", s)
-    s = re.sub(r"\b(fc|cf|afc|sc|ac|as|sv|fk|if|bk)\b", " ", s)
+    s = re.sub(r"[^a-z0-9'. ]", " ", s)
+    s = re.sub(r"\b(fc|cf|afc|sc|ac|sv|fk|if|bk|ssc|as)\b", " ", s)
     s = re.sub(r"\s+", " ", s).strip()
     return ALIASES.get(s, s)
-
-
-def load_elo(path: Path) -> dict[str, float]:
-    with path.open() as f:
-        return {normalize(r["Club"]): float(r["elo"]) for r in csv.DictReader(f) if r.get("elo")}
 
 
 def load_results(*paths: Path) -> list[dict]:
@@ -56,29 +64,33 @@ def load_results(*paths: Path) -> list[dict]:
     return rows
 
 
-def run(elo_path: Path, result_paths: list[Path], out: Path = OUT) -> dict:
-    elo = load_elo(elo_path)
-    rows = load_results(*result_paths)
-    norm_rows, unmatched = [], set()
+def run(result_paths: list[Path], out_dir: Path = DATA) -> dict:
+    raw = load_results(*result_paths)
+    rows = [{**r, "home_team": normalize(r["home_team"]), "away_team": normalize(r["away_team"])} for r in raw]
+    elo, samples = um.build_elo(rows)
+    model = um.calibrate_pre(samples)
+    dom = Counter(); eur = Counter()
     for r in rows:
-        h, a = normalize(r["home_team"]), normalize(r["away_team"])
-        for raw, n in ((r["home_team"], h), (r["away_team"], a)):
-            if n not in elo:
-                unmatched.add(raw)
-        norm_rows.append({**r, "home_team": h, "away_team": a})
-    m = um.calibrate(norm_rows, elo)
-    res = {"a": m.a, "h": m.h, "b": m.b, "calibrated": m.calibrated, "n_matches": m.n_matches,
-           "n_results_read": len(rows), "unmatched_clubs": sorted(unmatched)}
-    out.write_text(json.dumps(res, indent=2))
+        tgt = eur if str(r["league"]).startswith("UEFA") else dom
+        tgt[r["home_team"]] += 1; tgt[r["away_team"]] += 1
+    # a UEFA club with no domestic matches has no link into the rating network
+    unlinked = sorted(c for c in eur if dom[c] == 0)
+    res = {"a": model.a, "h": model.h, "b": model.b, "calibrated": model.calibrated,
+           "n_matches": model.n_matches, "n_results_read": len(raw), "n_clubs": len(elo),
+           "n_uefa_matches": sum(1 for r in rows if str(r["league"]).startswith("UEFA")),
+           "uefa_clubs_without_domestic_data": unlinked}
+    (out_dir / "ucl_elo_goal_model.json").write_text(json.dumps(res, indent=2))
+    (out_dir / "elo_ratings.json").write_text(json.dumps({k: round(v, 1) for k, v in sorted(elo.items(), key=lambda kv: -kv[1])}, indent=1))
     return res
 
 
 def main() -> None:
-    if not (DATA / "clubelo.csv").exists():
-        raise SystemExit("clubelo.csv missing — run fetch_europe_data.py clubelo first")
-    res = run(DATA / "clubelo.csv", [DATA / "club_results.csv", DATA / "extra_league_results.csv"])
-    print(json.dumps({k: v for k, v in res.items() if k != "unmatched_clubs"}, indent=2))
-    print(f"unmatched clubs ({len(res['unmatched_clubs'])}): {res['unmatched_clubs'][:25]}")
+    res = run([DATA / "club_results.csv", DATA / "extra_league_results.csv", DATA / "uefa_results.csv"])
+    print(json.dumps({k: v for k, v in res.items() if k != "uefa_clubs_without_domestic_data"}, indent=2))
+    ul = res["uefa_clubs_without_domestic_data"]
+    print(f"UEFA clubs with NO domestic data ({len(ul)}): {ul}")
+    elo = json.loads((DATA / "elo_ratings.json").read_text())
+    print("Top 15 Elo:", list(elo.items())[:15])
 
 
 if __name__ == "__main__":
