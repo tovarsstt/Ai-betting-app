@@ -31,6 +31,15 @@ UCL (Champions League) ALWAYS comes first, then NBA, then any other league. This
 per-tool detail, the SKIPPED list and any summary. Inside each section: P(win) first -> odds/payout -> EV last,
 ranked by P(win). Code: `SECTION_ORDER` in `scripts/value_picks.py`. Effort and review time also go to UCL first.
 
+## Total-Anchor Rule (all sports, all sessions)
+When the market gives a game total (soccer goals, NBA/NFL points, MLB runs), the MARKET sets the expected total and the
+model only sets the split between the teams. Every goal/score-rate tool is rescaled to the market total before any
+probability (1X2, totals, BTTS, props) is derived (`scripts/total_anchor.py`, `pwin_ensemble.market_total_from_ou`).
+Evidence: soccer Elo model under-predicted Champions League totals by 0.54 goals/match (-1.0 in mismatches, measured
+walk-forward with `scripts/validate_ucl.py`); NFL benchmark (`data/benchmarks/nfl_backtest.json`) gives ratings a
+weight of 0.0 for totals and a 48.9% hit rate when the model disagreed by 3+ points (n=659). Without a market total the
+report must say "total NOT anchored". Never present a model total that disagrees with the market as an edge.
+
 ## Ranking Priority
 Rank picks by win-probability first, edge (+EV) second. Favor likely winners over longshots.
 

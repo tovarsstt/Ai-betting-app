@@ -356,11 +356,48 @@ def test_report_puts_ucl_before_nba_even_when_nba_rows_come_first():
     assert txt.index("Roma vs X") < txt.index("Lakers @ Suns")             # skipped list also UCL first
 
 
-def test_sheet_totals_blocked_when_model_total_is_far_below_market():
-    import sheet_picks as sp
-    r = {"p_model": 0.6, "p_market": 0.55, "spread": 0.0, "p_win": 0.58, "blocked": True, "total_gap": 1.6}
-    assert any("BLOCKED" in w for w in sp.warnings(r, []))
-    assert sp.TOTAL_GAP_BLOCK == 0.3 and "U2.5" in sp.TOTALS_KEYS and "H" not in sp.TOTALS_KEYS
+def test_anchor_rates_sets_total_and_keeps_split():
+    import total_anchor as ta
+    lh, la = ta.anchor_rates(1.3, 1.4, 4.4)
+    assert abs((lh + la) - 4.4) < 1e-9 and abs(lh / (lh + la) - 1.3 / 2.7) < 1e-9
+    assert ta.anchor_rates(1.3, 1.4, None) == (1.3, 1.4) and ta.anchor_rates(1.3, 1.4, 0) == (1.3, 1.4)
+
+
+def test_market_total_from_ou_recovers_known_total():
+    import pwin_ensemble as pe
+    import soccer_markets as sm
+    b = sm.derive_markets(sm.score_matrix(2.2, 1.9), total_lines=(3.5,))
+    t = pe.market_total_from_ou(b.home_win, b.away_win, b.over_under[3.5]["over"], 3.5)
+    assert abs(t - 4.1) < 0.1 and pe.market_total_from_ou(0.4, 0.3, 0.5, 2.25) is None
+
+
+def test_soccer_tools_anchor_every_goal_tool_to_market_total(tmp_path):
+    import pwin_ensemble as pe
+    rng = np.random.default_rng(3)
+    teams = [f"T{i}" for i in range(8)]
+    lines = ["date,home_team,away_team,home_score,away_score,neutral,league"]
+    d = 0
+    for _ in range(14):
+        for i, h in enumerate(teams):
+            d += 1
+            lines.append(f"2026-{1 + d // 280:02d}-{1 + d % 27:02d},{h},{teams[(i + 3) % 8]},{rng.poisson(1.3)},{rng.poisson(1.1)},FALSE,{'UEFA Champions League' if d % 9 == 0 else 'L'}")
+    (tmp_path / "r.csv").write_text("\n".join(lines))
+    ctx = pe.build_soccer_ctx([tmp_path / "r.csv"])
+    ml = {"home": -120, "draw": 260, "away": 330}
+    anch = pe.soccer_tools(ctx, "T0", "T1", ml, 2.5, market_total=4.4)
+    for t in anch:
+        if t.lam:
+            assert abs(sum(t.lam) - 4.4) < 1e-6, t.name
+    free = pe.soccer_tools(ctx, "T0", "T1", ml, 2.5, market_total=None)
+    assert all("NOT anchored" in t.note for t in free if t.lam)
+
+
+def test_ucl_model_has_competition_offset_and_extended_fit_runs():
+    import ucl_model as um2
+    m = um2.EloGoalModel(a=0.2, c_ucl=0.2, c_eur=0.05, g=0.0)
+    ucl = sum(um2.lambdas(m, 1700, 1700, comp="UCL")); dom = sum(um2.lambdas(m, 1700, 1700, comp="DOM"))
+    assert ucl > dom and abs(ucl / dom - np.exp(0.2)) < 1e-9
+    assert um2.comp_of("UEFA Champions League") == "UCL" and um2.comp_of("UEFA Europa League") == "EUR" and um2.comp_of("Serie A") == "DOM"
 
 
 def test_sheet_markets_are_internally_consistent():
@@ -378,3 +415,11 @@ def test_anchored_lambdas_reproduce_market_home_and_over():
     lh, la = sp.anchored_lambdas(pw, 0.80)
     b = sp.book(lh, la)
     assert abs(b["H"] - 0.40) < 0.03 and abs(b["A"] - 0.39) < 0.03 and abs(b["O2.5"] - 0.80) < 0.06
+
+
+def test_parse_total_from_real_espn_fixture_and_devig():
+    import value_picks as vp
+    evs = {e["home"]: e for e in vp.events_from_scoreboard(_fx("espn_ucl_odds_2026-10-20.json"))}
+    line, p_over = vp.parse_total(evs["Liverpool"]["odds"][0])
+    assert line == 3.5 and abs(p_over - 0.4532) < 0.005   # +110 over / -135 under, devigged (2.10 and 1.741 -> 0.4532)
+    assert vp.parse_total({}) is None and vp.parse_total({"total": {"over": {"close": {"line": "o3.5", "odds": "+110"}}}}) is None

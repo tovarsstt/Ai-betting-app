@@ -33,6 +33,8 @@ import poisson_regression as preg  # noqa: E402
 import soccer_markets as sm  # noqa: E402
 import sport_math as spm  # noqa: E402
 import ucl_model as um  # noqa: E402
+import total_anchor as ta  # noqa: E402
+from scipy.optimize import least_squares  # noqa: E402
 
 MODEL_WEIGHT = 0.5
 DATA = Path(__file__).parent.parent / "data"
@@ -115,13 +117,33 @@ def _wdl_counts(ctx: SoccerCtx, team: str, venue: str, last: int = 30) -> tuple[
     return sum(f > a for f, a in res), sum(f == a for f, a in res), sum(f < a for f, a in res)
 
 
-def soccer_tools(ctx: SoccerCtx, home: str, away: str, market: dict | None, total_line: float | None) -> list[ToolOut]:
+def market_total_from_ou(p_home: float, p_away: float, over_prob: float, line: float) -> float | None:
+    """Expected total goals implied by the market: Dixon-Coles (λh, λa) matching home win, away win and P(over line).
+    Only half-point lines supported by soccer_markets. None if unsupported."""
+    if line not in (0.5, 1.5, 2.5, 3.5, 4.5):
+        return None
+
+    def res(x):
+        b = sm.derive_markets(sm.score_matrix(abs(x[0]) + 0.05, abs(x[1]) + 0.05), total_lines=(line,))
+        return [b.home_win - p_home, b.away_win - p_away, 0.5 * (b.over_under[line]["over"] - over_prob)]
+
+    r = least_squares(res, x0=[1.5, 1.2])
+    return float(abs(r.x[0]) + 0.05 + abs(r.x[1]) + 0.05)
+
+
+def soccer_tools(ctx: SoccerCtx, home: str, away: str, market: dict | None, total_line: float | None,
+                 market_total: float | None = None) -> list[ToolOut]:
+    """market_total: expected total goals from the market. When given, EVERY goal-rate tool is rescaled to it
+    (total_anchor rule); otherwise tools keep their own total and say so."""
     out: list[ToolOut] = []
+    anc = f"anchored to market total {market_total:.2f}" if market_total else "total NOT anchored (no market total)"
     h, a = cu.normalize(home), cu.normalize(away)
     # 1-3: Elo -> goals (analytic Dixon-Coles, Monte Carlo, Skellam)
     if h in ctx.elo and a in ctx.elo:
-        lh, la = um.lambdas(ctx.elo_model, ctx.elo[h], ctx.elo[a])
-        note = f"λ {lh:.2f}-{la:.2f}, calibrated={ctx.elo_model.calibrated}"
+        lh, la = um.lambdas(ctx.elo_model, ctx.elo[h], ctx.elo[a], comp="UCL")
+        raw_total = lh + la
+        lh, la = ta.anchor_rates(lh, la, market_total)
+        note = f"λ {lh:.2f}-{la:.2f} (raw total {raw_total:.2f}; {anc}), calibrated={ctx.elo_model.calibrated}"
         out.append(ToolOut("elo_poisson_dixon_coles", "poisson", "model", _matrix_probs(lh, la), note, (lh, la)))
         sim = sm.simulate_match(lh, la, n_sims=N_SIMS, seed=SEED)["simulated_1x2"]
         out.append(ToolOut("elo_monte_carlo_200k", "monte-carlo", "model",
@@ -137,14 +159,18 @@ def soccer_tools(ctx: SoccerCtx, home: str, away: str, market: dict | None, tota
     pt = ctx.preg.teams
     if h in pt and a in pt and pt[h].get("n_matches", 0) >= 8 and pt[a].get("n_matches", 0) >= 8:
         lh, la = preg.lambdas_for(ctx.preg, h, a, neutral=False)
-        out.append(ToolOut("poisson_regression", "poisson", "model", _matrix_probs(lh, la), f"λ {lh:.2f}-{la:.2f}, per-team attack/defence", (lh, la)))
+        raw_total = lh + la
+        lh, la = ta.anchor_rates(lh, la, market_total)
+        out.append(ToolOut("poisson_regression", "poisson", "model", _matrix_probs(lh, la), f"λ {lh:.2f}-{la:.2f} (raw total {raw_total:.2f}; {anc})", (lh, la)))
     else:
         out.append(_not_run("poisson_regression", "poisson", "model", "club has <8 matches in the fit"))
     # 5: eigenvector (Keener) ratings -> goals
     er_, ea_ = ctx.eig.ratings.get(h), ctx.eig.ratings.get(a)
     if er_ and ea_:
-        lh, la = um.lambdas(ctx.eig_model, 400 * math.log(er_), 400 * math.log(ea_))
-        out.append(ToolOut("eigenvector_keener", "eigenvector", "model", _matrix_probs(lh, la), f"λ {lh:.2f}-{la:.2f}; goal map fit in-sample", (lh, la)))
+        lh, la = um.lambdas(ctx.eig_model, 400 * math.log(er_), 400 * math.log(ea_), comp="UCL")
+        raw_total = lh + la
+        lh, la = ta.anchor_rates(lh, la, market_total)
+        out.append(ToolOut("eigenvector_keener", "eigenvector", "model", _matrix_probs(lh, la), f"λ {lh:.2f}-{la:.2f} (raw total {raw_total:.2f}; {anc}); goal map fit in-sample", (lh, la)))
     else:
         out.append(_not_run("eigenvector_keener", "eigenvector", "model", "club not in rating graph"))
     # 6: binomial / Bernoulli / Dirichlet W-D-L rates by venue

@@ -64,11 +64,44 @@ def evaluate(rows: list[dict], cutoff: str, min_games: int = 8) -> dict:
             "diff": float(d.mean()) if len(d) else None, "ci95": (float(boots[int(0.025 * len(boots))]), float(boots[int(0.975 * len(boots)) - 1]))}
 
 
+def total_goal_bias(rows: list[dict], cutoff: str, min_games: int = 8) -> dict:
+    """Out-of-sample total-goals bias on Champions League matches AFTER cutoff: old shared-intercept model vs the
+    competition-aware + mismatch-curve model, both fit ONLY on matches before cutoff."""
+    elo, samples = um.build_elo(sorted(rows, key=lambda r: r["date"]), burn_in=min_games)
+    train = [s for s in samples if s["date"] < cutoff]
+    test = [s for s in samples if s["date"] >= cutoff and s["comp"] == "UCL"]
+    old, new = um.calibrate_pre(train, extended=False), um.calibrate_pre(train)
+    act = np.array([s["home_score"] + s["away_score"] for s in test], float)
+    out = {"n_test": len(test), "actual_total": float(act.mean()) if len(act) else None, "params_new": {k: round(getattr(new, k), 3) for k in ("a", "h", "b", "g", "c_ucl", "c_eur")}}
+    for name, m in (("old", old), ("new", new)):
+        pred = np.array([sum(um.lambdas(m, s["eh"], s["ea"], str(s.get("neutral", "FALSE")).upper() == "TRUE", comp="UCL")) for s in test])
+        ll = 0.0
+        for s in test:
+            lh, la = um.lambdas(m, s["eh"], s["ea"], str(s.get("neutral", "FALSE")).upper() == "TRUE", comp="UCL")
+            ll += (s["home_score"] * math.log(lh) - lh - math.lgamma(s["home_score"] + 1)) + (s["away_score"] * math.log(la) - la - math.lgamma(s["away_score"] + 1))
+        out[name] = {"pred_total": float(pred.mean()), "bias": float(pred.mean() - act.mean()), "mae_total": float(np.abs(pred - act).mean()),
+                     "loglik_per_match": ll / len(test)}
+    gap = np.array([abs(s["eh"] - s["ea"]) for s in test])
+    big = gap >= 200
+    if big.sum() >= 5:
+        for name, m in (("old", old), ("new", new)):
+            pb = np.array([sum(um.lambdas(m, s["eh"], s["ea"], comp="UCL")) for s, k in zip(test, big) if k])
+            out[name]["bias_big_mismatch"] = float(pb.mean() - act[big].mean()); out["n_big_mismatch"] = int(big.sum())
+    return out
+
+
 def main() -> None:
     cutoff = sys.argv[1] if len(sys.argv) > 1 else "2026-01-01"
     data = Path(sys.argv[2]) if len(sys.argv) > 2 else DATA
     raw = cu.load_results(data / "club_results.csv", data / "extra_league_results.csv", data / "uefa_results.csv")
     rows = [{**r, "home_team": cu.normalize(r["home_team"]), "away_team": cu.normalize(r["away_team"])} for r in raw]
+    tb = total_goal_bias(rows, cutoff)
+    print(f"TOTAL-GOALS BIAS, Champions League after {cutoff} (n={tb['n_test']}, actual mean total {tb['actual_total']:.2f}):")
+    for nm in ("old", "new"):
+        v = tb[nm]
+        extra = f" | big mismatches (|ΔElo|>=200, n={tb.get('n_big_mismatch')}): bias {v['bias_big_mismatch']:+.2f}" if "bias_big_mismatch" in v else ""
+        print(f"  {nm:3}: predicted {v['pred_total']:.2f}  bias {v['bias']:+.2f}  MAE(total) {v['mae_total']:.2f}  loglik/match {v['loglik_per_match']:.3f}{extra}")
+    print(f"  new-model params: {tb['params_new']}\n")
     r = evaluate(rows, cutoff)
     print(f"cutoff={cutoff} train={r['n_train']} (UEFA {r['n_train_uefa']}) test UEFA matches={r['n_test']}")
     print(f"fit on train: {r['model']}")

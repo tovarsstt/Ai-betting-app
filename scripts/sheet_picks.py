@@ -25,7 +25,6 @@ import soccer_markets as sm
 DATA = Path(__file__).parent.parent / "data"
 W_MODEL = pe.MODEL_WEIGHT
 GAP_WARN, SPREAD_WARN, LONGSHOT = 0.15, 0.20, 0.35
-TOTAL_GAP_BLOCK = 0.3          # goals: model-vs-market expected total above this => totals/BTTS rows are NOT trusted
 TOTALS_KEYS = ("BTTS_Y", "BTTS_N", "O2.5", "U2.5", "O3.5", "U3.5")
 
 
@@ -73,7 +72,10 @@ def price_match(ctx, name: str, m: dict) -> tuple[list[dict], list[str], str]:
     # tools run on the sheet's own 1X2 (decimal -> american only for the shared pwin_ensemble API)
     to_am = lambda d: int(round((d - 1) * 100)) if d >= 2 else int(round(-100 / (d - 1)))
     market_am = {"home": to_am(ml_dec[0]), "draw": to_am(ml_dec[1]), "away": to_am(ml_dec[2])}
-    tools = pe.soccer_tools(ctx, m["home"], m["away"], market_am, 2.5)
+    pw0 = bm.devig_power(ml_dec)
+    ou0 = two_way(m["ou"]["2.5"])
+    mtotal = pe.market_total_from_ou(float(pw0[0]), float(pw0[2]), ou0[0], 2.5)          # market sets the total
+    tools = pe.soccer_tools(ctx, m["home"], m["away"], market_am, 2.5, market_total=mtotal)
     notes: list[str] = []
     model_books: dict[str, dict] = {}                      # tool -> full book
     for t in tools:
@@ -85,9 +87,9 @@ def price_match(ctx, name: str, m: dict) -> tuple[list[dict], list[str], str]:
     ou = two_way(m["ou"]["2.5"])
     lh, la = anchored_lambdas(pw, ou[0])
     mkt_book = book(lh, la)
-    elo_total = sum(next((t.lam for t in tools if t.name == "elo_poisson_dixon_coles" and t.lam), (0, 0)))
-    total_gap = (lh + la) - elo_total
-    notes.append(f"market-anchored λ {lh:.2f}-{la:.2f} (total {lh+la:.2f}) vs Elo λ total {elo_total:.2f}")
+    raw = pe.um.lambdas(ctx.elo_model, ctx.elo.get(pe.cu.normalize(m["home"]), 1500), ctx.elo.get(pe.cu.normalize(m["away"]), 1500), comp="UCL")
+    total_gap = (lh + la) - sum(raw)        # diagnostic only: how far the raw (bias-corrected) Elo total was from the market
+    notes.append(f"market total {lh+la:.2f} goals; raw Elo total {sum(raw):.2f} (gap {total_gap:+.2f}) -> every tool anchored to the market total")
     # direct 2-way / 3-way devig of the sheet for each market
     mk = {k: v for k, v in zip(("H", "D", "A"), map(float, pw))}
     mk.update({"1X": mk["H"] + mk["D"], "X2": mk["D"] + mk["A"], "12": mk["H"] + mk["A"]})
@@ -120,7 +122,7 @@ def price_match(ctx, name: str, m: dict) -> tuple[list[dict], list[str], str]:
         dec = getter(m)
         rows.append({"match": name, "pick": label(m), "key": key, "p_win": p, "p_model": p_model, "p_market": p_mkt, "spread": spread,
                      "decimal": dec, "payout_10": 10 * dec, "ev": p * dec - 1, "per_tool": per_tool, "n_groups": len(vals_by_group),
-                     "total_gap": total_gap, "blocked": key in TOTALS_KEYS and total_gap > TOTAL_GAP_BLOCK})
+                     "total_gap": total_gap})
     detail = pe.tools_table(tools) + "\n    " + "\n    ".join(notes)
     return rows, [t.name for t in tools if t.probs is None and t.kind != "flag"], detail
 
@@ -133,8 +135,6 @@ def warnings(r: dict, low_sample: list[str]) -> list[str]:
         w.append(f"tools disagree ({r['spread']*100:.0f} pt spread)")
     if r["p_win"] < LONGSHOT:
         w.append("longshot")
-    if r.get("blocked"):
-        w.append(f"BLOCKED: model expects {r['total_gap']:.1f} fewer goals than the market -> totals/BTTS not trusted")
     return w
 
 
@@ -162,10 +162,8 @@ def main() -> None:
     rank = lambda rs: sorted(rs, key=lambda r: (-round(r["p_win"], 3), -r["ev"]))
     print("=== UCL === (P(win) first, EV last; every selection on the sheet)")
     print("RECOMMENDED — EV > 0, ordered by P(win):")
-    for r in rank([r for r in allrows if r["ev"] > 0 and not r["blocked"]]):
+    for r in rank([r for r in allrows if r["ev"] > 0]):
         print("* " + fmt(r, lows[r["match"]]))
-    nb = sum(1 for r in allrows if r["ev"] > 0 and r["blocked"])
-    print(f"({nb} totals/BTTS selections show +EV but are BLOCKED: my model's expected goals are below the market's in every match)")
     print("\nBEST SELECTION PER MATCH BY P(win) (not necessarily +EV):")
     best = {}
     for r in allrows:

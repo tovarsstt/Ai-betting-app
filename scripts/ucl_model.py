@@ -33,18 +33,31 @@ MODEL_WEIGHT = 0.35
 
 @dataclass(frozen=True)
 class EloGoalModel:
+    """log λ_home = a + c_comp + h*home + b*d + g*|d| ;  log λ_away = a + c_comp - b*d + g*|d|,  d = ΔElo/400.
+    c_comp is a per-competition goal-rate offset (Champions League vs other UEFA vs domestic) and g lets the
+    expected total GROW with mismatch. Measured on real data, a single shared intercept under-predicted
+    Champions League goals by 0.54/match (1.0 in big mismatches) — see validate_ucl.py."""
     a: float = PRIOR_A
     h: float = PRIOR_H
     b: float = PRIOR_B
+    g: float = 0.0
+    c_ucl: float = 0.0
+    c_eur: float = 0.0
     calibrated: bool = False
     n_matches: int = 0
 
 
-def lambdas(m: EloGoalModel, elo_home: float, elo_away: float, neutral: bool = False) -> tuple[float, float]:
+def lambdas(m: EloGoalModel, elo_home: float, elo_away: float, neutral: bool = False, comp: str = "UCL") -> tuple[float, float]:
+    """comp: 'UCL' (Champions League), 'EUR' (Europa/Conference), anything else = domestic baseline."""
     d = (elo_home - elo_away) / 400.0
-    lh = math.exp(m.a + (0.0 if neutral else m.h) + m.b * d)
-    la = math.exp(m.a - m.b * d)
+    c = m.c_ucl if comp == "UCL" else (m.c_eur if comp == "EUR" else 0.0)
+    lh = math.exp(m.a + c + (0.0 if neutral else m.h) + m.b * d + m.g * abs(d))
+    la = math.exp(m.a + c - m.b * d + m.g * abs(d))
     return max(0.15, lh), max(0.15, la)
+
+
+def comp_of(league: str) -> str:
+    return "UCL" if league == "UEFA Champions League" else ("EUR" if str(league).startswith("UEFA") else "DOM")
 
 
 def calibrate(rows: list[dict], elo: dict[str, float], l2: float = 1e-3, min_matches: int = 200) -> EloGoalModel:
@@ -92,7 +105,8 @@ def build_elo(rows: list[dict], k_dom: float = 20.0, k_eur: float = 40.0, hfa: f
         hg, ag = int(r["home_score"]), int(r["away_score"])
         if gp.get(h, 0) >= burn_in and gp.get(a, 0) >= burn_in:
             samples.append({"home_team": h, "away_team": a, "home_score": hg, "away_score": ag,
-                            "neutral": r.get("neutral", "FALSE"), "eh": eh, "ea": ea})
+                            "neutral": r.get("neutral", "FALSE"), "eh": eh, "ea": ea,
+                            "comp": comp_of(str(r.get("league", ""))), "date": r["date"]})
         exp = 1 / (1 + 10 ** (-(eh - ea + (0 if neutral else hfa)) / 400))
         gd = abs(hg - ag)
         mult = 1.0 if gd <= 1 else (1.5 if gd == 2 else (11 + gd) / 8)
@@ -103,23 +117,33 @@ def build_elo(rows: list[dict], k_dom: float = 20.0, k_eur: float = 40.0, hfa: f
     return elo, samples
 
 
-def calibrate_pre(samples: list[dict], l2: float = 1e-3, min_matches: int = 200) -> EloGoalModel:
-    """Same Poisson fit as `calibrate`, using the pre-match Elo stored in each sample."""
+def calibrate_pre(samples: list[dict], l2: float = 1e-3, min_matches: int = 200, extended: bool = True) -> EloGoalModel:
+    """Poisson MLE of (a, h, b[, g, c_ucl, c_eur]) from samples carrying PRE-match Elo. extended=False freezes
+    g=c=0 (the old shared-intercept model, kept to measure the bias it had)."""
     if len(samples) < min_matches:
         return EloGoalModel()
     X = np.array([(r["eh"] - r["ea"]) / 400.0 for r in samples])
     GH = np.array([float(r["home_score"]) for r in samples])
     GA = np.array([float(r["away_score"]) for r in samples])
     home = np.array([0.0 if str(r.get("neutral", "FALSE")).upper() == "TRUE" else 1.0 for r in samples])
+    ucl = np.array([1.0 if r.get("comp") == "UCL" else 0.0 for r in samples])
+    eur = np.array([1.0 if r.get("comp") == "EUR" else 0.0 for r in samples])
+    ax = np.abs(X)
 
     def nll(p: np.ndarray) -> float:
-        a, h, b = p
-        eh, ea = a + h * home + b * X, a - b * X
-        return float(np.sum(np.exp(eh) - GH * eh) + np.sum(np.exp(ea) - GA * ea) + l2 * b * b)
+        a, h, b, g, cu, ce = p
+        if not extended:
+            g = cu = ce = 0.0
+        c = cu * ucl + ce * eur
+        eh = a + c + h * home + b * X + g * ax
+        ea = a + c - b * X + g * ax
+        return float(np.sum(np.exp(eh) - GH * eh) + np.sum(np.exp(ea) - GA * ea) + l2 * (b * b + g * g + cu * cu + ce * ce))
 
-    res = minimize(nll, x0=np.array([PRIOR_A, PRIOR_H, PRIOR_B]), method="L-BFGS-B")
-    a, h, b = (float(v) for v in res.x)
-    return EloGoalModel(a=a, h=h, b=b, calibrated=True, n_matches=len(samples))
+    res = minimize(nll, x0=np.array([PRIOR_A, PRIOR_H, PRIOR_B, 0.0, 0.0, 0.0]), method="L-BFGS-B")
+    a, h, b, g, cu, ce = (float(v) for v in res.x)
+    if not extended:
+        g = cu = ce = 0.0
+    return EloGoalModel(a=a, h=h, b=b, g=g, c_ucl=cu, c_eur=ce, calibrated=True, n_matches=len(samples))
 
 
 def blend_with_market(model: dict[str, float], market: dict[str, float] | None, w: float = MODEL_WEIGHT) -> dict[str, float]:
@@ -136,7 +160,7 @@ def price_match(home: str, away: str, elo: dict[str, float], model: EloGoalModel
     if eh is None or ea is None:
         missing = home if eh is None else away
         return {"error": f"no Elo rating for {missing} (club absent from fetched results; never imputed)"}
-    lh, la = lambdas(model, eh, ea, neutral)
+    lh, la = lambdas(model, eh, ea, neutral, comp="UCL")
     book = sm.derive_markets(sm.score_matrix(lh, la))
     raw = {"home": book.home_win, "draw": book.draw, "away": book.away_win}
     mkt = None

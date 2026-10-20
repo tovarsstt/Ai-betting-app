@@ -76,6 +76,26 @@ def events_from_scoreboard(data: dict) -> list[dict]:
 SECTION_ORDER = ["UCL", "NBA"]   # project rule: Champions League first, then NBA
 
 
+def devig(decimals: list[float]) -> list[float]:
+    inv = [1 / d for d in decimals]
+    t = sum(inv)
+    return [v / t for v in inv]
+
+
+def parse_total(odds_item: dict) -> tuple[float, float] | None:
+    """ESPN odds object -> (line, P(over)) from the CLOSE over/under prices, devigged. None if either side is missing."""
+    t = (odds_item or {}).get("total") or {}
+    ov, un = (t.get("over") or {}).get("close") or {}, (t.get("under") or {}).get("close") or {}
+    po, pu = parse_american(ov.get("odds")), parse_american(un.get("odds"))
+    try:
+        line = float(str(ov.get("line", "")).lstrip("ou"))
+    except ValueError:
+        return None
+    if po is None or pu is None:
+        return None
+    return line, devig([am_to_dec(po), am_to_dec(pu)])[0]
+
+
 def rows_from_agg(agg: dict, ml: dict, labels: dict, match: str, flags: list[str] | None = None, league: str = "UCL") -> list[dict]:
     """One row per outcome: final P(win) from the ensemble, price, payout, EV (last)."""
     rows = []
@@ -155,7 +175,12 @@ def soccer_rows(events: list[dict], ctx) -> tuple[list[dict], list[str], list[st
         ml = parse_moneyline(ev["odds"])
         if not ml or "draw" not in ml:
             skipped.append(f"{match} (no 3-way moneyline from ESPN)"); continue
-        tools = pe.soccer_tools(ctx, ev["home"], ev["away"], ml, _odds0(ev).get("overUnder"))
+        mtotal = None
+        tot = parse_total(_odds0(ev))
+        if tot:
+            pw = pe.bm.devig_power([am_to_dec(ml["home"]), am_to_dec(ml["draw"]), am_to_dec(ml["away"])])
+            mtotal = pe.market_total_from_ou(float(pw[0]), float(pw[2]), tot[1], tot[0])
+        tools = pe.soccer_tools(ctx, ev["home"], ev["away"], ml, _odds0(ev).get("overUnder"), market_total=mtotal)
         agg = pe.aggregate(tools)
         if "error" in agg:
             skipped.append(f"{match} ({agg['error']})"); continue
