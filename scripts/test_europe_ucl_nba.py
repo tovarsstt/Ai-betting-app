@@ -224,3 +224,64 @@ def test_validate_ucl_walk_forward_runs_on_synthetic():
         match(rng.choice(teams["A"]), rng.choice(teams["B"]), "UEFA Champions League")
     res = vu.evaluate(rows, cutoff="2025-02-01", min_games=4)
     assert res["n_test"] > 0 and res["logloss_model"] is not None
+
+
+def _fx(name):
+    import json
+    from pathlib import Path
+    d = json.loads((Path(__file__).parent / "fixtures" / name).read_text())
+    evs = []
+    for e in d["events"]:
+        evs.append({"name": e["name"], "date": e["date"], "status": {"type": {"state": e["status"]}},
+                    "competitions": [{"odds": e["odds"], "competitors": [
+                        {"homeAway": c["homeAway"], "team": {"displayName": c["team"]}} for c in e["competitors"]]}]})
+    return {"events": evs}
+
+
+def test_parse_real_espn_soccer_moneyline():
+    import value_picks as vp
+    evs = {e["home"]: e for e in vp.events_from_scoreboard(_fx("espn_ucl_odds_2026-10-20.json"))}
+    ml = vp.parse_moneyline(evs["Liverpool"]["odds"])
+    assert ml["home"] == -200 and ml["away"] == 500 and ml["draw"] == 370 and ml["provider"] == "DraftKings"
+
+
+def test_parse_real_espn_nba_moneyline_two_way():
+    import value_picks as vp
+    evs = {e["home"]: e for e in vp.events_from_scoreboard(_fx("espn_nba_odds_2026-10-20.json"))}
+    ml = vp.parse_moneyline(evs["New York Knicks"]["odds"])
+    assert ml["home"] == -180 and ml["away"] == 150 and "draw" not in ml
+
+
+def test_parse_moneyline_missing_returns_none():
+    import value_picks as vp
+    assert vp.parse_moneyline(None) is None and vp.parse_moneyline([{"moneyline": {"home": {}}}]) is None
+
+
+def test_build_rows_ev_and_devig_math():
+    import value_picks as vp
+    rows = vp.build_rows({"home": 0.60, "away": 0.40}, {"home": -110, "away": -110}, {"home": "H", "away": "A"}, "m", w=1.0)
+    h = [r for r in rows if r["pick"] == "H"][0]
+    assert abs(h["p_market"] - 0.5) < 1e-9 and abs(h["ev"] - (0.6 * (100 / 110 + 1) - 1)) < 1e-9
+
+
+def test_ranking_is_pwin_first_and_longshots_never_recommended():
+    import value_picks as vp
+    rows = vp.build_rows({"home": 0.30, "draw": 0.25, "away": 0.45}, {"home": 300, "draw": 280, "away": -110}, {"home": "H", "draw": "D", "away": "A"}, "m", w=1.0)
+    ranked = vp.rank(rows)
+    assert [r["pick"] for r in ranked][0] == "A"                       # likeliest winner first
+    assert all(vp.reject_reason(r) for r in rows if r["p_win"] < 0.5)  # longshots rejected even if +EV
+
+
+def test_big_model_market_gap_is_flagged_not_recommended():
+    import value_picks as vp
+    r = vp.build_rows({"home": 0.80, "away": 0.20}, {"home": 120, "away": -140}, {"home": "H", "away": "A"}, "m", w=1.0)
+    home = [x for x in r if x["pick"] == "H"][0]
+    assert home["ev"] > 0 and "gap" in vp.reject_reason(home)
+
+
+def test_nba_predict_fixture_unknown_team_is_none():
+    st = ns.State()
+    st.new_season(2025, 0)
+    st.update("A", "B", 100, 90, date(2025, 11, 1))
+    stk = ns.Stacker()
+    assert ns.predict_fixture(st, stk, "A", "Nobody", date(2025, 11, 5)) is None

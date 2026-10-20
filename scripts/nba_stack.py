@@ -137,6 +137,27 @@ def load_games(*paths: Path) -> list[dict]:
     return sorted(rows, key=lambda g: g["date"])
 
 
+def fit_final(games: list[dict], warmup: int = 300) -> tuple["State", Stacker]:
+    """Walk through ALL games (state ends fresh as of the last game) and fit the stacker once."""
+    st, feats, ys = State(), [], []
+    for g in games:
+        if g["season"] != st.season:
+            st.new_season(g["season"], 0 if st.season < 0 else g["season"] - st.season)
+        feats.append(st.features(g["home"], g["away"], g["date"])); ys.append(int(g["hs"] > g["as"]))
+        st.update(g["home"], g["away"], g["hs"], g["as"], g["date"])
+    return st, Stacker().fit(feats[warmup // 3:], ys[warmup // 3:])
+
+
+def predict_fixture(st: "State", stacker: Stacker, home: str, away: str, d: date) -> float | None:
+    """P(home win) for an upcoming game. None if a team was never seen (no invented rating)."""
+    if home not in st.teams or away not in st.teams:
+        return None
+    season = d.year if d.month >= 9 else d.year - 1
+    if season != st.season:
+        st.new_season(season, max(1, season - st.season))
+    return float(stacker.predict([st.features(home, away, d)])[0])
+
+
 def log_loss(p, y) -> float:
     p = np.clip(np.asarray(p), 1e-9, 1 - 1e-9); y = np.asarray(y)
     return float(-np.mean(y * np.log(p) + (1 - y) * np.log(1 - p)))
