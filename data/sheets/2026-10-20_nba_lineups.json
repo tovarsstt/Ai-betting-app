@@ -1,0 +1,9 @@
+{"_source": "Starters from web previews of 2026-10-20 (ESPN, Yahoo/SI, NBC projection via NBA.com); availability from ESPN injuries (data/nba/injuries_20261020.csv). Boston's starting five is UNCONFIRMED (NBC projection). Day-to-Day players are given p_play 0.5 (assumption).",
+ "p_play_day_to_day": 0.5,
+ "starters": {
+  "New York Knicks": ["Jalen Brunson", "Mikal Bridges", "Josh Hart", "OG Anunoby", "Karl-Anthony Towns"],
+  "Philadelphia 76ers": ["Tyrese Maxey", "VJ Edgecombe", "Jaylen Brown", "LeBron James", "Joel Embiid"],
+  "Boston Celtics": ["Paul George", "Jayson Tatum", "Derrick White", "Jordan Walsh", "Mitchell Robinson"],
+  "Detroit Pistons": ["Cade Cunningham", "Duncan Robinson", "Ausar Thompson", "John Collins", "Jalen Duren"],
+  "San Antonio Spurs": ["De'Aaron Fox", "Stephon Castle", "Dylan Harper", "Devin Vassell", "Victor Wembanyama"],
+  "Oklahoma City Thunder": ["Shai Gilgeous-Alexander", "Cason Wallace", "Jalen Williams", "Chet Holmgren", "Isaiah Hartenstein"]}}

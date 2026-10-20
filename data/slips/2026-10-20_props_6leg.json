@@ -1,0 +1,13 @@
+{"_source": "pasted by user 2026-10-20 (Stake): 6-leg multi, odds 13.64, three same-game pairs; stake not shown on the slip",
+ "odds": 13.64,
+ "groups": [
+  {"game": "Oklahoma City Thunder @ San Antonio Spurs", "odds": 2.50, "legs": [
+    {"player": "Victor Wembanyama", "side_of_game": "home", "stat": "fg3m", "line": 1.5},
+    {"player": "Shai Gilgeous-Alexander", "side_of_game": "away", "stat": "pts", "line": 27.5}]},
+  {"game": "Boston Celtics @ Detroit Pistons", "odds": 2.14, "legs": [
+    {"player": "Jalen Duren", "side_of_game": "home", "stat": "pra", "line": 24.5},
+    {"player": "Jayson Tatum", "side_of_game": "away", "stat": "pts", "line": 23.5}]},
+  {"game": "Philadelphia 76ers @ New York Knicks", "odds": 2.55, "legs": [
+    {"player": "Jalen Brunson", "side_of_game": "home", "stat": "pts", "line": 24.5},
+    {"player": "Jaylen Brown", "side_of_game": "away", "stat": "pts", "line": 19.5}]}
+ ]}

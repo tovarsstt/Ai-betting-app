@@ -1,0 +1,13 @@
+game_id,team_id,athlete_id,name,status,type,detail,return
+401909088,8,2990962,Taurean Prince,Out,Personal,,2026-10-23
+401909088,2,4433188,Devin Carter,Out,Illness,,2026-11-08
+401909089,20,3912848,Dean Wade,Day-To-Day,Ankle,Sprain,2026-10-20
+401909089,20,5105637,Adem Bona,Day-To-Day,Foot,Sprain,2026-10-20
+401909089,20,4351851,Anfernee Simons,Day-To-Day,Hamstring,Not Specified,2026-10-20
+401909089,20,3904625,Tacko Fall,Out,Hip,,2026-10-22
+401909089,20,4870562,Dominick Barlow,Out,Back,,2026-11-02
+401909090,24,6440,Tobias Harris,Out,Calf,Strain,2026-10-23
+401909090,24,5101845,Jayden Quaintance,Out,Knee,Surgery,2026-12-03
+401909090,25,5061603,Thomas Sorber,Out,Knee,Surgery,2026-10-22
+401909090,25,5159925,Nikola Topic,Out,Back,Surgery,2026-10-22
+401909090,25,5106270,Otega Oweh,Out,Achilles,Surgery,2027-07-01

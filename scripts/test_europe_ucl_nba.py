@@ -628,3 +628,17 @@ def test_nba_detail_parses_real_espn_summary():
             assert abs(o["sec_on"] / 60 - by[o["athlete_id"]]["min"]) <= nd.MAX_MIN_ERR
     assert nd.shot_zone(25, 5.25, 2) == "rim" and nd.shot_zone(1, 2, 3) == "corner3" and nd.shot_zone(25, 28, 3) == "above3"
     assert all(s["x"] >= 0 and s["y"] >= 0 and s["pts_att"] in (2, 3) for s in r["shot"])
+
+
+def test_usage_vacuum_conserves_shares_and_redistributes_to_teammates():
+    import pandas as pd
+    import usage_vacuum as uv
+    ids = [str(i) for i in range(12)]
+    rates = pd.DataFrame({"mpg": [34, 32, 30, 28, 26, 22, 20, 18, 16, 14, 12, 10], "n": 60,
+                          **{f"rate_{s}": [0.8, 0.6, 0.5, 0.4, 0.4, 0.3, 0.3, 0.25, 0.2, 0.2, 0.15, 0.1] for s in uv.STATS},
+                          **{f"share_{s}": [0.26, 0.2, 0.15, 0.11, 0.1, 0.07, 0.05, 0.03, 0.02, 0.01, 0.01, 0.0] for s in uv.STATS}}, index=ids)
+    full = uv.roles(ids, set(ids[:5]), rates)
+    assert abs(sum(r["min"] for r in full.values()) - uv.TEAM_MIN) < 1e-6 and max(r["min"] for r in full.values()) <= uv.MAX_MIN + 1e-9
+    assert abs(sum(r["pts_share"] for r in full.values()) - 1) < 1e-9
+    no_star = uv.roles(ids[1:], set(ids[1:6]), rates)                       # the usage leader is out
+    assert all(no_star[a]["pts_share"] > full[a]["pts_share"] for a in ids[1:6])
