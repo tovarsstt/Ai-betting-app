@@ -21,8 +21,10 @@ inconvenient; if one cannot run, say which and why (never drop it silently, neve
   of the margin, log5 on Beta-Binomial records, ridge team ratings (team_ratings), market devig.
 - Other sports: use that sport's own registry (engine_all / sport_math / engine_v2) — same principle.
 - Order of every report: P(win) first -> odds / payout -> EV last. Rank by P(win): likely winners before
-  longshots. Recommend a pick only when EV > 0; show warnings (low-sample club, big model-vs-market gap,
-  wide tool spread) next to it instead of hiding it.
+  longshots. WIN PROBABILITY DECIDES (user rule, repeated): EV is shown last as information and is NEVER a filter
+  for what gets recommended. Practical floors only so a pick pays something: leg odds >= 1.25, ticket odds >= 2.0.
+  Show warnings (low-sample club, big model-vs-market gap, wide tool spread, stale ratings) next to the pick
+  instead of hiding it.
 - Honesty: no tool is claimed to beat the market without out-of-sample validation vs closing lines.
   The market (devigged) is one input and the strongest prior; the code registry is `scripts/pwin_ensemble.py`.
 

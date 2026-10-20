@@ -1,0 +1,1100 @@
+{
+ "_note": "Transcribed by hand from the user's Stake NBA sheet 2026-10-20. Name<->stats rule: stat block belongs to the LAST name of the list preceding it (ASSUMPTION). 'Ultimos 5' are PRESEASON games (opening night): minutes limited, lines are full-season -> unreliable evidence.",
+ "props": [
+  {
+   "player": "Cade Cunningham",
+   "team": "DET",
+   "stat": "Puntos",
+   "last5": [
+    27,
+    19,
+    39,
+    21,
+    13
+   ],
+   "line": 23.5,
+   "over": 1.79,
+   "under": 1.88
+  },
+  {
+   "player": "Cade Cunningham",
+   "team": "DET",
+   "stat": "Rebotes",
+   "last5": [
+    10,
+    3,
+    7,
+    2,
+    4
+   ],
+   "line": 4.5,
+   "over": 1.67,
+   "under": 2.04
+  },
+  {
+   "player": "Cade Cunningham",
+   "team": "DET",
+   "stat": "Triples",
+   "last5": [
+    2,
+    2,
+    6,
+    5,
+    0
+   ],
+   "line": 2.5,
+   "over": 2.23,
+   "under": 1.56
+  },
+  {
+   "player": "Cade Cunningham",
+   "team": "DET",
+   "stat": "PRA",
+   "last5": [
+    47,
+    28,
+    55,
+    31,
+    22
+   ],
+   "line": 38.5,
+   "over": 1.83,
+   "under": 1.84
+  },
+  {
+   "player": "Cade Cunningham",
+   "team": "DET",
+   "stat": "Doble doble",
+   "last5": [
+    1,
+    0,
+    0,
+    0,
+    0
+   ],
+   "line": 0.5,
+   "over": 1.91,
+   "under": 1.76
+  },
+  {
+   "player": "Cade Cunningham",
+   "team": "DET",
+   "stat": "Asistencias",
+   "last5": [
+    10,
+    6,
+    9,
+    8,
+    5
+   ],
+   "line": 9.5,
+   "over": 1.96,
+   "under": 1.72
+  },
+  {
+   "player": "Jalen Duren",
+   "team": "DET",
+   "stat": "Puntos",
+   "last5": [
+    11,
+    8,
+    9,
+    15,
+    7
+   ],
+   "line": 16.5,
+   "over": 1.88,
+   "under": 1.8
+  },
+  {
+   "player": "Jalen Duren",
+   "team": "DET",
+   "stat": "Rebotes",
+   "last5": [
+    4,
+    2,
+    5,
+    11,
+    9
+   ],
+   "line": 9.5,
+   "over": 1.75,
+   "under": 1.92
+  },
+  {
+   "player": "Jalen Duren",
+   "team": "DET",
+   "stat": "PRA",
+   "last5": [
+    16,
+    12,
+    18,
+    26,
+    19
+   ],
+   "line": 28.5,
+   "over": 1.83,
+   "under": 1.84
+  },
+  {
+   "player": "Jalen Duren",
+   "team": "DET",
+   "stat": "Doble doble",
+   "last5": [
+    0,
+    0,
+    0,
+    1,
+    0
+   ],
+   "line": 0.5,
+   "over": 1.86,
+   "under": 1.81
+  },
+  {
+   "player": "Jalen Duren",
+   "team": "DET",
+   "stat": "Asistencias",
+   "last5": [
+    1,
+    2,
+    4,
+    0,
+    3
+   ],
+   "line": 1.5,
+   "over": 1.58,
+   "under": 2.19
+  },
+  {
+   "player": "Ausar Thompson",
+   "team": "DET",
+   "stat": "Puntos",
+   "last5": [
+    9,
+    4,
+    6,
+    10,
+    5
+   ],
+   "line": 9.5,
+   "over": 1.78,
+   "under": 1.9
+  },
+  {
+   "player": "Ausar Thompson",
+   "team": "DET",
+   "stat": "Rebotes",
+   "last5": [
+    7,
+    4,
+    7,
+    9,
+    7
+   ],
+   "line": 6.5,
+   "over": 1.82,
+   "under": 1.85
+  },
+  {
+   "player": "Ausar Thompson",
+   "team": "DET",
+   "stat": "PRA",
+   "last5": [
+    21,
+    9,
+    18,
+    23,
+    12
+   ],
+   "line": 19.5,
+   "over": 1.74,
+   "under": 1.95
+  },
+  {
+   "player": "Ausar Thompson",
+   "team": "DET",
+   "stat": "Doble doble",
+   "last5": [
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "line": 0.5,
+   "over": 6.27,
+   "under": 1.07
+  },
+  {
+   "player": "Ausar Thompson",
+   "team": "DET",
+   "stat": "Asistencias",
+   "last5": [
+    5,
+    1,
+    5,
+    4,
+    0
+   ],
+   "line": 3.5,
+   "over": 1.92,
+   "under": 1.76
+  },
+  {
+   "player": "Payton Pritchard",
+   "team": "BOS",
+   "stat": "Puntos",
+   "last5": [
+    15,
+    32,
+    12,
+    14,
+    13
+   ],
+   "line": 15.5,
+   "over": 1.79,
+   "under": 1.89
+  },
+  {
+   "player": "Payton Pritchard",
+   "team": "BOS",
+   "stat": "Rebotes",
+   "last5": [
+    4,
+    4,
+    2,
+    3,
+    5
+   ],
+   "line": 2.5,
+   "over": 1.71,
+   "under": 1.98
+  },
+  {
+   "player": "Payton Pritchard",
+   "team": "BOS",
+   "stat": "Triples",
+   "last5": [
+    5,
+    6,
+    1,
+    1,
+    2
+   ],
+   "line": 2.5,
+   "over": 1.63,
+   "under": 2.09
+  },
+  {
+   "player": "Payton Pritchard",
+   "team": "BOS",
+   "stat": "PRA",
+   "last5": [
+    21,
+    41,
+    20,
+    22,
+    25
+   ],
+   "line": 23.5,
+   "over": 1.92,
+   "under": 1.76
+  },
+  {
+   "player": "Payton Pritchard",
+   "team": "BOS",
+   "stat": "Asistencias",
+   "last5": [
+    2,
+    5,
+    6,
+    5,
+    7
+   ],
+   "line": 4.5,
+   "over": 2.11,
+   "under": 1.63
+  },
+  {
+   "player": "Derrick White",
+   "team": "BOS",
+   "stat": "Puntos",
+   "last5": [
+    11,
+    6,
+    6,
+    11,
+    26
+   ],
+   "line": 15.5,
+   "over": 1.86,
+   "under": 1.81
+  },
+  {
+   "player": "Derrick White",
+   "team": "BOS",
+   "stat": "Rebotes",
+   "last5": [
+    4,
+    6,
+    1,
+    1,
+    6
+   ],
+   "line": 3.5,
+   "over": 1.9,
+   "under": 1.78
+  },
+  {
+   "player": "Derrick White",
+   "team": "BOS",
+   "stat": "Triples",
+   "last5": [
+    1,
+    2,
+    0,
+    3,
+    5
+   ],
+   "line": 2.5,
+   "over": 1.9,
+   "under": 1.77
+  },
+  {
+   "player": "Derrick White",
+   "team": "BOS",
+   "stat": "PRA",
+   "last5": [
+    17,
+    15,
+    10,
+    13,
+    36
+   ],
+   "line": 23.5,
+   "over": 1.85,
+   "under": 1.82
+  },
+  {
+   "player": "Derrick White",
+   "team": "BOS",
+   "stat": "Asistencias",
+   "last5": [
+    2,
+    3,
+    3,
+    1,
+    4
+   ],
+   "line": 4.5,
+   "over": 2.13,
+   "under": 1.61
+  },
+  {
+   "player": "Jayson Tatum",
+   "team": "BOS",
+   "stat": "Puntos",
+   "last5": [
+    25,
+    30,
+    24,
+    17,
+    0
+   ],
+   "line": 26.5,
+   "over": 1.83,
+   "under": 1.84
+  },
+  {
+   "player": "Jayson Tatum",
+   "team": "BOS",
+   "stat": "Rebotes",
+   "last5": [
+    5,
+    7,
+    16,
+    11,
+    0
+   ],
+   "line": 8.5,
+   "over": 1.85,
+   "under": 1.82
+  },
+  {
+   "player": "Jayson Tatum",
+   "team": "BOS",
+   "stat": "Triples",
+   "last5": [
+    5,
+    5,
+    4,
+    2,
+    0
+   ],
+   "line": 3.5,
+   "over": 2.23,
+   "under": 1.56
+  },
+  {
+   "player": "Jayson Tatum",
+   "team": "BOS",
+   "stat": "PRA",
+   "last5": [
+    37,
+    48,
+    44,
+    31,
+    0
+   ],
+   "line": 41.5,
+   "over": 1.85,
+   "under": 1.82
+  },
+  {
+   "player": "Jayson Tatum",
+   "team": "BOS",
+   "stat": "Doble doble",
+   "last5": [
+    0,
+    1,
+    1,
+    1,
+    0
+   ],
+   "line": 0.5,
+   "over": 2.14,
+   "under": 1.61
+  },
+  {
+   "player": "Jayson Tatum",
+   "team": "BOS",
+   "stat": "Asistencias",
+   "last5": [
+    7,
+    11,
+    4,
+    3,
+    0
+   ],
+   "line": 5.5,
+   "over": 1.69,
+   "under": 2.01
+  },
+  {
+   "player": "Stephon Castle",
+   "team": "SAS",
+   "stat": "Puntos",
+   "last5": [
+    17,
+    14,
+    23,
+    13,
+    6
+   ],
+   "line": 16.5,
+   "over": 1.9,
+   "under": 1.77
+  },
+  {
+   "player": "Stephon Castle",
+   "team": "SAS",
+   "stat": "Rebotes",
+   "last5": [
+    8,
+    4,
+    5,
+    5,
+    5
+   ],
+   "line": 4.5,
+   "over": 1.65,
+   "under": 2.07
+  },
+  {
+   "player": "Stephon Castle",
+   "team": "SAS",
+   "stat": "Triples",
+   "last5": [
+    1,
+    2,
+    2,
+    1,
+    0
+   ],
+   "line": 1.5,
+   "over": 2.21,
+   "under": 1.57
+  },
+  {
+   "player": "Stephon Castle",
+   "team": "SAS",
+   "stat": "PRA",
+   "last5": [
+    28,
+    22,
+    33,
+    23,
+    15
+   ],
+   "line": 27.5,
+   "over": 1.79,
+   "under": 1.88
+  },
+  {
+   "player": "Stephon Castle",
+   "team": "SAS",
+   "stat": "Asistencias",
+   "last5": [
+    3,
+    4,
+    5,
+    5,
+    4
+   ],
+   "line": 6.5,
+   "over": 2.04,
+   "under": 1.67
+  },
+  {
+   "player": "De'Aaron Fox",
+   "team": "SAS",
+   "stat": "Puntos",
+   "last5": [
+    7,
+    20,
+    12,
+    18,
+    7
+   ],
+   "line": 15.5,
+   "over": 1.87,
+   "under": 1.8
+  },
+  {
+   "player": "De'Aaron Fox",
+   "team": "SAS",
+   "stat": "Rebotes",
+   "last5": [
+    4,
+    3,
+    3,
+    5,
+    0
+   ],
+   "line": 3.5,
+   "over": 2.09,
+   "under": 1.63
+  },
+  {
+   "player": "De'Aaron Fox",
+   "team": "SAS",
+   "stat": "Triples",
+   "last5": [
+    0,
+    2,
+    0,
+    4,
+    1
+   ],
+   "line": 1.5,
+   "over": 1.79,
+   "under": 1.89
+  },
+  {
+   "player": "De'Aaron Fox",
+   "team": "SAS",
+   "stat": "PRA",
+   "last5": [
+    16,
+    28,
+    23,
+    30,
+    12
+   ],
+   "line": 24.5,
+   "over": 1.89,
+   "under": 1.79
+  },
+  {
+   "player": "De'Aaron Fox",
+   "team": "SAS",
+   "stat": "Asistencias",
+   "last5": [
+    5,
+    5,
+    8,
+    7,
+    5
+   ],
+   "line": 5.5,
+   "over": 2.04,
+   "under": 1.67
+  },
+  {
+   "player": "Dylan Harper",
+   "team": "SAS",
+   "stat": "Puntos",
+   "last5": [
+    16,
+    15,
+    13,
+    21,
+    25
+   ],
+   "line": 15.5,
+   "over": 1.92,
+   "under": 1.76
+  },
+  {
+   "player": "Dylan Harper",
+   "team": "SAS",
+   "stat": "Rebotes",
+   "last5": [
+    8,
+    6,
+    9,
+    4,
+    5
+   ],
+   "line": 4.5,
+   "over": 1.69,
+   "under": 2.01
+  },
+  {
+   "player": "Dylan Harper",
+   "team": "SAS",
+   "stat": "Triples",
+   "last5": [
+    1,
+    0,
+    1,
+    3,
+    2
+   ],
+   "line": 1.5,
+   "over": 2.13,
+   "under": 1.61
+  },
+  {
+   "player": "Dylan Harper",
+   "team": "SAS",
+   "stat": "PRA",
+   "last5": [
+    25,
+    24,
+    26,
+    28,
+    34
+   ],
+   "line": 24.5,
+   "over": 1.9,
+   "under": 1.77
+  },
+  {
+   "player": "Dylan Harper",
+   "team": "SAS",
+   "stat": "Asistencias",
+   "last5": [
+    1,
+    3,
+    4,
+    3,
+    4
+   ],
+   "line": 3.5,
+   "over": 1.68,
+   "under": 2.01
+  },
+  {
+   "player": "Victor Wembanyama",
+   "team": "SAS",
+   "stat": "Puntos",
+   "last5": [
+    26,
+    29,
+    32,
+    24,
+    19
+   ],
+   "line": 26.5,
+   "over": 1.91,
+   "under": 1.77
+  },
+  {
+   "player": "Victor Wembanyama",
+   "team": "SAS",
+   "stat": "Rebotes",
+   "last5": [
+    12,
+    9,
+    8,
+    13,
+    14
+   ],
+   "line": 11.5,
+   "over": 1.91,
+   "under": 1.76
+  },
+  {
+   "player": "Victor Wembanyama",
+   "team": "SAS",
+   "stat": "Triples",
+   "last5": [
+    2,
+    2,
+    2,
+    2,
+    1
+   ],
+   "line": 1.5,
+   "over": 1.53,
+   "under": 2.29
+  },
+  {
+   "player": "Victor Wembanyama",
+   "team": "SAS",
+   "stat": "PRA",
+   "last5": [
+    40,
+    40,
+    46,
+    38,
+    35
+   ],
+   "line": 40.5,
+   "over": 1.79,
+   "under": 1.89
+  },
+  {
+   "player": "Victor Wembanyama",
+   "team": "SAS",
+   "stat": "Doble doble",
+   "last5": [
+    1,
+    0,
+    0,
+    1,
+    1
+   ],
+   "line": 0.5,
+   "over": 1.37,
+   "under": 2.8
+  },
+  {
+   "player": "Victor Wembanyama",
+   "team": "SAS",
+   "stat": "Asistencias",
+   "last5": [
+    2,
+    2,
+    6,
+    1,
+    2
+   ],
+   "line": 2.5,
+   "over": 1.55,
+   "under": 2.25
+  },
+  {
+   "player": "Shai Gilgeous-Alexander",
+   "team": "OKC",
+   "stat": "Puntos",
+   "last5": [
+    26,
+    19,
+    32,
+    15,
+    35
+   ],
+   "line": 29.5,
+   "over": 1.77,
+   "under": 1.9
+  },
+  {
+   "player": "Shai Gilgeous-Alexander",
+   "team": "OKC",
+   "stat": "Rebotes",
+   "last5": [
+    2,
+    4,
+    2,
+    1,
+    4
+   ],
+   "line": 3.5,
+   "over": 1.74,
+   "under": 1.94
+  },
+  {
+   "player": "Shai Gilgeous-Alexander",
+   "team": "OKC",
+   "stat": "Triples",
+   "last5": [
+    2,
+    0,
+    2,
+    0,
+    2
+   ],
+   "line": 1.5,
+   "over": 1.86,
+   "under": 1.81
+  },
+  {
+   "player": "Shai Gilgeous-Alexander",
+   "team": "OKC",
+   "stat": "PRA",
+   "last5": [
+    40,
+    30,
+    43,
+    20,
+    48
+   ],
+   "line": 40.5,
+   "over": 1.87,
+   "under": 1.8
+  },
+  {
+   "player": "Shai Gilgeous-Alexander",
+   "team": "OKC",
+   "stat": "Asistencias",
+   "last5": [
+    12,
+    7,
+    9,
+    4,
+    9
+   ],
+   "line": 6.5,
+   "over": 2.07,
+   "under": 1.65
+  },
+  {
+   "player": "Chet Holmgren",
+   "team": "OKC",
+   "stat": "Puntos",
+   "last5": [
+    14,
+    10,
+    16,
+    10,
+    4
+   ],
+   "line": 13.5,
+   "over": 1.96,
+   "under": 1.73
+  },
+  {
+   "player": "Chet Holmgren",
+   "team": "OKC",
+   "stat": "Rebotes",
+   "last5": [
+    3,
+    9,
+    11,
+    11,
+    4
+   ],
+   "line": 7.5,
+   "over": 1.72,
+   "under": 1.97
+  },
+  {
+   "player": "Chet Holmgren",
+   "team": "OKC",
+   "stat": "PRA",
+   "last5": [
+    18,
+    21,
+    28,
+    22,
+    8
+   ],
+   "line": 22.5,
+   "over": 1.88,
+   "under": 1.79
+  },
+  {
+   "player": "Chet Holmgren",
+   "team": "OKC",
+   "stat": "Doble doble",
+   "last5": [
+    0,
+    0,
+    1,
+    1,
+    0
+   ],
+   "line": 0.5,
+   "over": 3.39,
+   "under": 1.26
+  },
+  {
+   "player": "Chet Holmgren",
+   "team": "OKC",
+   "stat": "Asistencias",
+   "last5": [
+    1,
+    2,
+    1,
+    1,
+    0
+   ],
+   "line": 1.5,
+   "over": 2.65,
+   "under": 1.4
+  },
+  {
+   "player": "Isaiah Hartenstein",
+   "team": "OKC",
+   "stat": "Puntos",
+   "last5": [
+    5,
+    12,
+    12,
+    10,
+    7
+   ],
+   "line": 7.5,
+   "over": 1.81,
+   "under": 1.86
+  },
+  {
+   "player": "Isaiah Hartenstein",
+   "team": "OKC",
+   "stat": "Rebotes",
+   "last5": [
+    8,
+    7,
+    15,
+    5,
+    5
+   ],
+   "line": 8.5,
+   "over": 1.84,
+   "under": 1.83
+  },
+  {
+   "player": "Isaiah Hartenstein",
+   "team": "OKC",
+   "stat": "PRA",
+   "last5": [
+    17,
+    22,
+    31,
+    18,
+    12
+   ],
+   "line": 18.5,
+   "over": 1.81,
+   "under": 1.87
+  },
+  {
+   "player": "Isaiah Hartenstein",
+   "team": "OKC",
+   "stat": "Doble doble",
+   "last5": [
+    0,
+    0,
+    1,
+    0,
+    0
+   ],
+   "line": 0.5,
+   "over": 4.24,
+   "under": 1.17
+  },
+  {
+   "player": "Isaiah Hartenstein",
+   "team": "OKC",
+   "stat": "Asistencias",
+   "last5": [
+    4,
+    3,
+    4,
+    3,
+    0
+   ],
+   "line": 2.5,
+   "over": 2.1,
+   "under": 1.63
+  },
+  {
+   "player": "Jared McCain",
+   "team": "OKC",
+   "stat": "Puntos",
+   "last5": [
+    24,
+    4,
+    20,
+    13,
+    12
+   ],
+   "line": 9.5,
+   "over": 1.93,
+   "under": 1.75
+  },
+  {
+   "player": "Jared McCain",
+   "team": "OKC",
+   "stat": "Rebotes",
+   "last5": [
+    4,
+    2,
+    3,
+    2,
+    1
+   ],
+   "line": 1.5,
+   "over": 1.59,
+   "under": 2.16
+  },
+  {
+   "player": "Jared McCain",
+   "team": "OKC",
+   "stat": "Triples",
+   "last5": [
+    2,
+    0,
+    3,
+    2,
+    2
+   ],
+   "line": 1.5,
+   "over": 1.61,
+   "under": 2.14
+  },
+  {
+   "player": "Jared McCain",
+   "team": "OKC",
+   "stat": "PRA",
+   "last5": [
+    29,
+    6,
+    23,
+    21,
+    13
+   ],
+   "line": 12.5,
+   "over": 1.86,
+   "under": 1.81
+  },
+  {
+   "player": "Jared McCain",
+   "team": "OKC",
+   "stat": "Asistencias",
+   "last5": [
+    1,
+    0,
+    0,
+    6,
+    0
+   ],
+   "line": 0.5,
+   "over": 1.4,
+   "under": 2.66
+  }
+ ]
+}

@@ -547,3 +547,33 @@ def test_ticket_and_kelly_math():
     assert abs(t["p"] - 0.3) < 1e-12 and abs(t["odds"] - 3.78) < 1e-9 and abs(t["ev"] - (0.3 * 3.78 - 1)) < 1e-9
     assert pf2.kelly_stake(0.5, 2.0) == 0.0                                   # fair price -> no stake
     assert pf2.kelly_stake(0.9, 3.0) == round(30 * 0.05, 2)                    # capped at 5% of the bankroll
+
+
+def test_flow_sim_matches_the_targets_and_analytic_probabilities():
+    import nba_flow_sim as fs2
+    from scipy.stats import norm
+    sim = fs2.simulate(m=4.0, T=230.0, sigma_m=13.1, sigma_t=17.47, rho_q=-0.05, n=300_000)
+    assert abs(sim["M"].std() - 13.1) < 0.15 and abs(sim["S"].std() - 17.47) < 0.2
+    assert abs(sim["win_home"].mean() - norm.cdf(4.0 / 13.1)) < 0.006
+    assert abs(fs2.p_cover_home(sim, 3.5) - norm.cdf(7.5 / 13.1)) < 0.006
+    assert fs2.p_refund(sim, "home") > 0
+
+
+def test_props_model_is_shrunk_to_market_and_drops_dnp_games():
+    import props_picks as pp
+    pr = {"player": "X", "team": "T", "stat": "Puntos", "last5": [30, 31, 29, 32, 0], "line": 20.5, "over": 1.9, "under": 1.9}
+    pra = {"player": "X", "team": "T", "stat": "PRA", "last5": [40, 41, 39, 42, 0], "line": 30.5, "over": 1.9, "under": 1.9}
+    rows = pp.price([pr, pra])
+    over = [r for r in rows if r["pick"].endswith("Más de 20.5")][0]
+    assert over["n_games"] == 4 and over["dnp_dropped"] == 1               # the 0-point DNP game is excluded
+    assert 0.5 < over["p_win"] < 0.75                                      # moves toward the data but stays anchored to the market
+    under = [r for r in rows if r["pick"].endswith("Menos de 20.5")][0]
+    assert abs(over["p_win"] + under["p_win"] - 1) < 1e-9
+
+
+def test_portfolio_ignores_ev_and_applies_only_payout_floors():
+    import portfolio as pf2
+    mk = lambda p, o, ev, m: {"p_win": p, "decimal": o, "ev": ev, "match": m, "league": "UCL", "warn": ["x"]}
+    assert pf2.clean(mk(0.8, 1.3, -0.30, "a"))                              # hugely negative EV still a candidate
+    assert not pf2.clean(mk(0.95, 1.02, 0.5, "b"))                          # but a 1.02 'sure thing' fails the payout floor
+    assert not pf2.clean(mk(0.45, 2.5, 0.9, "c"))                           # and so does P(win) < 50%

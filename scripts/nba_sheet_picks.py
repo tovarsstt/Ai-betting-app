@@ -20,6 +20,7 @@ from scipy.optimize import minimize_scalar
 from scipy.stats import norm
 
 import betting_math as bm
+import nba_flow_sim as fs
 import nba_halftime as nh
 import pwin_ensemble as pe
 
@@ -73,29 +74,29 @@ def price_game(nctx, name: str, g: dict, day, params: dict) -> tuple[list[dict],
     info = {"w_model": w, "stale": stale, "gap": (m_model - m_mkt) if m_model is not None else None, "m_market": m_mkt, "m_model": m_model, "m_final": m, "T": T, "tools": tools, "agg": agg,
             "ratings_as_of": nctx.st.as_of, "p_ml_market": two_way(g["ml"])[0]}
     rows: list[dict] = []
-    # ── Winner (ML) — with halftime-refund promo
-    ph = float(norm.cdf(m / SIGMA_M))
-    for side, p, dec, lab, mm in (("home", ph, g["ml"][0], f"{home} gana (incl. prórroga)", m), ("away", 1 - ph, g["ml"][1], f"{away} gana (incl. prórroga)", -m)):
-        pr = nh.refund_prob(mm, params)
+    # ── Quarter-by-quarter Monte Carlo (400k sims) drives ML, spreads, totals and team totals
+    rho_h = params.get("rho", 0.0)
+    rho_q = rho_h / (2 - rho_h) if params.get("fitted") else 0.0           # halves corr -> equal quarter corr
+    sim = fs.simulate(m, T, SIGMA_M, SIGMA_T, rho_q=rho_q)
+    info["sim_rho_q"] = rho_q
+    ph = float(sim["win_home"].mean())
+    for side, p, dec, lab in (("home", ph, g["ml"][0], f"{home} gana (incl. prórroga)"), ("away", 1 - ph, g["ml"][1], f"{away} gana (incl. prórroga)")):
+        pr = fs.p_refund(sim, side)
         rows.append(row(name, "Ganador", lab, p, dec, {"p_refund": pr, "ev_promo": nh.ev_with_refund(p, dec, pr), "side": side}))
-    # ── Spread ladder
     for L, (oh, oa) in g["spread"].items():
         L = float(L)
-        p_home = float(norm.cdf((m + L) / SIGMA_M))
+        p_home = fs.p_cover_home(sim, L)
         rows.append(row(name, "Hándicap", f"{home} {L:+g}", p_home, oh))
         rows.append(row(name, "Hándicap", f"{away} {-L:+g}", 1 - p_home, oa))
-    # ── Total ladder (market-anchored)
     for L, (oo, ou) in g["total"].items():
         L = float(L)
-        po = float(1 - norm.cdf((L - T) / SIGMA_T))
+        po = fs.p_over(sim, L)
         rows.append(row(name, "Total", f"Más de {L:g}", po, oo, {"anchored": True}))
         rows.append(row(name, "Total", f"Menos de {L:g}", 1 - po, ou, {"anchored": True}))
-    # ── Team totals
-    sd_team = float(np.sqrt((SIGMA_T ** 2 + SIGMA_M ** 2 + 2 * RHO_MT * SIGMA_T * SIGMA_M) / 4))
-    for key, mean, lab in (("team_total_home", (T + m) / 2, home), ("team_total_away", (T - m) / 2, away)):
+    for key, side, lab in (("team_total_home", "home", home), ("team_total_away", "away", away)):
         for L, (oo, ou) in g[key].items():
             L = float(L)
-            po = float(1 - norm.cdf((L - mean) / sd_team))
+            po = fs.p_team_over(sim, side, L)
             rows.append(row(name, "Total del equipo", f"{lab} más de {L:g}", po, oo, {"anchored": True}))
             rows.append(row(name, "Total del equipo", f"{lab} menos de {L:g}", 1 - po, ou, {"anchored": True}))
     # ── Margin of victory buckets (integer margins)

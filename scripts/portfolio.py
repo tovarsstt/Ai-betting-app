@@ -50,12 +50,12 @@ def eff_ev(r: dict) -> float:
     return r.get("ev_eff", r["ev"])
 
 
+LEG_MIN_ODDS, TICKET_MIN_ODDS = 1.25, 2.0          # payout floors only (a 1.02 "sure thing" pays nothing); EV is NEVER a filter
+
+
 def clean(r: dict, min_p: float = 0.5) -> bool:
-    if eff_ev(r) <= 0 or r["p_win"] < min_p:
-        return False
-    if r["league"] == "UCL":
-        return not r["warn"]
-    return abs(r.get("gap") or 0) <= 6.0                       # NBA: model-vs-market margin gap (points) after the stale shrink
+    """User rule: win probability decides. Only a minimum P(win) and a payout floor; warnings are shown, not used to exclude."""
+    return r["p_win"] >= min_p and r["decimal"] >= LEG_MIN_ODDS
 
 
 def kelly_stake(p: float, odds: float, bankroll: float = BANKROLL, frac: float = 0.25, cap: float = 0.05) -> float:
@@ -69,14 +69,14 @@ def ticket(legs: list[dict]) -> dict:
     return {"legs": legs, "p": p, "odds": o, "ev": p * o - 1, "kelly": kelly_stake(p, o)}
 
 
-def best_combos(pool: list[dict], n: int, k: int = 3, min_odds: float = 2.0, max_odds: float = 12.0) -> list[dict]:
-    """Best n-leg tickets by P(win) among legs from different matches with EV>0 per leg and total EV>0."""
+def best_combos(pool: list[dict], n: int, k: int = 3, min_odds: float = TICKET_MIN_ODDS, max_odds: float = 12.0) -> list[dict]:
+    """Best n-leg tickets by P(win) among legs from different matches, ticket odds >= the payout floor (EV not used)."""
     out = []
     for combo in itertools.combinations(pool, n):
         if len({l["match"] for l in combo}) < n:
             continue
         t = ticket(list(combo))
-        if t["ev"] > 0 and min_odds <= t["odds"] <= max_odds:
+        if min_odds <= t["odds"] <= max_odds:
             out.append(t)
     return sorted(out, key=lambda t: (-round(t["p"], 4), -t["ev"]))[:k]
 
@@ -87,7 +87,7 @@ def fmt_leg(l: dict) -> str:
 
 
 def fmt_ticket(t: dict) -> str:
-    head = f"P(ganar todo) {t['p']*100:.1f}% | cuota {t['odds']:.2f} -> $10 pagan ${10*t['odds']:.2f} | EV {t['ev']*100:+.1f}% | Kelly¼ ${t['kelly']:.2f}"
+    head = f"P(ganar todo) {t['p']*100:.1f}% | cuota {t['odds']:.2f} -> $10 pagan ${10*t['odds']:.2f} | EV {t['ev']*100:+.1f}% (informativo)"
     return head + "\n" + "\n".join(f"      · {fmt_leg(l)}" for l in t["legs"])
 
 
@@ -102,39 +102,38 @@ def main() -> None:
     params = nh.load_params()
     U, N = ucl_rows(sctx, ucl_sheet), nba_rows(nctx, nba_sheet, day, params)
     uc, nc = [r for r in U if clean(r)], [r for r in N if clean(r)]
-    print(f"Bankroll ${BANKROLL:.0f} | candidatos limpios: UCL {len(uc)} de {len(U)}, NBA {len(nc)} de {len(N)} | promo medio tiempo: {'ajustada' if params.get('fitted') else 'por defecto'}\n")
-    rank = lambda rs: sorted(rs, key=lambda r: (-round(r["p_win"], 3), -eff_ev(r)))
-    print("=== UCL ===")
-    print("SENCILLA (mayor P(win) con EV>0 y sin alarmas):")
-    for r in rank(uc)[:6]:
-        print(f"  {fmt_leg(r)}  Kelly¼ ${kelly_stake(r['p_win'], r['decimal']):.2f}")
-    one_per_match = {}
-    for r in rank(uc):
-        one_per_match.setdefault(r["match"], r)
-    pool = list(one_per_match.values())
+    print(f"Candidatos (P(win) >= 50%, cuota >= {LEG_MIN_ODDS}): UCL {len(uc)} de {len(U)}, NBA {len(nc)} de {len(N)} | promo medio tiempo: {'ajustada' if params.get('fitted') else 'por defecto'}\n"
+          f"Regla: manda la probabilidad de ganar; el EV va al final y es solo informativo.\n")
+    rank = lambda rs: sorted(rs, key=lambda r: (-round(r["p_win"], 3), -r["decimal"]))
+
+    def best_per_match(rs):
+        d = {}
+        for r in rank(rs):
+            d.setdefault(r["match"], r)
+        return list(d.values())
+
+    for title, pool_rows in (("UCL", uc), ("NBA", nc)):
+        print(f"=== {title} ===")
+        print("SENCILLAS — mayor P(win) (una por partido):")
+        for r in best_per_match(pool_rows)[:5]:
+            warn = f"   !! {'; '.join(r['warn'])}" if r.get("warn") else (f"   !! ratings de temporada pasada" if r.get("stale") else "")
+            print(f"  {fmt_leg(r)}{warn}")
+        pool = best_per_match(pool_rows)
+        for n in (3, 2):
+            combos = best_combos(pool, n, k=2)
+            if combos:
+                print(f"PARLAY DE {n} (partidos distintos), mayor P(win), cuota total >= {TICKET_MIN_ODDS}:")
+                for t in combos:
+                    print("  " + fmt_ticket(t))
+        print()
+    print("=== COMBINADO UCL + NBA (partidos distintos) ===")
+    mixed = best_per_match(uc)[:6] + best_per_match(nc)
     for n in (3, 2):
-        print(f"\nPARLAY DE {n} TRAMOS (equipos, partidos distintos), mayor P(win) con EV>0:")
-        for t in best_combos(pool, n, k=2, min_odds=1.8):
-            print("  " + fmt_ticket(t))
-    print("\n=== NBA ===")
-    print("SENCILLA (mayor P(win) con EV>0):")
-    for r in rank(nc)[:6]:
-        print(f"  {fmt_leg(r)}  Kelly¼ ${kelly_stake(r['p_win'], r['decimal']):.2f}{'  [ratings de temporada pasada]' if r.get('stale') else ''}")
-    npool = {}
-    for r in rank(nc):
-        npool.setdefault(r["match"], r)
-    for n in (3, 2):
-        print(f"\nPARLAY NBA DE {n} TRAMOS:")
-        for t in best_combos(list(npool.values()), n, k=2, min_odds=1.8):
-            print("  " + fmt_ticket(t))
-    print("\n=== COMBINADO UCL + NBA (partidos distintos) ===")
-    mixed = list(one_per_match.values())[:6] + list(npool.values())
-    for n in (3, 2):
-        res = [t for t in best_combos(mixed, n, k=40, min_odds=1.8) if {l["league"] for l in t["legs"]} == {"UCL", "NBA"}]
+        res = [t for t in best_combos(mixed, n, k=60) if {l["league"] for l in t["legs"]} == {"UCL", "NBA"}]
         print(f"COMBINADO DE {n}:")
         for t in res[:2]:
             print("  " + fmt_ticket(t))
-    json.dump({"ucl": [r for r in U], "nba": [r for r in N]}, open(Path("/tmp/portfolio_rows.json"), "w"), default=str)
+    json.dump({"ucl": U, "nba": N}, open(Path("/tmp/portfolio_rows.json"), "w"), default=str)
 
 
 if __name__ == "__main__":
