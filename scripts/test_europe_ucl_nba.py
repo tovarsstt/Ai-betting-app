@@ -612,3 +612,19 @@ def test_game_sim_split_matches_target_margin_and_keeps_total():
     assert abs(lh + la - 3.4) < 1e-9 and abs((b.home_win - b.away_win) - 0.25) < 5e-3
     sc = gs.sample_scores(lh, la)
     assert abs(sc[:, 0].mean() - lh) < 0.03 and abs((sc[:, 0] + sc[:, 1]).mean() - 3.4) < 0.05   # sampled goals follow the anchored total
+
+
+def test_nba_detail_parses_real_espn_summary():
+    import json
+    from pathlib import Path
+    import nba_detail as nd
+    d = json.loads((Path(__file__).parent / "fixtures" / "nba_summary_401809244.json").read_text())
+    r = nd.parse_summary(d)
+    assert r["lineup_ok"] and len(r["team"]) == 2 and r["team"][0]["poss"] == r["team"][1]["poss"]
+    assert {t["pts"] for t in r["team"]} == {119, 109}                      # GSW 119, LAL 109 (real game)
+    by = {p["athlete_id"]: p for p in r["player"]}
+    for o in r["onoff"]:                                                    # rebuilt minutes agree with the box score
+        if by[o["athlete_id"]]["min"] > 0:
+            assert abs(o["sec_on"] / 60 - by[o["athlete_id"]]["min"]) <= nd.MAX_MIN_ERR
+    assert nd.shot_zone(25, 5.25, 2) == "rim" and nd.shot_zone(1, 2, 3) == "corner3" and nd.shot_zone(25, 28, 3) == "above3"
+    assert all(s["x"] >= 0 and s["y"] >= 0 and s["pts_att"] in (2, 3) for s in r["shot"])

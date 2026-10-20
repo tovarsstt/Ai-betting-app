@@ -9,7 +9,10 @@ on:
     inputs:
       mode:
         description: "probe | full"
-        default: "probe"
+        default: "full"
+      seasons:
+        description: "Seasons (ESPN season start year), space separated, e.g. '2025' or '2024 2025'"
+        default: "2025"
 permissions:
   contents: write
 jobs:
@@ -23,7 +26,11 @@ jobs:
         with: { python-version: "3.12" }
       - run: pip install numpy scipy pandas
       - name: Probe ESPN summary (3 games from 2025-26)
+        if: ${{ inputs.mode == 'probe' }}
         run: python3 scripts/fetch_nba_detail.py probe 401809243 401809244 401809245
+      - name: Parse every game (box, shots, on/off, pace)
+        if: ${{ inputs.mode != 'probe' }}
+        run: python3 scripts/fetch_nba_detail.py full ${{ inputs.seasons || '2025' }} 2>&1 | tee data/nba/fetch_log.txt
       - name: Push data
         run: |
           git config user.name "github-actions"
