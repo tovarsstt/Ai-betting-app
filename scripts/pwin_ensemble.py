@@ -47,6 +47,7 @@ class ToolOut:
     kind: str            # model | market | flag
     probs: dict | None   # {"home","draw"?,"away"} or None when not run
     note: str = ""
+    lam: tuple | None = None   # (lambda_home, lambda_away) when the tool is a goal-rate model
 
 
 # Tools fed by the SAME information are grouped: averaged inside the group first, then across groups,
@@ -121,7 +122,7 @@ def soccer_tools(ctx: SoccerCtx, home: str, away: str, market: dict | None, tota
     if h in ctx.elo and a in ctx.elo:
         lh, la = um.lambdas(ctx.elo_model, ctx.elo[h], ctx.elo[a])
         note = f"λ {lh:.2f}-{la:.2f}, calibrated={ctx.elo_model.calibrated}"
-        out.append(ToolOut("elo_poisson_dixon_coles", "poisson", "model", _matrix_probs(lh, la), note))
+        out.append(ToolOut("elo_poisson_dixon_coles", "poisson", "model", _matrix_probs(lh, la), note, (lh, la)))
         sim = sm.simulate_match(lh, la, n_sims=N_SIMS, seed=SEED)["simulated_1x2"]
         out.append(ToolOut("elo_monte_carlo_200k", "monte-carlo", "model",
                            {k: sim[k]["prob"] for k in ("home", "draw", "away")}, f"{N_SIMS:,} sims from the same matrix"))
@@ -136,14 +137,14 @@ def soccer_tools(ctx: SoccerCtx, home: str, away: str, market: dict | None, tota
     pt = ctx.preg.teams
     if h in pt and a in pt and pt[h].get("n_matches", 0) >= 8 and pt[a].get("n_matches", 0) >= 8:
         lh, la = preg.lambdas_for(ctx.preg, h, a, neutral=False)
-        out.append(ToolOut("poisson_regression", "poisson", "model", _matrix_probs(lh, la), f"λ {lh:.2f}-{la:.2f}, per-team attack/defence"))
+        out.append(ToolOut("poisson_regression", "poisson", "model", _matrix_probs(lh, la), f"λ {lh:.2f}-{la:.2f}, per-team attack/defence", (lh, la)))
     else:
         out.append(_not_run("poisson_regression", "poisson", "model", "club has <8 matches in the fit"))
     # 5: eigenvector (Keener) ratings -> goals
     er_, ea_ = ctx.eig.ratings.get(h), ctx.eig.ratings.get(a)
     if er_ and ea_:
         lh, la = um.lambdas(ctx.eig_model, 400 * math.log(er_), 400 * math.log(ea_))
-        out.append(ToolOut("eigenvector_keener", "eigenvector", "model", _matrix_probs(lh, la), f"λ {lh:.2f}-{la:.2f}; goal map fit in-sample"))
+        out.append(ToolOut("eigenvector_keener", "eigenvector", "model", _matrix_probs(lh, la), f"λ {lh:.2f}-{la:.2f}; goal map fit in-sample", (lh, la)))
     else:
         out.append(_not_run("eigenvector_keener", "eigenvector", "model", "club not in rating graph"))
     # 6: binomial / Bernoulli / Dirichlet W-D-L rates by venue

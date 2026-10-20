@@ -354,3 +354,27 @@ def test_report_puts_ucl_before_nba_even_when_nba_rows_come_first():
     assert txt.index("=== UCL ===") < txt.index("=== NBA ===")
     assert txt.index("PSG") < txt.index("KNICKS")
     assert txt.index("Roma vs X") < txt.index("Lakers @ Suns")             # skipped list also UCL first
+
+
+def test_sheet_totals_blocked_when_model_total_is_far_below_market():
+    import sheet_picks as sp
+    r = {"p_model": 0.6, "p_market": 0.55, "spread": 0.0, "p_win": 0.58, "blocked": True, "total_gap": 1.6}
+    assert any("BLOCKED" in w for w in sp.warnings(r, []))
+    assert sp.TOTAL_GAP_BLOCK == 0.3 and "U2.5" in sp.TOTALS_KEYS and "H" not in sp.TOTALS_KEYS
+
+
+def test_sheet_markets_are_internally_consistent():
+    import sheet_picks as sp
+    b = sp.book(1.5, 1.1)
+    assert abs(b["H"] + b["D"] + b["A"] - 1) < 1e-9
+    assert abs(b["1X"] - (b["H"] + b["D"])) < 1e-12 and abs(b["DNB_H"] + b["DNB_A"] - 1) < 1e-12
+    assert abs(b["BTTS_Y"] + b["BTTS_N"] - 1) < 1e-9 and abs(b["O2.5"] + b["U2.5"] - 1) < 1e-9
+
+
+def test_anchored_lambdas_reproduce_market_home_and_over():
+    import sheet_picks as sp
+    import numpy as np
+    pw = np.array([0.40, 0.21, 0.39])
+    lh, la = sp.anchored_lambdas(pw, 0.80)
+    b = sp.book(lh, la)
+    assert abs(b["H"] - 0.40) < 0.03 and abs(b["A"] - 0.39) < 0.03 and abs(b["O2.5"] - 0.80) < 0.06
