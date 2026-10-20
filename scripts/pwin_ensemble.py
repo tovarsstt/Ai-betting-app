@@ -226,11 +226,22 @@ class NbaCtx:
     last: dict = field(default_factory=lambda: defaultdict(list))
 
 
+def nba_sigma_margin(cal: dict) -> float:
+    """Margin sd vs the closing line. sport_math fitted sigma on seasons <= 2018 (11.77); the SAME file stores the mean
+    held-out log-lik (post-2018) of that normal, which implies the modern residual sd: E[res^2] = s^2 (-2*ll - ln(2*pi*s^2)).
+    The modern value (~13.1) is used; the old one made cushion/alt-line bets look +EV."""
+    s, ll = cal.get("sigma_margin"), cal.get("test_ll_margin_const_sigma")
+    if not s or ll is None:
+        return 13.0
+    e2 = s * s * (-2 * ll - math.log(2 * math.pi * s * s))
+    return float(math.sqrt(e2)) if e2 > 0 else float(s)
+
+
 def build_nba_ctx(game_files: list[Path]) -> NbaCtx:
     g = ns.load_games(*game_files)
     st, stk = ns.fit_final(g)
     cal = spm._cal().get("nba", {})
-    c = NbaCtx(st, stk, g, float(cal.get("sigma_margin", 12.0)), 0.0)
+    c = NbaCtx(st, stk, g, nba_sigma_margin(cal), 0.0)
     wins = sum(x["hs"] > x["as"] for x in g)
     c.home_logit = math.log(wins / (len(g) - wins))
     for x in g:

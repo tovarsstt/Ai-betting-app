@@ -23,7 +23,7 @@ from scipy.stats import norm
 
 DATA = Path(__file__).parent.parent / "data"
 PARAMS_PATH = DATA / "nba_halftime_params.json"
-DEFAULTS = {"sigma": 11.8, "h1_var_share": 0.5, "rho": 0.0, "fitted": False}
+DEFAULTS = {"sigma": 13.1, "h1_var_share": 0.5, "rho": 0.0, "fitted": False}
 LEAD = 16
 
 
@@ -33,7 +33,7 @@ def load_params() -> dict:
     return dict(DEFAULTS)
 
 
-def margin_from_pwin(p_win: float, sigma: float = 11.8) -> float:
+def margin_from_pwin(p_win: float, sigma: float = 13.1) -> float:
     """Expected game margin implied by a win probability under M ~ N(m, sigma) (same inversion as sport_math)."""
     return float(sigma * norm.ppf(min(max(p_win, 1e-4), 1 - 1e-4)))
 

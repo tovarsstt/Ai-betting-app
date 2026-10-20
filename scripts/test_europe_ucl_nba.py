@@ -463,7 +463,7 @@ def test_sampled_legs_agree_with_exact_probabilities():
 def test_refund_prob_matches_monte_carlo_and_grows_with_negative_halves_correlation():
     import nba_halftime as nh2
     rng = np.random.default_rng(4)
-    m, s = 3.0, 11.8 / np.sqrt(2)
+    m, s = 3.0, nh2.DEFAULTS["sigma"] / np.sqrt(2)
     h1, h2 = rng.normal(m / 2, s, 3_000_000), rng.normal(m / 2, s, 3_000_000)
     mc = ((h1 >= 15.5) & (h1 + h2 <= 0)).mean()
     assert abs(nh2.refund_prob(m, nh2.DEFAULTS) - mc) < 0.0004
@@ -494,3 +494,56 @@ def test_promo_row_ev_uses_refund_and_nba_recommendation_uses_it():
     rows = vp.rows_from_agg(agg, {"home": -110, "away": -110}, {"home": "H", "away": "A"}, "m", league="NBA", halftime_refund=True)
     h = rows[0]
     assert h["ev_promo"] > h["ev"] and abs(h["ev_promo"] - (h["ev"] + h["p_refund"])) < 1e-12 and "promo_params" in h
+
+
+def test_nba_sigma_is_the_post_2018_residual_sd_not_the_train_value():
+    import pwin_ensemble as pe2
+    s = pe2.nba_sigma_margin({"sigma_margin": 11.77, "test_ll_margin_const_sigma": -4.0055})
+    assert 12.9 < s < 13.3
+    assert pe2.nba_sigma_margin({}) == 13.0
+
+
+def test_fit_margin_recovers_known_margin_from_a_ladder():
+    import nba_sheet_picks as nsp2
+    from scipy.stats import norm
+    m_true, S = 4.0, nsp2.SIGMA_M
+    ladder = {}
+    for L in (-6.5, -5.5, -4.5, -3.5, -2.5, 3.5, 5.5, 8.5):
+        p = float(norm.cdf((m_true + L) / S))
+        ladder[str(L)] = [1 / (p * 1.05), 1 / ((1 - p) * 1.05)]            # 5% overround on both sides
+    assert abs(nsp2.fit_margin(ladder) - m_true) < 0.6
+
+
+def test_nba_rows_mov_buckets_and_ml_are_probabilities():
+    import json
+    import nba_sheet_picks as nsp2
+    import pwin_ensemble as pe2
+    from datetime import date as d
+    from pathlib import Path
+    sheet = json.loads((Path(__file__).parent.parent / "data" / "sheets" / "2026-10-20_nba.json").read_text())["matches"]
+    g = sheet["Philadelphia 76ers @ New York Knicks"]
+    # tiny synthetic NBA history so the ctx builds without the real CSVs
+    rng = np.random.default_rng(8)
+    names = [g["home"], g["away"], "A", "B", "C", "D"]
+    import tempfile, csv
+    p = Path(tempfile.mkdtemp()) / "g.csv"
+    with p.open("w", newline="") as f:
+        w = csv.writer(f); w.writerow(["game_id", "date", "home_team", "away_team", "home_score", "away_score", "season"])
+        for i in range(900):
+            h, a = rng.choice(names, 2, replace=False)
+            w.writerow([i, f"2025-{1 + i // 90:02d}-{1 + i % 27:02d}", h, a, int(rng.normal(112, 10)), int(rng.normal(110, 10)), 2025])
+    nctx = pe2.build_nba_ctx([p])
+    rows, info = nsp2.price_game(nctx, "x", g, d(2026, 10, 20), {"sigma": 13.1, "h1_var_share": 0.5, "rho": 0.0, "fitted": False})
+    ml = [r for r in rows if r["market"] == "Ganador"]
+    assert abs(sum(r["p_win"] for r in ml) - 1) < 1e-9 and all(0 <= r["p_win"] <= 1 for r in rows)
+    mov = [r for r in rows if r["market"] == "Margen de victoria"]
+    assert abs(sum(r["p_win"] for r in mov) - 1) < 1e-6                     # six buckets cover every margin
+    assert info["stale"] is True and info["w_model"] == nsp2.W_MODEL_STALE
+
+
+def test_ticket_and_kelly_math():
+    import portfolio as pf2
+    t = pf2.ticket([{"p_win": 0.6, "decimal": 1.8, "match": "a"}, {"p_win": 0.5, "decimal": 2.1, "match": "b"}])
+    assert abs(t["p"] - 0.3) < 1e-12 and abs(t["odds"] - 3.78) < 1e-9 and abs(t["ev"] - (0.3 * 3.78 - 1)) < 1e-9
+    assert pf2.kelly_stake(0.5, 2.0) == 0.0                                   # fair price -> no stake
+    assert pf2.kelly_stake(0.9, 3.0) == round(30 * 0.05, 2)                    # capped at 5% of the bankroll

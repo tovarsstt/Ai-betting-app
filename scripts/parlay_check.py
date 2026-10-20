@@ -183,7 +183,7 @@ def main() -> None:
         print(f"{k}. {l['pick']}  [{l['match']}]\n   P(win) {l['final']*100:.1f}%  (herramientas del modelo {l['p_model']*100:.1f}% | mercado-anclado {l['market_anchored']*100:.1f}%)"
               f"  | cuota {l['odds']:.2f} (el precio implica {l['implied']*100:.1f}%) | EV del tramo {l['ev']*100:+.1f}%")
         print("   por herramienta: " + ", ".join(f"{k2.replace('_dixon_coles','').replace('_',' ')} {v*100:.0f}%" for k2, v in l["views"].items()))
-    print(f"\nTICKET COMPLETO: P(ganar los 7) = {p_all*100:.2f}%  | cuota {odds:.2f} -> $10 pagan ${10*odds:.2f} | EV {(p_all*odds-1)*100:+.1f}%")
+    print(f"\nTICKET COMPLETO: P(ganar los {len(legs)}) = {p_all*100:.2f}%  | cuota {odds:.2f} -> $10 pagan ${10*odds:.2f} | EV {(p_all*odds-1)*100:+.1f}%")
     print(f"   rango por herramienta (solo modelo / solo mercado): {math.prod(l['p_model'] for l in legs)*100:.2f}% / {math.prod(l['market_anchored'] for l in legs)*100:.2f}%")
     print(f"   verificación: simulación conjunta de 400.000 tickets = {mc_ticket(ctx, slip, sheet)*100:.2f}%")
     probs = [l["final"] for l in legs]
