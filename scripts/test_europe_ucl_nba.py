@@ -343,3 +343,14 @@ def test_nba_predict_fixture_unknown_team_is_none():
     st.update("A", "B", 100, 90, date(2025, 11, 1))
     stk = ns.Stacker()
     assert ns.predict_fixture(st, stk, "A", "Nobody", date(2025, 11, 5)) is None
+
+
+def test_report_puts_ucl_before_nba_even_when_nba_rows_come_first():
+    import value_picks as vp
+    mk = lambda lg, pick, p: {"match": f"{pick}-m", "pick": pick, "p_win": p, "ev": 0.05, "p_model": p, "p_market": p, "spread": 0.0,
+                              "american": -110, "payout_10": 19.0, "flags": [], "league": lg}
+    rows = [mk("NBA", "KNICKS", 0.90), mk("UCL", "PSG", 0.40)]           # NBA has the higher P(win) and comes first in the list
+    txt = vp.render(rows, ["Lakers @ Suns (no moneyline)", "Roma vs X (already in)"], ["  block"])
+    assert txt.index("=== UCL ===") < txt.index("=== NBA ===")
+    assert txt.index("PSG") < txt.index("KNICKS")
+    assert txt.index("Roma vs X") < txt.index("Lakers @ Suns")             # skipped list also UCL first

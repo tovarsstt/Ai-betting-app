@@ -26,6 +26,11 @@ inconvenient; if one cannot run, say which and why (never drop it silently, neve
 - Honesty: no tool is claimed to beat the market without out-of-sample validation vs closing lines.
   The market (devigged) is one input and the strongest prior; the code registry is `scripts/pwin_ensemble.py`.
 
+## Section Order Rule (all reports, all sessions)
+UCL (Champions League) ALWAYS comes first, then NBA, then any other league. This applies to the report, the
+per-tool detail, the SKIPPED list and any summary. Inside each section: P(win) first -> odds/payout -> EV last,
+ranked by P(win). Code: `SECTION_ORDER` in `scripts/value_picks.py`. Effort and review time also go to UCL first.
+
 ## Ranking Priority
 Rank picks by win-probability first, edge (+EV) second. Favor likely winners over longshots.
 

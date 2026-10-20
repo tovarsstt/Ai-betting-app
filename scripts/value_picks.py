@@ -73,7 +73,10 @@ def events_from_scoreboard(data: dict) -> list[dict]:
     return out
 
 
-def rows_from_agg(agg: dict, ml: dict, labels: dict, match: str, flags: list[str] | None = None) -> list[dict]:
+SECTION_ORDER = ["UCL", "NBA"]   # project rule: Champions League first, then NBA
+
+
+def rows_from_agg(agg: dict, ml: dict, labels: dict, match: str, flags: list[str] | None = None, league: str = "UCL") -> list[dict]:
     """One row per outcome: final P(win) from the ensemble, price, payout, EV (last)."""
     rows = []
     for side, label in labels.items():
@@ -84,7 +87,7 @@ def rows_from_agg(agg: dict, ml: dict, labels: dict, match: str, flags: list[str
         rows.append({"match": match, "pick": label, "p_win": p, "p_model": agg["model_mean"][side] if agg["model_mean"] else None,
                      "p_market": agg["market_mean"][side] if agg["market_mean"] else None,
                      "spread": agg["model_spread"].get(side, 0.0), "american": ml[side], "decimal": dec,
-                     "payout_10": 10 * dec, "ev": p * dec - 1, "flags": list(flags or []),
+                     "payout_10": 10 * dec, "ev": p * dec - 1, "flags": list(flags or []), "league": league,
                      "n_tools": agg["n_model_tools"] + agg["n_market_tools"]})
     return rows
 
@@ -120,14 +123,22 @@ def fmt(r: dict) -> str:
 
 
 def render(rows_all: list[dict], skipped: list[str], tool_blocks: list[str] | None = None) -> str:
-    lines = ["MOST LIKELY WINNER PER GAME (P(win) first, EV last)"]
-    lines += [f"- {fmt(r)}" for r in best_per_match(rows_all)]
-    picks = rank([r for r in rows_all if r["ev"] > MIN_EV])
-    lines += ["", "RECOMMENDED — EV > 0, ordered by P(win):" if picks else "RECOMMENDED: none — no side has EV > 0 at these prices."]
-    lines += [f"* {fmt(r)}" for r in picks]
-    lines += [f"SKIPPED: {x}" for x in skipped]
+    """UCL section first, NBA second (project rule). Inside each: P(win) first, EV last, ranked by P(win)."""
+    lines: list[str] = []
+    leagues = SECTION_ORDER + sorted({r.get("league", "UCL") for r in rows_all} - set(SECTION_ORDER))
+    for lg in leagues:
+        rows = [r for r in rows_all if r.get("league", "UCL") == lg]
+        if not rows:
+            continue
+        lines += [f"=== {lg} ===", "MOST LIKELY WINNER PER GAME (P(win) first, EV last)"]
+        lines += [f"- {fmt(r)}" for r in best_per_match(rows)]
+        picks = rank([r for r in rows if r["ev"] > MIN_EV])
+        lines += ["", f"{lg} RECOMMENDED — EV > 0, ordered by P(win):" if picks else f"{lg} RECOMMENDED: none — no side has EV > 0 at these prices."]
+        lines += [f"* {fmt(r)}" for r in picks]
+        lines.append("")
+    lines += [f"SKIPPED: {x}" for x in sorted(skipped, key=lambda x: (0 if "@" not in x else 1, x))]
     if tool_blocks:
-        lines += ["", "PER-TOOL DETAIL (every tool that ran; H/D/A = home/draw/away):"] + tool_blocks
+        lines += ["", "PER-TOOL DETAIL (UCL first, then NBA; H/D/A = home/draw/away):"] + tool_blocks
     return "\n".join(lines)
 
 
@@ -151,7 +162,7 @@ def soccer_rows(events: list[dict], ctx) -> tuple[list[dict], list[str], list[st
         low = [n for n in (ev["home"], ev["away"]) if ctx.games.get(pe.cu.normalize(n), 0) < 15]
         flags = [f"LOW-SAMPLE club: {', '.join(low)}"] if low else []
         label = {"home": f"{ev['home']} to win", "draw": "Draw", "away": f"{ev['away']} to win"}
-        rows += rows_from_agg(agg, ml, label, match, flags)
+        rows += rows_from_agg(agg, ml, label, match, flags, league="UCL")
         blocks.append(f"  {match}  ({agg['n_model_tools']} model + {agg['n_market_tools']} market tools; not run: {', '.join(agg['not_run']) or 'none'})\n" + pe.tools_table(tools))
     return rows, skipped, blocks
 
@@ -170,7 +181,7 @@ def nba_rows(events: list[dict], ctx) -> tuple[list[dict], list[str], list[str]]
         agg = pe.aggregate(tools)
         if "error" in agg:
             skipped.append(f"{match} ({agg['error']})"); continue
-        rows += rows_from_agg(agg, {k: v for k, v in ml.items() if k != "draw"}, {"home": f"{ev['home']} ML", "away": f"{ev['away']} ML"}, match)
+        rows += rows_from_agg(agg, {k: v for k, v in ml.items() if k != "draw"}, {"home": f"{ev['home']} ML", "away": f"{ev['away']} ML"}, match, league="NBA")
         blocks.append(f"  {match}  ({agg['n_model_tools']} model + {agg['n_market_tools']} market tools; not run: {', '.join(agg['not_run']) or 'none'})\n" + pe.tools_table(tools))
     return rows, skipped, blocks
 
