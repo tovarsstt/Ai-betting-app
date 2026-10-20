@@ -9,6 +9,23 @@
 ## Tone
 Talk short like caveman. Save tokens.
 
+## P(win) Rule — FULL TOOLKIT, ALWAYS (all sessions, whole engine)
+P(win) is NEVER one formula. Every pick's P(win) comes from running EVERY applicable tool in the repo,
+and the report shows each tool's number plus the spread between them. Never skip a tool because it is
+inconvenient; if one cannot run, say which and why (never drop it silently, never invent its output).
+- Soccer: Poisson / Dixon-Coles (poisson_model, soccer_markets), Monte Carlo (simulate_match), Skellam
+  (exact goal difference), binomial / Bernoulli / Beta-Dirichlet W-D-L rates + log5, data-fit Poisson
+  regression (poisson_regression), eigenvector ratings (eigen_ratings), Elo, sport_math 3-way anchored
+  Dixon-Coles, market devig (multiplicative / power / Shin), chaos_engine (draw risk), failure_modes.
+- NBA / basketball: stacked Elo + form + context (nba_stack), normal-margin model (sport_math), Monte Carlo
+  of the margin, log5 on Beta-Binomial records, ridge team ratings (team_ratings), market devig.
+- Other sports: use that sport's own registry (engine_all / sport_math / engine_v2) — same principle.
+- Order of every report: P(win) first -> odds / payout -> EV last. Rank by P(win): likely winners before
+  longshots. Recommend a pick only when EV > 0; show warnings (low-sample club, big model-vs-market gap,
+  wide tool spread) next to it instead of hiding it.
+- Honesty: no tool is claimed to beat the market without out-of-sample validation vs closing lines.
+  The market (devigged) is one input and the strongest prior; the code registry is `scripts/pwin_ensemble.py`.
+
 ## Ranking Priority
 Rank picks by win-probability first, edge (+EV) second. Favor likely winners over longshots.
 
