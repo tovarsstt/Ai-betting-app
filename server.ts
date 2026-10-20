@@ -5,6 +5,9 @@ import dotenv from 'dotenv';
 import Anthropic from '@anthropic-ai/sdk';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { nbaPredict, uclPredict, ingestNbaResult } from './quant/service.ts';
+import { formatPick } from './quant/report.ts';
+import { americanToDecimal } from './quant/odds.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -1475,6 +1478,42 @@ function todayStr() {
 // ─────────────────────────────────────────────────────────────────────────────
 // PROPHET — single best pick of the day
 // ─────────────────────────────────────────────────────────────────────────────
+
+// ── Quant layer (stacked NBA ensemble + UCL Poisson/Dixon-Coles) ─────────────
+// Output order is always P(win) -> odds/payout -> EV.
+app.post('/api/quant/nba', (req: express.Request, res: express.Response) => {
+  const { home, away, date, homeMl, awayMl } = req.body ?? {};
+  if (!home || !away) return res.status(400).json({ error: 'HOME_AWAY_REQUIRED' });
+  const r = nbaPredict({ home, away, date, homeMlAmerican: homeMl, awayMlAmerican: awayMl });
+  if ('error' in r) return res.status(404).json(r);
+  const report = [
+    formatPick({ label: `${r.home} (home) ML`, pWin: r.pHome, marketOdds: homeMl != null ? americanToDecimal(homeMl) : undefined, marketFair: r.market?.pHome }),
+    formatPick({ label: `${r.away} (away) ML`, pWin: r.pAway, marketOdds: awayMl != null ? americanToDecimal(awayMl) : undefined, marketFair: r.market?.pAway }),
+  ].join('\n');
+  res.json({ ...r, report });
+});
+
+app.post('/api/quant/nba/result', (req: express.Request, res: express.Response) => {
+  const { date, home, away, hs, as: aws, season } = req.body ?? {};
+  if (!date || !home || !away || !Number.isFinite(hs) || !Number.isFinite(aws) || !season) return res.status(400).json({ error: 'BAD_RESULT' });
+  ingestNbaResult({ date, home, away, hs, as: aws, season });
+  res.json({ ok: true });
+});
+
+app.post('/api/quant/ucl', (req: express.Request, res: express.Response) => {
+  const { home, away, neutral, homeDec, drawDec, awayDec } = req.body ?? {};
+  if (!home?.name || !away?.name) return res.status(400).json({ error: 'HOME_AWAY_REQUIRED' });
+  const market = homeDec && drawDec && awayDec ? { homeDecimal: homeDec, drawDecimal: drawDec, awayDecimal: awayDec } : undefined;
+  const r = uclPredict({ home, away, neutral }, market);
+  const report = [
+    formatPick({ label: `${home.name} to win`, pWin: r.pHome, marketOdds: homeDec, marketFair: r.market?.pHome }),
+    formatPick({ label: 'Draw', pWin: r.pDraw, marketOdds: drawDec, marketFair: r.market?.pDraw }),
+    formatPick({ label: `${away.name} to win`, pWin: r.pAway, marketOdds: awayDec, marketFair: r.market?.pAway }),
+    `Over 2.5 goals: ${(r.over25 * 100).toFixed(1)}% | BTTS: ${(r.btts * 100).toFixed(1)}% | likely scores: ${r.grid.top.map(t => `${t.score} (${(t.p * 100).toFixed(1)}%)`).join(', ')}`,
+  ].join('\n');
+  res.json({ ...r, report });
+});
+
 app.get('/api/prophet', async (req: express.Request, res: express.Response) => {
   if (rateLimit(req, 10, 60_000)) return res.status(429).json({ error: "RATE_LIMIT" });
 
@@ -2059,6 +2098,13 @@ app.post('/api/full-breakdown', async (req: express.Request, res: express.Respon
       Promise.all(crossSports.filter(s => s !== league).map(s => fetchLiveOdds(s))).then(r => r.filter(Boolean).join('\n\n')),
     ]);
 
+    let quantCtx = '';
+    if (league === 'NBA') {
+      const [h, a] = matchup.split(/\s+(?:vs\.?|@)\s+/i);
+      const isAt = /\s@\s/.test(matchup);
+      const q = h && a ? nbaPredict({ home: isAt ? a : h, away: isAt ? h : a }) : null;
+      if (q && !('error' in q)) quantCtx = `QUANT ENSEMBLE (stacked Elo+form+context model, walk-forward validated; order: P(win) first):\n  ${q.home} (home) P(win)=${(q.pHome * 100).toFixed(1)}% | ${q.away} P(win)=${(q.pAway * 100).toFixed(1)}%\n  base models home-win P: strength ${(q.base.strength * 100).toFixed(1)}% / form ${(q.base.form * 100).toFixed(1)}% / context ${(q.base.context * 100).toFixed(1)}%\n  ${q.warning ?? ''}`;
+    }
     const heuristics = getBettingHeuristics(league);
 
     const gamePrompt = `
@@ -2076,6 +2122,7 @@ INJURY REPORT (ONLY reference players listed here — do NOT invent injuries):
 ${injuryCtx || "No injury data available from ESPN right now. Do NOT fabricate any injuries."}
 
 ${advancedCtx ? `${advancedCtx}\n` : ''}
+${quantCtx ? `${quantCtx}\n` : ''}
 ${nicheCtx ? `SPORT-SPECIFIC NICHE DATA (cite these exact numbers, do NOT invent):\n${nicheCtx}\n` : ''}
 ${playerStatsCtx ? `REAL PLAYER STATS — BallDontLie API (cite these exact numbers, do NOT invent):\n${playerStatsCtx}\n` : ''}
 ${teamStatsCtx ? `REAL TEAM STATS — ESPN API (cite these exact numbers, do NOT invent):\n${teamStatsCtx}\n` : ''}
