@@ -257,26 +257,84 @@ def test_parse_moneyline_missing_returns_none():
     assert vp.parse_moneyline(None) is None and vp.parse_moneyline([{"moneyline": {"home": {}}}]) is None
 
 
-def test_build_rows_ev_and_devig_math():
+def test_rows_from_agg_ev_math_and_pwin_first_ranking():
     import value_picks as vp
-    rows = vp.build_rows({"home": 0.60, "away": 0.40}, {"home": -110, "away": -110}, {"home": "H", "away": "A"}, "m", w=1.0)
+    agg = {"final": {"home": 0.60, "draw": 0.25, "away": 0.15}, "model_mean": {"home": 0.6, "draw": 0.25, "away": 0.15},
+           "market_mean": {"home": 0.55, "draw": 0.25, "away": 0.2}, "model_spread": {"home": 0.1, "draw": 0.05, "away": 0.1},
+           "n_model_tools": 6, "n_market_tools": 4}
+    rows = vp.rows_from_agg(agg, {"home": -110, "draw": 300, "away": 500}, {"home": "H", "draw": "D", "away": "A"}, "m")
     h = [r for r in rows if r["pick"] == "H"][0]
-    assert abs(h["p_market"] - 0.5) < 1e-9 and abs(h["ev"] - (0.6 * (100 / 110 + 1) - 1)) < 1e-9
+    assert abs(h["ev"] - (0.6 * (100 / 110 + 1) - 1)) < 1e-9
+    assert [r["pick"] for r in vp.rank(rows)][0] == "H"          # likeliest winner first, EV does not reorder it above
+    assert "longshot" in " ".join(vp.warnings([r for r in rows if r["pick"] == "A"][0]))
 
 
-def test_ranking_is_pwin_first_and_longshots_never_recommended():
+def test_recommendation_is_ev_positive_only_and_longshots_are_listed_after_favourites():
     import value_picks as vp
-    rows = vp.build_rows({"home": 0.30, "draw": 0.25, "away": 0.45}, {"home": 300, "draw": 280, "away": -110}, {"home": "H", "draw": "D", "away": "A"}, "m", w=1.0)
-    ranked = vp.rank(rows)
-    assert [r["pick"] for r in ranked][0] == "A"                       # likeliest winner first
-    assert all(vp.reject_reason(r) for r in rows if r["p_win"] < 0.5)  # longshots rejected even if +EV
+    mk = lambda p, ev, pick: {"match": "m", "pick": pick, "p_win": p, "ev": ev, "p_model": p, "p_market": p, "spread": 0.0,
+                              "american": 100, "payout_10": 20.0, "flags": []}
+    rows = [mk(0.20, 0.30, "long"), mk(0.70, 0.02, "fav"), mk(0.60, -0.05, "neg")]
+    txt = vp.render(rows, [])
+    rec = txt.split("RECOMMENDED")[1]
+    assert "fav" in rec and "long" in rec and "neg" not in rec
+    assert rec.index("fav") < rec.index("long")
 
 
-def test_big_model_market_gap_is_flagged_not_recommended():
+def test_warnings_flag_gap_and_spread_without_hiding_pick():
     import value_picks as vp
-    r = vp.build_rows({"home": 0.80, "away": 0.20}, {"home": 120, "away": -140}, {"home": "H", "away": "A"}, "m", w=1.0)
-    home = [x for x in r if x["pick"] == "H"][0]
-    assert home["ev"] > 0 and "gap" in vp.reject_reason(home)
+    r = {"match": "m", "pick": "x", "p_win": 0.6, "ev": 0.1, "p_model": 0.8, "p_market": 0.5, "spread": 0.4, "flags": []}
+    w = vp.warnings(r)
+    assert any("gap" in s for s in w) and any("disagree" in s for s in w)
+
+
+def test_espn_nba_preseason_games_are_dropped():
+    pre = _ev("9", True, "100", "90")
+    pre["season"] = {"type": 1}
+    reg = _ev("10", True, "100", "90")
+    reg["season"] = {"type": 2}
+    out = fe.parse_espn_scoreboard({"events": [pre, reg]})
+    assert [g["game_id"] for g in out] == ["10"]
+
+
+def test_aggregate_averages_within_groups_first_and_reports_unrun_tools():
+    import pwin_ensemble as pe
+    T = pe.ToolOut
+    tools = [T("elo_poisson_dixon_coles", "p", "model", {"home": 0.8, "away": 0.2}),
+             T("elo_monte_carlo_200k", "p", "model", {"home": 0.8, "away": 0.2}),
+             T("elo_skellam", "p", "model", {"home": 0.8, "away": 0.2}),
+             T("binomial_wdl_rates", "b", "model", {"home": 0.4, "away": 0.6}),
+             T("devig_power", "m", "market", {"home": 0.5, "away": 0.5}),
+             pe._not_run("eigenvector_keener", "e", "model", "club not in rating graph")]
+    agg = pe.aggregate(tools, w_model=1.0)
+    assert abs(agg["model_mean"]["home"] - 0.6) < 1e-9          # (0.8 + 0.4)/2, NOT (3*0.8+0.4)/4 = 0.7
+    assert agg["not_run"] == ["eigenvector_keener"] and agg["n_model_tools"] == 4
+    assert abs(agg["final"]["home"] + agg["final"]["away"] - 1) < 1e-9
+
+
+def test_soccer_ensemble_runs_every_tool_and_never_invents_missing_clubs(tmp_path):
+    import pwin_ensemble as pe
+    rng = np.random.default_rng(11)
+    teams = [f"T{i}" for i in range(8)]
+    skill = {t: rng.normal(0, 0.4) for t in teams}
+    lines = ["date,home_team,away_team,home_score,away_score,neutral,league"]
+    d = 0
+    for _ in range(14):
+        for i, h in enumerate(teams):
+            a = teams[(i + 3) % 8]
+            d += 1
+            lines.append(f"2026-{1 + d // 280:02d}-{1 + d % 27:02d},{h},{a},{rng.poisson(np.exp(0.2 + skill[h] - skill[a]))},"
+                         f"{rng.poisson(np.exp(0.1 + skill[a] - skill[h]))},FALSE,{'UEFA Champions League' if d % 9 == 0 else 'L'}")
+    (tmp_path / "r.csv").write_text("\n".join(lines))
+    ctx = pe.build_soccer_ctx([tmp_path / "r.csv"])
+    ml = {"home": -150, "draw": 270, "away": 400}
+    tools = pe.soccer_tools(ctx, "T0", "T1", ml, 2.5)
+    names = {t.name for t in tools}
+    assert {"elo_poisson_dixon_coles", "elo_monte_carlo_200k", "elo_skellam", "poisson_regression", "eigenvector_keener",
+            "binomial_wdl_rates", "devig_multiplicative", "devig_power", "devig_shin", "sport_math_anchored_dc", "chaos_engine_draw_risk"} <= names
+    agg = pe.aggregate(tools)
+    assert abs(sum(agg["final"].values()) - 1) < 1e-9
+    ghost = pe.soccer_tools(ctx, "T0", "Ghost FC", ml, 2.5)
+    assert all(t.probs is None for t in ghost if t.name.startswith("elo_")) and "NOT RUN" in ghost[0].note
 
 
 def test_nba_predict_fixture_unknown_team_is_none():

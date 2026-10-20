@@ -1,16 +1,15 @@
 """
-value_picks.py — today's UCL + NBA: model P(win) vs DraftKings moneylines (via ESPN scoreboard).
+value_picks.py — today's UCL + NBA: P(win) from the FULL toolkit (pwin_ensemble) vs DraftKings moneylines.
 
-Rules (CLAUDE.md): rank by WIN PROBABILITY first, edge (+EV) second; favour likely winners over
-longshots. Report order per pick: P(win) -> odds/payout -> EV last. A pick is only RECOMMENDED when
-its EV > 0; otherwise it is listed as 'no value' (a likely winner at a bad price still loses money).
-
-Probability = MODEL_WEIGHT * model + (1 - MODEL_WEIGHT) * devigged market. The market is the
-stronger prior; the model only moves it where it has real disagreement. No Odds API is used:
-lines come from ESPN's public scoreboard (DraftKings provider). Missing lines are reported, never made up.
+Rules (CLAUDE.md "P(win) Rule"): every applicable tool runs and is shown; order is P(win) first ->
+odds/payout -> EV last; rank by P(win) (likely winners before longshots); RECOMMEND only when EV > 0.
+Warnings (low-sample club, big model-vs-market gap, wide tool spread, longshot) are printed next to a pick,
+never used to hide it. Lines come from ESPN's public scoreboard (DraftKings provider) — no Odds API.
+Missing lines are reported, never invented.
 
     python3 scripts/value_picks.py [YYYY-MM-DD]      # live; needs ESPN reachable
 """
+
 from __future__ import annotations
 
 import datetime
@@ -18,16 +17,14 @@ import json
 import sys
 from pathlib import Path
 
-import calibrate_ucl as cu
 import fetch_europe_data as fe
-import nba_stack as ns
-import ucl_model as um
+import pwin_ensemble as pe
 
 DATA = Path(__file__).parent.parent / "data"
-MODEL_WEIGHT = 0.35
 MIN_EV = 0.0
-MIN_P_WIN = 0.50      # priority is WINNING: only back the side that is more likely than not to win
-MAX_DISAGREE = 0.15   # model vs market gap above this is treated as model error, not edge (validation showed no proven edge)
+GAP_WARN = 0.15       # model-vs-market gap (prob points) worth a warning
+SPREAD_WARN = 0.20    # max-min across model tools worth a warning
+LONGSHOT = 0.35
 
 
 def am_to_dec(a: int) -> float:
@@ -76,36 +73,31 @@ def events_from_scoreboard(data: dict) -> list[dict]:
     return out
 
 
-def devig(decimals: list[float]) -> list[float]:
-    inv = [1 / d for d in decimals]
-    s = sum(inv)
-    return [v / s for v in inv]
-
-
-def build_rows(p_model: dict[str, float], ml: dict, label_by_side: dict[str, str], match: str,
-               w: float = MODEL_WEIGHT) -> list[dict]:
-    sides = [s for s in ("home", "draw", "away") if s in ml and s in p_model]
-    dec = {s: am_to_dec(ml[s]) for s in sides}
-    fair = dict(zip(sides, devig([dec[s] for s in sides])))
+def rows_from_agg(agg: dict, ml: dict, labels: dict, match: str, flags: list[str] | None = None) -> list[dict]:
+    """One row per outcome: final P(win) from the ensemble, price, payout, EV (last)."""
     rows = []
-    for s in sides:
-        p = w * p_model[s] + (1 - w) * fair[s]
-        rows.append({"match": match, "pick": label_by_side[s], "p_win": p, "p_model": p_model[s], "p_market": fair[s],
-                     "american": ml[s], "decimal": dec[s], "payout_10": 10 * dec[s], "ev": p * dec[s] - 1})
+    for side, label in labels.items():
+        if side not in ml or side not in agg["final"]:
+            continue
+        dec = am_to_dec(ml[side])
+        p = agg["final"][side]
+        rows.append({"match": match, "pick": label, "p_win": p, "p_model": agg["model_mean"][side] if agg["model_mean"] else None,
+                     "p_market": agg["market_mean"][side] if agg["market_mean"] else None,
+                     "spread": agg["model_spread"].get(side, 0.0), "american": ml[side], "decimal": dec,
+                     "payout_10": 10 * dec, "ev": p * dec - 1, "flags": list(flags or []),
+                     "n_tools": agg["n_model_tools"] + agg["n_market_tools"]})
     return rows
 
 
-def reject_reason(r: dict) -> str | None:
-    """Why a +EV side is NOT recommended (None = passes every guard)."""
-    if r["ev"] <= MIN_EV:
-        return "EV <= 0"
-    if r["p_win"] < MIN_P_WIN:
-        return f"longshot (P(win) {r['p_win']*100:.0f}% < {MIN_P_WIN*100:.0f}%)"
-    if abs(r["p_model"] - r["p_market"]) > MAX_DISAGREE:
-        return f"model vs market gap {abs(r['p_model'] - r['p_market'])*100:.0f} pts > {MAX_DISAGREE*100:.0f} (likely model error)"
-    if "LOW-SAMPLE" in r["match"]:
-        return "low-sample club rating"
-    return None
+def warnings(r: dict) -> list[str]:
+    w = list(r["flags"])
+    if r["p_model"] is not None and r["p_market"] is not None and abs(r["p_model"] - r["p_market"]) > GAP_WARN:
+        w.append(f"model vs market gap {abs(r['p_model'] - r['p_market'])*100:.0f} pts")
+    if r["spread"] > SPREAD_WARN:
+        w.append(f"tools disagree ({r['spread']*100:.0f} pt spread)")
+    if r["p_win"] < LONGSHOT:
+        w.append("longshot")
+    return w
 
 
 def rank(rows: list[dict]) -> list[dict]:
@@ -121,32 +113,30 @@ def best_per_match(rows: list[dict]) -> list[dict]:
     return rank(list(best.values()))
 
 
-def render(rows_all: list[dict], skipped: list[str]) -> str:
-    lines = ["MOST LIKELY WINNER PER GAME (ranked by P(win); EV last)"]
-    for r in best_per_match(rows_all):
-        why = reject_reason(r)
-        tag = "RECOMMENDED" if why is None else ("model +EV but NOT recommended: " + why if r["ev"] > MIN_EV else "no value")
-        lines.append(f"- {r['pick']} [{r['match']}]  P(win) {r['p_win']*100:.1f}% (model {r['p_model']*100:.1f} / mkt {r['p_market']*100:.1f})"
-                     f" | {r['american']:+d} -> $10 pays ${r['payout_10']:.2f} | EV {r['ev']*100:+.1f}%  [{tag}]")
-    picks = rank([r for r in rows_all if reject_reason(r) is None])
-    lines.append("")
-    lines.append("RECOMMENDED (P(win) >= 50%, EV > 0, model agrees with market within 15 pts):" if picks
-                 else "RECOMMENDED: none — nothing clears every guard (P(win) >= 50%, EV > 0, sane model-market gap).")
-    for r in picks:
-        lines.append(f"* {r['pick']} [{r['match']}] P(win) {r['p_win']*100:.1f}% | {r['american']:+d} | EV {r['ev']*100:+.1f}%")
-    flagged = rank([r for r in rows_all if r["ev"] > MIN_EV and reject_reason(r)])
-    if flagged:
-        lines.append("")
-        lines.append("MODEL-ONLY +EV, NOT recommended (read why):")
-        for r in flagged:
-            lines.append(f"  x {r['pick']} [{r['match']}] P(win) {r['p_win']*100:.1f}% | {r['american']:+d} | EV {r['ev']*100:+.1f}% -> {reject_reason(r)}")
-    for s_ in skipped:
-        lines.append(f"SKIPPED: {s_}")
+def fmt(r: dict) -> str:
+    w = warnings(r)
+    return (f"{r['pick']} [{r['match']}]  P(win) {r['p_win']*100:.1f}% | {r['american']:+d} -> $10 pays ${r['payout_10']:.2f}"
+            f" | EV {r['ev']*100:+.1f}%" + (f"   !! {'; '.join(w)}" if w else ""))
+
+
+def render(rows_all: list[dict], skipped: list[str], tool_blocks: list[str] | None = None) -> str:
+    lines = ["MOST LIKELY WINNER PER GAME (P(win) first, EV last)"]
+    lines += [f"- {fmt(r)}" for r in best_per_match(rows_all)]
+    picks = rank([r for r in rows_all if r["ev"] > MIN_EV])
+    lines += ["", "RECOMMENDED — EV > 0, ordered by P(win):" if picks else "RECOMMENDED: none — no side has EV > 0 at these prices."]
+    lines += [f"* {fmt(r)}" for r in picks]
+    lines += [f"SKIPPED: {x}" for x in skipped]
+    if tool_blocks:
+        lines += ["", "PER-TOOL DETAIL (every tool that ran; H/D/A = home/draw/away):"] + tool_blocks
     return "\n".join(lines)
 
 
-def soccer_rows(events: list[dict], elo: dict, model: um.EloGoalModel, games: dict) -> tuple[list[dict], list[str]]:
-    rows, skipped = [], []
+def _odds0(ev: dict) -> dict:
+    return (ev.get("odds") or [{}])[0] or {}
+
+
+def soccer_rows(events: list[dict], ctx) -> tuple[list[dict], list[str], list[str]]:
+    rows, skipped, blocks = [], [], []
     for ev in events:
         match = f"{ev['home']} vs {ev['away']}"
         if ev["state"] != "pre":
@@ -154,18 +144,20 @@ def soccer_rows(events: list[dict], elo: dict, model: um.EloGoalModel, games: di
         ml = parse_moneyline(ev["odds"])
         if not ml or "draw" not in ml:
             skipped.append(f"{match} (no 3-way moneyline from ESPN)"); continue
-        r = um.price_match(cu.normalize(ev["home"]), cu.normalize(ev["away"]), elo, model)
-        if "error" in r:
-            skipped.append(f"{match} ({r['error']})"); continue
-        low = [n for n in (ev["home"], ev["away"]) if games.get(cu.normalize(n), 0) < 15]
+        tools = pe.soccer_tools(ctx, ev["home"], ev["away"], ml, _odds0(ev).get("overUnder"))
+        agg = pe.aggregate(tools)
+        if "error" in agg:
+            skipped.append(f"{match} ({agg['error']})"); continue
+        low = [n for n in (ev["home"], ev["away"]) if ctx.games.get(pe.cu.normalize(n), 0) < 15]
+        flags = [f"LOW-SAMPLE club: {', '.join(low)}"] if low else []
         label = {"home": f"{ev['home']} to win", "draw": "Draw", "away": f"{ev['away']} to win"}
-        for row in build_rows(r["model_only"], ml, label, match + (f"  (LOW-SAMPLE: {', '.join(low)})" if low else "")):
-            rows.append(row)
-    return rows, skipped
+        rows += rows_from_agg(agg, ml, label, match, flags)
+        blocks.append(f"  {match}  ({agg['n_model_tools']} model + {agg['n_market_tools']} market tools; not run: {', '.join(agg['not_run']) or 'none'})\n" + pe.tools_table(tools))
+    return rows, skipped, blocks
 
 
-def nba_rows(events: list[dict], st, stacker) -> tuple[list[dict], list[str]]:
-    rows, skipped = [], []
+def nba_rows(events: list[dict], ctx) -> tuple[list[dict], list[str], list[str]]:
+    rows, skipped, blocks = [], [], []
     for ev in events:
         match = f"{ev['away']} @ {ev['home']}"
         if ev["state"] != "pre":
@@ -174,30 +166,28 @@ def nba_rows(events: list[dict], st, stacker) -> tuple[list[dict], list[str]]:
         if not ml:
             skipped.append(f"{match} (no moneyline from ESPN)"); continue
         day = datetime.date.fromisoformat(ev["date"][:10])
-        ph = ns.predict_fixture(st, stacker, ev["home"], ev["away"], day)
-        if ph is None:
-            skipped.append(f"{match} (team not in rating history)"); continue
-        label = {"home": f"{ev['home']} ML", "away": f"{ev['away']} ML"}
-        rows += build_rows({"home": ph, "away": 1 - ph}, {k: v for k, v in ml.items() if k != "draw"}, label, match)
-    return rows, skipped
+        tools = pe.nba_tools(ctx, ev["home"], ev["away"], day, ml, _odds0(ev).get("spread"))
+        agg = pe.aggregate(tools)
+        if "error" in agg:
+            skipped.append(f"{match} ({agg['error']})"); continue
+        rows += rows_from_agg(agg, {k: v for k, v in ml.items() if k != "draw"}, {"home": f"{ev['home']} ML", "away": f"{ev['away']} ML"}, match)
+        blocks.append(f"  {match}  ({agg['n_model_tools']} model + {agg['n_market_tools']} market tools; not run: {', '.join(agg['not_run']) or 'none'})\n" + pe.tools_table(tools))
+    return rows, skipped, blocks
 
 
 def main() -> None:
     day = datetime.date.fromisoformat(sys.argv[1]) if len(sys.argv) > 1 else datetime.date.today()
     soc = DATA / "soccer"
-    elo = json.loads((soc / "elo_ratings.json").read_text())
-    m = json.loads((soc / "ucl_elo_goal_model.json").read_text())
-    model = um.EloGoalModel(a=m["a"], h=m["h"], b=m["b"], calibrated=m["calibrated"], n_matches=m["n_matches"])
-    games = json.loads((soc / "club_games.json").read_text())
+    sctx = pe.build_soccer_ctx([soc / "club_results.csv", soc / "extra_league_results.csv", soc / "uefa_results.csv"])
+    nctx = pe.build_nba_ctx([DATA / "nba_historical.csv", DATA / "nba_games_2526.csv"])
     base = "https://site.api.espn.com/apis/site/v2/sports"
     ucl = events_from_scoreboard(json.loads(fe._get(f"{base}/soccer/uefa.champions/scoreboard?dates={day:%Y%m%d}")))
     nba = events_from_scoreboard(json.loads(fe._get(f"{base}/basketball/nba/scoreboard?dates={day:%Y%m%d}")))
-    rows, skipped = soccer_rows(ucl, elo, model, games)
-    g = ns.load_games(DATA / "nba_historical.csv", DATA / "nba_games_2526.csv")
-    st, stacker = ns.fit_final(g)
-    nrows, nskipped = nba_rows(nba, st, stacker)
-    print(f"{day} | UCL model calibrated on {model.n_matches} matches | NBA ratings as of {st.as_of}")
-    print(render(rows + nrows, skipped + nskipped))
+    r1, s1, b1 = soccer_rows(ucl, sctx)
+    r2, s2, b2 = nba_rows(nba, nctx)
+    print(f"{day} | final P = {int(pe.MODEL_WEIGHT*100)}% model-tool mean + {int((1-pe.MODEL_WEIGHT)*100)}% market-tool mean (judgement weight, not fitted)"
+          f" | NBA ratings as of {nctx.st.as_of}")
+    print(render(r1 + r2, s1 + s2, b1 + b2))
 
 
 if __name__ == "__main__":

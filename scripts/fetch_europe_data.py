@@ -213,6 +213,8 @@ def parse_espn_scoreboard(data: dict) -> list[dict]:
             comp = ev["competitions"][0]
             if not ev["status"]["type"].get("completed"):
                 continue
+            if (ev.get("season") or {}).get("type") == 1:      # preseason: rotations, not signal
+                continue
             by_side = {c["homeAway"]: c for c in comp["competitors"]}
             h, a = by_side["home"], by_side["away"]
             hs, as_ = int(float(h["score"])), int(float(a["score"]))

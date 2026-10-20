@@ -26,7 +26,7 @@ jobs:
         with: { ref: claude/ucl-nba-data-layer }
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
-      - run: pip install numpy scipy scikit-learn pytest
+      - run: pip install numpy scipy scikit-learn pandas pytest
       - name: Fetch domestic results
         continue-on-error: true
         run: |
