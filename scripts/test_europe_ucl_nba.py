@@ -423,3 +423,38 @@ def test_parse_total_from_real_espn_fixture_and_devig():
     line, p_over = vp.parse_total(evs["Liverpool"]["odds"][0])
     assert line == 3.5 and abs(p_over - 0.4532) < 0.005   # +110 over / -135 under, devigged (2.10 and 1.741 -> 0.4532)
     assert vp.parse_total({}) is None and vp.parse_total({"total": {"over": {"close": {"line": "o3.5", "odds": "+110"}}}}) is None
+
+
+def test_p_ever_ahead_matches_brute_force_orderings():
+    import itertools
+    import parlay_check as pc
+    for h, a in [(1, 1), (1, 2), (2, 3), (3, 3), (0, 2), (2, 0), (4, 2)]:
+        perms = set(itertools.permutations([1] * h + [-1] * a))
+        brute = sum(1 for p in perms if max(itertools.accumulate(p)) > 0) / len(perms)
+        assert abs(pc.p_ever_ahead(h, a) - brute) < 1e-12
+
+
+def test_leg_kinds_are_coherent_on_one_matrix():
+    import parlay_check as pc
+    import soccer_markets as sm2
+    M = sm2.score_matrix(1.6, 1.2)
+    b = sm2.derive_markets(M)
+    assert abs(pc.leg_prob(M, {"kind": "dc", "sel": "X2"}) - (b.draw + b.away_win)) < 1e-9
+    assert abs(pc.leg_prob(M, {"kind": "win", "team": "home"}) - b.home_win) < 1e-9
+    win_over = pc.leg_prob(M, {"kind": "win_and_over", "team": "home", "line": 2.5})
+    assert win_over <= min(b.home_win, b.over_under[2.5]["over"]) + 1e-12
+    one_up = pc.leg_prob(M, {"kind": "1up", "team": "home"})
+    assert b.home_win < one_up < 1.0                                  # 1UP is strictly easier than winning
+    tt = pc.leg_prob(M, {"kind": "team_total_over", "team": "home", "line": 2.5})
+    assert 0 < tt < pc.leg_prob(M, {"kind": "over", "line": 1.5})
+
+
+def test_sampled_legs_agree_with_exact_probabilities():
+    import numpy as np
+    import parlay_check as pc
+    import soccer_markets as sm2
+    M = sm2.score_matrix(1.5, 1.3)
+    rng = np.random.default_rng(1)
+    for leg in ({"kind": "1up", "team": "away"}, {"kind": "win_and_over", "team": "home", "line": 2.5}, {"kind": "dc", "sel": "1X"}):
+        sim = pc.sample_leg(M, leg, 300_000, rng).mean()
+        assert abs(sim - pc.leg_prob(M, leg)) < 0.006, leg
