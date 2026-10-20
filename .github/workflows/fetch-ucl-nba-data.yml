@@ -15,6 +15,9 @@ on:
       nba_start:
         description: "NBA fetch start date"
         default: "2025-10-21"
+      fetch_halves:
+        description: "Fetch half-by-half NBA scores 2023-24..today (~8 min) and fit the halftime-refund model"
+        default: "false"
 permissions:
   contents: write
 jobs:
@@ -39,6 +42,14 @@ jobs:
         if: ${{ inputs.fetch_nba != 'false' }}
         continue-on-error: true
         run: python3 scripts/fetch_europe_data.py nba "${{ inputs.nba_start || '2025-10-21' }}" "$(date -u +%F)"
+      - name: Fetch NBA half-by-half scores (halftime-refund model)
+        if: ${{ inputs.fetch_halves == 'true' }}
+        continue-on-error: true
+        run: python3 scripts/fetch_europe_data.py nba-halves 2023-10-24 "$(date -u +%F)"
+      - name: Fit halftime-refund model
+        if: ${{ inputs.fetch_halves == 'true' }}
+        continue-on-error: true
+        run: (python3 scripts/validate_halftime.py 2>&1 | tee data/halftime_validation.txt) || true
       - name: Calibrate, price today, backtest
         run: |
           cd scripts
@@ -57,7 +68,7 @@ jobs:
           for f in data/soccer/club_results.csv data/soccer/extra_league_results.csv data/soccer/uefa_results.csv \
                    data/soccer/elo_ratings.json data/soccer/club_games.json data/soccer/validation_log.txt data/soccer/ucl_elo_goal_model.json data/soccer/calibration_log.txt \
                    data/soccer/price_today.txt data/soccer/price_tomorrow.txt data/nba_games_2526.csv \
-                   data/nba_backtest_log.txt data/test_log.txt data/value_picks.txt; do
+                   data/nba_backtest_log.txt data/test_log.txt data/value_picks.txt data/halftime_validation.txt data/nba_halftime_params.json data/nba_halves.csv; do
             if [ -f "$f" ]; then git add -f "$f"; else echo "missing (not added): $f"; fi
           done
           git commit -m "data: UCL/NBA snapshot $(date -u +%F)" || echo "nothing to commit"

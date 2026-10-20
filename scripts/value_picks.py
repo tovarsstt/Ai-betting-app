@@ -18,6 +18,7 @@ import sys
 from pathlib import Path
 
 import fetch_europe_data as fe
+import nba_halftime as nh
 import pwin_ensemble as pe
 
 DATA = Path(__file__).parent.parent / "data"
@@ -96,7 +97,8 @@ def parse_total(odds_item: dict) -> tuple[float, float] | None:
     return line, devig([am_to_dec(po), am_to_dec(pu)])[0]
 
 
-def rows_from_agg(agg: dict, ml: dict, labels: dict, match: str, flags: list[str] | None = None, league: str = "UCL") -> list[dict]:
+def rows_from_agg(agg: dict, ml: dict, labels: dict, match: str, flags: list[str] | None = None, league: str = "UCL",
+                  halftime_refund: bool = False) -> list[dict]:
     """One row per outcome: final P(win) from the ensemble, price, payout, EV (last)."""
     rows = []
     for side, label in labels.items():
@@ -109,6 +111,13 @@ def rows_from_agg(agg: dict, ml: dict, labels: dict, match: str, flags: list[str
                      "spread": agg["model_spread"].get(side, 0.0), "american": ml[side], "decimal": dec,
                      "payout_10": 10 * dec, "ev": p * dec - 1, "flags": list(flags or []), "league": league,
                      "n_tools": agg["n_model_tools"] + agg["n_market_tools"]})
+        if halftime_refund and side in ("home", "away"):
+            # Stake NBA promo: refund when this side leads by 16+ at half and does not win. Margin implied by the blended P(win).
+            prm = nh.load_params()
+            m = nh.margin_from_pwin(p, prm["sigma"])
+            pr = nh.refund_prob(m, prm)
+            rows[-1].update({"p_refund": pr, "ev_promo": nh.ev_with_refund(p, dec, pr),
+                             "promo_params": "fitted on real half scores" if prm.get("fitted") else "DEFAULT independent-increments (not fitted)"})
     return rows
 
 
@@ -138,8 +147,10 @@ def best_per_match(rows: list[dict]) -> list[dict]:
 
 def fmt(r: dict) -> str:
     w = warnings(r)
+    promo = (f" | con reembolso al medio tiempo (P(reemb.) {r['p_refund']*100:.2f}%, {r['promo_params']}) EV {r['ev_promo']*100:+.1f}%"
+             if "ev_promo" in r else "")
     return (f"{r['pick']} [{r['match']}]  P(win) {r['p_win']*100:.1f}% | {r['american']:+d} -> $10 pays ${r['payout_10']:.2f}"
-            f" | EV {r['ev']*100:+.1f}%" + (f"   !! {'; '.join(w)}" if w else ""))
+            f" | EV {r['ev']*100:+.1f}%{promo}" + (f"   !! {'; '.join(w)}" if w else ""))
 
 
 def render(rows_all: list[dict], skipped: list[str], tool_blocks: list[str] | None = None) -> str:
@@ -152,7 +163,7 @@ def render(rows_all: list[dict], skipped: list[str], tool_blocks: list[str] | No
             continue
         lines += [f"=== {lg} ===", "MOST LIKELY WINNER PER GAME (P(win) first, EV last)"]
         lines += [f"- {fmt(r)}" for r in best_per_match(rows)]
-        picks = rank([r for r in rows if r["ev"] > MIN_EV])
+        picks = rank([r for r in rows if r.get("ev_promo", r["ev"]) > MIN_EV])
         lines += ["", f"{lg} RECOMMENDED — EV > 0, ordered by P(win):" if picks else f"{lg} RECOMMENDED: none — no side has EV > 0 at these prices."]
         lines += [f"* {fmt(r)}" for r in picks]
         lines.append("")
@@ -206,7 +217,7 @@ def nba_rows(events: list[dict], ctx) -> tuple[list[dict], list[str], list[str]]
         agg = pe.aggregate(tools)
         if "error" in agg:
             skipped.append(f"{match} ({agg['error']})"); continue
-        rows += rows_from_agg(agg, {k: v for k, v in ml.items() if k != "draw"}, {"home": f"{ev['home']} ML", "away": f"{ev['away']} ML"}, match, league="NBA")
+        rows += rows_from_agg(agg, {k: v for k, v in ml.items() if k != "draw"}, {"home": f"{ev['home']} ML", "away": f"{ev['away']} ML"}, match, league="NBA", halftime_refund=True)
         blocks.append(f"  {match}  ({agg['n_model_tools']} model + {agg['n_market_tools']} market tools; not run: {', '.join(agg['not_run']) or 'none'})\n" + pe.tools_table(tools))
     return rows, skipped, blocks
 

@@ -458,3 +458,39 @@ def test_sampled_legs_agree_with_exact_probabilities():
     for leg in ({"kind": "1up", "team": "away"}, {"kind": "win_and_over", "team": "home", "line": 2.5}, {"kind": "dc", "sel": "1X"}):
         sim = pc.sample_leg(M, leg, 300_000, rng).mean()
         assert abs(sim - pc.leg_prob(M, leg)) < 0.006, leg
+
+
+def test_refund_prob_matches_monte_carlo_and_grows_with_negative_halves_correlation():
+    import nba_halftime as nh2
+    rng = np.random.default_rng(4)
+    m, s = 3.0, 11.8 / np.sqrt(2)
+    h1, h2 = rng.normal(m / 2, s, 3_000_000), rng.normal(m / 2, s, 3_000_000)
+    mc = ((h1 >= 15.5) & (h1 + h2 <= 0)).mean()
+    assert abs(nh2.refund_prob(m, nh2.DEFAULTS) - mc) < 0.0004
+    neg = {**nh2.DEFAULTS, "rho": -0.3}
+    assert nh2.refund_prob(m, neg) > 2 * nh2.refund_prob(m, nh2.DEFAULTS)
+
+
+def test_ev_with_refund_formula_and_margin_inversion():
+    import nba_halftime as nh2
+    assert abs(nh2.ev_with_refund(0.6, 1.8, 0.01) - (0.6 * 1.8 - 1 + 0.01)) < 1e-12
+    assert abs(nh2.margin_from_pwin(0.5)) < 1e-9 and nh2.margin_from_pwin(0.7) > 0 > nh2.margin_from_pwin(0.3)
+
+
+def test_first_half_parser_and_missing_linescores_are_not_guessed():
+    ev = _ev("11", True, "110", "100")
+    for c, vals in zip(ev["competitions"][0]["competitors"], ([28.0, 30.0, 25.0, 27.0], [20.0, 31.0, 22.0, 27.0])):
+        c["linescores"] = [{"value": v} for v in vals]
+    out = fe.parse_espn_scoreboard({"events": [ev, _ev("12", True, "90", "88")]})
+    by = {g["game_id"]: g for g in out}
+    assert by["11"]["h1_home"] == 58 and by["11"]["h1_away"] == 51
+    assert by["12"]["h1_home"] is None and by["12"]["h1_away"] is None
+
+
+def test_promo_row_ev_uses_refund_and_nba_recommendation_uses_it():
+    import value_picks as vp
+    agg = {"final": {"home": 0.60, "away": 0.40}, "model_mean": {"home": 0.6, "away": 0.4}, "market_mean": {"home": 0.6, "away": 0.4},
+           "model_spread": {"home": 0.0, "away": 0.0}, "n_model_tools": 6, "n_market_tools": 4}
+    rows = vp.rows_from_agg(agg, {"home": -110, "away": -110}, {"home": "H", "away": "A"}, "m", league="NBA", halftime_refund=True)
+    h = rows[0]
+    assert h["ev_promo"] > h["ev"] and abs(h["ev_promo"] - (h["ev"] + h["p_refund"])) < 1e-12 and "promo_params" in h

@@ -17,6 +17,7 @@ functions touch the network. Run manually — NEVER during tests:
     python3 scripts/fetch_europe_data.py extra-leagues
     python3 scripts/fetch_europe_data.py uefa 2024-09-01 2026-10-20
     python3 scripts/fetch_europe_data.py nba 2025-10-21 2026-06-30
+    python3 scripts/fetch_europe_data.py nba-halves 2023-10-24 2026-06-30   # half-by-half scores for the halftime-refund model
 """
 from __future__ import annotations
 
@@ -33,6 +34,7 @@ DATA = Path(__file__).parent.parent / "data"
 CLUBELO_CSV = DATA / "soccer" / "clubelo.csv"
 EXTRA_RESULTS_CSV = DATA / "soccer" / "extra_league_results.csv"
 NBA_GAMES_CSV = DATA / "nba_games_2526.csv"
+NBA_HALVES_CSV = DATA / "nba_halves.csv"
 UEFA_RESULTS_CSV = DATA / "soccer" / "uefa_results.csv"
 
 # football-data.co.uk main-format codes (same URL scheme fetch_club_results uses)
@@ -204,6 +206,15 @@ def season_start_year(d: datetime.date) -> int:
     return d.year if d.month >= 9 else d.year - 1
 
 
+def _first_half(competitor: dict) -> int | None:
+    """Points in periods 1+2 from ESPN linescores; None when the feed lacks them (never guessed)."""
+    ls = competitor.get("linescores") or []
+    try:
+        return int(round(float(ls[0]["value"]) + float(ls[1]["value"]))) if len(ls) >= 2 else None
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
 def parse_espn_scoreboard(data: dict) -> list[dict]:
     """ESPN scoreboard JSON -> FINISHED games only, in nba_historical.csv shape.
     In-progress / scheduled / malformed events are dropped, never guessed."""
@@ -222,9 +233,11 @@ def parse_espn_scoreboard(data: dict) -> list[dict]:
             # ESPN dates are UTC; late tip-offs belong to the previous US day.
             if int(ev["date"][11:13]) < 8:
                 d -= datetime.timedelta(days=1)
-            out.append({"game_id": ev["id"], "date": d.isoformat(),
-                        "home_team": h["team"]["displayName"], "away_team": a["team"]["displayName"],
-                        "home_score": hs, "away_score": as_, "season": season_start_year(d)})
+            row = {"game_id": ev["id"], "date": d.isoformat(),
+                   "home_team": h["team"]["displayName"], "away_team": a["team"]["displayName"],
+                   "home_score": hs, "away_score": as_, "season": season_start_year(d)}
+            row["h1_home"], row["h1_away"] = _first_half(h), _first_half(a)
+            out.append(row)
         except (KeyError, IndexError, TypeError, ValueError):
             continue
     return out
@@ -281,8 +294,14 @@ def main(argv: list[str]) -> None:
         s, e = (datetime.date.fromisoformat(a) for a in argv[2:4])
         rows = fetch_nba_range(s, e)
         n = write_csv(rows, NBA_GAMES_CSV,
-                      ["game_id", "date", "home_team", "away_team", "home_score", "away_score", "season"])
+                      ["game_id", "date", "home_team", "away_team", "home_score", "away_score", "season", "h1_home", "h1_away"])
         print(f"NBA: {n} finished games -> {NBA_GAMES_CSV}")
+    elif cmd == "nba-halves":
+        s, e = (datetime.date.fromisoformat(a) for a in argv[2:4])
+        rows = [r for r in fetch_nba_range(s, e) if r["h1_home"] is not None]
+        n = write_csv(rows, NBA_HALVES_CSV,
+                      ["game_id", "date", "home_team", "away_team", "home_score", "away_score", "season", "h1_home", "h1_away"])
+        print(f"NBA halves: {n} games with half-by-half scores -> {NBA_HALVES_CSV}")
     else:
         print(__doc__)
 
