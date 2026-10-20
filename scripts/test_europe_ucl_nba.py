@@ -602,3 +602,13 @@ def test_props_over_and_under_are_complements():
              {"player": "A", "team": "T", "stat": "PRA", "last5": [30, 33, 28, 35, 31], "line": 30.5, "over": 1.9, "under": 1.9}]
     rows = {r["pick"]: r for r in pp.price(props)}
     assert abs(rows["A Rebotes Más de 9.5"]["p_win"] + rows["A Rebotes Menos de 9.5"]["p_win"] - 1) < 1e-9
+
+
+def test_game_sim_split_matches_target_margin_and_keeps_total():
+    import game_sim_report as gs
+    import soccer_markets as sm2
+    lh, la = gs.split_for(3.4, 0.25)
+    b = sm2.derive_markets(sm2.score_matrix(lh, la))
+    assert abs(lh + la - 3.4) < 1e-9 and abs((b.home_win - b.away_win) - 0.25) < 5e-3
+    sc = gs.sample_scores(lh, la)
+    assert abs(sc[:, 0].mean() - lh) < 0.03 and abs((sc[:, 0] + sc[:, 1]).mean() - 3.4) < 0.05   # sampled goals follow the anchored total
