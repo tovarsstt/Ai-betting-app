@@ -1,0 +1,263 @@
+2026-10-21 | final P = 50% model-tool mean + 50% market-tool mean (judgement weight, not fitted) | NBA ratings as of 2026-06-13
+=== UCL ===
+MOST LIKELY WINNER PER GAME (P(win) first, EV last)
+- Aston Villa to win [Aston Villa vs Viking FK]  P(win) 82.2% | -390 -> $10 pays $12.56 | EV +3.2%   !! LOW-SAMPLE club: Viking FK
+- Sporting CP to win [Sporting CP vs LASK Linz]  P(win) 81.3% | -310 -> $10 pays $13.23 | EV +7.5%   !! LOW-SAMPLE club: LASK Linz; model vs market gap 15 pts
+- Real Madrid to win [Real Madrid vs RB Leipzig]  P(win) 74.6% | -425 -> $10 pays $12.35 | EV -7.9%
+- Internazionale to win [Internazionale vs Shakhtar Donetsk]  P(win) 73.6% | -425 -> $10 pays $12.35 | EV -9.1%   !! tools disagree (33 pt spread)
+- Real Betis to win [Real Betis vs Feyenoord Rotterdam]  P(win) 55.2% | -155 -> $10 pays $16.45 | EV -9.2%
+- Club Brugge to win [Club Brugge vs Lens]  P(win) 53.8% | -125 -> $10 pays $18.00 | EV -3.2%
+- Bayern Munich to win [Bayern Munich vs Arsenal]  P(win) 39.7% | +140 -> $10 pays $24.00 | EV -4.6%
+
+UCL RECOMMENDED — EV > 0, ordered by P(win):
+* Aston Villa to win [Aston Villa vs Viking FK]  P(win) 82.2% | -390 -> $10 pays $12.56 | EV +3.2%   !! LOW-SAMPLE club: Viking FK
+* Sporting CP to win [Sporting CP vs LASK Linz]  P(win) 81.3% | -310 -> $10 pays $13.23 | EV +7.5%   !! LOW-SAMPLE club: LASK Linz; model vs market gap 15 pts
+* Feyenoord Rotterdam to win [Real Betis vs Feyenoord Rotterdam]  P(win) 23.2% | +360 -> $10 pays $46.00 | EV +6.7%   !! longshot
+* Draw [Internazionale vs Shakhtar Donetsk]  P(win) 15.0% | +600 -> $10 pays $70.00 | EV +5.1%   !! longshot
+* RB Leipzig to win [Real Madrid vs RB Leipzig]  P(win) 11.6% | +900 -> $10 pays $100.00 | EV +16.0%   !! longshot
+* Shakhtar Donetsk to win [Internazionale vs Shakhtar Donetsk]  P(win) 11.4% | +950 -> $10 pays $105.00 | EV +19.5%   !! tools disagree (25 pt spread); longshot
+
+=== NBA ===
+MOST LIKELY WINNER PER GAME (P(win) first, EV last)
+- Houston Rockets ML [Dallas Mavericks @ Houston Rockets]  P(win) 78.1% | -440 -> $10 pays $12.27 | EV -4.1% | con reembolso al medio tiempo (P(reemb.) 0.26%, fitted on real half scores) EV -3.9%   !! tools disagree (26 pt spread)
+- Toronto Raptors ML [Chicago Bulls @ Toronto Raptors]  P(win) 75.9% | -440 -> $10 pays $12.27 | EV -6.8% | con reembolso al medio tiempo (P(reemb.) 0.29%, fitted on real half scores) EV -6.5%   !! tools disagree (21 pt spread)
+- Los Angeles Lakers ML [Golden State Warriors @ Los Angeles Lakers]  P(win) 69.7% | -230 -> $10 pays $14.35 | EV +0.1% | con reembolso al medio tiempo (P(reemb.) 0.39%, fitted on real half scores) EV +0.4%
+- LA Clippers ML [Sacramento Kings @ LA Clippers]  P(win) 67.1% | -185 -> $10 pays $15.41 | EV +3.4% | con reembolso al medio tiempo (P(reemb.) 0.43%, fitted on real half scores) EV +3.8%   !! tools disagree (21 pt spread)
+- Charlotte Hornets ML [Charlotte Hornets @ Brooklyn Nets]  P(win) 62.7% | -118 -> $10 pays $18.47 | EV +15.9% | con reembolso al medio tiempo (P(reemb.) 0.50%, fitted on real half scores) EV +16.4%   !! model vs market gap 19 pts; tools disagree (39 pt spread)
+- Portland Trail Blazers ML [Phoenix Suns @ Portland Trail Blazers]  P(win) 60.2% | -142 -> $10 pays $17.04 | EV +2.7% | con reembolso al medio tiempo (P(reemb.) 0.54%, fitted on real half scores) EV +3.2%
+- Orlando Magic ML [Atlanta Hawks @ Orlando Magic]  P(win) 57.1% | -130 -> $10 pays $17.69 | EV +1.1% | con reembolso al medio tiempo (P(reemb.) 0.59%, fitted on real half scores) EV +1.7%
+- Miami Heat ML [Minnesota Timberwolves @ Miami Heat]  P(win) 53.5% | -122 -> $10 pays $18.20 | EV -2.6% | con reembolso al medio tiempo (P(reemb.) 0.65%, fitted on real half scores) EV -2.0%
+- Memphis Grizzlies ML [Utah Jazz @ Memphis Grizzlies]  P(win) 53.1% | -125 -> $10 pays $18.00 | EV -4.4% | con reembolso al medio tiempo (P(reemb.) 0.66%, fitted on real half scores) EV -3.8%   !! tools disagree (21 pt spread)
+- New Orleans Pelicans ML [Indiana Pacers @ New Orleans Pelicans]  P(win) 53.0% | +130 -> $10 pays $23.00 | EV +22.0% | con reembolso al medio tiempo (P(reemb.) 0.66%, fitted on real half scores) EV +22.7%   !! model vs market gap 25 pts
+- Washington Wizards ML [Milwaukee Bucks @ Washington Wizards]  P(win) 50.9% | -175 -> $10 pays $15.71 | EV -20.0% | con reembolso al medio tiempo (P(reemb.) 0.69%, fitted on real half scores) EV -19.3%   !! model vs market gap 23 pts; tools disagree (35 pt spread)
+
+NBA RECOMMENDED — EV > 0, ordered by P(win):
+* Los Angeles Lakers ML [Golden State Warriors @ Los Angeles Lakers]  P(win) 69.7% | -230 -> $10 pays $14.35 | EV +0.1% | con reembolso al medio tiempo (P(reemb.) 0.39%, fitted on real half scores) EV +0.4%
+* LA Clippers ML [Sacramento Kings @ LA Clippers]  P(win) 67.1% | -185 -> $10 pays $15.41 | EV +3.4% | con reembolso al medio tiempo (P(reemb.) 0.43%, fitted on real half scores) EV +3.8%   !! tools disagree (21 pt spread)
+* Charlotte Hornets ML [Charlotte Hornets @ Brooklyn Nets]  P(win) 62.7% | -118 -> $10 pays $18.47 | EV +15.9% | con reembolso al medio tiempo (P(reemb.) 0.50%, fitted on real half scores) EV +16.4%   !! model vs market gap 19 pts; tools disagree (39 pt spread)
+* Portland Trail Blazers ML [Phoenix Suns @ Portland Trail Blazers]  P(win) 60.2% | -142 -> $10 pays $17.04 | EV +2.7% | con reembolso al medio tiempo (P(reemb.) 0.54%, fitted on real half scores) EV +3.2%
+* Orlando Magic ML [Atlanta Hawks @ Orlando Magic]  P(win) 57.1% | -130 -> $10 pays $17.69 | EV +1.1% | con reembolso al medio tiempo (P(reemb.) 0.59%, fitted on real half scores) EV +1.7%
+* New Orleans Pelicans ML [Indiana Pacers @ New Orleans Pelicans]  P(win) 53.0% | +130 -> $10 pays $23.00 | EV +22.0% | con reembolso al medio tiempo (P(reemb.) 0.66%, fitted on real half scores) EV +22.7%   !! model vs market gap 25 pts
+* Milwaukee Bucks ML [Milwaukee Bucks @ Washington Wizards]  P(win) 49.1% | +145 -> $10 pays $24.50 | EV +20.3% | con reembolso al medio tiempo (P(reemb.) 0.72%, fitted on real half scores) EV +21.1%   !! model vs market gap 23 pts; tools disagree (35 pt spread)
+* Chicago Bulls ML [Chicago Bulls @ Toronto Raptors]  P(win) 24.1% | +340 -> $10 pays $44.00 | EV +5.8% | con reembolso al medio tiempo (P(reemb.) 1.07%, fitted on real half scores) EV +6.9%   !! tools disagree (21 pt spread); longshot
+
+SKIPPED: Como vs Manchester United (already in)
+SKIPPED: Lille vs Galatasaray (already in)
+
+PER-TOOL DETAIL (UCL first, then NBA; H/D/A = home/draw/away):
+  Aston Villa vs Viking FK  (4 model + 4 market tools; not run: poisson_regression, binomial_wdl_rates)
+    [model ] elo_poisson_dixon_coles    H  81.9% / D  12.2% / A   6.0%   λ 3.21-0.86 (raw total 4.07; anchored to market total 4.07), calibrated=True
+    [model ] elo_monte_carlo_200k       H  81.8% / D  12.2% / A   6.0%   200,000 sims from the same matrix
+    [model ] elo_skellam                H  82.5% / D  10.9% / A   6.6%   exact goal-difference law, independent Poissons
+    [model ] poisson_regression         NOT RUN: club has <8 matches in the fit
+    [model ] eigenvector_keener         H  91.6% / D   6.7% / A   1.6%   λ 3.61-0.46 (raw total 5.40; anchored to market total 4.07); goal map fit in-sample
+    [model ] binomial_wdl_rates         NOT RUN: fewer than 6 venue matches for a club
+    [market] devig_multiplicative       H  75.4% / D  14.6% / A  10.0%   overround 5.5%
+    [market] devig_power                H  78.1% / D  13.2% / A   8.7%   overround 5.5%
+    [market] devig_shin                 H  77.2% / D  13.8% / A   9.0%   overround 5.5%
+    [market] sport_math_anchored_dc     H  78.1% / D  13.7% / A   8.2%   Dixon-Coles refit per match to market home+draw (total line = O/U line, approximate)
+    [flag  ] chaos_engine_draw_risk     draw score 0.37, grade NONE, upset LOW
+  Bayern Munich vs Arsenal  (6 model + 4 market tools; not run: none)
+    [model ] elo_poisson_dixon_coles    H  43.8% / D  26.3% / A  30.0%   λ 1.72-1.39 (raw total 3.28; anchored to market total 3.11), calibrated=True
+    [model ] elo_monte_carlo_200k       H  43.6% / D  26.3% / A  30.1%   200,000 sims from the same matrix
+    [model ] elo_skellam                H  45.2% / D  23.5% / A  31.3%   exact goal-difference law, independent Poissons
+    [model ] poisson_regression         H  30.9% / D  26.4% / A  42.8%   λ 1.42-1.69 (raw total 2.82; anchored to market total 3.11)
+    [model ] eigenvector_keener         H  34.9% / D  26.6% / A  38.5%   λ 1.51-1.60 (raw total 3.29; anchored to market total 3.11); goal map fit in-sample
+    [model ] binomial_wdl_rates         H  47.8% / D  18.2% / A  33.9%   home-team home win rate 26/30 (Wilson95 0.70-0.95)
+    [market] devig_multiplicative       H  39.8% / D  25.5% / A  34.7%   overround 4.7%
+    [market] devig_power                H  40.1% / D  25.1% / A  34.8%   overround 4.7%
+    [market] devig_shin                 H  40.0% / D  25.2% / A  34.8%   overround 4.7%
+    [market] sport_math_anchored_dc     H  40.1% / D  26.9% / A  33.0%   Dixon-Coles refit per match to market home+draw (total line = O/U line, approximate)
+    [flag  ] chaos_engine_draw_risk     draw score 0.52, grade NONE, upset HIGH
+  Club Brugge vs Lens  (6 model + 4 market tools; not run: none)
+    [model ] elo_poisson_dixon_coles    H  61.6% / D  20.7% / A  17.7%   λ 2.40-1.25 (raw total 3.46; anchored to market total 3.65), calibrated=True
+    [model ] elo_monte_carlo_200k       H  61.7% / D  20.7% / A  17.5%   200,000 sims from the same matrix
+    [model ] elo_skellam                H  62.6% / D  18.6% / A  18.7%   exact goal-difference law, independent Poissons
+    [model ] poisson_regression         H  45.3% / D  23.7% / A  31.0%   λ 2.00-1.65 (raw total 3.29; anchored to market total 3.65)
+    [model ] eigenvector_keener         H  57.2% / D  21.8% / A  21.1%   λ 2.29-1.36 (raw total 3.41; anchored to market total 3.65); goal map fit in-sample
+    [model ] binomial_wdl_rates         H  50.6% / D  18.2% / A  31.2%   home-team home win rate 22/30 (Wilson95 0.56-0.86)
+    [market] devig_multiplicative       H  53.1% / D  22.7% / A  24.2%   overround 4.7%
+    [market] devig_power                H  54.0% / D  22.2% / A  23.7%   overround 4.7%
+    [market] devig_shin                 H  53.8% / D  22.4% / A  23.9%   overround 4.7%
+    [market] sport_math_anchored_dc     H  54.0% / D  22.2% / A  23.7%   Dixon-Coles refit per match to market home+draw (total line = O/U line, approximate)
+    [flag  ] chaos_engine_draw_risk     draw score 0.58, grade NONE, upset LOW
+  Internazionale vs Shakhtar Donetsk  (6 model + 4 market tools; not run: none)
+    [model ] elo_poisson_dixon_coles    H  67.5% / D  18.6% / A  13.8%   λ 2.60-1.15 (raw total 3.58; anchored to market total 3.75), calibrated=True
+    [model ] elo_monte_carlo_200k       H  67.5% / D  18.7% / A  13.8%   200,000 sims from the same matrix
+    [model ] elo_skellam                H  68.5% / D  16.8% / A  14.8%   exact goal-difference law, independent Poissons
+    [model ] poisson_regression         H  74.4% / D  16.1% / A   9.5%   λ 2.78-0.96 (raw total 3.44; anchored to market total 3.75)
+    [model ] eigenvector_keener         H  81.7% / D  12.8% / A   5.5%   λ 3.00-0.74 (raw total 4.23; anchored to market total 3.75); goal map fit in-sample
+    [model ] binomial_wdl_rates         H  48.4% / D  21.1% / A  30.5%   home-team home win rate 20/30 (Wilson95 0.49-0.81)
+    [market] devig_multiplicative       H  77.3% / D  13.6% / A   9.1%   overround 4.8%
+    [market] devig_power                H  79.7% / D  12.3% / A   8.0%   overround 4.8%
+    [market] devig_shin                 H  78.8% / D  12.9% / A   8.2%   overround 4.8%
+    [market] sport_math_anchored_dc     H  79.7% / D  13.1% / A   7.3%   Dixon-Coles refit per match to market home+draw (total line = O/U line, approximate)
+    [flag  ] chaos_engine_draw_risk     draw score 0.36, grade NONE, upset LOW
+  Real Betis vs Feyenoord Rotterdam  (6 model + 4 market tools; not run: none)
+    [model ] elo_poisson_dixon_coles    H  50.3% / D  23.2% / A  26.5%   λ 2.10-1.51 (raw total 3.31; anchored to market total 3.61), calibrated=True
+    [model ] elo_monte_carlo_200k       H  50.5% / D  23.2% / A  26.4%   200,000 sims from the same matrix
+    [model ] elo_skellam                H  51.4% / D  21.0% / A  27.6%   exact goal-difference law, independent Poissons
+    [model ] poisson_regression         H  54.9% / D  22.4% / A  22.7%   λ 2.21-1.40 (raw total 3.55; anchored to market total 3.61)
+    [model ] eigenvector_keener         H  53.6% / D  22.7% / A  23.7%   λ 2.18-1.43 (raw total 3.36; anchored to market total 3.61); goal map fit in-sample
+    [model ] binomial_wdl_rates         H  46.4% / D  22.4% / A  31.2%   home-team home win rate 18/30 (Wilson95 0.42-0.75)
+    [market] devig_multiplicative       H  58.0% / D  21.2% / A  20.8%   overround 4.7%
+    [market] devig_power                H  59.3% / D  20.6% / A  20.1%   overround 4.7%
+    [market] devig_shin                 H  58.9% / D  20.8% / A  20.3%   overround 4.7%
+    [market] sport_math_anchored_dc     H  59.3% / D  20.6% / A  20.1%   Dixon-Coles refit per match to market home+draw (total line = O/U line, approximate)
+    [flag  ] chaos_engine_draw_risk     draw score 0.53, grade NONE, upset LOW
+  Real Madrid vs RB Leipzig  (6 model + 4 market tools; not run: none)
+    [model ] elo_poisson_dixon_coles    H  76.6% / D  13.7% / A   9.7%   λ 3.26-1.20 (raw total 3.73; anchored to market total 4.46), calibrated=True
+    [model ] elo_monte_carlo_200k       H  76.7% / D  13.6% / A   9.7%   200,000 sims from the same matrix
+    [model ] elo_skellam                H  77.2% / D  12.6% / A  10.2%   exact goal-difference law, independent Poissons
+    [model ] poisson_regression         H  71.9% / D  15.4% / A  12.6%   λ 3.12-1.34 (raw total 3.62; anchored to market total 4.46)
+    [model ] eigenvector_keener         H  72.9% / D  15.1% / A  12.0%   λ 3.15-1.31 (raw total 3.65; anchored to market total 4.46); goal map fit in-sample
+    [model ] binomial_wdl_rates         H  58.9% / D  16.8% / A  24.2%   home-team home win rate 25/30 (Wilson95 0.66-0.93)
+    [market] devig_multiplicative       H  76.9% / D  13.6% / A   9.5%   overround 5.2%
+    [market] devig_power                H  79.6% / D  12.2% / A   8.3%   overround 5.2%
+    [market] devig_shin                 H  78.6% / D  12.8% / A   8.6%   overround 5.2%
+    [market] sport_math_anchored_dc     H  79.6% / D  12.2% / A   8.3%   Dixon-Coles refit per match to market home+draw (total line = O/U line, approximate)
+    [flag  ] chaos_engine_draw_risk     draw score 0.33, grade NONE, upset LOW
+  Sporting CP vs LASK Linz  (5 model + 4 market tools; not run: binomial_wdl_rates)
+    [model ] elo_poisson_dixon_coles    H  86.5% / D  10.0% / A   3.5%   λ 3.25-0.62 (raw total 4.58; anchored to market total 3.87), calibrated=True
+    [model ] elo_monte_carlo_200k       H  86.4% / D  10.2% / A   3.4%   200,000 sims from the same matrix
+    [model ] elo_skellam                H  87.1% / D   8.9% / A   4.0%   exact goal-difference law, independent Poissons
+    [model ] poisson_regression         H  91.1% / D   7.2% / A   1.6%   λ 3.45-0.42 (raw total 5.34; anchored to market total 3.87)
+    [model ] eigenvector_keener         H  88.6% / D   8.8% / A   2.6%   λ 3.33-0.53 (raw total 4.93; anchored to market total 3.87); goal map fit in-sample
+    [model ] binomial_wdl_rates         NOT RUN: fewer than 6 venue matches for a club
+    [market] devig_multiplicative       H  72.2% / D  15.9% / A  11.9%   overround 4.8%
+    [market] devig_power                H  74.2% / D  14.8% / A  10.9%   overround 4.8%
+    [market] devig_shin                 H  73.5% / D  15.3% / A  11.2%   overround 4.8%
+    [market] sport_math_anchored_dc     H  74.2% / D  15.3% / A  10.4%   Dixon-Coles refit per match to market home+draw (total line = O/U line, approximate)
+    [flag  ] chaos_engine_draw_risk     draw score 0.48, grade NONE, upset LOW
+  Atlanta Hawks @ Orlando Magic  (6 model + 4 market tools; not run: team_ratings_ridge)
+    [model ] stacked_elo_form_context   H  60.3% / A  39.7%   Elo diff +17, form diff +0.0, rest +0
+    [model ] elo_only                   H  62.2% / A  37.8%   
+    [model ] form_only                  H  59.2% / A  40.8%   last-5 margin
+    [model ] normal_margin              H  59.3% / A  40.7%   expected margin +3.1, σ 13.1 (calibrated on closing lines)
+    [model ] monte_carlo_margin         H  59.4% / A  40.6%   200,000 sims, rating uncertainty ±2.5 pts
+    [model ] beta_binomial_log5         H  54.9% / A  45.1%   last-20 win rates 0.55 vs 0.55, log5 + home edge from data
+    [model ] team_ratings_ridge         NOT RUN: needs the closing-line history set (not in repo)
+    [market] devig_multiplicative       H  54.3% / A  45.7%   overround 4.1%
+    [market] devig_power                H  54.5% / A  45.5%   overround 4.1%
+    [market] devig_shin                 H  54.5% / A  45.5%   overround 4.1%
+    [market] spread_implied_normal      H  57.6% / A  42.4%   spread -2.5, σ 13.1
+  Milwaukee Bucks @ Washington Wizards  (6 model + 4 market tools; not run: team_ratings_ridge)
+    [model ] stacked_elo_form_context   H  46.1% / A  53.9%   Elo diff -123, form diff +0.0, rest +0
+    [model ] elo_only                   H  42.5% / A  57.5%   
+    [model ] form_only                  H  59.2% / A  40.8%   last-5 margin
+    [model ] normal_margin              H  44.3% / A  55.7%   expected margin -1.9, σ 13.1 (calibrated on closing lines)
+    [model ] monte_carlo_margin         H  44.5% / A  55.5%   200,000 sims, rating uncertainty ±2.5 pts
+    [model ] beta_binomial_log5         H  24.5% / A  75.5%   last-20 win rates 0.09 vs 0.27, log5 + home edge from data
+    [model ] team_ratings_ridge         NOT RUN: needs the closing-line history set (not in repo)
+    [market] devig_multiplicative       H  60.9% / A  39.1%   overround 4.5%
+    [market] devig_power                H  61.7% / A  38.3%   overround 4.5%
+    [market] devig_shin                 H  61.4% / A  38.6%   overround 4.5%
+    [market] spread_implied_normal      H  63.4% / A  36.6%   spread -4.5, σ 13.1
+  Minnesota Timberwolves @ Miami Heat  (6 model + 4 market tools; not run: team_ratings_ridge)
+    [model ] stacked_elo_form_context   H  54.8% / A  45.2%   Elo diff -38, form diff +0.0, rest +0
+    [model ] elo_only                   H  54.6% / A  45.4%   
+    [model ] form_only                  H  59.2% / A  40.8%   last-5 margin
+    [model ] normal_margin              H  53.5% / A  46.5%   expected margin +1.2, σ 13.1 (calibrated on closing lines)
+    [model ] monte_carlo_margin         H  53.5% / A  46.5%   200,000 sims, rating uncertainty ±2.5 pts
+    [model ] beta_binomial_log5         H  50.4% / A  49.6%   last-20 win rates 0.45 vs 0.50, log5 + home edge from data
+    [model ] team_ratings_ridge         NOT RUN: needs the closing-line history set (not in repo)
+    [market] devig_multiplicative       H  52.6% / A  47.4%   overround 4.5%
+    [market] devig_power                H  52.8% / A  47.2%   overround 4.5%
+    [market] devig_shin                 H  52.7% / A  47.3%   overround 4.5%
+    [market] spread_implied_normal      H  54.6% / A  45.4%   spread -1.5, σ 13.1
+  Charlotte Hornets @ Brooklyn Nets  (6 model + 4 market tools; not run: team_ratings_ridge)
+    [model ] stacked_elo_form_context   H  28.6% / A  71.4%   Elo diff -306, form diff +0.0, rest +0
+    [model ] elo_only                   H  20.5% / A  79.5%   
+    [model ] form_only                  H  59.2% / A  40.8%   last-5 margin
+    [model ] normal_margin              H  26.0% / A  74.0%   expected margin -8.4, σ 13.1 (calibrated on closing lines)
+    [model ] monte_carlo_margin         H  26.5% / A  73.5%   200,000 sims, rating uncertainty ±2.5 pts
+    [model ] beta_binomial_log5         H  20.7% / A  79.3%   last-20 win rates 0.27 vs 0.64, log5 + home edge from data
+    [model ] team_ratings_ridge         NOT RUN: needs the closing-line history set (not in repo)
+    [market] devig_multiplicative       H  48.3% / A  51.7%   overround 4.6%
+    [market] devig_power                H  48.1% / A  51.9%   overround 4.6%
+    [market] devig_shin                 H  48.2% / A  51.8%   overround 4.6%
+    [market] spread_implied_normal      H  45.4% / A  54.6%   spread +1.5, σ 13.1
+  Chicago Bulls @ Toronto Raptors  (6 model + 4 market tools; not run: team_ratings_ridge)
+    [model ] stacked_elo_form_context   H  74.7% / A  25.3%   Elo diff +177, form diff +0.0, rest +0
+    [model ] elo_only                   H  80.6% / A  19.4%   
+    [model ] form_only                  H  59.2% / A  40.8%   last-5 margin
+    [model ] normal_margin              H  75.0% / A  25.0%   expected margin +8.8, σ 13.1 (calibrated on closing lines)
+    [model ] monte_carlo_margin         H  74.7% / A  25.3%   200,000 sims, rating uncertainty ±2.5 pts
+    [model ] beta_binomial_log5         H  72.3% / A  27.7%   last-20 win rates 0.50 vs 0.32, log5 + home edge from data
+    [model ] team_ratings_ridge         NOT RUN: needs the closing-line history set (not in repo)
+    [market] devig_multiplicative       H  78.2% / A  21.8%   overround 4.2%
+    [market] devig_power                H  80.0% / A  20.0%   overround 4.2%
+    [market] devig_shin                 H  79.4% / A  20.6%   overround 4.2%
+    [market] spread_implied_normal      H  78.8% / A  21.2%   spread -10.5, σ 13.1
+  Utah Jazz @ Memphis Grizzlies  (6 model + 4 market tools; not run: team_ratings_ridge)
+    [model ] stacked_elo_form_context   H  58.8% / A  41.2%   Elo diff +1, form diff +0.0, rest +0
+    [model ] elo_only                   H  60.1% / A  39.9%   
+    [model ] form_only                  H  59.2% / A  40.8%   last-5 margin
+    [model ] normal_margin              H  57.7% / A  42.3%   expected margin +2.5, σ 13.1 (calibrated on closing lines)
+    [model ] monte_carlo_margin         H  57.7% / A  42.3%   200,000 sims, rating uncertainty ±2.5 pts
+    [model ] beta_binomial_log5         H  39.6% / A  60.4%   last-20 win rates 0.14 vs 0.23, log5 + home edge from data
+    [model ] team_ratings_ridge         NOT RUN: needs the closing-line history set (not in repo)
+    [market] devig_multiplicative       H  53.2% / A  46.8%   overround 4.3%
+    [market] devig_power                H  53.5% / A  46.5%   overround 4.3%
+    [market] devig_shin                 H  53.4% / A  46.6%   overround 4.3%
+    [market] spread_implied_normal      H  54.6% / A  45.4%   spread -1.5, σ 13.1
+  Indiana Pacers @ New Orleans Pelicans  (6 model + 4 market tools; not run: team_ratings_ridge)
+    [model ] stacked_elo_form_context   H  63.9% / A  36.1%   Elo diff +54, form diff +0.0, rest +0
+    [model ] elo_only                   H  67.1% / A  32.9%   
+    [model ] form_only                  H  59.2% / A  40.8%   last-5 margin
+    [model ] normal_margin              H  63.2% / A  36.8%   expected margin +4.4, σ 13.1 (calibrated on closing lines)
+    [model ] monte_carlo_margin         H  63.2% / A  36.8%   200,000 sims, rating uncertainty ±2.5 pts
+    [model ] beta_binomial_log5         H  70.3% / A  29.7%   last-20 win rates 0.36 vs 0.23, log5 + home edge from data
+    [model ] team_ratings_ridge         NOT RUN: needs the closing-line history set (not in repo)
+    [market] devig_multiplicative       H  41.7% / A  58.3%   overround 4.3%
+    [market] devig_power                H  41.2% / A  58.8%   overround 4.3%
+    [market] devig_shin                 H  41.3% / A  58.7%   overround 4.3%
+    [market] spread_implied_normal      H  39.5% / A  60.5%   spread +3.5, σ 13.1
+  Dallas Mavericks @ Houston Rockets  (6 model + 4 market tools; not run: team_ratings_ridge)
+    [model ] stacked_elo_form_context   H  76.7% / A  23.3%   Elo diff +204, form diff +0.0, rest +0
+    [model ] elo_only                   H  82.9% / A  17.1%   
+    [model ] form_only                  H  59.2% / A  40.8%   last-5 margin
+    [model ] normal_margin              H  77.2% / A  22.8%   expected margin +9.8, σ 13.1 (calibrated on closing lines)
+    [model ] monte_carlo_margin         H  76.9% / A  23.1%   200,000 sims, rating uncertainty ±2.5 pts
+    [model ] beta_binomial_log5         H  85.1% / A  14.9%   last-20 win rates 0.64 vs 0.27, log5 + home edge from data
+    [model ] team_ratings_ridge         NOT RUN: needs the closing-line history set (not in repo)
+    [market] devig_multiplicative       H  78.2% / A  21.8%   overround 4.2%
+    [market] devig_power                H  80.0% / A  20.0%   overround 4.2%
+    [market] devig_shin                 H  79.4% / A  20.6%   overround 4.2%
+    [market] spread_implied_normal      H  76.6% / A  23.4%   spread -9.5, σ 13.1
+  Golden State Warriors @ Los Angeles Lakers  (6 model + 4 market tools; not run: team_ratings_ridge)
+    [model ] stacked_elo_form_context   H  70.1% / A  29.9%   Elo diff +121, form diff +0.0, rest +0
+    [model ] elo_only                   H  75.1% / A  24.9%   
+    [model ] form_only                  H  59.2% / A  40.8%   last-5 margin
+    [model ] normal_margin              H  69.9% / A  30.1%   expected margin +6.8, σ 13.1 (calibrated on closing lines)
+    [model ] monte_carlo_margin         H  69.7% / A  30.3%   200,000 sims, rating uncertainty ±2.5 pts
+    [model ] beta_binomial_log5         H  75.8% / A  24.2%   last-20 win rates 0.55 vs 0.32, log5 + home edge from data
+    [model ] team_ratings_ridge         NOT RUN: needs the closing-line history set (not in repo)
+    [market] devig_multiplicative       H  66.9% / A  33.1%   overround 4.2%
+    [market] devig_power                H  68.0% / A  32.0%   overround 4.2%
+    [market] devig_shin                 H  67.6% / A  32.4%   overround 4.2%
+    [market] spread_implied_normal      H  69.0% / A  31.0%   spread -6.5, σ 13.1
+  Phoenix Suns @ Portland Trail Blazers  (6 model + 4 market tools; not run: team_ratings_ridge)
+    [model ] stacked_elo_form_context   H  57.5% / A  42.5%   Elo diff -11, form diff +0.0, rest +0
+    [model ] elo_only                   H  58.4% / A  41.6%   
+    [model ] form_only                  H  59.2% / A  40.8%   last-5 margin
+    [model ] normal_margin              H  56.4% / A  43.6%   expected margin +2.1, σ 13.1 (calibrated on closing lines)
+    [model ] monte_carlo_margin         H  56.4% / A  43.6%   200,000 sims, rating uncertainty ±2.5 pts
+    [model ] beta_binomial_log5         H  75.5% / A  24.5%   last-20 win rates 0.59 vs 0.36, log5 + home edge from data
+    [model ] team_ratings_ridge         NOT RUN: needs the closing-line history set (not in repo)
+    [market] devig_multiplicative       H  56.3% / A  43.7%   overround 4.1%
+    [market] devig_power                H  56.7% / A  43.3%   overround 4.1%
+    [market] devig_shin                 H  56.6% / A  43.4%   overround 4.1%
+    [market] spread_implied_normal      H  57.6% / A  42.4%   spread -2.5, σ 13.1
+  Sacramento Kings @ LA Clippers  (6 model + 4 market tools; not run: team_ratings_ridge)
+    [model ] stacked_elo_form_context   H  74.2% / A  25.8%   Elo diff +172, form diff +0.0, rest +0
+    [model ] elo_only                   H  80.1% / A  19.9%   
+    [model ] form_only                  H  59.2% / A  40.8%   last-5 margin
+    [model ] normal_margin              H  74.5% / A  25.5%   expected margin +8.6, σ 13.1 (calibrated on closing lines)
+    [model ] monte_carlo_margin         H  74.2% / A  25.8%   200,000 sims, rating uncertainty ±2.5 pts
+    [model ] beta_binomial_log5         H  67.9% / A  32.1%   last-20 win rates 0.55 vs 0.41, log5 + home edge from data
+    [model ] team_ratings_ridge         NOT RUN: needs the closing-line history set (not in repo)
+    [market] devig_multiplicative       H  62.2% / A  37.8%   overround 4.3%
+    [market] devig_power                H  63.0% / A  37.0%   overround 4.3%
+    [market] devig_shin                 H  62.8% / A  37.2%   overround 4.3%
+    [market] spread_implied_normal      H  63.4% / A  36.6%   spread -4.5, σ 13.1

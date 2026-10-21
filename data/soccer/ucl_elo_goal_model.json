@@ -1,12 +1,12 @@
 {
-  "a": 0.19752409786797137,
-  "h": 0.1942721840622046,
-  "b": 0.7820200148592592,
+  "a": 0.19753433918695237,
+  "h": 0.1944016923975902,
+  "b": 0.7816148216324276,
   "calibrated": true,
-  "n_matches": 5513,
-  "n_results_read": 7090,
+  "n_matches": 5521,
+  "n_results_read": 7099,
   "n_clubs": 330,
-  "n_uefa_matches": 1149,
+  "n_uefa_matches": 1158,
   "uefa_clubs_without_domestic_data": [
     "1. heidenheim 1846",
     "aek athens",

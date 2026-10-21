@@ -1,0 +1,12 @@
+{
+  "a": 0.19753433918695237,
+  "h": 0.1944016923975902,
+  "b": 0.7816148216324276,
+  "calibrated": true,
+  "n_matches": 5521,
+  "n_results_read": 7099,
+  "n_clubs": 330,
+  "n_uefa_matches": 1158
+}
+UEFA clubs with NO domestic data (99): ['1. heidenheim 1846', 'aek athens', 'aek larnaca', 'agf', 'apoel nicosia', 'ararat armenia', 'astana', 'basel', 'bodo glimt', 'borac banja luka', 'breidablik', 'cercle brugge ksv', 'cska sofia', 'csu craiova', 'dinamo minsk', 'dinamo zagreb', 'djurgarden', 'drita gjilan', 'dynamo kyiv', 'egnatia', 'elfsborg', 'f.c. kbenhavn', 'fcsb', 'ferencvaros', 'hacken', 'hajduk split', 'hamrun spartans', "hapoel be'er", 'heart of midlothian', 'hjk helsinki', 'iberia 1999', "inter d'escaldes", 'istanbul basaksehir', 'jablonec', 'jagiellonia bialystok', 'kaa gent', 'kairat almaty', 'kauno zalgiris', 'kf shkendija', 'kups kuopio', 'larne', 'lask linz', 'lausanne sports', 'lech poznan', 'legia warsaw', 'levski sofia', 'lillestrom', 'lincoln red imps', 'ludogorets razgrad', 'lugano', 'maccabi tel aviv', 'malmo ff', 'midtjylland', 'mjallby aif', 'mlada boleslav', 'molde', 'nec nijmegen', 'nk celje', 'noah', 'nordsjlland', 'olimpija ljubljana', 'olympiacos', 'omonia nicosia', 'pafos', 'petrocub', 'qarabag', 'racing genk', 'rakow czestochowa', 'rapid vienna', 'rb salzburg', 'red star belgrade', 'riga', 'rigas futbola skola', 'rijeka', 'sabah', 'shakhtar donetsk', 'shamrock rovers', 'shelbourne', 'sigma olomouc', 'sint truidense', 'sk brann', 'sk sturm graz', 'slavia prague', 'slovan bratislava', 'sparta prague', 'st. gallen', 'stade rennais', 'the new saints', 'thun', 'torreense', 'tsc', 'tsg hoffenheim', 'union st. gilloise', 'viking', 'vikingur reykjavik', 'viktoria plzen', 'vitoria de guimaraes', 'young boys', 'zrinjski mostar']
+Top 15 Elo: [('paris sg', 1908.0), ('bayern munich', 1898.1), ('arsenal', 1894.9), ('barcelona', 1850.8), ('real madrid', 1798.9), ('man city', 1792.1), ('aston villa', 1785.7), ('sp lisbon', 1782.6), ('benfica', 1755.0), ('inter', 1728.1), ('club brugge', 1726.9), ('liverpool', 1718.3), ('leverkusen', 1707.7), ('ath madrid', 1706.0), ('roma', 1704.8)]

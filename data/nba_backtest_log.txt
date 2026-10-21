@@ -1,0 +1,7 @@
+games=3966 per-season={2023: 1319, 2024: 1321, 2025: 1326} test_season=2025 n=1326
+  home_rate  logloss 0.6872
+  elo        logloss 0.6055
+  form       logloss 0.6387
+  stacked    logloss 0.5994
+  stacked - elo = -0.0061  95% CI [-0.0135, +0.0014]
+  NOTE: scored vs Elo, not the closing line — not proof of betting edge.

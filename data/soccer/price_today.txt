@@ -1,0 +1,10 @@
+2026-10-21: 9 UCL fixtures | model calibrated=True on 5521 matches
+- Como vs Manchester United: P(home)=42.1% P(draw)=28.7% P(away)=29.2% | xG 1.49-1.21 | O2.5 51% BTTS 56% | no odds -> no EV
+- Lille vs Galatasaray: P(home)=35.6% P(draw)=29.1% P(away)=35.3% | xG 1.35-1.34 | O2.5 50% BTTS 56% | no odds -> no EV
+- Aston Villa vs Viking FK: P(home)=77.1% P(draw)=16.0% P(away)=6.9% | xG 2.59-0.70 | O2.5 64% BTTS 47% | no odds -> no EV | LOW-SAMPLE (<15 matches): Viking FK — treat as shaky
+- Bayern Munich vs Arsenal: P(home)=42.1% P(draw)=28.7% P(away)=29.3% | xG 1.49-1.21 | O2.5 51% BTTS 56% | no odds -> no EV
+- Club Brugge vs Lens: P(home)=56.7% P(draw)=25.3% P(away)=18.0% | xG 1.86-0.97 | O2.5 54% BTTS 54% | no odds -> no EV
+- Internazionale vs Shakhtar Donetsk: P(home)=62.2% P(draw)=23.2% P(away)=14.5% | xG 2.02-0.89 | O2.5 56% BTTS 52% | no odds -> no EV
+- Real Betis vs Feyenoord Rotterdam: P(home)=46.2% P(draw)=28.0% P(away)=25.8% | xG 1.59-1.14 | O2.5 51% BTTS 56% | no odds -> no EV
+- Real Madrid vs RB Leipzig: P(home)=68.1% P(draw)=20.6% P(away)=11.2% | xG 2.21-0.81 | O2.5 58% BTTS 51% | no odds -> no EV
+- Sporting CP vs LASK Linz: P(home)=85.4% P(draw)=10.9% P(away)=3.7% | xG 3.08-0.59 | O2.5 71% BTTS 43% | no odds -> no EV | LOW-SAMPLE (<15 matches): LASK Linz — treat as shaky

@@ -1,4 +1,74 @@
 date,home_team,away_team,home_score,away_score,neutral,league
+2026-08-21,Arsenal,Coventry,3,0,FALSE,Premier League
+2026-08-22,Hull,Man United,2,0,FALSE,Premier League
+2026-08-22,Everton,Crystal Palace,2,0,FALSE,Premier League
+2026-08-22,Ipswich,Sunderland,2,1,FALSE,Premier League
+2026-08-22,Nott'm Forest,Leeds,0,1,FALSE,Premier League
+2026-08-22,Brentford,Tottenham,3,0,FALSE,Premier League
+2026-08-23,Brighton,Aston Villa,4,0,FALSE,Premier League
+2026-08-23,Man City,Bournemouth,2,1,FALSE,Premier League
+2026-08-23,Newcastle,Liverpool,2,2,FALSE,Premier League
+2026-08-24,Fulham,Chelsea,2,3,FALSE,Premier League
+2026-08-28,Crystal Palace,Man City,1,4,FALSE,Premier League
+2026-08-29,Liverpool,Nott'm Forest,2,2,FALSE,Premier League
+2026-08-29,Bournemouth,Everton,1,1,FALSE,Premier League
+2026-08-29,Coventry,Hull,0,1,FALSE,Premier League
+2026-08-29,Tottenham,Newcastle,0,2,FALSE,Premier League
+2026-08-30,Chelsea,Brighton,4,3,FALSE,Premier League
+2026-08-30,Leeds,Brentford,1,1,FALSE,Premier League
+2026-08-30,Sunderland,Fulham,1,0,FALSE,Premier League
+2026-08-30,Man United,Ipswich,5,2,FALSE,Premier League
+2026-08-31,Aston Villa,Arsenal,0,1,FALSE,Premier League
+2026-09-04,Ipswich,Liverpool,0,2,FALSE,Premier League
+2026-09-05,Newcastle,Bournemouth,2,2,FALSE,Premier League
+2026-09-05,Brentford,Sunderland,1,1,FALSE,Premier League
+2026-09-05,Brighton,Leeds,1,1,FALSE,Premier League
+2026-09-05,Fulham,Crystal Palace,2,3,FALSE,Premier League
+2026-09-05,Man City,Coventry,1,0,FALSE,Premier League
+2026-09-05,Nott'm Forest,Tottenham,0,0,FALSE,Premier League
+2026-09-05,Hull,Aston Villa,0,0,FALSE,Premier League
+2026-09-06,Everton,Man United,2,2,FALSE,Premier League
+2026-09-06,Arsenal,Chelsea,2,1,FALSE,Premier League
+2026-09-12,Aston Villa,Nott'm Forest,1,2,FALSE,Premier League
+2026-09-12,Bournemouth,Brentford,2,2,FALSE,Premier League
+2026-09-12,Chelsea,Hull,2,2,FALSE,Premier League
+2026-09-12,Crystal Palace,Ipswich,2,3,FALSE,Premier League
+2026-09-12,Liverpool,Fulham,0,0,FALSE,Premier League
+2026-09-12,Tottenham,Everton,0,0,FALSE,Premier League
+2026-09-12,Sunderland,Arsenal,0,2,FALSE,Premier League
+2026-09-13,Coventry,Brighton,0,5,FALSE,Premier League
+2026-09-13,Man United,Man City,0,1,FALSE,Premier League
+2026-09-14,Leeds,Newcastle,4,1,FALSE,Premier League
+2026-09-18,Brentford,Chelsea,3,0,FALSE,Premier League
+2026-09-19,Tottenham,Aston Villa,2,3,FALSE,Premier League
+2026-09-19,Brighton,Arsenal,3,0,FALSE,Premier League
+2026-09-19,Everton,Ipswich,1,0,FALSE,Premier League
+2026-09-19,Newcastle,Hull,2,1,FALSE,Premier League
+2026-09-19,Nott'm Forest,Coventry,0,1,FALSE,Premier League
+2026-09-20,Bournemouth,Liverpool,0,1,FALSE,Premier League
+2026-09-20,Leeds,Crystal Palace,0,0,FALSE,Premier League
+2026-09-20,Man City,Sunderland,5,3,FALSE,Premier League
+2026-09-20,Fulham,Man United,1,1,FALSE,Premier League
+2026-10-10,Arsenal,Leeds,2,1,FALSE,Premier League
+2026-10-10,Aston Villa,Brentford,2,2,FALSE,Premier League
+2026-10-10,Chelsea,Bournemouth,5,1,FALSE,Premier League
+2026-10-10,Ipswich,Fulham,2,1,FALSE,Premier League
+2026-10-10,Sunderland,Brighton,0,2,FALSE,Premier League
+2026-10-10,Man United,Tottenham,1,1,FALSE,Premier League
+2026-10-11,Crystal Palace,Nott'm Forest,3,1,FALSE,Premier League
+2026-10-11,Hull,Everton,2,2,FALSE,Premier League
+2026-10-11,Liverpool,Man City,0,3,FALSE,Premier League
+2026-10-12,Coventry,Newcastle,4,1,FALSE,Premier League
+2026-10-17,Everton,Chelsea,0,2,FALSE,Premier League
+2026-10-17,Brentford,Liverpool,1,2,FALSE,Premier League
+2026-10-17,Fulham,Hull,1,0,FALSE,Premier League
+2026-10-17,Man City,Ipswich,3,2,FALSE,Premier League
+2026-10-17,Newcastle,Aston Villa,0,1,FALSE,Premier League
+2026-10-18,Bournemouth,Sunderland,2,0,FALSE,Premier League
+2026-10-18,Brighton,Crystal Palace,5,0,FALSE,Premier League
+2026-10-18,Leeds,Man United,1,1,FALSE,Premier League
+2026-10-18,Nott'm Forest,Arsenal,0,1,FALSE,Premier League
+2026-10-19,Tottenham,Coventry,3,1,FALSE,Premier League
 2025-08-15,Liverpool,Bournemouth,4,2,FALSE,Premier League
 2025-08-16,Aston Villa,Newcastle,0,0,FALSE,Premier League
 2025-08-16,Brighton,Fulham,1,1,FALSE,Premier League
@@ -759,6 +829,94 @@ date,home_team,away_team,home_score,away_score,neutral,league
 2025-05-25,Southampton,Arsenal,1,2,FALSE,Premier League
 2025-05-25,Tottenham,Brighton,1,4,FALSE,Premier League
 2025-05-25,Wolves,Brentford,1,1,FALSE,Premier League
+2026-08-15,Alaves,Getafe,3,0,FALSE,La Liga
+2026-08-15,Sevilla,Vallecano,2,1,FALSE,La Liga
+2026-08-16,Santander,Villarreal,2,2,FALSE,La Liga
+2026-08-16,Espanol,Levante,3,0,FALSE,La Liga
+2026-08-17,La Coruna,Elche,1,1,FALSE,La Liga
+2026-08-19,Ath Madrid,Malaga,2,0,FALSE,La Liga
+2026-08-20,Vallecano,Alaves,1,1,FALSE,La Liga
+2026-08-21,Betis,Sociedad,1,0,FALSE,La Liga
+2026-08-22,Ath Bilbao,Sevilla,1,3,FALSE,La Liga
+2026-08-22,Valencia,Celta,0,0,FALSE,La Liga
+2026-08-22,Espanol,Real Madrid,1,2,FALSE,La Liga
+2026-08-23,Ath Madrid,Villarreal,2,2,FALSE,La Liga
+2026-08-23,Getafe,Santander,1,0,FALSE,La Liga
+2026-08-23,Elche,Barcelona,0,5,FALSE,La Liga
+2026-08-24,Osasuna,Levante,0,0,FALSE,La Liga
+2026-08-24,Malaga,La Coruna,1,1,FALSE,La Liga
+2026-08-25,Valencia,Betis,0,1,FALSE,La Liga
+2026-08-26,Real Madrid,Sociedad,4,1,FALSE,La Liga
+2026-08-27,Celta,Osasuna,1,2,FALSE,La Liga
+2026-08-27,Barcelona,Ath Bilbao,2,0,FALSE,La Liga
+2026-08-28,Santander,Elche,3,2,FALSE,La Liga
+2026-08-28,Alaves,Villarreal,1,0,FALSE,La Liga
+2026-08-29,Levante,Betis,5,2,FALSE,La Liga
+2026-08-29,Sociedad,Espanol,2,1,FALSE,La Liga
+2026-08-29,Sevilla,Ath Madrid,1,3,FALSE,La Liga
+2026-08-30,Real Madrid,Malaga,4,0,FALSE,La Liga
+2026-08-30,La Coruna,Valencia,3,1,FALSE,La Liga
+2026-08-30,Celta,Ath Bilbao,0,2,FALSE,La Liga
+2026-08-31,Osasuna,Getafe,1,0,FALSE,La Liga
+2026-08-31,Barcelona,Vallecano,5,2,FALSE,La Liga
+2026-09-03,Sociedad,Celta,0,0,FALSE,La Liga
+2026-09-04,Betis,Real Madrid,1,0,FALSE,La Liga
+2026-09-05,Ath Bilbao,Ath Madrid,3,0,FALSE,La Liga
+2026-09-05,Vallecano,Santander,3,2,FALSE,La Liga
+2026-09-05,Villarreal,La Coruna,2,3,FALSE,La Liga
+2026-09-06,Valencia,Barcelona,0,5,FALSE,La Liga
+2026-09-06,Alaves,Osasuna,5,2,FALSE,La Liga
+2026-09-06,Malaga,Levante,0,0,FALSE,La Liga
+2026-09-06,Espanol,Sevilla,1,1,FALSE,La Liga
+2026-09-07,Getafe,Celta,1,1,FALSE,La Liga
+2026-09-07,Elche,Sociedad,2,3,FALSE,La Liga
+2026-09-11,Sevilla,Valencia,1,0,FALSE,La Liga
+2026-09-12,Santander,Alaves,2,1,FALSE,La Liga
+2026-09-12,Osasuna,Espanol,0,2,FALSE,La Liga
+2026-09-12,Ath Bilbao,Elche,1,1,FALSE,La Liga
+2026-09-12,Real Madrid,Vallecano,4,1,FALSE,La Liga
+2026-09-13,Celta,Malaga,1,1,FALSE,La Liga
+2026-09-13,Levante,Barcelona,2,4,FALSE,La Liga
+2026-09-13,Getafe,La Coruna,1,1,FALSE,La Liga
+2026-09-13,Sociedad,Ath Madrid,0,3,FALSE,La Liga
+2026-09-14,Villarreal,Betis,1,2,FALSE,La Liga
+2026-09-15,Vallecano,Espanol,2,1,FALSE,La Liga
+2026-09-15,Alaves,Valencia,0,1,FALSE,La Liga
+2026-09-15,Elche,Real Madrid,2,3,FALSE,La Liga
+2026-09-16,Ath Madrid,Osasuna,4,0,FALSE,La Liga
+2026-09-16,La Coruna,Sevilla,0,1,FALSE,La Liga
+2026-09-16,Barcelona,Santander,7,2,FALSE,La Liga
+2026-09-17,Betis,Getafe,1,0,FALSE,La Liga
+2026-09-17,Malaga,Villarreal,1,3,FALSE,La Liga
+2026-09-18,Espanol,Elche,1,3,FALSE,La Liga
+2026-09-19,Osasuna,Vallecano,1,1,FALSE,La Liga
+2026-09-19,Ath Bilbao,Alaves,0,0,FALSE,La Liga
+2026-09-19,Celta,Santander,5,0,FALSE,La Liga
+2026-09-19,Sevilla,Barcelona,1,3,FALSE,La Liga
+2026-09-20,Getafe,Malaga,1,0,FALSE,La Liga
+2026-09-20,Ath Madrid,Real Madrid,2,1,FALSE,La Liga
+2026-09-20,La Coruna,Betis,1,1,FALSE,La Liga
+2026-09-20,Villarreal,Levante,3,1,FALSE,La Liga
+2026-09-20,Valencia,Sociedad,2,3,FALSE,La Liga
+2026-10-09,Malaga,Espanol,1,1,FALSE,La Liga
+2026-10-10,Alaves,Ath Madrid,1,2,FALSE,La Liga
+2026-10-10,Barcelona,Getafe,3,0,FALSE,La Liga
+2026-10-10,Real Madrid,Villarreal,1,0,FALSE,La Liga
+2026-10-11,Elche,Celta,0,0,FALSE,La Liga
+2026-10-11,Sociedad,La Coruna,3,2,FALSE,La Liga
+2026-10-11,Betis,Osasuna,5,2,FALSE,La Liga
+2026-10-11,Santander,Valencia,2,2,FALSE,La Liga
+2026-10-12,Levante,Sevilla,3,3,FALSE,La Liga
+2026-10-16,La Coruna,Levante,1,1,FALSE,La Liga
+2026-10-17,Espanol,Ath Madrid,0,1,FALSE,La Liga
+2026-10-17,Villarreal,Elche,0,0,FALSE,La Liga
+2026-10-17,Betis,Barcelona,2,5,FALSE,La Liga
+2026-10-17,Valencia,Ath Bilbao,0,0,FALSE,La Liga
+2026-10-18,Osasuna,Santander,2,0,FALSE,La Liga
+2026-10-18,Celta,Alaves,2,1,FALSE,La Liga
+2026-10-18,Malaga,Sociedad,2,5,FALSE,La Liga
+2026-10-18,Real Madrid,Sevilla,4,1,FALSE,La Liga
+2026-10-19,Getafe,Vallecano,1,1,FALSE,La Liga
 2025-08-15,Girona,Vallecano,1,3,FALSE,La Liga
 2025-08-15,Villarreal,Oviedo,2,0,FALSE,La Liga
 2025-08-16,Mallorca,Barcelona,0,3,FALSE,La Liga
@@ -1519,6 +1677,76 @@ date,home_team,away_team,home_score,away_score,neutral,league
 2025-05-25,Girona,Ath Madrid,0,4,FALSE,La Liga
 2025-05-25,Villarreal,Sevilla,4,2,FALSE,La Liga
 2025-05-25,Ath Bilbao,Barcelona,0,3,FALSE,La Liga
+2026-08-22,Inter,Monza,4,1,FALSE,Serie A
+2026-08-22,Udinese,Como,1,1,FALSE,Serie A
+2026-08-22,Genoa,Napoli,0,2,FALSE,Serie A
+2026-08-22,Parma,Cagliari,0,1,FALSE,Serie A
+2026-08-23,Frosinone,Juventus,0,1,FALSE,Serie A
+2026-08-23,Venezia,Lecce,0,2,FALSE,Serie A
+2026-08-23,Atalanta,Sassuolo,2,1,FALSE,Serie A
+2026-08-23,Torino,Milan,1,2,FALSE,Serie A
+2026-08-24,Bologna,Lazio,0,1,FALSE,Serie A
+2026-08-24,Roma,Fiorentina,4,0,FALSE,Serie A
+2026-08-28,Milan,Venezia,2,0,FALSE,Serie A
+2026-08-29,Fiorentina,Frosinone,0,3,FALSE,Serie A
+2026-08-29,Monza,Udinese,2,3,FALSE,Serie A
+2026-08-29,Sassuolo,Torino,2,1,FALSE,Serie A
+2026-08-29,Juventus,Parma,2,0,FALSE,Serie A
+2026-08-30,Napoli,Como,1,2,FALSE,Serie A
+2026-08-30,Cagliari,Inter,0,1,FALSE,Serie A
+2026-08-30,Lazio,Genoa,1,0,FALSE,Serie A
+2026-08-31,Lecce,Roma,0,4,FALSE,Serie A
+2026-08-31,Atalanta,Bologna,1,0,FALSE,Serie A
+2026-09-04,Genoa,Como,1,4,FALSE,Serie A
+2026-09-05,Fiorentina,Torino,1,2,FALSE,Serie A
+2026-09-05,Inter,Napoli,3,2,FALSE,Serie A
+2026-09-05,Roma,Atalanta,2,1,FALSE,Serie A
+2026-09-06,Frosinone,Venezia,3,2,FALSE,Serie A
+2026-09-06,Parma,Monza,1,1,FALSE,Serie A
+2026-09-06,Bologna,Sassuolo,2,2,FALSE,Serie A
+2026-09-06,Juventus,Milan,1,1,FALSE,Serie A
+2026-09-07,Cagliari,Lecce,1,0,FALSE,Serie A
+2026-09-07,Udinese,Lazio,1,2,FALSE,Serie A
+2026-09-11,Venezia,Fiorentina,2,4,FALSE,Serie A
+2026-09-12,Genoa,Frosinone,1,1,FALSE,Serie A
+2026-09-12,Lazio,Milan,2,2,FALSE,Serie A
+2026-09-12,Atalanta,Cagliari,1,2,FALSE,Serie A
+2026-09-13,Lecce,Monza,3,2,FALSE,Serie A
+2026-09-13,Napoli,Bologna,1,0,FALSE,Serie A
+2026-09-13,Sassuolo,Juventus,3,2,FALSE,Serie A
+2026-09-14,Como,Parma,2,1,FALSE,Serie A
+2026-09-14,Torino,Roma,0,2,FALSE,Serie A
+2026-09-14,Inter,Udinese,5,3,FALSE,Serie A
+2026-09-18,Monza,Sassuolo,2,1,FALSE,Serie A
+2026-09-19,Bologna,Torino,1,1,FALSE,Serie A
+2026-09-19,Udinese,Cagliari,0,1,FALSE,Serie A
+2026-09-19,Roma,Inter,2,2,FALSE,Serie A
+2026-09-19,Venezia,Lazio,0,2,FALSE,Serie A
+2026-09-20,Fiorentina,Napoli,1,1,FALSE,Serie A
+2026-09-20,Frosinone,Como,2,0,FALSE,Serie A
+2026-09-20,Parma,Genoa,2,1,FALSE,Serie A
+2026-09-20,Juventus,Atalanta,2,0,FALSE,Serie A
+2026-09-20,Milan,Lecce,3,0,FALSE,Serie A
+2026-10-10,Genoa,Fiorentina,2,1,FALSE,Serie A
+2026-10-10,Inter,Parma,3,0,FALSE,Serie A
+2026-10-10,Napoli,Frosinone,3,0,FALSE,Serie A
+2026-10-11,Como,Roma,0,0,FALSE,Serie A
+2026-10-11,Lazio,Monza,3,1,FALSE,Serie A
+2026-10-11,Lecce,Bologna,1,2,FALSE,Serie A
+2026-10-11,Sassuolo,Milan,1,1,FALSE,Serie A
+2026-10-11,Cagliari,Juventus,1,1,FALSE,Serie A
+2026-10-12,Atalanta,Venezia,3,1,FALSE,Serie A
+2026-10-12,Torino,Udinese,2,1,FALSE,Serie A
+2026-10-16,Frosinone,Sassuolo,4,2,FALSE,Serie A
+2026-10-17,Venezia,Napoli,1,0,FALSE,Serie A
+2026-10-17,Bologna,Inter,1,3,FALSE,Serie A
+2026-10-17,Roma,Genoa,2,0,FALSE,Serie A
+2026-10-18,Udinese,Lecce,0,3,FALSE,Serie A
+2026-10-18,Fiorentina,Como,1,3,FALSE,Serie A
+2026-10-18,Milan,Atalanta,3,2,FALSE,Serie A
+2026-10-18,Juventus,Lazio,0,3,FALSE,Serie A
+2026-10-19,Monza,Cagliari,4,0,FALSE,Serie A
+2026-10-19,Parma,Torino,0,3,FALSE,Serie A
 2025-08-23,Genoa,Lecce,0,0,FALSE,Serie A
 2025-08-23,Sassuolo,Napoli,0,2,FALSE,Serie A
 2025-08-23,Milan,Cremonese,1,2,FALSE,Serie A
@@ -2279,6 +2507,60 @@ date,home_team,away_team,home_score,away_score,neutral,league
 2025-05-25,Torino,Roma,0,2,FALSE,Serie A
 2025-05-25,Udinese,Fiorentina,2,3,FALSE,Serie A
 2025-05-25,Venezia,Juventus,2,3,FALSE,Serie A
+2026-08-28,Bayern Munich,Stuttgart,5,1,FALSE,Bundesliga
+2026-08-29,Elversberg,Leverkusen,3,2,FALSE,Bundesliga
+2026-08-29,FC Koln,Hoffenheim,3,2,FALSE,Bundesliga
+2026-08-29,Mainz,Paderborn,0,0,FALSE,Bundesliga
+2026-08-29,RB Leipzig,M'gladbach,3,0,FALSE,Bundesliga
+2026-08-29,Union Berlin,Ein Frankfurt,3,3,FALSE,Bundesliga
+2026-08-29,Dortmund,Hamburg,2,0,FALSE,Bundesliga
+2026-08-30,Freiburg,Werder Bremen,4,1,FALSE,Bundesliga
+2026-08-30,Augsburg,Schalke 04,3,0,FALSE,Bundesliga
+2026-09-04,Stuttgart,FC Koln,4,1,FALSE,Bundesliga
+2026-09-05,Hoffenheim,Dortmund,2,3,FALSE,Bundesliga
+2026-09-05,Leverkusen,Union Berlin,4,0,FALSE,Bundesliga
+2026-09-05,M'gladbach,Elversberg,3,4,FALSE,Bundesliga
+2026-09-05,Paderborn,Freiburg,0,1,FALSE,Bundesliga
+2026-09-05,Werder Bremen,RB Leipzig,3,1,FALSE,Bundesliga
+2026-09-05,Schalke 04,Bayern Munich,0,0,FALSE,Bundesliga
+2026-09-06,Hamburg,Mainz,0,5,FALSE,Bundesliga
+2026-09-06,Ein Frankfurt,Augsburg,1,4,FALSE,Bundesliga
+2026-09-11,Union Berlin,Schalke 04,1,3,FALSE,Bundesliga
+2026-09-12,Augsburg,Leverkusen,2,2,FALSE,Bundesliga
+2026-09-12,Dortmund,Paderborn,3,0,FALSE,Bundesliga
+2026-09-12,Freiburg,M'gladbach,5,0,FALSE,Bundesliga
+2026-09-12,Hoffenheim,Stuttgart,2,1,FALSE,Bundesliga
+2026-09-12,Mainz,Ein Frankfurt,1,3,FALSE,Bundesliga
+2026-09-12,FC Koln,Werder Bremen,1,1,FALSE,Bundesliga
+2026-09-13,RB Leipzig,Hamburg,5,0,FALSE,Bundesliga
+2026-09-13,Elversberg,Bayern Munich,1,2,FALSE,Bundesliga
+2026-09-18,Bayern Munich,Union Berlin,7,0,FALSE,Bundesliga
+2026-09-19,Ein Frankfurt,Freiburg,2,2,FALSE,Bundesliga
+2026-09-19,Hamburg,FC Koln,2,1,FALSE,Bundesliga
+2026-09-19,M'gladbach,Mainz,3,4,FALSE,Bundesliga
+2026-09-19,Werder Bremen,Augsburg,3,2,FALSE,Bundesliga
+2026-09-19,Stuttgart,Dortmund,0,1,FALSE,Bundesliga
+2026-09-20,Leverkusen,RB Leipzig,2,0,FALSE,Bundesliga
+2026-09-20,Schalke 04,Elversberg,0,0,FALSE,Bundesliga
+2026-09-20,Paderborn,Hoffenheim,3,1,FALSE,Bundesliga
+2026-10-09,Dortmund,Werder Bremen,2,2,FALSE,Bundesliga
+2026-10-10,Augsburg,Bayern Munich,2,2,FALSE,Bundesliga
+2026-10-10,Hoffenheim,Hamburg,2,3,FALSE,Bundesliga
+2026-10-10,Mainz,Leverkusen,3,4,FALSE,Bundesliga
+2026-10-10,Paderborn,Stuttgart,0,2,FALSE,Bundesliga
+2026-10-10,Union Berlin,Elversberg,1,0,FALSE,Bundesliga
+2026-10-10,RB Leipzig,Ein Frankfurt,6,0,FALSE,Bundesliga
+2026-10-11,FC Koln,M'gladbach,2,1,FALSE,Bundesliga
+2026-10-11,Freiburg,Schalke 04,2,1,FALSE,Bundesliga
+2026-10-16,Ein Frankfurt,FC Koln,1,0,FALSE,Bundesliga
+2026-10-17,Elversberg,Augsburg,4,3,FALSE,Bundesliga
+2026-10-17,Hamburg,Stuttgart,1,0,FALSE,Bundesliga
+2026-10-17,Schalke 04,Mainz,0,1,FALSE,Bundesliga
+2026-10-17,Union Berlin,Dortmund,0,0,FALSE,Bundesliga
+2026-10-17,Werder Bremen,Paderborn,2,2,FALSE,Bundesliga
+2026-10-17,Bayern Munich,RB Leipzig,6,1,FALSE,Bundesliga
+2026-10-18,Leverkusen,Freiburg,2,1,FALSE,Bundesliga
+2026-10-18,M'gladbach,Hoffenheim,1,2,FALSE,Bundesliga
 2025-08-22,Bayern Munich,RB Leipzig,6,0,FALSE,Bundesliga
 2025-08-23,Ein Frankfurt,Werder Bremen,4,1,FALSE,Bundesliga
 2025-08-23,Freiburg,Augsburg,1,3,FALSE,Bundesliga
@@ -2891,6 +3173,69 @@ date,home_team,away_team,home_score,away_score,neutral,league
 2025-05-17,M'gladbach,Wolfsburg,0,1,FALSE,Bundesliga
 2025-05-17,RB Leipzig,Stuttgart,2,3,FALSE,Bundesliga
 2025-05-17,St Pauli,Bochum,0,2,FALSE,Bundesliga
+2026-08-21,Marseille,Strasbourg,4,0,FALSE,Ligue 1
+2026-08-22,Lens,Auxerre,5,2,FALSE,Ligue 1
+2026-08-22,Le Mans,Brest,2,2,FALSE,Ligue 1
+2026-08-22,Nice,Lorient,0,0,FALSE,Ligue 1
+2026-08-22,Toulouse,Lyon,0,2,FALSE,Ligue 1
+2026-08-22,Troyes,Paris FC,0,0,FALSE,Ligue 1
+2026-08-23,Angers,Lille,0,2,FALSE,Ligue 1
+2026-08-23,Le Havre,Monaco,0,1,FALSE,Ligue 1
+2026-08-23,Rennes,Paris SG,2,2,FALSE,Ligue 1
+2026-08-28,Lille,Paris SG,2,2,FALSE,Ligue 1
+2026-08-29,Strasbourg,Lens,2,1,FALSE,Ligue 1
+2026-08-29,Auxerre,Angers,1,3,FALSE,Ligue 1
+2026-08-29,Brest,Toulouse,2,2,FALSE,Ligue 1
+2026-08-29,Lorient,Troyes,1,2,FALSE,Ligue 1
+2026-08-29,Lyon,Le Havre,1,1,FALSE,Ligue 1
+2026-08-30,Paris FC,Nice,3,0,FALSE,Ligue 1
+2026-08-30,Rennes,Le Mans,3,2,FALSE,Ligue 1
+2026-08-30,Monaco,Marseille,2,0,FALSE,Ligue 1
+2026-09-03,Toulouse,Lille,0,1,FALSE,Ligue 1
+2026-09-04,Lyon,Auxerre,3,1,FALSE,Ligue 1
+2026-09-04,Paris SG,Monaco,1,2,FALSE,Ligue 1
+2026-09-05,Lens,Lorient,0,1,FALSE,Ligue 1
+2026-09-05,Le Havre,Brest,1,2,FALSE,Ligue 1
+2026-09-05,Nice,Le Mans,1,1,FALSE,Ligue 1
+2026-09-06,Troyes,Strasbourg,2,6,FALSE,Ligue 1
+2026-09-06,Angers,Rennes,1,2,FALSE,Ligue 1
+2026-09-06,Marseille,Paris FC,2,3,FALSE,Ligue 1
+2026-09-11,Rennes,Marseille,1,0,FALSE,Ligue 1
+2026-09-12,Strasbourg,Monaco,1,1,FALSE,Ligue 1
+2026-09-12,Auxerre,Nice,1,0,FALSE,Ligue 1
+2026-09-12,Le Havre,Angers,0,0,FALSE,Ligue 1
+2026-09-12,Lorient,Toulouse,2,2,FALSE,Ligue 1
+2026-09-12,Paris FC,Lyon,0,0,FALSE,Ligue 1
+2026-09-13,Lille,Troyes,2,0,FALSE,Ligue 1
+2026-09-13,Le Mans,Lens,2,2,FALSE,Ligue 1
+2026-09-13,Brest,Paris SG,0,1,FALSE,Ligue 1
+2026-09-18,Monaco,Lens,2,1,FALSE,Ligue 1
+2026-09-19,Paris FC,Strasbourg,2,1,FALSE,Ligue 1
+2026-09-19,Angers,Troyes,2,0,FALSE,Ligue 1
+2026-09-19,Le Mans,Lorient,2,1,FALSE,Ligue 1
+2026-09-19,Lyon,Rennes,4,0,FALSE,Ligue 1
+2026-09-19,Toulouse,Le Havre,3,2,FALSE,Ligue 1
+2026-09-20,Auxerre,Brest,2,1,FALSE,Ligue 1
+2026-09-20,Nice,Lille,2,1,FALSE,Ligue 1
+2026-09-20,Marseille,Paris SG,1,2,FALSE,Ligue 1
+2026-10-09,Lens,Lyon,2,1,FALSE,Ligue 1
+2026-10-10,Lille,Le Havre,1,0,FALSE,Ligue 1
+2026-10-10,Brest,Angers,5,1,FALSE,Ligue 1
+2026-10-10,Lorient,Paris FC,1,0,FALSE,Ligue 1
+2026-10-10,Monaco,Toulouse,2,2,FALSE,Ligue 1
+2026-10-10,Paris SG,Le Mans,3,1,FALSE,Ligue 1
+2026-10-11,Nice,Strasbourg,2,1,FALSE,Ligue 1
+2026-10-11,Rennes,Auxerre,4,1,FALSE,Ligue 1
+2026-10-11,Troyes,Marseille,0,2,FALSE,Ligue 1
+2026-10-16,Le Mans,Toulouse,0,3,FALSE,Ligue 1
+2026-10-17,Strasbourg,Paris SG,1,3,FALSE,Ligue 1
+2026-10-17,Lille,Brest,1,1,FALSE,Ligue 1
+2026-10-17,Troyes,Lens,1,3,FALSE,Ligue 1
+2026-10-18,Angers,Marseille,2,5,FALSE,Ligue 1
+2026-10-18,Le Havre,Auxerre,1,3,FALSE,Ligue 1
+2026-10-18,Lorient,Monaco,1,0,FALSE,Ligue 1
+2026-10-18,Paris FC,Rennes,4,3,FALSE,Ligue 1
+2026-10-18,Lyon,Nice,2,1,FALSE,Ligue 1
 2025-08-15,Rennes,Marseille,1,0,FALSE,Ligue 1
 2025-08-16,Lens,Lyon,0,1,FALSE,Ligue 1
 2025-08-16,Monaco,Le Havre,3,1,FALSE,Ligue 1

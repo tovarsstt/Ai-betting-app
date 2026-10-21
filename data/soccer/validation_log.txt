@@ -1,0 +1,10 @@
+TOTAL-GOALS BIAS, Champions League after 2026-03-01 (n=66, actual mean total 3.94):
+  old: predicted 2.88  bias -1.06  MAE(total) 1.89  loglik/match -3.509 | big mismatches (|ΔElo|>=200, n=15): bias -1.07
+  new: predicted 3.36  bias -0.58  MAE(total) 1.82  loglik/match -3.383 | big mismatches (|ΔElo|>=200, n=15): bias -0.54
+  new-model params: {'a': 0.201, 'h': 0.178, 'b': 0.835, 'g': -0.008, 'c_ucl': 0.167, 'c_eur': 0.038}
+
+cutoff=2026-03-01 train=3765 (UEFA 467) test UEFA matches=146
+fit on train: {'a': 0.2012478408979303, 'h': 0.1780447915621125, 'b': 0.8348035507402298}
+logloss  model 0.9256  baseline(freq) 0.9582
+brier    model 0.5479  baseline(freq) 0.5792
+model - baseline logloss = -0.0326  95% CI [-0.0893, +0.0243]  (negative = model better)

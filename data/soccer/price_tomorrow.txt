@@ -1,0 +1,1 @@
+2026-10-22: 0 UCL fixtures | model calibrated=True on 5521 matches
