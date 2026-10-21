@@ -1,0 +1,51 @@
+name: fetch-nba-detail
+# Manual / on-push run. GitHub runners reach ESPN; the cloud sandbox does not.
+# Pushes ONLY data files to branch `data/nba-detail`.
+on:
+  push:
+    branches: [claude/ucl-nba-data-layer]
+    paths: ['.github/workflows/fetch-nba-detail.yml']
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "probe | full"
+        default: "full"
+      slate_day:
+        description: "Slate date YYYYMMDD (default: today, New York)"
+        default: ""
+      seasons:
+        description: "Seasons (ESPN season start year), space separated, e.g. '2025' or '2024 2025'"
+        default: "2025"
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: claude/ucl-nba-data-layer }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install numpy scipy pandas
+      - name: Probe ESPN summary (3 games from 2025-26)
+        if: ${{ inputs.mode == 'probe' }}
+        run: python3 scripts/fetch_nba_detail.py probe 401809243 401809244 401809245
+      - name: Parse every game (box, shots, on/off, pace)
+        if: ${{ inputs.mode != 'probe' }}
+        run: |
+          mkdir -p data/nba
+          python3 scripts/fetch_nba_detail.py full ${{ inputs.seasons || '2025' }} 2>&1 | tee data/nba/fetch_log.txt
+      - name: Today's slate, injuries and rosters
+        continue-on-error: true
+        run: |
+          mkdir -p data/nba
+          python3 scripts/fetch_nba_detail.py rosters "${{ inputs.slate_day || '' }}$( [ -z '${{ inputs.slate_day }}' ] && TZ=America/New_York date +%Y%m%d )" 2>&1 | tee -a data/nba/fetch_log.txt
+      - name: Push data
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@users.noreply.github.com"
+          git checkout -B data/nba-detail
+          git add -f data/nba
+          git commit -m "data: nba detail $(date -u +%F)" || echo "nothing to commit"
+          git push -f origin data/nba-detail

@@ -1,0 +1,6 @@
+{"_source": "screenshot of user's Stake slip 2026-10-21 (4 selections, stake not set)",
+ "legs": [
+  {"match": "Real Madrid vs RB Leipzig", "label": "Real Madrid total de equipo más de 2.5", "kind": "tt_h", "arg": 2.5, "odds": 1.46},
+  {"match": "Bayern Munich vs Arsenal", "label": "Bayern 1UP", "kind": "1up_h", "odds": 1.55},
+  {"match": "Internazionale vs Shakhtar Donetsk", "label": "Inter-Shakhtar más de 2.5", "kind": "over", "arg": 2.5, "odds": 1.31},
+  {"match": "Aston Villa vs Viking FK", "label": "Aston Villa-Viking más de 3.5", "kind": "over", "arg": 3.5, "odds": 1.64}]}

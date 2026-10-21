@@ -1,0 +1,644 @@
+"""Tests for fetch_europe_data / ucl_model / nba_stack. No network, ever."""
+import math
+from datetime import date
+
+import numpy as np
+
+import fetch_europe_data as fe
+import nba_stack as ns
+import ucl_model as um
+
+CLUBELO = """Rank,Club,Country,Level,Elo,From,To
+1,Man City,ENG,1,2050.5,2026-10-19,2026-10-25
+2,Slavia Praha,CZE,1,1710.2,2026-10-19,2026-10-25
+3,Broken,XXX,1,notanumber,2026-10-19,2026-10-25
+"""
+
+
+def test_parse_clubelo_skips_bad_rows():
+    d = fe.parse_clubelo_csv(CLUBELO)
+    assert set(d) == {"Man City", "Slavia Praha"} and d["Man City"]["elo"] == 2050.5
+
+
+def _ev(id_, completed, hs, as_, date_="2025-10-22T00:30Z"):
+    return {"id": id_, "date": date_, "status": {"type": {"completed": completed}},
+            "competitions": [{"competitors": [
+                {"homeAway": "home", "score": hs, "team": {"displayName": "New York Knicks"}},
+                {"homeAway": "away", "score": as_, "team": {"displayName": "Boston Celtics"}}]}]}
+
+
+def test_espn_parse_only_finished_and_utc_shift():
+    out = fe.parse_espn_scoreboard({"events": [_ev("1", True, "110", "104"), _ev("2", False, "0", "0"),
+                                               {"id": "3"}]})
+    assert len(out) == 1
+    g = out[0]
+    assert g["home_score"] == 110 and g["away_score"] == 104
+    assert g["date"] == "2025-10-21" and g["season"] == 2025   # 00:30Z = previous US evening
+
+
+def test_season_label():
+    assert fe.season_start_year(date(2026, 1, 5)) == 2025 and fe.season_start_year(date(2026, 10, 20)) == 2026
+
+
+def test_calibrate_recovers_known_params():
+    rng = np.random.default_rng(1)
+    elo = {f"T{i}": 1500 + rng.normal(0, 150) for i in range(40)}
+    names = list(elo)
+    a, h, b = math.log(1.4), 0.15, 0.45
+    rows = []
+    for _ in range(6000):
+        x, y = rng.choice(names, 2, replace=False)
+        d = (elo[x] - elo[y]) / 400
+        rows.append({"home_team": x, "away_team": y, "neutral": "FALSE",
+                     "home_score": rng.poisson(math.exp(a + h + b * d)), "away_score": rng.poisson(math.exp(a - b * d))})
+    m = um.calibrate(rows, elo)
+    assert m.calibrated and m.n_matches == 6000
+    assert abs(m.b - b) < 0.05 and abs(m.a - a) < 0.05 and abs(m.h - h) < 0.05
+
+
+def test_calibrate_falls_back_when_data_thin():
+    assert not um.calibrate([], {}).calibrated
+
+
+def test_price_match_probs_and_order():
+    elo = {"A": 1900.0, "B": 1600.0}
+    r = um.price_match("A", "B", elo, market_odds=(1.5, 4.5, 7.0))
+    p = r["p_win"]
+    assert abs(sum(p.values()) - 1) < 1e-9 and p["home"] > p["away"]
+    assert r["calibrated"] is False and "ev_per_unit" in r
+    assert abs(sum(r["market_fair"].values()) - 1) < 1e-9
+    assert list(r)[:3] == ["lambda_home", "lambda_away", "calibrated"]  # no EV before P(win) keys exist
+    assert p["home"] > r["market_fair"]["home"] * 0.6  # blend sits between model and market
+
+
+def test_price_match_never_imputes_missing_club():
+    assert "error" in um.price_match("A", "Unknown", {"A": 1800.0})
+
+
+def test_neutral_symmetry():
+    m = um.EloGoalModel()
+    lh, la = um.lambdas(m, 1700, 1700, neutral=True)
+    assert abs(lh - la) < 1e-12
+
+
+def _games(n=900):
+    rng = np.random.default_rng(3)
+    teams = [f"T{i}" for i in range(12)]
+    skill = {t: rng.normal(0, 4) for t in teams}
+    out, d0 = [], date(2023, 10, 20).toordinal()
+    for i in range(n):
+        h, a = rng.choice(teams, 2, replace=False)
+        margin = skill[h] - skill[a] + 2.8 + rng.normal(0, 11)
+        out.append({"date": date.fromordinal(d0 + i // 6), "home": h, "away": a,
+                    "hs": 110 + int(max(margin, 0)) + 1, "as": 110 + int(max(-margin, 0)), "season": 2023 if i < 450 else 2024})
+    return out
+
+
+def test_features_before_update_no_leak():
+    st = ns.State()
+    st.new_season(2024, 0)
+    f = st.features("A", "B", date(2024, 10, 22))
+    assert f["elo_diff"] == 0 and f["form_diff"] == 0 and f["early"] == 1
+    st.update("A", "B", 120, 100, date(2024, 10, 22))
+    assert st.features("A", "B", date(2024, 10, 23))["elo_diff"] > 0
+
+
+def test_backtest_runs_walk_forward_and_beats_constant():
+    r = ns.backtest(_games(), test_season=2024, warmup=150, refit_every=50)
+    assert r["n"] > 100
+    assert r["logloss"]["stacked"] < r["logloss"]["home_rate"]
+    assert r["ci95"][0] <= r["diff_vs_elo"] <= r["ci95"][1]
+
+
+def test_stacker_probabilities_valid():
+    g = _games(400)
+    st, feats, ys = ns.State(), [], []
+    for x in g:
+        if x["season"] != st.season:
+            st.new_season(x["season"], 0 if st.season < 0 else 1)
+        feats.append(st.features(x["home"], x["away"], x["date"])); ys.append(int(x["hs"] > x["as"]))
+        st.update(x["home"], x["away"], x["hs"], x["as"], x["date"])
+    p = ns.Stacker().fit(feats, ys).predict(feats)
+    assert ((p > 0) & (p < 1)).all()
+
+
+def test_write_csv_does_not_overwrite_with_empty(tmp_path):
+    p = tmp_path / "c.csv"
+    p.write_text("a\n1\n")
+    assert fe.write_csv([], p, ["a"]) == 0
+    assert p.read_text() == "a\n1\n"
+
+
+def test_normalize_bridges_spellings():
+    import calibrate_ucl as cu
+    assert cu.normalize("Atletico Madrid") == cu.normalize("Ath Madrid") == "ath madrid"
+    assert cu.normalize("Paris Saint-Germain") == cu.normalize("Paris SG") == "paris sg"
+    assert cu.normalize("Manchester City") == cu.normalize("Man City")
+
+
+def test_build_elo_links_leagues_via_uefa_and_has_no_lookahead():
+    import ucl_model as um
+    rows = []
+    d = 1
+    for _ in range(12):  # league A strong team beats weak; league B likewise
+        for lg, t1, t2 in (("A", "A1", "A2"), ("B", "B1", "B2")):
+            rows.append({"date": f"2026-01-{d:02d}", "home_team": t1, "away_team": t2, "home_score": 2,
+                         "away_score": 0, "neutral": "FALSE", "league": lg}); d += 1
+    for i in range(6):  # A1 repeatedly beats B1 in Europe
+        rows.append({"date": f"2026-02-{i+1:02d}", "home_team": "A1", "away_team": "B1", "home_score": 3,
+                     "away_score": 0, "neutral": "FALSE", "league": "UEFA Champions League"})
+    elo, samples = um.build_elo(rows, burn_in=5)
+    assert elo["A1"] > elo["B1"]
+    first = samples[0]
+    assert first["eh"] == first["eh"] and abs(first["eh"] - 1500) < 200   # pre-match, not final
+
+
+def test_run_reports_unlinked_uefa_clubs(tmp_path):
+    import calibrate_ucl as cu
+    (tmp_path / "u.csv").write_text("date,home_team,away_team,home_score,away_score,neutral,league\n"
+                                    "2026-01-01,Slavia Praha,Porto,1,1,FALSE,UEFA Champions League\n")
+    (tmp_path / "c.csv").write_text("date,home_team,away_team,home_score,away_score,neutral,league\n"
+                                    "2026-01-01,Porto,Benfica,1,0,FALSE,Primeira Liga\n")
+    res = cu.run([tmp_path / "c.csv", tmp_path / "u.csv"], tmp_path)
+    assert "slavia praha" in res["uefa_clubs_without_domestic_data"] and res["calibrated"] is False
+
+
+def test_parse_espn_soccer_only_finished():
+    def ev(done, h, a):
+        return {"date": "2026-10-20T19:00Z", "status": {"type": {"completed": done}},
+                "competitions": [{"competitors": [{"homeAway": "home", "score": str(h), "team": {"displayName": "Liverpool"}},
+                                                  {"homeAway": "away", "score": str(a), "team": {"displayName": "Villarreal"}}]}]}
+    out = fe.parse_espn_soccer({"events": [ev(True, 2, 0), ev(False, 0, 0), {"x": 1}]}, "UEFA Champions League")
+    assert len(out) == 1 and out[0]["home_score"] == 2 and out[0]["league"].startswith("UEFA")
+
+
+def test_fixtures_parse_and_pricing_skips_unknown_clubs():
+    import price_today as pt
+    ev = {"date": "2026-10-20T19:00Z", "status": {"type": {"completed": False, "state": "pre"}},
+          "competitions": [{"competitors": [{"homeAway": "home", "team": {"displayName": "Liverpool"}},
+                                            {"homeAway": "away", "team": {"displayName": "Villarreal"}}]}]}
+    fx = fe.parse_espn_fixtures({"events": [ev, {"bad": 1}]})
+    assert len(fx) == 1 and fx[0]["home"] == "Liverpool"
+    out = pt.price_fixtures(fx, {"liverpool": 1800.0}, um.EloGoalModel())
+    assert "error" in out[0] and "villarreal" in out[0]["error"]
+
+
+def test_fetch_uefa_queries_single_days_tue_to_thu_only(monkeypatch):
+    import json
+    urls = []
+
+    def fake_get(url, *a, **k):
+        urls.append(url)
+        return json.dumps({"events": []})
+
+    monkeypatch.setattr(fe, "_get", fake_get)
+    fe.fetch_uefa(date(2026, 10, 12), date(2026, 10, 18), workers=1)   # Mon..Sun
+    assert len(urls) == 3 * 3                                          # Tue/Wed/Thu x 3 competitions
+    assert all("dates=2026101" in u and "-" not in u.split("dates=")[1] for u in urls)  # no ranges
+
+
+def test_low_sample_flag():
+    import price_today as pt
+    fx = [{"home": "Liverpool", "away": "Slovan Bratislava", "kickoff": "x"}]
+    out = pt.price_fixtures(fx, {"liverpool": 1800.0, "slovan bratislava": 1500.0}, um.EloGoalModel(),
+                            {"liverpool": 120, "slovan bratislava": 6})
+    assert out[0]["low_sample"] == ["Slovan Bratislava"]
+
+
+def test_validate_ucl_walk_forward_runs_on_synthetic():
+    import validate_ucl as vu
+    rng = np.random.default_rng(5)
+    teams = {lg: [f"{lg}{i}" for i in range(6)] for lg in "AB"}
+    skill = {t: rng.normal(0, 0.4) for ts in teams.values() for t in ts}
+    rows, day = [], 0
+    def match(h, a, lg):
+        nonlocal day
+        day += 1
+        lh = np.exp(0.2 + 0.15 + skill[h] - skill[a]); la = np.exp(0.2 + skill[a] - skill[h])
+        rows.append({"date": f"2025-{1 + day // 300:02d}-{1 + day % 28:02d}", "home_team": h, "away_team": a,
+                     "home_score": int(rng.poisson(lh)), "away_score": int(rng.poisson(la)), "neutral": "FALSE", "league": lg})
+    for _ in range(40):
+        for lg in "AB":
+            for i in range(6):
+                match(teams[lg][i], teams[lg][(i + 1) % 6], lg)
+        match(rng.choice(teams["A"]), rng.choice(teams["B"]), "UEFA Champions League")
+    res = vu.evaluate(rows, cutoff="2025-02-01", min_games=4)
+    assert res["n_test"] > 0 and res["logloss_model"] is not None
+
+
+def _fx(name):
+    import json
+    from pathlib import Path
+    d = json.loads((Path(__file__).parent / "fixtures" / name).read_text())
+    evs = []
+    for e in d["events"]:
+        evs.append({"name": e["name"], "date": e["date"], "status": {"type": {"state": e["status"]}},
+                    "competitions": [{"odds": e["odds"], "competitors": [
+                        {"homeAway": c["homeAway"], "team": {"displayName": c["team"]}} for c in e["competitors"]]}]})
+    return {"events": evs}
+
+
+def test_parse_real_espn_soccer_moneyline():
+    import value_picks as vp
+    evs = {e["home"]: e for e in vp.events_from_scoreboard(_fx("espn_ucl_odds_2026-10-20.json"))}
+    ml = vp.parse_moneyline(evs["Liverpool"]["odds"])
+    assert ml["home"] == -200 and ml["away"] == 500 and ml["draw"] == 370 and ml["provider"] == "DraftKings"
+
+
+def test_parse_real_espn_nba_moneyline_two_way():
+    import value_picks as vp
+    evs = {e["home"]: e for e in vp.events_from_scoreboard(_fx("espn_nba_odds_2026-10-20.json"))}
+    ml = vp.parse_moneyline(evs["New York Knicks"]["odds"])
+    assert ml["home"] == -180 and ml["away"] == 150 and "draw" not in ml
+
+
+def test_parse_moneyline_missing_returns_none():
+    import value_picks as vp
+    assert vp.parse_moneyline(None) is None and vp.parse_moneyline([{"moneyline": {"home": {}}}]) is None
+
+
+def test_rows_from_agg_ev_math_and_pwin_first_ranking():
+    import value_picks as vp
+    agg = {"final": {"home": 0.60, "draw": 0.25, "away": 0.15}, "model_mean": {"home": 0.6, "draw": 0.25, "away": 0.15},
+           "market_mean": {"home": 0.55, "draw": 0.25, "away": 0.2}, "model_spread": {"home": 0.1, "draw": 0.05, "away": 0.1},
+           "n_model_tools": 6, "n_market_tools": 4}
+    rows = vp.rows_from_agg(agg, {"home": -110, "draw": 300, "away": 500}, {"home": "H", "draw": "D", "away": "A"}, "m")
+    h = [r for r in rows if r["pick"] == "H"][0]
+    assert abs(h["ev"] - (0.6 * (100 / 110 + 1) - 1)) < 1e-9
+    assert [r["pick"] for r in vp.rank(rows)][0] == "H"          # likeliest winner first, EV does not reorder it above
+    assert "longshot" in " ".join(vp.warnings([r for r in rows if r["pick"] == "A"][0]))
+
+
+def test_recommendation_is_ev_positive_only_and_longshots_are_listed_after_favourites():
+    import value_picks as vp
+    mk = lambda p, ev, pick: {"match": "m", "pick": pick, "p_win": p, "ev": ev, "p_model": p, "p_market": p, "spread": 0.0,
+                              "american": 100, "payout_10": 20.0, "flags": []}
+    rows = [mk(0.20, 0.30, "long"), mk(0.70, 0.02, "fav"), mk(0.60, -0.05, "neg")]
+    txt = vp.render(rows, [])
+    rec = txt.split("RECOMMENDED")[1]
+    assert "fav" in rec and "long" in rec and "neg" not in rec
+    assert rec.index("fav") < rec.index("long")
+
+
+def test_warnings_flag_gap_and_spread_without_hiding_pick():
+    import value_picks as vp
+    r = {"match": "m", "pick": "x", "p_win": 0.6, "ev": 0.1, "p_model": 0.8, "p_market": 0.5, "spread": 0.4, "flags": []}
+    w = vp.warnings(r)
+    assert any("gap" in s for s in w) and any("disagree" in s for s in w)
+
+
+def test_espn_nba_preseason_games_are_dropped():
+    pre = _ev("9", True, "100", "90")
+    pre["season"] = {"type": 1}
+    reg = _ev("10", True, "100", "90")
+    reg["season"] = {"type": 2}
+    out = fe.parse_espn_scoreboard({"events": [pre, reg]})
+    assert [g["game_id"] for g in out] == ["10"]
+
+
+def test_aggregate_averages_within_groups_first_and_reports_unrun_tools():
+    import pwin_ensemble as pe
+    T = pe.ToolOut
+    tools = [T("elo_poisson_dixon_coles", "p", "model", {"home": 0.8, "away": 0.2}),
+             T("elo_monte_carlo_200k", "p", "model", {"home": 0.8, "away": 0.2}),
+             T("elo_skellam", "p", "model", {"home": 0.8, "away": 0.2}),
+             T("binomial_wdl_rates", "b", "model", {"home": 0.4, "away": 0.6}),
+             T("devig_power", "m", "market", {"home": 0.5, "away": 0.5}),
+             pe._not_run("eigenvector_keener", "e", "model", "club not in rating graph")]
+    agg = pe.aggregate(tools, w_model=1.0)
+    assert abs(agg["model_mean"]["home"] - 0.6) < 1e-9          # (0.8 + 0.4)/2, NOT (3*0.8+0.4)/4 = 0.7
+    assert agg["not_run"] == ["eigenvector_keener"] and agg["n_model_tools"] == 4
+    assert abs(agg["final"]["home"] + agg["final"]["away"] - 1) < 1e-9
+
+
+def test_soccer_ensemble_runs_every_tool_and_never_invents_missing_clubs(tmp_path):
+    import pwin_ensemble as pe
+    rng = np.random.default_rng(11)
+    teams = [f"T{i}" for i in range(8)]
+    skill = {t: rng.normal(0, 0.4) for t in teams}
+    lines = ["date,home_team,away_team,home_score,away_score,neutral,league"]
+    d = 0
+    for _ in range(14):
+        for i, h in enumerate(teams):
+            a = teams[(i + 3) % 8]
+            d += 1
+            lines.append(f"2026-{1 + d // 280:02d}-{1 + d % 27:02d},{h},{a},{rng.poisson(np.exp(0.2 + skill[h] - skill[a]))},"
+                         f"{rng.poisson(np.exp(0.1 + skill[a] - skill[h]))},FALSE,{'UEFA Champions League' if d % 9 == 0 else 'L'}")
+    (tmp_path / "r.csv").write_text("\n".join(lines))
+    ctx = pe.build_soccer_ctx([tmp_path / "r.csv"])
+    ml = {"home": -150, "draw": 270, "away": 400}
+    tools = pe.soccer_tools(ctx, "T0", "T1", ml, 2.5)
+    names = {t.name for t in tools}
+    assert {"elo_poisson_dixon_coles", "elo_monte_carlo_200k", "elo_skellam", "poisson_regression", "eigenvector_keener",
+            "binomial_wdl_rates", "devig_multiplicative", "devig_power", "devig_shin", "sport_math_anchored_dc", "chaos_engine_draw_risk"} <= names
+    agg = pe.aggregate(tools)
+    assert abs(sum(agg["final"].values()) - 1) < 1e-9
+    ghost = pe.soccer_tools(ctx, "T0", "Ghost FC", ml, 2.5)
+    assert all(t.probs is None for t in ghost if t.name.startswith("elo_")) and "NOT RUN" in ghost[0].note
+
+
+def test_nba_predict_fixture_unknown_team_is_none():
+    st = ns.State()
+    st.new_season(2025, 0)
+    st.update("A", "B", 100, 90, date(2025, 11, 1))
+    stk = ns.Stacker()
+    assert ns.predict_fixture(st, stk, "A", "Nobody", date(2025, 11, 5)) is None
+
+
+def test_report_puts_ucl_before_nba_even_when_nba_rows_come_first():
+    import value_picks as vp
+    mk = lambda lg, pick, p: {"match": f"{pick}-m", "pick": pick, "p_win": p, "ev": 0.05, "p_model": p, "p_market": p, "spread": 0.0,
+                              "american": -110, "payout_10": 19.0, "flags": [], "league": lg}
+    rows = [mk("NBA", "KNICKS", 0.90), mk("UCL", "PSG", 0.40)]           # NBA has the higher P(win) and comes first in the list
+    txt = vp.render(rows, ["Lakers @ Suns (no moneyline)", "Roma vs X (already in)"], ["  block"])
+    assert txt.index("=== UCL ===") < txt.index("=== NBA ===")
+    assert txt.index("PSG") < txt.index("KNICKS")
+    assert txt.index("Roma vs X") < txt.index("Lakers @ Suns")             # skipped list also UCL first
+
+
+def test_anchor_rates_sets_total_and_keeps_split():
+    import total_anchor as ta
+    lh, la = ta.anchor_rates(1.3, 1.4, 4.4)
+    assert abs((lh + la) - 4.4) < 1e-9 and abs(lh / (lh + la) - 1.3 / 2.7) < 1e-9
+    assert ta.anchor_rates(1.3, 1.4, None) == (1.3, 1.4) and ta.anchor_rates(1.3, 1.4, 0) == (1.3, 1.4)
+
+
+def test_market_total_from_ou_recovers_known_total():
+    import pwin_ensemble as pe
+    import soccer_markets as sm
+    b = sm.derive_markets(sm.score_matrix(2.2, 1.9), total_lines=(3.5,))
+    t = pe.market_total_from_ou(b.home_win, b.away_win, b.over_under[3.5]["over"], 3.5)
+    assert abs(t - 4.1) < 0.1 and pe.market_total_from_ou(0.4, 0.3, 0.5, 2.25) is None
+
+
+def test_soccer_tools_anchor_every_goal_tool_to_market_total(tmp_path):
+    import pwin_ensemble as pe
+    rng = np.random.default_rng(3)
+    teams = [f"T{i}" for i in range(8)]
+    lines = ["date,home_team,away_team,home_score,away_score,neutral,league"]
+    d = 0
+    for _ in range(14):
+        for i, h in enumerate(teams):
+            d += 1
+            lines.append(f"2026-{1 + d // 280:02d}-{1 + d % 27:02d},{h},{teams[(i + 3) % 8]},{rng.poisson(1.3)},{rng.poisson(1.1)},FALSE,{'UEFA Champions League' if d % 9 == 0 else 'L'}")
+    (tmp_path / "r.csv").write_text("\n".join(lines))
+    ctx = pe.build_soccer_ctx([tmp_path / "r.csv"])
+    ml = {"home": -120, "draw": 260, "away": 330}
+    anch = pe.soccer_tools(ctx, "T0", "T1", ml, 2.5, market_total=4.4)
+    for t in anch:
+        if t.lam:
+            assert abs(sum(t.lam) - 4.4) < 1e-6, t.name
+    free = pe.soccer_tools(ctx, "T0", "T1", ml, 2.5, market_total=None)
+    assert all("NOT anchored" in t.note for t in free if t.lam)
+
+
+def test_ucl_model_has_competition_offset_and_extended_fit_runs():
+    import ucl_model as um2
+    m = um2.EloGoalModel(a=0.2, c_ucl=0.2, c_eur=0.05, g=0.0)
+    ucl = sum(um2.lambdas(m, 1700, 1700, comp="UCL")); dom = sum(um2.lambdas(m, 1700, 1700, comp="DOM"))
+    assert ucl > dom and abs(ucl / dom - np.exp(0.2)) < 1e-9
+    assert um2.comp_of("UEFA Champions League") == "UCL" and um2.comp_of("UEFA Europa League") == "EUR" and um2.comp_of("Serie A") == "DOM"
+
+
+def test_sheet_markets_are_internally_consistent():
+    import sheet_picks as sp
+    b = sp.book(1.5, 1.1)
+    assert abs(b["H"] + b["D"] + b["A"] - 1) < 1e-9
+    assert abs(b["1X"] - (b["H"] + b["D"])) < 1e-12 and abs(b["DNB_H"] + b["DNB_A"] - 1) < 1e-12
+    assert abs(b["BTTS_Y"] + b["BTTS_N"] - 1) < 1e-9 and abs(b["O2.5"] + b["U2.5"] - 1) < 1e-9
+
+
+def test_anchored_lambdas_reproduce_market_home_and_over():
+    import sheet_picks as sp
+    import numpy as np
+    pw = np.array([0.40, 0.21, 0.39])
+    lh, la = sp.anchored_lambdas(pw, 0.80)
+    b = sp.book(lh, la)
+    assert abs(b["H"] - 0.40) < 0.03 and abs(b["A"] - 0.39) < 0.03 and abs(b["O2.5"] - 0.80) < 0.06
+
+
+def test_parse_total_from_real_espn_fixture_and_devig():
+    import value_picks as vp
+    evs = {e["home"]: e for e in vp.events_from_scoreboard(_fx("espn_ucl_odds_2026-10-20.json"))}
+    line, p_over = vp.parse_total(evs["Liverpool"]["odds"][0])
+    assert line == 3.5 and abs(p_over - 0.4532) < 0.005   # +110 over / -135 under, devigged (2.10 and 1.741 -> 0.4532)
+    assert vp.parse_total({}) is None and vp.parse_total({"total": {"over": {"close": {"line": "o3.5", "odds": "+110"}}}}) is None
+
+
+def test_p_ever_ahead_matches_brute_force_orderings():
+    import itertools
+    import parlay_check as pc
+    for h, a in [(1, 1), (1, 2), (2, 3), (3, 3), (0, 2), (2, 0), (4, 2)]:
+        perms = set(itertools.permutations([1] * h + [-1] * a))
+        brute = sum(1 for p in perms if max(itertools.accumulate(p)) > 0) / len(perms)
+        assert abs(pc.p_ever_ahead(h, a) - brute) < 1e-12
+
+
+def test_leg_kinds_are_coherent_on_one_matrix():
+    import parlay_check as pc
+    import soccer_markets as sm2
+    M = sm2.score_matrix(1.6, 1.2)
+    b = sm2.derive_markets(M)
+    assert abs(pc.leg_prob(M, {"kind": "dc", "sel": "X2"}) - (b.draw + b.away_win)) < 1e-9
+    assert abs(pc.leg_prob(M, {"kind": "win", "team": "home"}) - b.home_win) < 1e-9
+    win_over = pc.leg_prob(M, {"kind": "win_and_over", "team": "home", "line": 2.5})
+    assert win_over <= min(b.home_win, b.over_under[2.5]["over"]) + 1e-12
+    one_up = pc.leg_prob(M, {"kind": "1up", "team": "home"})
+    assert b.home_win < one_up < 1.0                                  # 1UP is strictly easier than winning
+    tt = pc.leg_prob(M, {"kind": "team_total_over", "team": "home", "line": 2.5})
+    assert 0 < tt < pc.leg_prob(M, {"kind": "over", "line": 1.5})
+
+
+def test_sampled_legs_agree_with_exact_probabilities():
+    import numpy as np
+    import parlay_check as pc
+    import soccer_markets as sm2
+    M = sm2.score_matrix(1.5, 1.3)
+    rng = np.random.default_rng(1)
+    for leg in ({"kind": "1up", "team": "away"}, {"kind": "win_and_over", "team": "home", "line": 2.5}, {"kind": "dc", "sel": "1X"}):
+        sim = pc.sample_leg(M, leg, 300_000, rng).mean()
+        assert abs(sim - pc.leg_prob(M, leg)) < 0.006, leg
+
+
+def test_refund_prob_matches_monte_carlo_and_grows_with_negative_halves_correlation():
+    import nba_halftime as nh2
+    rng = np.random.default_rng(4)
+    m, s = 3.0, nh2.DEFAULTS["sigma"] / np.sqrt(2)
+    h1, h2 = rng.normal(m / 2, s, 3_000_000), rng.normal(m / 2, s, 3_000_000)
+    mc = ((h1 >= 15.5) & (h1 + h2 <= 0)).mean()
+    assert abs(nh2.refund_prob(m, nh2.DEFAULTS) - mc) < 0.0004
+    neg = {**nh2.DEFAULTS, "rho": -0.3}
+    assert nh2.refund_prob(m, neg) > 2 * nh2.refund_prob(m, nh2.DEFAULTS)
+
+
+def test_ev_with_refund_formula_and_margin_inversion():
+    import nba_halftime as nh2
+    assert abs(nh2.ev_with_refund(0.6, 1.8, 0.01) - (0.6 * 1.8 - 1 + 0.01)) < 1e-12
+    assert abs(nh2.margin_from_pwin(0.5)) < 1e-9 and nh2.margin_from_pwin(0.7) > 0 > nh2.margin_from_pwin(0.3)
+
+
+def test_first_half_parser_and_missing_linescores_are_not_guessed():
+    ev = _ev("11", True, "110", "100")
+    for c, vals in zip(ev["competitions"][0]["competitors"], ([28.0, 30.0, 25.0, 27.0], [20.0, 31.0, 22.0, 27.0])):
+        c["linescores"] = [{"value": v} for v in vals]
+    out = fe.parse_espn_scoreboard({"events": [ev, _ev("12", True, "90", "88")]})
+    by = {g["game_id"]: g for g in out}
+    assert by["11"]["h1_home"] == 58 and by["11"]["h1_away"] == 51
+    assert by["12"]["h1_home"] is None and by["12"]["h1_away"] is None
+
+
+def test_promo_row_ev_uses_refund_and_nba_recommendation_uses_it():
+    import value_picks as vp
+    agg = {"final": {"home": 0.60, "away": 0.40}, "model_mean": {"home": 0.6, "away": 0.4}, "market_mean": {"home": 0.6, "away": 0.4},
+           "model_spread": {"home": 0.0, "away": 0.0}, "n_model_tools": 6, "n_market_tools": 4}
+    rows = vp.rows_from_agg(agg, {"home": -110, "away": -110}, {"home": "H", "away": "A"}, "m", league="NBA", halftime_refund=True)
+    h = rows[0]
+    assert h["ev_promo"] > h["ev"] and abs(h["ev_promo"] - (h["ev"] + h["p_refund"])) < 1e-12 and "promo_params" in h
+
+
+def test_nba_sigma_is_the_post_2018_residual_sd_not_the_train_value():
+    import pwin_ensemble as pe2
+    s = pe2.nba_sigma_margin({"sigma_margin": 11.77, "test_ll_margin_const_sigma": -4.0055})
+    assert 12.9 < s < 13.3
+    assert pe2.nba_sigma_margin({}) == 13.0
+
+
+def test_fit_margin_recovers_known_margin_from_a_ladder():
+    import nba_sheet_picks as nsp2
+    from scipy.stats import norm
+    m_true, S = 4.0, nsp2.SIGMA_M
+    ladder = {}
+    for L in (-6.5, -5.5, -4.5, -3.5, -2.5, 3.5, 5.5, 8.5):
+        p = float(norm.cdf((m_true + L) / S))
+        ladder[str(L)] = [1 / (p * 1.05), 1 / ((1 - p) * 1.05)]            # 5% overround on both sides
+    assert abs(nsp2.fit_margin(ladder) - m_true) < 0.6
+
+
+def test_nba_rows_mov_buckets_and_ml_are_probabilities():
+    import json
+    import nba_sheet_picks as nsp2
+    import pwin_ensemble as pe2
+    from datetime import date as d
+    from pathlib import Path
+    sheet = json.loads((Path(__file__).parent.parent / "data" / "sheets" / "2026-10-20_nba.json").read_text())["matches"]
+    g = sheet["Philadelphia 76ers @ New York Knicks"]
+    # tiny synthetic NBA history so the ctx builds without the real CSVs
+    rng = np.random.default_rng(8)
+    names = [g["home"], g["away"], "A", "B", "C", "D"]
+    import tempfile, csv
+    p = Path(tempfile.mkdtemp()) / "g.csv"
+    with p.open("w", newline="") as f:
+        w = csv.writer(f); w.writerow(["game_id", "date", "home_team", "away_team", "home_score", "away_score", "season"])
+        for i in range(900):
+            h, a = rng.choice(names, 2, replace=False)
+            w.writerow([i, f"2025-{1 + i // 90:02d}-{1 + i % 27:02d}", h, a, int(rng.normal(112, 10)), int(rng.normal(110, 10)), 2025])
+    nctx = pe2.build_nba_ctx([p])
+    rows, info = nsp2.price_game(nctx, "x", g, d(2026, 10, 20), {"sigma": 13.1, "h1_var_share": 0.5, "rho": 0.0, "fitted": False})
+    ml = [r for r in rows if r["market"] == "Ganador"]
+    assert abs(sum(r["p_win"] for r in ml) - 1) < 1e-9 and all(0 <= r["p_win"] <= 1 for r in rows)
+    mov = [r for r in rows if r["market"] == "Margen de victoria"]
+    assert abs(sum(r["p_win"] for r in mov) - 1) < 1e-6                     # six buckets cover every margin
+    assert info["stale"] is True and info["w_model"] == nsp2.W_MODEL_STALE
+
+
+def test_ticket_and_kelly_math():
+    import portfolio as pf2
+    t = pf2.ticket([{"p_win": 0.6, "decimal": 1.8, "match": "a"}, {"p_win": 0.5, "decimal": 2.1, "match": "b"}])
+    assert abs(t["p"] - 0.3) < 1e-12 and abs(t["odds"] - 3.78) < 1e-9 and abs(t["ev"] - (0.3 * 3.78 - 1)) < 1e-9
+    assert pf2.kelly_stake(0.5, 2.0) == 0.0                                   # fair price -> no stake
+    assert pf2.kelly_stake(0.9, 3.0) == round(30 * 0.05, 2)                    # capped at 5% of the bankroll
+
+
+def test_flow_sim_matches_the_targets_and_analytic_probabilities():
+    import nba_flow_sim as fs2
+    from scipy.stats import norm
+    sim = fs2.simulate(m=4.0, T=230.0, sigma_m=13.1, sigma_t=17.47, rho_q=-0.05, n=300_000)
+    assert abs(sim["M"].std() - 13.1) < 0.15 and abs(sim["S"].std() - 17.47) < 0.2
+    assert abs(sim["win_home"].mean() - norm.cdf(4.0 / 13.1)) < 0.006
+    assert abs(fs2.p_cover_home(sim, 3.5) - norm.cdf(7.5 / 13.1)) < 0.006
+    assert fs2.p_refund(sim, "home") > 0
+
+
+def test_props_model_is_shrunk_to_market_and_drops_dnp_games():
+    import props_picks as pp
+    pr = {"player": "X", "team": "T", "stat": "Puntos", "last5": [30, 31, 29, 32, 0], "line": 20.5, "over": 1.9, "under": 1.9}
+    pra = {"player": "X", "team": "T", "stat": "PRA", "last5": [40, 41, 39, 42, 0], "line": 30.5, "over": 1.9, "under": 1.9}
+    rows = pp.price([pr, pra])
+    over = [r for r in rows if r["pick"].endswith("Más de 20.5")][0]
+    assert over["n_games"] == 4 and over["dnp_dropped"] == 1               # the 0-point DNP game is excluded
+    assert 0.5 < over["p_win"] < 0.75                                      # moves toward the data but stays anchored to the market
+    under = [r for r in rows if r["pick"].endswith("Menos de 20.5")][0]
+    assert abs(over["p_win"] + under["p_win"] - 1) < 1e-9
+
+
+def test_portfolio_ignores_ev_and_applies_only_payout_floors():
+    import portfolio as pf2
+    mk = lambda p, o, ev, m: {"p_win": p, "decimal": o, "ev": ev, "match": m, "league": "UCL", "warn": ["x"]}
+    assert pf2.clean(mk(0.8, 1.3, -0.30, "a"))                              # hugely negative EV still a candidate
+    assert not pf2.clean(mk(0.95, 1.02, 0.5, "b"))                          # but a 1.02 'sure thing' fails the payout floor
+    assert not pf2.clean(mk(0.45, 2.5, 0.9, "c"))                           # and so does P(win) < 50%
+
+
+def test_props_have_no_directional_bias_when_all_last5_sit_below_the_line():
+    """Preseason regression test: every player's last 5 is ~5% under the line; the pricer must not turn that into 'Under everywhere'."""
+    import props_picks as pp
+    rng = np.random.default_rng(12)
+    props = []
+    for i in range(30):
+        line = float(rng.integers(8, 28)) + 0.5
+        vals = [max(1, round(line * 0.95 + rng.normal(0, line * 0.25))) for _ in range(5)]
+        props += [{"player": f"P{i}", "team": "T", "stat": "Puntos", "last5": vals, "line": line, "over": 1.9, "under": 1.9},
+                  {"player": f"P{i}", "team": "T", "stat": "PRA", "last5": [v * 1.6 for v in vals], "line": line * 1.6, "over": 1.9, "under": 1.9}]
+    rows = pp.price(props)
+    assert abs(pp.side_balance(rows)["mean_model_minus_market"]) < 1e-6
+    top = sorted(rows, key=lambda r: -r["p_win"])[:20]
+    overs = sum(" Más de " in r["pick"] for r in top)
+    assert 5 <= overs <= 15                                              # neither side dominates the top of the list
+
+
+def test_props_over_and_under_are_complements():
+    import props_picks as pp
+    props = [{"player": "A", "team": "T", "stat": "Rebotes", "last5": [9, 11, 8, 12, 10], "line": 9.5, "over": 1.85, "under": 1.95},
+             {"player": "A", "team": "T", "stat": "PRA", "last5": [30, 33, 28, 35, 31], "line": 30.5, "over": 1.9, "under": 1.9}]
+    rows = {r["pick"]: r for r in pp.price(props)}
+    assert abs(rows["A Rebotes Más de 9.5"]["p_win"] + rows["A Rebotes Menos de 9.5"]["p_win"] - 1) < 1e-9
+
+
+def test_game_sim_split_matches_target_margin_and_keeps_total():
+    import game_sim_report as gs
+    import soccer_markets as sm2
+    lh, la = gs.split_for(3.4, 0.25)
+    b = sm2.derive_markets(sm2.score_matrix(lh, la))
+    assert abs(lh + la - 3.4) < 1e-9 and abs((b.home_win - b.away_win) - 0.25) < 5e-3
+    sc = gs.sample_scores(lh, la)
+    assert abs(sc[:, 0].mean() - lh) < 0.03 and abs((sc[:, 0] + sc[:, 1]).mean() - 3.4) < 0.05   # sampled goals follow the anchored total
+
+
+def test_nba_detail_parses_real_espn_summary():
+    import json
+    from pathlib import Path
+    import nba_detail as nd
+    d = json.loads((Path(__file__).parent / "fixtures" / "nba_summary_401809244.json").read_text())
+    r = nd.parse_summary(d)
+    assert r["lineup_ok"] and len(r["team"]) == 2 and r["team"][0]["poss"] == r["team"][1]["poss"]
+    assert {t["pts"] for t in r["team"]} == {119, 109}                      # GSW 119, LAL 109 (real game)
+    by = {p["athlete_id"]: p for p in r["player"]}
+    for o in r["onoff"]:                                                    # rebuilt minutes agree with the box score
+        if by[o["athlete_id"]]["min"] > 0:
+            assert abs(o["sec_on"] / 60 - by[o["athlete_id"]]["min"]) <= nd.MAX_MIN_ERR
+    assert nd.shot_zone(25, 5.25, 2) == "rim" and nd.shot_zone(1, 2, 3) == "corner3" and nd.shot_zone(25, 28, 3) == "above3"
+    assert all(s["x"] >= 0 and s["y"] >= 0 and s["pts_att"] in (2, 3) for s in r["shot"])
+
+
+def test_usage_vacuum_conserves_shares_and_redistributes_to_teammates():
+    import pandas as pd
+    import usage_vacuum as uv
+    ids = [str(i) for i in range(12)]
+    rates = pd.DataFrame({"mpg": [34, 32, 30, 28, 26, 22, 20, 18, 16, 14, 12, 10], "n": 60,
+                          **{f"rate_{s}": [0.8, 0.6, 0.5, 0.4, 0.4, 0.3, 0.3, 0.25, 0.2, 0.2, 0.15, 0.1] for s in uv.STATS},
+                          **{f"share_{s}": [0.26, 0.2, 0.15, 0.11, 0.1, 0.07, 0.05, 0.03, 0.02, 0.01, 0.01, 0.0] for s in uv.STATS}}, index=ids)
+    full = uv.roles(ids, set(ids[:5]), rates)
+    assert abs(sum(r["min"] for r in full.values()) - uv.TEAM_MIN) < 1e-6 and max(r["min"] for r in full.values()) <= uv.MAX_MIN + 1e-9
+    assert abs(sum(r["pts_share"] for r in full.values()) - 1) < 1e-9
+    no_star = uv.roles(ids[1:], set(ids[1:6]), rates)                       # the usage leader is out
+    assert all(no_star[a]["pts_share"] > full[a]["pts_share"] for a in ids[1:6])

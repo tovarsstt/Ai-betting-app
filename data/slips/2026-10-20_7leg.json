@@ -1,0 +1,13 @@
+{
+  "_source": "user's multi-bet pasted 2026-10-20 (Stake), total odds 19.13. Stake Shield terms unknown (not modelled).",
+  "total_odds": 19.13,
+  "legs": [
+    {"match": "Napoli vs Bodo/Glimt", "pick": "Bodo/Glimt o empate (doble oportunidad)", "kind": "dc", "sel": "X2", "odds": 2.10},
+    {"match": "Stuttgart vs Atletico Madrid", "pick": "Atlético Madrid 1x2 (1UP)", "kind": "1up", "team": "away", "odds": 1.47},
+    {"match": "Manchester City vs AEK Athens", "pick": "Manchester City más de 2.5 goles (total del equipo)", "kind": "team_total_over", "team": "home", "line": 2.5, "odds": 1.50},
+    {"match": "FC Porto vs PSV Eindhoven", "pick": "FC Porto gana (1x2)", "kind": "win", "team": "home", "odds": 1.50},
+    {"match": "Liverpool vs Villarreal", "pick": "Más de 2.5 goles (total asiático)", "kind": "over", "line": 2.5, "odds": 1.44},
+    {"match": "AS Roma vs Slovan Bratislava", "pick": "AS Roma y más de 2.5 (1x2 y total)", "kind": "win_and_over", "team": "home", "line": 2.5, "odds": 1.25},
+    {"match": "Paris Saint-Germain vs Barcelona", "pick": "PSG 1x2 (1UP)", "kind": "1up", "team": "home", "odds": 1.53}
+  ]
+}

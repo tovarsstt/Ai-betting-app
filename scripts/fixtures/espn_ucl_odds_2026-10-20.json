@@ -1,0 +1,1008 @@
+{
+ "url": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard?dates=20261020",
+ "n_events": 9,
+ "events": [
+  {
+   "name": "Slavia Prague at Fenerbahce",
+   "date": "2026-10-20T16:45Z",
+   "status": "in",
+   "odds": [
+    {
+     "overUnder": 3.5,
+     "provider": {
+      "id": "100",
+      "name": "DraftKings",
+      "priority": 1,
+      "displayName": "DraftKings"
+     },
+     "drawOdds": {
+      "moneyLine": 425
+     },
+     "total": {
+      "displayName": "Total",
+      "shortDisplayName": "Total",
+      "over": {
+       "open": {
+        "line": "o2.5",
+        "odds": "-160"
+       },
+       "close": {
+        "line": "o3.5",
+        "odds": "+100"
+       },
+       "current": {
+        "line": "o4.5",
+        "odds": "+131"
+       }
+      },
+      "under": {
+       "open": {
+        "line": "u2.5",
+        "odds": "+120"
+       },
+       "close": {
+        "line": "u3.5",
+        "odds": "-125"
+       },
+       "current": {
+        "line": "u4.5",
+        "odds": "-157"
+       }
+      }
+     },
+     "pointSpread": {
+      "displayName": "Spread",
+      "shortDisplayName": "Spread",
+      "home": {
+       "open": {
+        "line": "-0.5",
+        "odds": "-175"
+       },
+       "close": {
+        "line": "-1.5",
+        "odds": "-105"
+       },
+       "current": {
+        "line": "OFF",
+        "odds": "OFF"
+       }
+      },
+      "away": {
+       "open": {
+        "line": "+0.5",
+        "odds": "+120"
+       },
+       "close": {
+        "line": "+1.5",
+        "odds": "-130"
+       },
+       "current": {
+        "line": "OFF",
+        "odds": "-170"
+       }
+      }
+     },
+     "moneyline": {
+      "displayName": "Moneyline",
+      "shortDisplayName": "ML",
+      "home": {
+       "open": {
+        "odds": "-155"
+       },
+       "close": {
+        "odds": "-240"
+       },
+       "current": {
+        "odds": "OFF"
+       }
+      },
+      "away": {
+       "open": {
+        "odds": "+400"
+       },
+       "close": {
+        "odds": "+600"
+       },
+       "current": {
+        "odds": "OFF"
+       }
+      },
+      "draw": {
+       "open": {
+        "odds": "+310"
+       },
+       "close": {
+        "odds": "+425"
+       }
+      }
+     },
+     "details": "FEN -240"
+    }
+   ],
+   "has_odds_key": true,
+   "competitors": [
+    {
+     "homeAway": "home",
+     "team": "Fenerbahce"
+    },
+    {
+     "homeAway": "away",
+     "team": "Slavia Prague"
+    }
+   ]
+  },
+  {
+   "name": "Borussia Dortmund at Sabah FK",
+   "date": "2026-10-20T16:45Z",
+   "status": "in",
+   "odds": [
+    {
+     "overUnder": 3.5,
+     "provider": {
+      "id": "100",
+      "name": "DraftKings",
+      "priority": 1
+     },
+     "drawOdds": {
+      "moneyLine": 500
+     },
+     "total": {
+      "displayName": "Total",
+      "shortDisplayName": "Total",
+      "over": {
+       "open": {
+        "line": "o3.5",
+        "odds": "+105"
+       },
+       "close": {
+        "line": "o3.5",
+        "odds": "+105"
+       },
+       "current": {
+        "line": "o3.5",
+        "odds": "+121"
+       }
+      },
+      "under": {
+       "open": {
+        "line": "u3.5",
+        "odds": "-140"
+       },
+       "close": {
+        "line": "u3.5",
+        "odds": "-130"
+       },
+       "current": {
+        "line": "u3.5",
+        "odds": "-144"
+       }
+      }
+     },
+     "pointSpread": {
+      "displayName": "Spread",
+      "shortDisplayName": "Spread",
+      "home": {
+       "open": {
+        "line": "+1.5",
+        "odds": "-120"
+       },
+       "close": {
+        "line": "+1.5",
+        "odds": "+100"
+       },
+       "current": {
+        "line": "+1.5",
+        "odds": "+100"
+       }
+      },
+      "away": {
+       "open": {
+        "line": "-1.5",
+        "odds": "-120"
+       },
+       "close": {
+        "line": "-1.5",
+        "odds": "-140"
+       },
+       "current": {
+        "line": "-1.5",
+        "odds": "-145"
+       }
+      }
+     },
+     "moneyline": {
+      "displayName": "Moneyline",
+      "shortDisplayName": "ML",
+      "home": {
+       "open": {
+        "odds": "+650"
+       },
+       "close": {
+        "odds": "+850"
+       },
+       "current": {
+        "odds": "+850"
+       }
+      },
+      "away": {
+       "open": {
+        "odds": "-285"
+       },
+       "close": {
+        "odds": "-350"
+       },
+       "current": {
+        "odds": "-370"
+       }
+      },
+      "draw": {
+       "open": {
+        "odds": "+450"
+       },
+       "close": {
+        "odds": "+500"
+       },
+       "current": {
+        "odds": "+500"
+       }
+      }
+     },
+     "details": "DOR -350"
+    }
+   ],
+   "has_odds_key": true,
+   "competitors": [
+    {
+     "homeAway": "home",
+     "team": "Sabah FK"
+    },
+    {
+     "homeAway": "away",
+     "team": "Borussia Dortmund"
+    }
+   ]
+  },
+  {
+   "name": "Slovan Bratislava at AS Roma",
+   "date": "2026-10-20T19:00Z",
+   "status": "pre",
+   "odds": [
+    {
+     "overUnder": 3.5,
+     "provider": {
+      "id": "100",
+      "name": "DraftKings",
+      "priority": 1
+     },
+     "drawOdds": {
+      "moneyLine": 900
+     },
+     "total": {
+      "displayName": "Total",
+      "shortDisplayName": "Total",
+      "over": {
+       "open": {
+        "line": "o3.5",
+        "odds": "-135"
+       },
+       "close": {
+        "line": "o3.5",
+        "odds": "-160"
+       }
+      },
+      "under": {
+       "open": {
+        "line": "u3.5",
+        "odds": "+105"
+       },
+       "close": {
+        "line": "u3.5",
+        "odds": "+130"
+       }
+      }
+     },
+     "pointSpread": {
+      "displayName": "Spread",
+      "shortDisplayName": "Spread",
+      "home": {
+       "open": {
+        "line": "-2.5",
+        "odds": "-115"
+       },
+       "close": {
+        "line": "-2.5",
+        "odds": "-140"
+       }
+      },
+      "away": {
+       "open": {
+        "line": "+2.5",
+        "odds": "-125"
+       },
+       "close": {
+        "line": "+2.5",
+        "odds": "+100"
+       }
+      }
+     },
+     "moneyline": {
+      "displayName": "Moneyline",
+      "shortDisplayName": "ML",
+      "home": {
+       "open": {
+        "odds": "-800"
+       },
+       "close": {
+        "odds": "-900"
+       }
+      },
+      "away": {
+       "open": {
+        "odds": "+1600"
+       },
+       "close": {
+        "odds": "+2200"
+       }
+      },
+      "draw": {
+       "open": {
+        "odds": "+850"
+       },
+       "close": {
+        "odds": "+900"
+       }
+      }
+     },
+     "details": "ROMA -900"
+    }
+   ],
+   "has_odds_key": true,
+   "competitors": [
+    {
+     "homeAway": "home",
+     "team": "AS Roma"
+    },
+    {
+     "homeAway": "away",
+     "team": "Slovan Bratislava"
+    }
+   ]
+  },
+  {
+   "name": "PSV Eindhoven at FC Porto",
+   "date": "2026-10-20T19:00Z",
+   "status": "pre",
+   "odds": [
+    {
+     "overUnder": 3.5,
+     "provider": {
+      "id": "100",
+      "name": "DraftKings",
+      "priority": 1
+     },
+     "drawOdds": {
+      "moneyLine": 370
+     },
+     "total": {
+      "displayName": "Total",
+      "shortDisplayName": "Total",
+      "over": {
+       "open": {
+        "line": "o2.5",
+        "odds": "-185"
+       },
+       "close": {
+        "line": "o3.5",
+        "odds": "+135"
+       }
+      },
+      "under": {
+       "open": {
+        "line": "u2.5",
+        "odds": "+140"
+       },
+       "close": {
+        "line": "u3.5",
+        "odds": "-165"
+       }
+      }
+     },
+     "pointSpread": {
+      "displayName": "Spread",
+      "shortDisplayName": "Spread",
+      "home": {
+       "open": {
+        "line": "-0.5",
+        "odds": "-150"
+       },
+       "close": {
+        "line": "-1.5",
+        "odds": "+125"
+       }
+      },
+      "away": {
+       "open": {
+        "line": "+0.5",
+        "odds": "+105"
+       },
+       "close": {
+        "line": "+1.5",
+        "odds": "-170"
+       }
+      }
+     },
+     "moneyline": {
+      "displayName": "Moneyline",
+      "shortDisplayName": "ML",
+      "home": {
+       "open": {
+        "odds": "-140"
+       },
+       "close": {
+        "odds": "-200"
+       }
+      },
+      "away": {
+       "open": {
+        "odds": "+310"
+       },
+       "close": {
+        "odds": "+500"
+       }
+      },
+      "draw": {
+       "open": {
+        "odds": "+320"
+       },
+       "close": {
+        "odds": "+370"
+       }
+      }
+     },
+     "details": "FCP -200"
+    }
+   ],
+   "has_odds_key": true,
+   "competitors": [
+    {
+     "homeAway": "home",
+     "team": "FC Porto"
+    },
+    {
+     "homeAway": "away",
+     "team": "PSV Eindhoven"
+    }
+   ]
+  },
+  {
+   "name": "Villarreal at Liverpool",
+   "date": "2026-10-20T19:00Z",
+   "status": "pre",
+   "odds": [
+    {
+     "overUnder": 3.5,
+     "provider": {
+      "id": "100",
+      "name": "DraftKings",
+      "priority": 1
+     },
+     "drawOdds": {
+      "moneyLine": 370
+     },
+     "total": {
+      "displayName": "Total",
+      "shortDisplayName": "Total",
+      "over": {
+       "open": {
+        "line": "o3.5",
+        "odds": "+130"
+       },
+       "close": {
+        "line": "o3.5",
+        "odds": "+110"
+       }
+      },
+      "under": {
+       "open": {
+        "line": "u3.5",
+        "odds": "-170"
+       },
+       "close": {
+        "line": "u3.5",
+        "odds": "-135"
+       }
+      }
+     },
+     "pointSpread": {
+      "displayName": "Spread",
+      "shortDisplayName": "Spread",
+      "home": {
+       "open": {
+        "line": "-1.5",
+        "odds": "+115"
+       },
+       "close": {
+        "line": "-1.5",
+        "odds": "+115"
+       }
+      },
+      "away": {
+       "open": {
+        "line": "+1.5",
+        "odds": "-170"
+       },
+       "close": {
+        "line": "+1.5",
+        "odds": "-160"
+       }
+      }
+     },
+     "moneyline": {
+      "displayName": "Moneyline",
+      "shortDisplayName": "ML",
+      "home": {
+       "open": {
+        "odds": "-205"
+       },
+       "close": {
+        "odds": "-200"
+       }
+      },
+      "away": {
+       "open": {
+        "odds": "+500"
+       },
+       "close": {
+        "odds": "+500"
+       }
+      },
+      "draw": {
+       "open": {
+        "odds": "+360"
+       },
+       "close": {
+        "odds": "+370"
+       }
+      }
+     },
+     "details": "LIV -200"
+    }
+   ],
+   "has_odds_key": true,
+   "competitors": [
+    {
+     "homeAway": "home",
+     "team": "Liverpool"
+    },
+    {
+     "homeAway": "away",
+     "team": "Villarreal"
+    }
+   ]
+  },
+  {
+   "name": "AEK Athens at Manchester City",
+   "date": "2026-10-20T19:00Z",
+   "status": "pre",
+   "odds": [
+    {
+     "overUnder": 3.5,
+     "provider": {
+      "id": "100",
+      "name": "DraftKings",
+      "priority": 1
+     },
+     "drawOdds": {
+      "moneyLine": 800
+     },
+     "total": {
+      "displayName": "Total",
+      "shortDisplayName": "Total",
+      "over": {
+       "open": {
+        "line": "o3.5",
+        "odds": "-145"
+       },
+       "close": {
+        "line": "o3.5",
+        "odds": "-145"
+       }
+      },
+      "under": {
+       "open": {
+        "line": "u3.5",
+        "odds": "+115"
+       },
+       "close": {
+        "line": "u3.5",
+        "odds": "+120"
+       }
+      }
+     },
+     "pointSpread": {
+      "displayName": "Spread",
+      "shortDisplayName": "Spread",
+      "home": {
+       "open": {
+        "line": "-2.5",
+        "odds": "-170"
+       },
+       "close": {
+        "line": "-2.5",
+        "odds": "-105"
+       }
+      },
+      "away": {
+       "open": {
+        "line": "+2.5",
+        "odds": "+120"
+       },
+       "close": {
+        "line": "+2.5",
+        "odds": "-130"
+       }
+      }
+     },
+     "moneyline": {
+      "displayName": "Moneyline",
+      "shortDisplayName": "ML",
+      "home": {
+       "open": {
+        "odds": "-1800"
+       },
+       "close": {
+        "odds": "-750"
+       }
+      },
+      "away": {
+       "open": {
+        "odds": "+2800"
+       },
+       "close": {
+        "odds": "+1700"
+       }
+      },
+      "draw": {
+       "open": {
+        "odds": "+1200"
+       },
+       "close": {
+        "odds": "+800"
+       }
+      }
+     },
+     "details": "MNC -750"
+    }
+   ],
+   "has_odds_key": true,
+   "competitors": [
+    {
+     "homeAway": "home",
+     "team": "Manchester City"
+    },
+    {
+     "homeAway": "away",
+     "team": "AEK Athens"
+    }
+   ]
+  },
+  {
+   "name": "Bodo/Glimt at Napoli",
+   "date": "2026-10-20T19:00Z",
+   "status": "pre",
+   "odds": [
+    {
+     "overUnder": 2.5,
+     "provider": {
+      "id": "100",
+      "name": "DraftKings",
+      "priority": 1
+     },
+     "drawOdds": {
+      "moneyLine": 310
+     },
+     "total": {
+      "displayName": "Total",
+      "shortDisplayName": "Total",
+      "over": {
+       "open": {
+        "line": "o3.5",
+        "odds": "+120"
+       },
+       "close": {
+        "line": "o2.5",
+        "odds": "-175"
+       }
+      },
+      "under": {
+       "open": {
+        "line": "u3.5",
+        "odds": "-155"
+       },
+       "close": {
+        "line": "u2.5",
+        "odds": "+140"
+       }
+      }
+     },
+     "pointSpread": {
+      "displayName": "Spread",
+      "shortDisplayName": "Spread",
+      "home": {
+       "open": {
+        "line": "-0.5",
+        "odds": "-195"
+       },
+       "close": {
+        "line": "-0.5",
+        "odds": "-155"
+       }
+      },
+      "away": {
+       "open": {
+        "line": "+0.5",
+        "odds": "+130"
+       },
+       "close": {
+        "line": "+0.5",
+        "odds": "+110"
+       }
+      }
+     },
+     "moneyline": {
+      "displayName": "Moneyline",
+      "shortDisplayName": "ML",
+      "home": {
+       "open": {
+        "odds": "-175"
+       },
+       "close": {
+        "odds": "-140"
+       }
+      },
+      "away": {
+       "open": {
+        "odds": "+400"
+       },
+       "close": {
+        "odds": "+360"
+       }
+      },
+      "draw": {
+       "open": {
+        "odds": "+340"
+       },
+       "close": {
+        "odds": "+310"
+       }
+      }
+     },
+     "details": "NAP -140"
+    }
+   ],
+   "has_odds_key": true,
+   "competitors": [
+    {
+     "homeAway": "home",
+     "team": "Napoli"
+    },
+    {
+     "homeAway": "away",
+     "team": "Bodo/Glimt"
+    }
+   ]
+  },
+  {
+   "name": "Barcelona at Paris Saint-Germain",
+   "date": "2026-10-20T19:00Z",
+   "status": "pre",
+   "odds": [
+    {
+     "overUnder": 4.5,
+     "provider": {
+      "id": "100",
+      "name": "DraftKings",
+      "priority": 1
+     },
+     "drawOdds": {
+      "moneyLine": 340
+     },
+     "total": {
+      "displayName": "Total",
+      "shortDisplayName": "Total",
+      "over": {
+       "open": {
+        "line": "o3.5",
+        "odds": "-155"
+       },
+       "close": {
+        "line": "o4.5",
+        "odds": "+115"
+       }
+      },
+      "under": {
+       "open": {
+        "line": "u3.5",
+        "odds": "+120"
+       },
+       "close": {
+        "line": "u4.5",
+        "odds": "-140"
+       }
+      }
+     },
+     "pointSpread": {
+      "displayName": "Spread",
+      "shortDisplayName": "Spread",
+      "home": {
+       "open": {
+        "line": "-0.5",
+        "odds": "+125"
+       },
+       "close": {
+        "line": "-0.5",
+        "odds": "+140"
+       }
+      },
+      "away": {
+       "open": {
+        "line": "+0.5",
+        "odds": "-185"
+       },
+       "close": {
+        "line": "+0.5",
+        "odds": "-170"
+       }
+      }
+     },
+     "moneyline": {
+      "displayName": "Moneyline",
+      "shortDisplayName": "ML",
+      "home": {
+       "open": {
+        "odds": "+135"
+       },
+       "close": {
+        "odds": "+145"
+       }
+      },
+      "away": {
+       "open": {
+        "odds": "+145"
+       },
+       "close": {
+        "odds": "+145"
+       }
+      },
+      "draw": {
+       "open": {
+        "odds": "+340"
+       },
+       "close": {
+        "odds": "+340"
+       }
+      }
+     },
+     "details": "PSG +145"
+    }
+   ],
+   "has_odds_key": true,
+   "competitors": [
+    {
+     "homeAway": "home",
+     "team": "Paris Saint-Germain"
+    },
+    {
+     "homeAway": "away",
+     "team": "Barcelona"
+    }
+   ]
+  },
+  {
+   "name": "Atl\u00e9tico Madrid at VfB Stuttgart",
+   "date": "2026-10-20T19:00Z",
+   "status": "pre",
+   "odds": [
+    {
+     "overUnder": 3.5,
+     "provider": {
+      "id": "100",
+      "name": "DraftKings",
+      "priority": 1
+     },
+     "drawOdds": {
+      "moneyLine": 280
+     },
+     "total": {
+      "displayName": "Total",
+      "shortDisplayName": "Total",
+      "over": {
+       "open": {
+        "line": "o3.5",
+        "odds": "+130"
+       },
+       "close": {
+        "line": "o3.5",
+        "odds": "+115"
+       }
+      },
+      "under": {
+       "open": {
+        "line": "u3.5",
+        "odds": "-170"
+       },
+       "close": {
+        "line": "u3.5",
+        "odds": "-145"
+       }
+      }
+     },
+     "pointSpread": {
+      "displayName": "Spread",
+      "shortDisplayName": "Spread",
+      "home": {
+       "open": {
+        "line": "+0.5",
+        "odds": "-160"
+       },
+       "close": {
+        "line": "+0.5",
+        "odds": "-130"
+       }
+      },
+      "away": {
+       "open": {
+        "line": "-0.5",
+        "odds": "+110"
+       },
+       "close": {
+        "line": "-0.5",
+        "odds": "-105"
+       }
+      }
+     },
+     "moneyline": {
+      "displayName": "Moneyline",
+      "shortDisplayName": "ML",
+      "home": {
+       "open": {
+        "odds": "+190"
+       },
+       "close": {
+        "odds": "+235"
+       }
+      },
+      "away": {
+       "open": {
+        "odds": "+125"
+       },
+       "close": {
+        "odds": "+105"
+       }
+      },
+      "draw": {
+       "open": {
+        "odds": "+270"
+       },
+       "close": {
+        "odds": "+280"
+       }
+      }
+     },
+     "details": "ATM +105"
+    }
+   ],
+   "has_odds_key": true,
+   "competitors": [
+    {
+     "homeAway": "home",
+     "team": "VfB Stuttgart"
+    },
+    {
+     "homeAway": "away",
+     "team": "Atl\u00e9tico Madrid"
+    }
+   ]
+  }
+ ]
+}

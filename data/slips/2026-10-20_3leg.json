@@ -1,0 +1,10 @@
+{
+  "_source": "user's 3-leg multi pasted 2026-10-20 (Stake), total odds 3.24, payout 48.59 => stake $15.00. Not yet placed when priced.",
+  "total_odds": 3.24,
+  "stake": 15.0,
+  "legs": [
+    {"match": "Stuttgart vs Atletico Madrid", "pick": "Atlético Madrid 1x2 (1UP)", "kind": "1up", "team": "away", "odds": 1.48},
+    {"match": "Liverpool vs Villarreal", "pick": "Más de 2.5 goles (total asiático)", "kind": "over", "line": 2.5, "odds": 1.44},
+    {"match": "Paris Saint-Germain vs Barcelona", "pick": "PSG 1x2 (1UP)", "kind": "1up", "team": "home", "odds": 1.52}
+  ]
+}

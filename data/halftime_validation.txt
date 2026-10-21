@@ -1,0 +1,5 @@
+3964 games (2023-10-24..2026-06-13), 7928 team-games
+EMPIRICAL: lead 16+ at half in 9.61% of team-games; refund event (led 16+ and did NOT win) 55 times = 0.694% of team-games (Wilson95 0.533-0.902%); blown-lead rate q = 7.2% of 16+ leads
+DEFAULT independent-increments model: lead16 4.29% | refund 0.044%  (assumption, before fitting)
+FITTED: sigma 14.47, h1 variance share 0.618, rho(H1,H2 | m) -0.287  -> model lead16 9.61% | refund 0.694%
+PROMO VALUE: average P(refund) = 0.69% of stake => about +0.69 EV points per qualifying bet (range from the CI on events: 0.53 to 0.90 points)

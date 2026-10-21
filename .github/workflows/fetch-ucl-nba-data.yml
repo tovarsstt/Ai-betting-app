@@ -1,0 +1,75 @@
+name: fetch-ucl-nba-data
+# Manual run. GitHub runners have open internet (the cloud sandbox does not).
+# Downloads domestic + UEFA results (+ optionally NBA), builds the cross-league Elo,
+# calibrates Elo->goals, prices today's UCL ties, backtests the NBA stacker, and pushes
+# ONLY data files to branch `data/ucl-nba-snapshot`.
+on:
+  push:
+    branches: [claude/ucl-nba-data-layer]
+    paths: ['.github/workflows/fetch-ucl-nba-data.yml']
+  workflow_dispatch:
+    inputs:
+      fetch_nba:
+        description: "Also fetch NBA games from ESPN (about 4 min)"
+        default: "true"
+      nba_start:
+        description: "NBA fetch start date"
+        default: "2025-10-21"
+      fetch_halves:
+        description: "Fetch half-by-half NBA scores 2023-24..today (~8 min) and fit the halftime-refund model"
+        default: "false"
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: claude/ucl-nba-data-layer }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install numpy scipy scikit-learn pandas pytest
+      - name: Fetch domestic results
+        continue-on-error: true
+        run: |
+          python3 scripts/fetch_club_results.py
+          python3 scripts/fetch_europe_data.py extra-leagues
+      - name: Fetch UEFA results
+        continue-on-error: true
+        run: python3 scripts/fetch_europe_data.py uefa 2024-09-01 "$(date -u +%F)"
+      - name: Fetch NBA games
+        if: ${{ inputs.fetch_nba != 'false' }}
+        continue-on-error: true
+        run: python3 scripts/fetch_europe_data.py nba "${{ inputs.nba_start || '2025-10-21' }}" "$(date -u +%F)"
+      - name: Fetch NBA half-by-half scores (halftime-refund model)
+        if: ${{ inputs.fetch_halves == 'true' }}
+        continue-on-error: true
+        run: python3 scripts/fetch_europe_data.py nba-halves 2023-10-24 "$(date -u +%F)"
+      - name: Fit halftime-refund model
+        if: ${{ inputs.fetch_halves == 'true' }}
+        continue-on-error: true
+        run: (python3 scripts/validate_halftime.py 2>&1 | tee data/halftime_validation.txt) || true
+      - name: Calibrate, price today, backtest
+        run: |
+          cd scripts
+          python3 -m pytest test_europe_ucl_nba.py -q -p no:cacheprovider 2>&1 | tail -3 | tee ../data/test_log.txt
+          (python3 calibrate_ucl.py 2>&1 | tee ../data/soccer/calibration_log.txt) || true
+          (python3 validate_ucl.py 2026-03-01 2>&1 | tee ../data/soccer/validation_log.txt) || true
+          (python3 price_today.py "$(date -u +%F)" 2>&1 | tee ../data/soccer/price_today.txt) || true
+          (python3 price_today.py "$(date -u -d tomorrow +%F)" 2>&1 | tee ../data/soccer/price_tomorrow.txt) || true
+          if [ -f ../data/nba_games_2526.csv ]; then (python3 value_picks.py "$(date -u +%F)" 2>&1 | tee ../data/value_picks.txt) || true; fi
+          if [ -f ../data/nba_games_2526.csv ]; then (python3 nba_stack.py 2>&1 | tee ../data/nba_backtest_log.txt) || true; fi
+      - name: Push data snapshot
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@users.noreply.github.com"
+          git checkout -B data/ucl-nba-snapshot
+          for f in data/soccer/club_results.csv data/soccer/extra_league_results.csv data/soccer/uefa_results.csv \
+                   data/soccer/elo_ratings.json data/soccer/club_games.json data/soccer/validation_log.txt data/soccer/ucl_elo_goal_model.json data/soccer/calibration_log.txt \
+                   data/soccer/price_today.txt data/soccer/price_tomorrow.txt data/nba_games_2526.csv \
+                   data/nba_backtest_log.txt data/test_log.txt data/value_picks.txt data/halftime_validation.txt data/nba_halftime_params.json data/nba_halves.csv; do
+            if [ -f "$f" ]; then git add -f "$f"; else echo "missing (not added): $f"; fi
+          done
+          git commit -m "data: UCL/NBA snapshot $(date -u +%F)" || echo "nothing to commit"
+          git push -f origin data/ucl-nba-snapshot

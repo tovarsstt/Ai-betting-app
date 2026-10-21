@@ -1,0 +1,26 @@
+{
+  "_source": "pasted by user 2026-10-20 from their sportsbook (DECIMAL odds). Transcribed by hand: markets 1X2, double chance, draw-no-bet, BTTS, O/U 2.5 and 3.5 (+3.0). Napoli also has AH.",
+  "matches": {
+    "Stuttgart vs Atletico Madrid": {"home": "VfB Stuttgart", "away": "Atlético Madrid",
+      "x12": [3.40, 3.90, 2.00], "dc": {"1X": 1.78, "X2": 1.33, "12": 1.28}, "dnb": [2.44, 1.51], "btts": [1.44, 2.75],
+      "ou": {"2.5": [1.46, 2.65], "3.0": [1.69, 2.14], "3.5": [2.11, 1.71]}},
+    "Manchester City vs AEK Athens": {"home": "Manchester City", "away": "AEK Athens",
+      "x12": [1.12, 9.60, 18.00], "dc": {"1X": 1.03, "X2": 6.20, "12": 1.07}, "dnb": [1.03, 9.40], "btts": [1.96, 1.82],
+      "ou": {"2.5": [1.27, 3.65], "3.0": [1.38, 3.00], "3.5": [1.70, 2.12]}},
+    "FC Porto vs PSV Eindhoven": {"home": "FC Porto", "away": "PSV Eindhoven",
+      "x12": [1.50, 4.70, 5.80], "dc": {"1X": 1.16, "X2": 2.55, "12": 1.21}, "dnb": [1.20, 4.20], "btts": [1.67, 2.17],
+      "ou": {"2.5": [1.53, 2.46], "3.0": [1.83, 1.95], "3.5": [2.30, 1.60]}},
+    "Liverpool vs Villarreal": {"home": "Liverpool", "away": "Villarreal",
+      "x12": [1.46, 5.00, 6.00], "dc": {"1X": 1.15, "X2": 2.65, "12": 1.19}, "dnb": [1.19, 4.40], "btts": [1.60, 2.30],
+      "ou": {"2.5": [1.44, 2.75], "3.0": [1.66, 2.19], "3.5": [2.08, 1.73]}},
+    "AS Roma vs Slovan Bratislava": {"home": "AS Roma", "away": "Slovan Bratislava",
+      "x12": [1.10, 11.00, 23.00], "dc": {"1X": 1.02, "X2": 7.20, "12": 1.05}, "dnb": [1.02, 10.00], "btts": [2.01, 1.78],
+      "ou": {"2.5": [1.23, 4.00], "3.0": [1.32, 3.35], "3.5": [1.60, 2.29]}},
+    "Paris Saint-Germain vs Barcelona": {"home": "Paris Saint-Germain", "away": "Barcelona",
+      "x12": [2.39, 4.50, 2.46], "dc": {"1X": 1.55, "X2": 1.56, "12": 1.24}, "dnb": [1.86, 1.87], "btts": [1.22, 4.10],
+      "ou": {"2.5": [1.20, 4.40], "3.0": [1.26, 3.80], "3.5": [1.50, 2.55]}},
+    "Napoli vs Bodo/Glimt": {"home": "Napoli", "away": "Bodo/Glimt",
+      "x12": [1.71, 4.10, 4.50], "dc": {"1X": 1.22, "X2": 2.10, "12": 1.26}, "dnb": [1.32, 3.25], "btts": [1.57, 2.36],
+      "ou": {"2.5": [1.55, 2.42], "3.0": [1.84, 1.93], "3.5": [2.32, 1.59]}}
+  }
+}
