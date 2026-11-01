@@ -67,7 +67,14 @@ def full(name: str) -> str:
 
 
 def _names(sentence: str):
-    return [m.group(1).strip() for m in re.finditer(rf"\b{POS}\s+{NAME}", sentence)]
+    """names after each position token; handles plural tokens and lists: 'Reinstated TEs Grant Calcaterra and Eli Stowers and G Landon Dickerson from injured reserve.'"""
+    out = []
+    for seg in re.split(rf"\b{POS}s?\s+", sentence)[1:]:
+        for part in re.split(r"\s*,\s*|\s+and\s+", re.split(r"\s+(?:from|on|to|off|for|in)\s+", seg)[0]):
+            m = re.match(rf"^{NAME}\.?$", part.strip().rstrip("."))
+            if m:
+                out.append(m.group(1).strip())
+    return out
 
 
 def tx_state(team: str, since: str = "2026-09-01", limit: int = 600) -> dict:
