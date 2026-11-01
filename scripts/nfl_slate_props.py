@@ -40,7 +40,7 @@ def load_pbp() -> pd.DataFrame:
     return d[(d.two_point_attempt != 1) & d.posteam.notna()]
 
 
-def team_tables(d: pd.DataFrame, team: str) -> dict:
+def team_tables(d: pd.DataFrame, team: str, offense: set | None = None) -> dict:
     t = d[d.posteam == team]
     weeks = sorted(t.week.unique())[-WINDOW:]
     wt = {w: (1.0 if i >= len(weeks) - 3 else 0.6) for i, w in enumerate(weeks)}
@@ -55,10 +55,13 @@ def team_tables(d: pd.DataFrame, team: str) -> dict:
     rtd = t[t.rush_touchdown == 1].groupby("rusher_player_name").w.sum()
     ctd = t[t.pass_touchdown == 1].groupby("receiver_player_name").w.sum()
     qb = t[t.pass_attempt == 1].groupby("passer_player_name").w.sum().sort_values(ascending=False)
+    if offense is not None:                         # only players on the team's ACTIVE offense today (drops traded / cut / IR)
+        keep = lambda s: s[[sig(n) in offense for n in s.index]]
+        rec_cnt, rec_y, car_cnt, car_y, rtd, ctd = (keep(x) for x in (rec_cnt, rec_y, car_cnt, car_y, rtd, ctd))
     return dict(rec=rec_cnt, rec_y=rec_y, car=car_cnt, car_y=car_y, rtd=rtd, ctd=ctd, qb=qb, games=len(weeks))
 
 
-def status_map(injuries: list, team: str) -> dict:
+def status_map(injuries: list, team: str, posted: bool = False) -> dict:
     out = {}
     for i in injuries:
         if i.get("team") != team:
@@ -67,7 +70,7 @@ def status_map(injuries: list, team: str) -> dict:
         if s in OUT_STATUS:
             out[sig(i["player"])] = 0.0
         elif s == "questionable":
-            out[sig(i["player"])] = QUESTIONABLE_PLAY
+            out[sig(i["player"])] = 1.0 if posted else QUESTIONABLE_PLAY      # official inactives out: a Questionable not on the list is active
     return out
 
 
@@ -114,10 +117,10 @@ def team_factor(calib: pd.DataFrame, team: str, sim_col: str, real_col: str, gam
     return 1.0 + w * (r - 1.0)
 
 
-def build_team(rng, X, side, team, d, injuries, calib, qb_name):
-    tb = team_tables(d, team)
+def build_team(rng, X, side, team, d, injuries, calib, qb_name, offense=None, posted=False):
+    tb = team_tables(d, team, offense)
     col = lambda k: X[:, 3 + side * len(KEYS) + KEYS.index(k)].astype(float)
-    play_p = status_map(injuries, team)
+    play_p = status_map(injuries, team, posted)
     g = tb["games"]
     fy = team_factor(calib, team, "sim_pyds", "real_pyds", g)
     fr = team_factor(calib, team, "sim_ryds", "real_ryds", g)
@@ -175,12 +178,10 @@ if __name__ == "__main__":
     for r in summary:
         X = np.load(sd / f"{r['away']}@{r['home']}.npy").astype(np.float64)
         rng = np.random.default_rng(zlib.crc32((r["home"] + r["away"]).encode()))
-        inj = r.get("injuries") or []
-        # injuries in summary are truncated: refetch the full list
-        import nfl_sim_service as ns
-        full = (ns.espn_context(r["home"], r["away"]).get("injuries")) or inj
-        Ph, mh = build_team(rng, X, 0, r["home"], d, full, calib, r["qb_home"])
-        Pa, ma = build_team(rng, X, 1, r["away"], d, full, calib, r["qb_away"])
+        full = r["injuries_full"]
+        off, ok = r["offense"], r["inactives_posted"]
+        Ph, mh = build_team(rng, X, 0, r["home"], d, full, calib, r["qb_home"], set(off[r["home"]]), ok[r["home"]])
+        Pa, ma = build_team(rng, X, 1, r["away"], d, full, calib, r["qb_away"], set(off[r["away"]]), ok[r["away"]])
         P = {f"{r['home']}|{k}": v for k, v in Ph.items()}
         P.update({f"{r['away']}|{k}": v for k, v in Pa.items()})
         P["M"] = X[:, 0] - X[:, 1]; P["T"] = X[:, 0] + X[:, 1]; P["H"] = X[:, 0]; P["A"] = X[:, 1]
