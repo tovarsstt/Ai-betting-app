@@ -1,0 +1,1 @@
+{"date": "20261101", "n_games": 12, "winner_sim": 8, "winner_mkt": 9, "logloss_sim": 0.5749, "logloss_mkt": 0.5258, "total_bias_sim": 3.39, "total_bias_mkt": -0.83, "qb_passY_bias": 44.7, "qb_passY_corr": -0.09, "rb1_rushY_bias": 4.2, "rb1_rushY_corr": 0.61, "atd_top25_sim": 0.571, "atd_top25_real": 0.56}

@@ -67,13 +67,14 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--dir", default=DEF_DIR)
     ap.add_argument("--game", default="")
+    ap.add_argument("--date", default="20261101")
     a = ap.parse_args()
     sd = Path(a.dir)
     summary = {f"{r['away']}@{r['home']}": r for r in json.loads((sd / "slate_summary.json").read_text())}
     allp = pickle.load(open(sd / "slate_props.pkl", "rb"))
     fx = lambda t: ns._ABBR_ALIASES.get(t, t)
     sb = {f"{fx(e['competitions'][0]['competitors'][1]['team']['abbreviation'])}@{fx(e['competitions'][0]['competitors'][0]['team']['abbreviation'])}": e["id"]
-          for e in ns._fetch("https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20261101")["events"]}
+          for e in ns._fetch("https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=" + a.date)["events"]}
     for key, g in allp.items():
         if a.game and key != a.game:
             continue
