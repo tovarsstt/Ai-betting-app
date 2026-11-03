@@ -20,6 +20,7 @@ QUESTIONABLE_PLAY = 0.65
 KAPPA_REC, KAPPA_CAR, KAPPA_TD = 22.0, 16.0, 6.0
 TD_PRIOR = 8.0          # pseudo-TDs spread by volume share: 6-8 games of TD counts are noisy, so TD shares lean on volume
 WINDOW = 6
+SEASON_BLEND = 0.4      # share of each player's volume taken from the whole season (players back from injury are under-counted by the last-6-games window)
 
 
 def norm(s: str) -> str:
@@ -33,32 +34,46 @@ def sig(name: str) -> str:
     return (parts[0][0] + norm(parts[-1])).lower() if parts else ""
 
 
-def load_pbp() -> pd.DataFrame:
+def load_pbp(before: str | None = None) -> pd.DataFrame:
     cols = ["game_id", "week", "posteam", "play_type", "complete_pass", "pass_attempt", "rush_attempt", "yards_gained", "receiver_player_name", "rusher_player_name",
-            "passer_player_name", "pass_touchdown", "rush_touchdown", "qb_scramble", "sack", "two_point_attempt"]
+            "passer_player_name", "pass_touchdown", "rush_touchdown", "qb_scramble", "sack", "two_point_attempt", "game_date"]
     d = pd.read_csv(PBP, usecols=cols, low_memory=False)
-    return d[(d.two_point_attempt != 1) & d.posteam.notna()]
+    d = d[(d.two_point_attempt != 1) & d.posteam.notna()]
+    return d[d.game_date < before] if before else d
 
 
-def team_tables(d: pd.DataFrame, team: str, offense: set | None = None) -> dict:
+def _tables(t: pd.DataFrame) -> dict:
+    rec = t[(t.complete_pass == 1) & t.receiver_player_name.notna()]
+    car = t[(t.rush_attempt == 1) & (t.sack != 1) & t.rusher_player_name.notna()]
+    return dict(rec=rec.groupby("receiver_player_name").w.sum(), rec_y=rec.assign(wy=rec.w * rec.yards_gained).groupby("receiver_player_name").wy.sum(),
+                car=car.groupby("rusher_player_name").w.sum(), car_y=car.assign(wy=car.w * car.yards_gained).groupby("rusher_player_name").wy.sum(),
+                rtd=t[t.rush_touchdown == 1].groupby("rusher_player_name").w.sum(), ctd=t[t.pass_touchdown == 1].groupby("receiver_player_name").w.sum())
+
+
+def _blend(win: pd.Series, season: pd.Series, b: float, scale: float) -> pd.Series:
+    """(1-b)*window + b*season, the season series rescaled to the window's team total so volumes stay comparable"""
+    idx = win.index.union(season.index)
+    return (1 - b) * win.reindex(idx, fill_value=0.0) + b * scale * season.reindex(idx, fill_value=0.0)
+
+
+def team_tables(d: pd.DataFrame, team: str, offense: set | None = None, season_blend: float | None = None) -> dict:
+    b = SEASON_BLEND if season_blend is None else season_blend
     t = d[d.posteam == team]
     weeks = sorted(t.week.unique())[-WINDOW:]
     wt = {w: (1.0 if i >= len(weeks) - 3 else 0.6) for i, w in enumerate(weeks)}
-    t = t[t.week.isin(weeks)].copy()
-    t["w"] = t.week.map(wt)
-    rec = t[(t.complete_pass == 1) & t.receiver_player_name.notna()]
-    rec_cnt = rec.groupby("receiver_player_name").w.sum()
-    rec_y = rec.assign(wy=rec.w * rec.yards_gained).groupby("receiver_player_name").wy.sum()
-    car = t[(t.rush_attempt == 1) & (t.sack != 1) & t.rusher_player_name.notna()]
-    car_cnt = car.groupby("rusher_player_name").w.sum()
-    car_y = car.assign(wy=car.w * car.yards_gained).groupby("rusher_player_name").wy.sum()
-    rtd = t[t.rush_touchdown == 1].groupby("rusher_player_name").w.sum()
-    ctd = t[t.pass_touchdown == 1].groupby("receiver_player_name").w.sum()
-    qb = t[t.pass_attempt == 1].groupby("passer_player_name").w.sum().sort_values(ascending=False)
+    tw = t[t.week.isin(weeks)].copy(); tw["w"] = tw.week.map(wt)
+    ts = t.copy(); ts["w"] = 1.0
+    W, S = _tables(tw), _tables(ts)
+    out = {}
+    for k in ("rec", "rec_y", "car", "car_y", "rtd", "ctd"):
+        base = {"rec_y": "rec", "car_y": "car", "rtd": "car", "ctd": "rec"}.get(k, k)
+        scale = float(W[base].sum() / S[base].sum()) if S[base].sum() > 0 else 1.0
+        out[k] = _blend(W[k], S[k], b, scale) if b > 0 else W[k]
+    qb = tw[tw.pass_attempt == 1].groupby("passer_player_name").w.sum().sort_values(ascending=False)
     if offense is not None:                         # only players on the team's ACTIVE offense today (drops traded / cut / IR)
         keep = lambda s: s[[sig(n) in offense for n in s.index]]
-        rec_cnt, rec_y, car_cnt, car_y, rtd, ctd = (keep(x) for x in (rec_cnt, rec_y, car_cnt, car_y, rtd, ctd))
-    return dict(rec=rec_cnt, rec_y=rec_y, car=car_cnt, car_y=car_y, rtd=rtd, ctd=ctd, qb=qb, games=len(weeks))
+        out = {k: keep(v) for k, v in out.items()}
+    return dict(**out, qb=qb, games=len(weeks))
 
 
 def status_map(injuries: list, team: str, posted: bool = False) -> dict:
@@ -117,8 +132,8 @@ def team_factor(calib: pd.DataFrame, team: str, sim_col: str, real_col: str, gam
     return 1.0 + w * (r - 1.0)
 
 
-def build_team(rng, X, side, team, d, injuries, calib, qb_name, offense=None, posted=False):
-    tb = team_tables(d, team, offense)
+def build_team(rng, X, side, team, d, injuries, calib, qb_name, offense=None, posted=False, season_blend=None):
+    tb = team_tables(d, team, offense, season_blend)
     col = lambda k: X[:, 3 + side * len(KEYS) + KEYS.index(k)].astype(float)
     play_p = status_map(injuries, team, posted)
     g = tb["games"]
@@ -167,21 +182,23 @@ def ladder(x):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
+    ap.add_argument("--before", default=None, help="ignore plays on/after this date (backtests)")
+    ap.add_argument("--season-blend", type=float, default=None)
     ap.add_argument("--dir", default="/private/tmp/claude-501/-Users-josetovar-Documents-APP-AI-BETS/d2188ef8-37ad-4cf1-b93d-e4a6e86121e4/scratchpad/slate")
     a = ap.parse_args()
     sd = Path(a.dir)
     summary = json.loads((sd / "slate_summary.json").read_text())
     import subprocess
     calib = pd.read_csv(ROOT / "data" / "nfl_box_calib_2026_team.csv") if (ROOT / "data" / "nfl_box_calib_2026_team.csv").exists() else pd.read_csv(sd / "nfl_box_calib_2026_team.csv")
-    d = load_pbp()
+    d = load_pbp(a.before)
     allp = {}
     for r in summary:
         X = np.load(sd / f"{r['away']}@{r['home']}.npy").astype(np.float64)
         rng = np.random.default_rng(zlib.crc32((r["home"] + r["away"]).encode()))
         full = r["injuries_full"]
         off, ok = r["offense"], r["inactives_posted"]
-        Ph, mh = build_team(rng, X, 0, r["home"], d, full, calib, r["qb_home"], set(off[r["home"]]), ok[r["home"]])
-        Pa, ma = build_team(rng, X, 1, r["away"], d, full, calib, r["qb_away"], set(off[r["away"]]), ok[r["away"]])
+        Ph, mh = build_team(rng, X, 0, r["home"], d, full, calib, r["qb_home"], set(off[r["home"]]), ok[r["home"]], a.season_blend)
+        Pa, ma = build_team(rng, X, 1, r["away"], d, full, calib, r["qb_away"], set(off[r["away"]]), ok[r["away"]], a.season_blend)
         P = {f"{r['home']}|{k}": v for k, v in Ph.items()}
         P.update({f"{r['away']}|{k}": v for k, v in Pa.items()})
         P["M"] = X[:, 0] - X[:, 1]; P["T"] = X[:, 0] + X[:, 1]; P["H"] = X[:, 0]; P["A"] = X[:, 1]

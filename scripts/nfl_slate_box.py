@@ -31,10 +31,10 @@ def slate(date: str):
     return out
 
 
-def lineup_for(home, away, injuries):
+def lineup_for(home, away, injuries, force_active=None):
     try:
         import nfl_availability as av
-        lu = av.current_availability([home, away], injuries)
+        lu = av.current_availability([home, away], injuries, force_active)
         strip = lambda t: {k: v for k, v in (lu.get(t, {}).get("counts") or {}).items() if k != "qb_lost"}
         return {"home": strip(home), "away": strip(away)}, lu
     except Exception as e:
@@ -77,7 +77,7 @@ def run_game(g, n, outdir, pool, inactives=None):
     inj = list(ctx.get("injuries") or [])
     ev = ctx["event"]
     ids = {home: ev["home_espn_id"], away: ev["away_espn_id"]}
-    offense, posted, rosters = {}, {}, {}
+    offense, posted, rosters, active_override = {}, {}, {}, []
     for tm in (home, away):                                  # IR / suspended / traded-away players the ESPN injury report omits + official inactives
         ro = nr.roster(ids[tm], tm)
         wire = nr.tx_state(tm)                                # ESPN's roster endpoint lags the wire: IR/waived/traded moves override it
@@ -94,9 +94,20 @@ def run_game(g, n, outdir, pool, inactives=None):
                 inj.append({"team": tm, "player": nm, "pos": rosters[tm]["pos"].get(nr.sig(nm), ""), "status": "Out"})
                 offense[tm] = [k for k in offense[tm] if k != nr.sig(nm)]
         posted = {home: True, away: True}
+        ina = {nr.sig(x) for x in inactives[f"{away}@{home}"]}
+        # the official list overrides the injury report: Out/Doubtful/Questionable players who are NOT inactive are playing
+        cleared = [i["player"] for i in inj if str(i.get("status", "")).lower() in ("out", "doubtful", "questionable") and nr.sig(i["player"]) not in ina]
+        active_override += cleared
+        inj = [i for i in inj if i["player"] not in cleared]
+    active_override += list((inactives or {}).get("_force_active", []))
+    force = {nr.sig(x) for x in (inactives or {}).get("_force_active", [])}
+    if force:                                                   # ESPN's roster lags (e.g. 'designated to return' RBs still in the IR group): the user/news confirm they play
+        inj = [i for i in inj if nr.sig(i["player"]) not in force]
+        for tm in (home, away):
+            offense[tm] = sorted(set(offense[tm]) | {k for k in force if k in rosters[tm]["pos"]})
     qh = ns.choose_qb(_par, home, None, (ctx.get("depth_qbs") or {}).get(home), inj)
     qa = ns.choose_qb(_par, away, None, (ctx.get("depth_qbs") or {}).get(away), inj)
-    avail, lu = lineup_for(home, away, inj)
+    avail, lu = lineup_for(home, away, inj, active_override)
     nb = len(_par["boots"])
     per = -(-n // nb)
     res = sorted(pool.map(_work, [(home, away, qh["id"], qa["id"], avail, b, per) for b in range(nb)]))
