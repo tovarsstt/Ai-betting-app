@@ -94,8 +94,14 @@ def load_league_season(div: str, season: str) -> list[dict]:
     return out
 
 
+UEFA_LEAGUES = ("Champions League", "Europa League")
+
+
 def save_cache(rows: list[dict], path: Path = CACHE) -> int:
     path.parent.mkdir(parents=True, exist_ok=True)
+    # football-data only covers the domestic leagues: keep the UEFA rows that fetch_club_results_espn.py wrote, otherwise a refresh silently deletes the cross-league anchor
+    kept = [r for r in load_cached(path) if r.get("league") in UEFA_LEAGUES]
+    rows = [r for r in rows if r.get("league") not in UEFA_LEAGUES] + kept
     fieldnames = ["date", "home_team", "away_team", "home_score", "away_score", "neutral", "league"]
     with path.open("w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=fieldnames)

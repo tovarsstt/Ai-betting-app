@@ -76,7 +76,10 @@ def _rating_pool() -> dict:
     return pool
 
 
-def fetch(since: str, until: str | None = None) -> list[dict]:
+WINDOW_DAYS = 1      # ESPN now answers 400 to any multi-day span (verified 2026-11-03), single days still work
+
+
+def fetch(since: str, until: str | None = None, uefa_only: bool = False) -> list[dict]:
     import edge_api as e                   # reuse resolve_club's alias logic
     pool = _rating_pool()
     until = until or date.today().isoformat()
@@ -89,18 +92,18 @@ def fetch(since: str, until: str | None = None) -> list[dict]:
     windows = []
     cur = start
     while cur <= end:
-        w_end = min(cur + timedelta(days=119), end)
+        w_end = min(cur + timedelta(days=WINDOW_DAYS - 1), end)
         windows.append((cur, w_end))
         cur = w_end + timedelta(days=1)
 
-    for slug, league in {**LEAGUES, **UEFA_LEAGUES}.items():
+    for slug, league in ({**UEFA_LEAGUES} if uefa_only else {**LEAGUES, **UEFA_LEAGUES}).items():
         is_uefa = slug in UEFA_LEAGUES
         events = []
         for w_start, w_end in windows:
-            span = f"{w_start.isoformat().replace('-', '')}-{w_end.isoformat().replace('-', '')}"
+            span = w_start.isoformat().replace('-', '') if w_start == w_end else f"{w_start.isoformat().replace('-', '')}-{w_end.isoformat().replace('-', '')}"
             try:
                 d = _get("https://site.api.espn.com/apis/site/v2/sports/soccer/"
-                         f"{slug}/scoreboard?dates={span}&limit=400")
+                         f"{slug}/scoreboard?dates={span}")
             except (urllib.error.HTTPError, urllib.error.URLError, OSError, json.JSONDecodeError):
                 continue
             events.extend(d.get("events", []))
@@ -168,8 +171,9 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--since", default=(date.today() - timedelta(days=60)).isoformat())
     ap.add_argument("--until", default=None)
+    ap.add_argument("--uefa-only", action="store_true")
     a = ap.parse_args()
-    rows, unmapped = fetch(a.since, a.until)
+    rows, unmapped = fetch(a.since, a.until, a.uefa_only)
     out = merge(rows)
     if unmapped:
         out["unmapped_skipped"] = unmapped
