@@ -1,0 +1,93 @@
+{
+ "by_year": {
+  "2024": {
+   "n": 5052,
+   "model_ll": 0.614378333908858,
+   "model_brier": 0.21374811821390804,
+   "model_slope": 1.043985211459414,
+   "old_points_ll": 0.6420674851078694,
+   "old_points_brier": 0.22374675741917682,
+   "old_points_slope": 0.7306983164869745,
+   "mean_fav_prob_model": 0.6513709329514411,
+   "mean_fav_prob_old": 0.6690064260739741,
+   "n_mkt": 5045,
+   "market_ll": 0.5823604109808354,
+   "market_brier": 0.20010464104398706,
+   "market_slope": 1.1016441983036969,
+   "model_ll_same_rows": 0.614596761238248,
+   "mean_fav_prob_market": 0.6752796350568077,
+   "mean_fav_prob_model_same_rows": 0.6513913903148159
+  },
+  "2025": {
+   "n": 4866,
+   "model_ll": 0.6185674873904877,
+   "model_brier": 0.21538467027437205,
+   "model_slope": 0.9674535649652599,
+   "old_points_ll": 0.6423993033307398,
+   "old_points_brier": 0.2234495814220979,
+   "old_points_slope": 0.7153498748871467,
+   "mean_fav_prob_model": 0.6565175365178507,
+   "mean_fav_prob_old": 0.6736771301875396,
+   "n_mkt": 4865,
+   "market_ll": 0.5919630729960589,
+   "market_brier": 0.2038682445063032,
+   "market_slope": 1.0208265699193182,
+   "model_ll_same_rows": 0.6186331399340377,
+   "mean_fav_prob_market": 0.677134699786378,
+   "mean_fav_prob_model_same_rows": 0.6565000817587628
+  },
+  "2026": {
+   "n": 4898,
+   "model_ll": 0.6085293369706047,
+   "model_brier": 0.21098804032781995,
+   "model_slope": 1.0616134729892983,
+   "old_points_ll": 0.6258007367514407,
+   "old_points_brier": 0.21780018486049882,
+   "old_points_slope": 0.8440840668262353,
+   "mean_fav_prob_model": 0.6559803074309598,
+   "mean_fav_prob_old": 0.6667854608227601,
+   "n_mkt": 4897,
+   "market_ll": 0.5837289747803396,
+   "market_brier": 0.2001843768874641,
+   "market_slope": 1.1470190055283223,
+   "model_ll_same_rows": 0.6084976798106748,
+   "mean_fav_prob_market": 0.6722909742563019,
+   "mean_fav_prob_model_same_rows": 0.6560052180678162
+  }
+ },
+ "feats": [
+  "lpts",
+  "lrank",
+  "elo",
+  "selo",
+  "form",
+  "rest",
+  "load",
+  "h2h",
+  "elo_bo5"
+ ],
+ "anchor": {
+  "coef_model": -0.09265460454812784,
+  "coef_market": 1.1286459691691948,
+  "fit_years": "2023-2025",
+  "test_2026_ll_blend": 0.5829744450291097,
+  "test_2026_ll_market": 0.5837289747803396,
+  "test_2026_ll_model": 0.6085117110156476,
+  "n_test": 4897
+ },
+ "n_matches": 30551,
+ "data_through": "2026-11-08",
+ "built": "2026-11-09",
+ "coef": {
+  "lpts": -0.0048,
+  "lrank": 0.2451,
+  "elo": 0.1851,
+  "selo": 0.127,
+  "form": -0.4367,
+  "rest": -0.1586,
+  "load": 0.186,
+  "h2h": 0.2387,
+  "elo_bo5": 0.1115
+ },
+ "n_train": 24633
+}

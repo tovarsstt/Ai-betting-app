@@ -38,8 +38,15 @@ def lineup_for(home, away, injuries, force_active=None):
         strip = lambda t: {k: v for k, v in (lu.get(t, {}).get("counts") or {}).items() if k != "qb_lost"}
         return {"home": strip(home), "away": strip(away)}, lu
     except Exception as e:
-        print("lineup data missing:", repr(e)[:100])
-        return None, {}
+        print("lineup data missing (nflverse):", repr(e)[:100], "-> ESPN depth-chart fallback")
+        try:
+            import lineup_espn as le
+            res, detail = le.avail_from_espn(home, away, injuries or [])
+            print("  ESPN lineup layer:", {"home": {k: v for k, v in res["home"].items() if v}, "away": {k: v for k, v in res["away"].items() if v}}, detail, flush=True)
+            return res, {home: {"counts": res["home"], "detail": detail[home]}, away: {"counts": res["away"], "detail": detail[away]}}
+        except Exception as e2:
+            print("lineup fallback failed:", repr(e2)[:100])
+            return None, {}
 
 
 def _work(args):

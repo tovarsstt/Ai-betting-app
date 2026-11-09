@@ -4735,9 +4735,9 @@ const TENNIS_SERVE_FETCH = path.resolve(process.cwd(), 'scripts/fetch_tennis_ser
 // the model that prices every tennis moneyline cannot be honestly measured.
 const TENNIS_RANK_HISTORY = path.resolve(process.cwd(), 'scripts/fetch_tennis_rank_history.py');
 
-function runPyFetch(script: string, timeoutMs: number): Promise<{ ok: boolean; out: string }> {
+function runPyFetch(script: string, timeoutMs: number, args: string[] = []): Promise<{ ok: boolean; out: string }> {
   return new Promise((resolve) => {
-    const py = spawn('python3', [script]);
+    const py = spawn('python3', [script, ...args]);
     let out = '';
     py.stdout.on('data', (c: Buffer) => { out += c.toString(); });
     py.stderr.on('data', (c: Buffer) => { out += c.toString(); });
@@ -4790,7 +4790,7 @@ async function refreshTennisRanks(): Promise<{ ok: boolean; out: string; state: 
     ok: ranks.ok && bothTours,
     out: `ranks:${ranks.ok ? 'ok' : 'FAIL'} atp:${state.atp} wta:${state.wta}` +
          `${bothTours ? '' : ' ← TOUR MISSING'} form:${form.ok ? 'ok' : 'FAIL'} ` +
-         `serve:${serve.ok ? 'ok' : 'FAIL'} hist:${hist.ok ? 'ok' : 'FAIL'} ` +
+         `serve:${serve.ok ? 'ok' : 'FAIL'} hist:${hist.ok ? 'ok' : 'FAIL'} v4:${v4.ok ? 'ok' : 'FAIL'} ` +
          `| ${ranks.out.slice(-160)}`,
     state,
   };
@@ -4903,3 +4903,6 @@ if (process.env.DISABLE_FEED_HEALTH !== 'true') {
 app.listen(port, '0.0.0.0', () => {
   console.info(`CTE LOCKS Engine live → http://localhost:${port}`);
 });
+// Calibrated win-probability model (v4): downloads the current season's results and refits Elo/surface Elo/form/h2h + the walk-forward report.
+const TENNIS_V4_REFRESH = path.resolve(process.cwd(), 'scripts/tennis_model.py');
+  const v4 = await runPyFetch(TENNIS_V4_REFRESH, 600_000, ['refresh']);

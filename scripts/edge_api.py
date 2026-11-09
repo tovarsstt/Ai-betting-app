@@ -147,6 +147,8 @@ _CLUB_ALIASES = {
     "athletic bilbao": "Ath Bilbao", "athletic club": "Ath Bilbao",
     "athletic": "Ath Bilbao", "ath bilbao": "Ath Bilbao",
     "real sociedad": "Sociedad", "rayo vallecano": "Vallecano",
+    # Germany (2026-11-09: ESPN names for promoted sides that were skipped as unmapped)
+    "fc cologne": "FC Koln", "1. fc koln": "FC Koln", "1. fc köln": "FC Koln", "fc köln": "FC Koln", "koln": "FC Koln", "cologne": "FC Koln",
     "real betis": "Betis", "celta vigo": "Celta", "rc celta": "Celta",
     "deportivo la coruna": "Dep. A Coruna", "deportivo": "Dep. A Coruna",
     "racing santander": "Santander", "real oviedo": "Oviedo",
@@ -760,6 +762,24 @@ def _tennis_aux_logit(home: str, away: str, surf: str):
 
     # Differential dims — applied only when BOTH players carry the field.
     def diff(field: str) -> Optional[float]:
+def _tennis_v4(req, surf: str) -> Optional[dict]:
+    """Calibrated tennis model (tennis_model.py, walk-forward fitted on 2022-26 results, point-in-time features). None when a player is unknown/the model is not built.
+    Market odds in the request (American, anything other than the -110/-110 default) switch on the backtested market anchor."""
+    try:
+        import tennis_model as _tm
+        m = _tm.TennisV4.get()
+        if not m:
+            return None
+        odds = None
+        ho, ao = float(req.home_odds), float(req.away_odds)
+        if not (ho == -110.0 and ao == -110.0) and ho != 0 and ao != 0:
+            dec = lambda o: 1 + (o / 100.0 if o > 0 else 100.0 / -o)
+            odds = (dec(ho), dec(ao))
+        return m.predict(req.home_team, req.away_team, surf, int(getattr(req, "best_of", 3) or 3), odds)
+    except Exception:                                          # noqa: BLE001
+        return None
+
+
         if field in h and field in a:
             return float(h[field]) - float(a[field])
         return None
@@ -1034,18 +1054,23 @@ def predict(req: PredictReq):
             _shp = list(_sm.get("match_prob", {}).values())
             if len(_shp) == 2:
                 serve_prob = float(_shp[0])
-                hcp = (points_prob + serve_prob) / 2.0
+                # fusion weight on the serve engine: 50% legacy; 25% with v4 (not validated point-in-time); 0% when the market anchor is active
+                _ws = 0.0 if (v4 and "p_anchored" in v4) else (0.25 if v4 else 0.5)
+                hcp = (1 - _ws) * points_prob + _ws * serve_prob
         except Exception:                                      # noqa: BLE001
             pass  # no serve stats — points engine stands alone
         acp = 1.0 - hcp
         pred_margin = (hcp - 0.5) * 10  # proxy for display/edge
-        method = (base + ("+Surface" if surf_adj else "") + ("+Profile" if aux else "")
-                  + ("+Context" if ctx else "")
-                  + ("+ServeFused" if serve_prob is not None else ""))
+        method = (("TennisV4" + ("+MarketAnchor" if (v4 and "p_anchored" in v4) else "")) if v4 else
+                  (base + ("+Surface" if surf_adj else "") + ("+Profile" if aux else "")))
+        method += ("+Context" if ctx else "") + ("+ServeFused" if (serve_prob is not None and not (v4 and "p_anchored" in v4)) else "")
         extra = {"method": method, "surface": surf,
                  "surface_adj_logit": round(surf_adj, 3),
                  "profile_adj_logit": round(aux, 3),
-                 "points_model_home_prob": round(points_prob, 3)}
+                 "points_model_home_prob": round(points_prob, 3),
+                 "legacy_points_home_prob": round(legacy_prob, 3)}
+        if v4:
+            extra["v4"] = {k: (round(v, 4) if isinstance(v, float) else v) for k, v in v4.items()}
         if aux_detail:
             extra["profile"] = aux_detail
         if ctx_detail:
@@ -1082,6 +1107,14 @@ def predict(req: PredictReq):
                 sh = _sm.get("set_handicap") or {}
                 if sh.get("a_minus_1_5_sets") is not None:
                     ladder["home_-1.5_SETS_(must_win_2-0)"] = sh["a_minus_1_5_sets"]
+        # ── v4 (2026-11-09): replaces the hand-set points scale. Walk-forward 2024-26: logloss .609-.619 vs .626-.642 for the old points logistic, calibration slope ~1.0
+        # (old .72-.84). With market odds in the request the backtested anchor applies (the market carries day-of news; the model coef is ~0 once it is in).
+        # v4 already contains surface Elo, form and H2H, so the legacy surface/profile nudges are NOT added on top; observed fatigue/crowd/day-of facts still are.
+        v4 = _tennis_v4(req, surf)
+        legacy_prob = hcp
+        if v4:
+            _p = min(max(v4.get("p_anchored", v4["p_model"]), 0.005), 0.995)
+            hcp = 1.0 / (1.0 + math.exp(-(math.log(_p / (1 - _p)) + ctx + cond)))
                     ladder["away_+1.5_SETS"] = 1 - sh["a_minus_1_5_sets"]
                 if sh.get("b_minus_1_5_sets") is not None:
                     ladder["away_-1.5_SETS_(must_win_2-0)"] = sh["b_minus_1_5_sets"]

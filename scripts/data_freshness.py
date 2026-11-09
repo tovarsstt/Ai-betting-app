@@ -52,6 +52,7 @@ SOURCES = {
     "tennis": ("ratings_meta.json", "tennis.updated"),
     "tennis_form": ("tennis_form.json", "built"),
     "tennis_serve": ("tennis_serve.json", "built"),
+    "tennis_v4": ("tennis/model_v4.json", "built"),
     "soccer_club": ("soccer/club_ratings.json", "generated_at"),
     "soccer_intl": ("soccer/international_ratings.json", "generated_at"),
     "volleyball": ("volleyball_ratings.json", "meta.fetched_at"),
@@ -64,7 +65,7 @@ SOURCES = {
     "cfb": ("cfb_board.json", "generated_at"),
 }
 # aliases whose season/budget follow another sport
-FOLLOWS = {"tennis_form": "tennis", "tennis_serve": "tennis"}
+FOLLOWS = {"tennis_form": "tennis", "tennis_serve": "tennis", "tennis_v4": "tennis"}
 
 
 def _dig(doc: dict, dotted: str):

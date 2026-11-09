@@ -126,3 +126,10 @@ model profile and the other does NOT (qualifier / challenger not in our data):
 
 ---
 *Tennis v3.0 — Caveman Locks. Surface transition is the alpha.*
+
+## Tennis v4 (2026-11-09) — the headline probability now comes from `scripts/tennis_model.py`
+- Why: the old points logistic used a hand-set scale (0.9 on log-points): walk-forward 2024-26 logloss .626-.642 and calibration slope .72-.84; fused 50/50 with the serve engine it priced favourites 4-12 pts under the market (Sabalenka 59.5% vs ~65%).
+- v4: Elo + surface Elo + form + rest/load + shrunk H2H + log points/rank, fitted on 2022-26 results with point-in-time features: logloss .609-.619, slope ~1.0, avg favourite prob 65.6% vs market 67.2%. The market is still better (.584-.592): v4 is a calibrated PRIOR, not an edge.
+- With market odds in the request (/predict home_odds/away_odds != -110/-110) the backtested anchor applies: logit(p) = -0.09*logit(v4) + 1.13*logit(market) fit 2023-25 (2026 test logloss .5830 vs market .5837). Read: once the close is in, the model adds ~0; the 1.13 says the devigged close slightly UNDER-prices favourites (favourite-longshot bias, slope 1.02-1.15 every year). The market also carries day-of news (injury/withdrawal) that no history model sees: Gojo-Machac, v4 31% vs Stake favourite 1.65.
+- Pipeline: `python3 scripts/tennis_model.py refresh` (downloads the current season from tennis-data.co.uk into data/tennis/raw, rebuilds data/tennis/{model_v4,state_v4,model_v4_report}.json); server.ts runs it inside the fortnightly ranks refresh; data_freshness.py tracks `tennis_v4`; tests: scripts/test_tennis_model.py.
+- Engine: edge_api.py TENNIS branch -> method `TennisV4[+MarketAnchor]`; legacy surface/profile nudges are NOT added on top (v4 contains them); fatigue/crowd/day-of facts still are; serve-engine fusion weight 25% without market, 0% with market. Players unknown to v4 fall back to the legacy points path.
