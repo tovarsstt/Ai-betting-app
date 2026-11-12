@@ -1,21 +1,17 @@
 {
- "updated": "2026-11-09 19:40 ET",
+ "updated": "2026-11-12 18:40 ET",
  "how_to_update": "When the user says 'actualiza': (1) read Stake stake.com/es/my-bets/sports (Activas, then Finalizadas) in Chrome to sync stakes/status; (2) ESPN scoreboards NFL+NBA for every leg; (3) NFL live legs: python3 scripts/nfl_gameday.py live AWAY@HOME (+ box score props from ESPN summary) and price legs jointly from the sim (same game rows = correlations), pure sim headline + 30/70 anchored second; (4) report per ticket: P(win), legs hit/pending, net outcomes; Spanish, short; never place or change bets.",
- "bets": [
-  {"id":"sgm3_buf","sport":"NFL","game":"BUF@MIN 2026-11-09 20:15","type":"SGM","odds":2.80,"stake":25.0,"payout":70.0,"cashout":false,
-   "legs":["BUF ML (incl OT)","J.Cook O69.5 rush yds","J.Allen O199.5 pass yds"]},
-  {"id":"sgm5_buf","sport":"NFL","game":"BUF@MIN 2026-11-09 20:15","type":"SGM","odds":6.00,"stake":5.0,"payout":30.0,"cashout":false,
-   "legs":["BUF ML (incl OT)","J.Allen O199.5 pass yds","J.Allen O21.5 rush yds","J.Cook anytime TD","J.Cook O69.5 rush yds"]},
-  {"id":"multi4_dal_min_sas_gsw","sport":"NFL+NBA","type":"multi","odds":3.38,"stake":10.0,"payout":33.84,"cashout":false,
-   "legs":["DAL ML vs IND (1.52, 20:00)","MIN +7.5 vs BUF (1.51, 20:15)","SAS ML vs PHX (1.26, 21:00)","GSW ML vs NOP (1.17, 22:00)"]},
-  {"id":"tennis4","sport":"Tennis","type":"multi","odds":5.86,"stake":3.0,"payout":17.58,"cashout":"7.15 at 12:30",
-   "legs":["Gojo ML 1.65 (won)","Humbert ML 1.60 (won)","Sabalenka ML 1.48 vs Muchova (Mon 15:00)","Andreeva ML 1.50 vs Svitolina (Mon 16:10)"],"status":"check result"},
-  {"id":"nba5","sport":"NBA","type":"multi","odds":5.00,"stake":2.009,"payout":10.04,"cashout":false,
-   "legs":["CLE ML 1.30","DAL ML 1.54","HOU ML 1.54","SAS ML 1.26","S.Curry O22.5 pts 1.29"]},
-  {"id":"nba8","sport":"NBA","type":"multi","odds":19.86,"stake":2.0,"payout":39.73,"cashout":false,
-   "legs":["CLE ML 1.30","WAS +10.5 1.75","LAL +5.5 1.60","MEM +5.5 1.42","DAL ML 1.54","HOU ML 1.54","SAS ML 1.26","S.Curry O22.5 pts 1.29"]},
-  {"id":"nba11","sport":"NBA","type":"multi","odds":3154.52,"stake":0.28,"payout":883.27,"cashout":false,
-   "legs":["WAS +10.5 1.75","LAL +0.5 2.15","CLE -10.5 2.20","TOR -1.5 2.18","DAL -10.5 2.85","HOU -10.5 2.80","SAS -10.5 2.10","GSW -10.5 1.78","NYK -13.5 1.68 (Tue)","PHI -1.5 2.04 (Tue)","OKC +1.5 1.71 (Tue)"]}
+ "bets": [],
+ "notes": [
+  "Week Nov 9-12 settled (Stake Finalizadas): 21 bets, staked $168.60, returned $137.20, net -$31.40 (ROI -18.6%). Won: SGM3 BUF @2.80 $25->$70, tennis multi @5.86, 3-leg @4.08 $7->$28.54, single @1.90 $10->$19. Biggest loss: Ruud -1.5 sets @1.58 $35.61. Balance $0.49, no open bets at 18:20 ET Nov 12."
  ],
- "notes": ["legs repeated across tickets: CLE/DAL/HOU/SAS ML, Curry O22.5, WAS +10.5, LAL: one miss kills several tickets", "recommended but NOT confirmed placed: MIN +5.5 @1.73 $2 (the MIN +7.5 leg in multi4 is a similar side)"]
+ "settled_20261109_12": [
+  "sgm3_buf",
+  "sgm5_buf",
+  "multi4_dal_min_sas_gsw",
+  "tennis4",
+  "nba5",
+  "nba8",
+  "nba11"
+ ]
 }

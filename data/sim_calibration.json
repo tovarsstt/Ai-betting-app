@@ -1,0 +1,16 @@
+{
+ "total_shift": 0.0,
+ "total_shift_se": 2.5,
+ "n": 27,
+ "fuente": "2026-11-12: el +3.27 (wf 2024-25, sim SIN kappa_td) quedo contado dos veces desde el commit 0d16ccb (2026-11-01, kappa_td=1.08 ya iguala la anotacion real). 27 juegos 2026 con ambos: sim - real = +3.47 (SE 2.5). Se quita el tilt; reestimar cuando haya >=60 juegos en data/wf_2026_live.jsonl",
+ "margen_shift": -0.16,
+ "nota": "se aplica solo cuando start is None; tilt exponencial sobre el total; clima aparte en nfl_weather.py",
+ "history": [
+  {
+   "total_shift": 3.27,
+   "n": 388,
+   "fuente": "wf_backtest 2024-25 (real - sim, total de puntos, pregame)",
+   "hasta": "2026-11-12"
+  }
+ ]
+}

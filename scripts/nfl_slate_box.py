@@ -119,6 +119,16 @@ def run_game(g, n, outdir, pool, inactives=None):
     per = -(-n // nb)
     res = sorted(pool.map(_work, [(home, away, qh["id"], qa["id"], avail, b, per) for b in range(nb)]))
     X = tilt(np.concatenate([r[1] for r in res]))
+    wx = None
+    try:                                                        # weather/roof layer (nfl_weather.py): wind + rain lower the total, a roof raises it; NFL_WEATHER=0 disables
+        import os as _os
+        if _os.environ.get("NFL_WEATHER", "1") != "0" and g.get("id"):
+            import nfl_weather as nw
+            wx = nw.game_shift(g["id"])
+            X = nw.tilt_total(X, wx["shift"])
+            print(f"  weather layer {away}@{home}: {wx}", flush=True)
+    except Exception as e:
+        print("  weather layer skipped:", repr(e)[:90], flush=True)
     np.save(outdir / f"{away}@{home}.npy", X)
     M = X[:, 0] - X[:, 1]
     T = X[:, 0] + X[:, 1]
@@ -126,7 +136,7 @@ def run_game(g, n, outdir, pool, inactives=None):
         "home": home, "away": away, "date": g["date"], "qb_home": qh.get("name"), "qb_away": qa.get("name"),
         "p_home": float((M > 0).mean() + 0.5 * (M == 0).mean()), "mean_home": float(X[:, 0].mean()),
         "mean_away": float(X[:, 1].mean()), "mean_total": float(T.mean()), "sd_margin": float(M.std()),
-        "avail": avail, "injuries_full": inj, "offense": offense, "inactives_posted": posted,
+        "avail": avail, "injuries_full": inj, "offense": offense, "inactives_posted": posted, "weather": wx,
     }
 
 
