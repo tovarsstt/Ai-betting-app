@@ -4466,8 +4466,15 @@ function spawnPythonJson(script: string, args: string[], stdin: string | null, t
 
 interface LintLeg { decimal: number; selection?: string }
 // Run the slip linter on a set of legs — verdict object, or null on failure (non-blocking).
-async function lintLegs(legs: LintLeg[]): Promise<unknown | null> {
-  try { return await spawnPythonJson(SLIP_LINTER, ['--json'], JSON.stringify({ legs })); }
+// context (optional): { weekday:'Thu', sport:'NFL', type:'sgm'|'multi'|'single', stake, single_game } -> day/slate guard in slip_linter.day_guard,
+// measured on the user's own Stake history (data/stake_history/bets.csv). Weekday defaults to today (ET) so every lint carries it.
+interface LintContext { weekday?: string; sport?: string; type?: string; stake?: number; single_game?: boolean }
+function defaultLintContext(): LintContext {
+  const wd = new Intl.DateTimeFormat('en-US', { weekday: 'short', timeZone: 'America/New_York' }).format(new Date());
+  return { weekday: wd.slice(0, 3) };
+}
+async function lintLegs(legs: LintLeg[], context?: LintContext): Promise<unknown | null> {
+  try { return await spawnPythonJson(SLIP_LINTER, ['--json'], JSON.stringify({ legs, context: { ...defaultLintContext(), ...(context ?? {}) } })); }
   catch { return null; }
 }
 
@@ -4505,14 +4512,14 @@ app.post('/api/kill-test', async (req: express.Request, res: express.Response) =
 // settled record (data/slips_raw.txt): ACCEPT / TRIM / REJECT with real ROI cited.
 app.post('/api/lint-slip', async (req: express.Request, res: express.Response) => {
   if (rateLimit(req, 60, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
-  const { legs } = req.body as { legs?: LintLeg[] };
+  const { legs, context } = req.body as { legs?: LintLeg[]; context?: LintContext };
   if (!Array.isArray(legs) || legs.length === 0) {
     return res.status(400).json({ error: 'NEED_LEGS', message: 'body: { legs: [{ decimal, selection }] }' });
   }
   if (legs.some(l => typeof l?.decimal !== 'number' || !(l.decimal > 1))) {
     return res.status(400).json({ error: 'BAD_DECIMAL', message: 'each leg needs decimal odds > 1' });
   }
-  const data = await lintLegs(legs);
+  const data = await lintLegs(legs, context);
   if (data == null) return res.status(500).json({ error: 'LINTER_FAILED' });
   res.json({ success: true, data });
 });
@@ -4906,3 +4913,19 @@ app.listen(port, '0.0.0.0', () => {
 // Calibrated win-probability model (v4): downloads the current season's results and refits Elo/surface Elo/form/h2h + the walk-forward report.
 const TENNIS_V4_REFRESH = path.resolve(process.cwd(), 'scripts/tennis_model.py');
   const v4 = await runPyFetch(TENNIS_V4_REFRESH, 600_000, ['refresh']);
+// STAKE HISTORY BY WEEKDAY — the user's own settled Stake bets (data/stake_history/bets.csv, refreshed by crawling
+// stake.com/es/my-bets/sports/settled in Chrome + scripts/stake_history.py parse). ?day=Thu adds a permutation test and the
+// mix decomposition for that day ("why do we lose on Thursdays").
+const STAKE_HISTORY = path.resolve(process.cwd(), 'scripts/stake_history.py');
+app.get('/api/stake-history/weekday', async (req: express.Request, res: express.Response) => {
+  if (rateLimit(req, 20, 60_000)) return res.status(429).json({ error: 'RATE_LIMIT' });
+  const day = String(req.query.day ?? 'Thu').slice(0, 3);
+  if (!['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].includes(day)) return res.status(400).json({ error: 'BAD_DAY' });
+  try {
+    const data = await spawnPythonJson(STAKE_HISTORY, ['weekday', '--day', day, '--json'], null, 60_000);
+    res.json({ success: true, data });
+  } catch (e: unknown) {
+    res.status(500).json({ error: 'HISTORY_FAILED', message: e instanceof Error ? e.message : String(e) });
+  }
+});
+

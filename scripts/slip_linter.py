@@ -262,10 +262,16 @@ def ticket_vig(legs: list[dict]) -> dict:
 
 
 def lint(legs: list[dict], band_roi: dict | None = None,
-         shape_roi: dict | None = None) -> Verdict:
-    """Score a ticket. `legs` = [{'decimal': float, 'selection': str}]."""
+         shape_roi: dict | None = None, context: dict | None = None) -> Verdict:
+    """Score a ticket. `legs` = [{'decimal': float, 'selection': str}]; optional `context` feeds the day/slate guard."""
     if band_roi is None or shape_roi is None:
         band_roi, shape_roi = _history_rois()
+    v = _lint_core(legs, band_roi, shape_roi)
+    extra = day_guard(context)
+    return Verdict(v.status, tuple(v.reasons) + tuple(extra), v.cut_legs, v.keep_count) if extra else v
+
+
+def _lint_core(legs: list[dict], band_roi: dict, shape_roi: dict) -> Verdict:
 
     # 1. Leg-level gate (win-prob-first): keep chalk anchors, cap soft favourites, cut lottery.
     cut, reasons = _gate_legs(legs, band_roi)
@@ -345,6 +351,59 @@ def lint(legs: list[dict], band_roi: dict | None = None,
     return Verdict(status, tuple(reasons), tuple(cut), keep_n)
 
 
+# ── Day/slate guard (2026-11-13) ─────────────────────────────────────────────
+# Measured on the user's last 1,015 settled Stake bets (data/stake_history/bets.csv, scripts/stake_history.py):
+# Thursday ROI -19.5% (n=127) vs +5.2% other days; permutation p=0.09 (suggestive, not proof). It is NOT the day itself:
+# the bets' type/legs/odds mix alone predicts -2.3%; the rest comes from (a) TNF NFL tickets -57% (n=22, 14% hit) while
+# NFL on other days is +41%, (b) prop-heavy single-game tickets (32% of Thursday legs are player props vs 17% other days)
+# and SGMs (22% of Thursday bets, -30.5%), and (c) bigger stakes after a winning Mon-Wed (avg $97 vs $28; corr +0.50 =
+# house-money effect). The guard reads those numbers LIVE from the history file, so it switches itself off if Thursdays
+# start winning.
+HISTORY_CSV = Path(__file__).resolve().parent.parent / "data" / "stake_history" / "bets.csv"
+DAY_MIN_N = 15
+
+
+def _history_frame():
+    try:
+        import pandas as pd
+        return pd.read_csv(HISTORY_CSV) if HISTORY_CSV.exists() else None
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def day_guard(context: dict | None, df=None) -> list[str]:
+    """context = {'weekday':'Thu','sport':'NFL','type':'sgm|multi|single','stake':12.0,'single_game':bool}. Returns WARN lines (never blocks)."""
+    if not context:
+        return []
+    df = _history_frame() if df is None else df
+    if df is None or not len(df):
+        return []
+    out = []
+    roi = lambda d: (d.payout.sum() - d.stake.sum()) / d.stake.sum() if d.stake.sum() else 0.0
+    day, sport, btype = context.get("weekday"), context.get("sport"), context.get("type")
+    if day:
+        d = df[df.dow == day]
+        if len(d) >= DAY_MIN_N and roi(d) < -0.10:
+            out.append(f"WARN {day}: {roi(d)*100:+.0f}% ROI in your last {len(d)} {day} bets (other days {roi(df[df.dow != day])*100:+.0f}%)")
+        if sport:
+            ds = d[d.sport == sport]
+            if len(ds) >= 10 and roi(ds) < -0.15:
+                out.append(f"WARN {sport} on {day}: {roi(ds)*100:+.0f}% ROI, {(ds.payout > 0).mean()*100:.0f}% hit (n={len(ds)}) — cut stake or pass")
+        if btype:
+            dt = d[d.type == btype]
+            if len(dt) >= 10 and roi(dt) < -0.15:
+                out.append(f"WARN {btype} on {day}: {roi(dt)*100:+.0f}% ROI (n={len(dt)})")
+    if context.get("single_game") and btype == "sgm":
+        out.append("WARN single-game slate + SGM: every ticket rides one game and Stake's SGM margin compounds — keep it to 2-3 legs")
+    st = context.get("stake")
+    if st:
+        med = float(df.stake.median())
+        if st > 2 * med:
+            big = df[df.stake > 2 * med]
+            out.append(f"WARN stake ${st:.0f} is {st/med:.1f}x your median ${med:.0f}; bets over 2x median return {roi(big)*100:+.0f}% (n={len(big)})")
+    return out
+
+
 MAX_SAME_MATCH = 2    # 3+ sub-markets of one match in one slip = correlated stack
 
 
@@ -413,7 +472,7 @@ def _main() -> None:
     if not legs:
         raise SystemExit("no legs — pass {\"legs\":[{\"decimal\":..,\"selection\":..}]} "
                          "or {\"slips\":[{\"legs\":[..]}, ..]}")
-    v = lint(legs)
+    v = lint(legs, context=payload.get("context"))
     out = {
         "status": v.status,
         "keep_count": v.keep_count,

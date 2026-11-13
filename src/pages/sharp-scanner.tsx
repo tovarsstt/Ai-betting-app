@@ -65,7 +65,7 @@ export default function SharpScannerPage() {
 
       {isPending && (
         <div className="py-12 flex flex-col items-center space-y-3 animate-pulse">
-          <Zap className="w-10 h-10 text-primary animate-bounce" />
+          <Zap className="w-10 h-10 text-primary animate-pulse" />
           <p className="text-sm font-black tracking-widest uppercase">Scanning sharp action...</p>
         </div>
       )}

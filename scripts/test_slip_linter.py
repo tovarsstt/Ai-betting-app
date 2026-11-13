@@ -258,3 +258,41 @@ def test_win_prob_helper_ignores_nonsense_probabilities():
     assert sl._win_prob({"decimal": 2.0, "prob": 1.4}) == pytest.approx(0.5)
     assert sl._win_prob({"decimal": 2.0, "prob": "abc"}) == pytest.approx(0.5)
     assert sl._win_prob({"decimal": 2.0, "prob": None}) == pytest.approx(0.5)
+
+
+# ── day/slate guard (2026-11-13) ──
+def _hist():
+    import pandas as pd
+    rows = [{"dow": "Thu", "sport": "NFL", "type": "sgm", "stake": 10.0, "payout": 0.0}] * 12 + \
+           [{"dow": "Thu", "sport": "NFL", "type": "sgm", "stake": 10.0, "payout": 25.0}] * 2 + \
+           [{"dow": "Thu", "sport": "tennis", "type": "single", "stake": 10.0, "payout": 0.0}] * 4 + \
+           [{"dow": "Sun", "sport": "NFL", "type": "multi", "stake": 10.0, "payout": 30.0}] * 10 + \
+           [{"dow": "Sun", "sport": "NFL", "type": "multi", "stake": 10.0, "payout": 0.0}] * 10
+    return pd.DataFrame(rows)
+
+
+def test_day_guard_warns_on_losing_day_sport_and_type():
+    from slip_linter import day_guard
+    w = day_guard({"weekday": "Thu", "sport": "NFL", "type": "sgm", "stake": 10, "single_game": True}, df=_hist())
+    txt = " | ".join(w)
+    assert "WARN Thu" in txt and "NFL on Thu" in txt and "sgm on Thu" in txt and "single-game slate" in txt
+
+
+def test_day_guard_silent_on_winning_day_and_without_context():
+    from slip_linter import day_guard
+    assert day_guard({"weekday": "Sun", "sport": "NFL", "type": "multi"}, df=_hist()) == []
+    assert day_guard(None, df=_hist()) == []
+
+
+def test_day_guard_flags_oversized_stake():
+    from slip_linter import day_guard
+    w = day_guard({"stake": 60}, df=_hist())
+    assert any("median" in x for x in w)
+
+
+def test_lint_appends_guard_without_changing_status():
+    import slip_linter as sl
+    legs = [{"decimal": 2.1, "selection": "A"}, {"decimal": 1.9, "selection": "B"}]
+    base = sl.lint(legs)
+    withc = sl.lint(legs, context={"weekday": "Thu", "sport": "NFL", "type": "multi"})
+    assert withc.status == base.status and len(withc.reasons) >= len(base.reasons)

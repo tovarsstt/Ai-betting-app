@@ -134,7 +134,7 @@ export default function AlphaSheetsPage() {
 
       {isPending && (
         <div className="py-12 flex flex-col items-center space-y-3 animate-pulse">
-          <BarChart3 className="w-10 h-10 text-primary animate-bounce" />
+          <BarChart3 className="w-10 h-10 text-primary animate-pulse" />
           <p className="text-sm font-black tracking-widest uppercase">Scanning {sport} data...</p>
         </div>
       )}

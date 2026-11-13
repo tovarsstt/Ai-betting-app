@@ -60,7 +60,7 @@ export default function ArbitragePage() {
 
       {isPending && (
         <div className="py-12 flex flex-col items-center space-y-3 animate-pulse">
-          <Shield className="w-10 h-10 text-primary animate-bounce" />
+          <Shield className="w-10 h-10 text-primary animate-pulse" />
           <p className="text-sm font-black tracking-widest uppercase">Scanning across books...</p>
         </div>
       )}

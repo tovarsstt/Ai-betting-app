@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Trophy, Plus, RefreshCw, Clapperboard } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import WeekdayRecord from "@/components/WeekdayRecord";
 
 const OCHRE = "#C8860A";
 
@@ -188,6 +189,8 @@ export default function TrackRecordPage() {
       {statsQ.isError && (
         <p className="text-sm text-red-400">Ledger API offline — start the server (port 3001).</p>
       )}
+
+      <WeekdayRecord day="Thu" />
 
       {/* ── Log new pick ── */}
       <Card className="border-white/10 bg-white/[0.02]">
